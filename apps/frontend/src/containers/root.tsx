@@ -1,5 +1,5 @@
 const Root: React.FC = () => {
-  return <>I am root page</>;
+  return <>Welcome to scaffolding!</>;
 };
 
 export default Root;
