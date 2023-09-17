@@ -1,4 +1,4 @@
-import { Button } from '@shared/src/components/button';
+import { Button } from '../../../../shared/src/components/button';
 
 const Test: React.FC = () => {
   return (
