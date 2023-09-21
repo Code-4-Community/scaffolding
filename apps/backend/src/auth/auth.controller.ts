@@ -4,6 +4,7 @@ import { SignInDto } from './dtos/sign-in.dto';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
+import { VerifyUserDto } from './dtos/verify-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +27,16 @@ export class AuthController {
     // session.userId = user.id;
 
     return user;
+  }
+
+  @Post('/verify')
+  async verifyUser(@Body() body: VerifyUserDto, @Session() session) {
+    const res = await this.authService.verifyUser(
+      body.email,
+      body.verificationCode,
+    );
+
+    return res;
   }
 
   @Post('/signin')

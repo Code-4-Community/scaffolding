@@ -54,6 +54,7 @@ export class AuthService {
 
   verifyUser(email: string, verificationCode: string) {
     return new Promise((resolve, reject) => {
+      console.log(verificationCode);
       return new CognitoUser({
         Username: email,
         Pool: this.userPool,
