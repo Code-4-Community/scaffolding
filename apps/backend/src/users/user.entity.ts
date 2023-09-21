@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+import type { Status } from './types';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -10,4 +12,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column()
+  status: Status;
 }
