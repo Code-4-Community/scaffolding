@@ -32,4 +32,4 @@ nx run-many -t serve -p apps/frontend apps/backend
 
 Run `git submodule update --remote` to pull the latest changes from the component library
 
-When cloning the repo, make sure to add the `--recurse-modules` flag to also clone the component library submodule (e.g. `git clone --recurse-submodules https://github.com/Code-4-Community/c4c-ops.git`)
+When cloning the repo, make sure to add the `--recurse-modules` flag to also clone the component library submodule (e.g. `git clone --recurse-submodules https://github.com/Code-4-Community/scaffolding.git` for the `scaffolding` repo)

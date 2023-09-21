@@ -16,7 +16,6 @@ import {
   CognitoIdentityProviderClient,
 } from '@aws-sdk/client-cognito-identity-provider';
 
-import { scrypt as _scrypt } from 'crypto';
 import CognitoAuthConfig from './aws-exports';
 
 @Injectable()
@@ -48,7 +47,7 @@ export class AuthService {
           } else {
             resolve(result);
           }
-        }
+        },
       );
     });
   }
@@ -112,7 +111,7 @@ export class AuthService {
   confirmPassword(
     email: string,
     verificationCode: string,
-    newPassword: string
+    newPassword: string,
   ) {
     return new Promise((resolve, reject) => {
       return new CognitoUser({

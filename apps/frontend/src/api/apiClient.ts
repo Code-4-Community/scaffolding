@@ -6,8 +6,8 @@ const defaultBaseUrl =
 export class ApiClient {
   private axiosInstance: AxiosInstance;
 
-  constructor(baseURL: string = defaultBaseUrl) {
-    this.axiosInstance = axios.create({ baseURL });
+  constructor() {
+    this.axiosInstance = axios.create({ baseURL: defaultBaseUrl });
   }
 
   public async getHello(): Promise<string> {

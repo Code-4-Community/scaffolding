@@ -1,15 +1,25 @@
 import { Body, Controller, Logger, Post, Session } from '@nestjs/common';
 
-import { CreateUserDto } from './dtos/create-user.dto';
+import { SignInDto } from './dtos/sign-in.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
 import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private usersService: UsersService,
+  ) {}
 
   @Post('/signup')
-  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
-    const user = await this.authService.signup(body.email, body.password);
+  async createUser(@Body() body: SignUpDto, @Session() session) {
+    await this.authService.signup(body.email, body.password);
+    const user = await this.usersService.create(
+      body.email,
+      body.firstName,
+      body.lastName,
+    );
 
     Logger.log('signup');
     Logger.log(user);
@@ -19,7 +29,7 @@ export class AuthController {
   }
 
   @Post('/signin')
-  async signin(@Body() body: CreateUserDto, @Session() session: any) {
+  async signin(@Body() body: SignInDto, @Session() session) {
     const user = await this.authService.signin(body.email, body.password);
 
     // session.userId = user.id;
@@ -28,7 +38,7 @@ export class AuthController {
   }
 
   @Post('/signout')
-  signOut(@Session() session: any) {
+  signOut(@Session() session) {
     // session.userId = null;
   }
 }
