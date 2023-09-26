@@ -1,0 +1,7 @@
+export enum Status {
+  ADMIN = 'ADMIN',
+  RECRUITER = 'RECRUITER',
+  ALUMNI = 'ALUMNI',
+  MEMBER = 'MEMBER',
+  APPLICANT = 'APPLICANT',
+}
