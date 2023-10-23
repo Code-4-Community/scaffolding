@@ -2,7 +2,7 @@ import { Status } from './types';
 import { User } from './user.entity';
 
 export const getCurrentUser = (): User => ({
-  userId: 999,
+  userId: 1,
   status: Status.ADMIN,
   firstName: 'jimmy',
   lastName: 'jimmy2',

@@ -22,13 +22,8 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/:userId')
-  async getUser(@Param('userId', ParseIntPipe) userId: number): Promise<User> {
+  getUser(@Param('userId', ParseIntPipe) userId: number) {
     return this.usersService.findOne(userId);
-  }
-
-  @Delete('/:id')
-  removeUser(@Param('id') id: string) {
-    return this.usersService.remove(parseInt(id));
   }
 
   @Patch(':userId')
@@ -37,5 +32,10 @@ export class UsersController {
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<User> {
     return this.usersService.updateUser(updateUserDTO, userId);
+  }
+
+  @Delete('/:id')
+  removeUser(@Param('id') id: string) {
+    return this.usersService.remove(parseInt(id));
   }
 }
