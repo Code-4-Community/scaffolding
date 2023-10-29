@@ -1,15 +1,18 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
-import path from 'path';
+import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/frontend',
+  cacheDir: '../../../node_modules/.vite/green-infrastructure-frontend',
 
   server: {
     port: 4200,
     host: 'localhost',
+    fs: {
+      // Allow serving files from one level up to the project root
+      allow: ['..'],
+    },
   },
 
   preview: {
@@ -17,30 +20,28 @@ export default defineConfig({
     host: 'localhost',
   },
 
-  plugins: [react(), nxViteTsPaths()],
+  plugins: [
+    react(),
+    viteTsConfigPaths({
+      root: '../../../',
+    }),
+  ],
 
   // Uncomment this if you are using workers.
   // worker: {
-  //  plugins: [ nxViteTsPaths() ],
+  //  plugins: [
+  //    viteTsConfigPaths({
+  //      root: '../../../',
+  //    }),
+  //  ],
   // },
 
   test: {
     globals: true,
     cache: {
-      dir: '../../node_modules/.vitest',
+      dir: '../../../node_modules/.vitest',
     },
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-  },
-
-  resolve: {
-    alias: {
-      '@api': path.resolve(__dirname, './src/api'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@containers': path.resolve(__dirname, './src/containers'),
-      '@public': path.resolve(__dirname, './public'),
-      '@shared': path.resolve(__dirname, '../../shared'),
-      '@utils': path.resolve(__dirname, './src/utils'),
-    },
   },
 });

@@ -1,7 +1,7 @@
 {
-  "name": "frontend",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/frontend/src",
+  "name": "green-infrastructure-frontend",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/green-infrastructure/frontend/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/frontend"
+        "outputPath": "dist/apps/green-infrastructure/frontend"
       },
       "configurations": {
         "development": {
@@ -24,16 +24,15 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build",
-        "proxyConfig": "apps/frontend/proxy.conf.json"
+        "buildTarget": "green-infrastructure-frontend:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development",
+          "buildTarget": "green-infrastructure-frontend:build:development",
           "hmr": true
         },
         "production": {
-          "buildTarget": "frontend:build:production",
+          "buildTarget": "green-infrastructure-frontend:build:production",
           "hmr": false
         }
       }
@@ -42,44 +41,38 @@
       "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build"
+        "buildTarget": "green-infrastructure-frontend:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development"
+          "buildTarget": "green-infrastructure-frontend:build:development"
         },
         "production": {
-          "buildTarget": "frontend:build:production"
+          "buildTarget": "green-infrastructure-frontend:build:production"
         }
       }
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": ["coverage/apps/green-infrastructure/frontend"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/apps/frontend"
+        "reportsDirectory": "../../../coverage/apps/green-infrastructure/frontend"
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/frontend/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/green-infrastructure/frontend/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "frontend:build"
-      }
-    },
-    "typecheck": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["tsc -p tsconfig.app.json --noEmit"],
-        "cwd": "apps/frontend",
-        "forwardAllArgs": false
+        "buildTarget": "green-infrastructure-frontend:build"
       }
     }
   },

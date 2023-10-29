@@ -14,7 +14,7 @@ async function bootstrap() {
   app.enableCors();
 
   const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix('');
 
   const config = new DocumentBuilder()
     .setTitle('Scaffolding API Docs')
