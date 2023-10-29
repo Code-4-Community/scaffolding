@@ -1,4 +1,5 @@
 export default function About() {
+
   const title = {
     color: 'var(--Text-Primary, #091F2F)',
     fontFamily: 'Montserrat',
@@ -7,8 +8,8 @@ export default function About() {
     fontWeight: '1000',
     lineHeight: 'normal',
     textDecorationLine: 'underline',
-    margin: '0',
-  };
+    margin: '0'
+  }
 
   const headings = {
     color: 'var(--Text-Second, #288BE4)',
@@ -17,8 +18,8 @@ export default function About() {
     fontStyle: 'italic',
     fontWeight: '400',
     lineHeight: 'normal',
-    margin: '0',
-  };
+    margin: '0'
+  }
 
   const content = {
     color: 'var(--text-primary-2, #58585B)',
@@ -26,8 +27,8 @@ export default function About() {
     fontSize: '20px',
     fontStyle: 'normal',
     fontWeight: '400',
-    lineHeight: 'normal',
-  };
+    lineHeight: 'normal'
+  }
 
   return (
     <div
@@ -38,29 +39,21 @@ export default function About() {
         alignItems: 'flex-start',
         gap: '15px',
         flexShrink: '0',
-        background: 'white',
+        background: 'white'
       }}
     >
-      <p style={title}>
-        <u>ABOUT: ADOPT-A-GREEN INFRASTRUCTURE AND FEATURE VIEWER</u>
-      </p>
-      <p style={headings}>
-        Setting the Scene and Brief History: <br />
+      <p style={title}><u>ABOUT: ADOPT-A-GREEN INFRASTRUCTURE AND FEATURE VIEWER</u></p>
+      <p style={headings}>Setting the Scene and Brief History: <br />
         <div style={content}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+          exercitation ullamco laboris nisi ut aliquip ex
         </div>
       </p>
 
-      <p style={headings}>
-        Purpose of Interactive Map: <br />
+      <p style={headings}>Purpose of Interactive Map: <br />
         <div style={content}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
         </div>
       </p>
       <p style={headings}>
@@ -75,38 +68,31 @@ export default function About() {
         </div>
       </p>
 
-      <p style={headings}>
-        Importance: <br />
+      <p style={headings}>Importance: <br />
         <div style={content}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+          laboris nisi ut aliquip ex
         </div>
       </p>
 
-      <p style={headings}>
-        Feature Type and Descriptions: <br />
+      <p style={headings}>Feature Type and Descriptions: <br />
         <div style={content}>
-          Rain Garden: Small shallow depressed planted areas consisting of
-          biosoil and simple plant palettes. <br />
-          Bioswale: Medium-sized depressed planted features that are often
-          longer than they are wide and may have overflow structures/pipes.{' '}
-          <br />
-          Bioretention: Larger depressed planted features that vary in size and
-          shape and can capture and infiltrate larger volumes of runoff
-          (typically have pipes and structures). <br />
-          Porous Paving: Paving materials, like asphalt, concrete or pavers,
-          with voids or gaps that water is able to pass through. <br />
-          Tree Trench/Planter: Hybrid features that are planted with trees at
-          the surface and have subsurface infiltration areas that give trees
-          access to large volumes of stormwater while it absorbs into the
-          ground. <br />
-          Green Roof/Planter: Vegetated areas, at ground level or on roofs, that
-          consist of planting soil or other lightweight planting materials, and
-          native plants.
+          Rain Garden: Small shallow depressed planted areas consisting of biosoil and simple plant palettes. <br />
+          Bioswale: Medium-sized depressed planted features that are often longer than they are wide
+          and may have overflow structures/pipes. <br />
+          Bioretention: Larger depressed planted features that vary in size and shape and can capture
+          and infiltrate larger volumes of runoff (typically have pipes and structures). <br />
+          Porous Paving: Paving materials, like asphalt, concrete or pavers, with voids or gaps that
+          water is able to pass through. <br />
+          Tree Trench/Planter: Hybrid features that are planted with trees at the surface and have
+          subsurface infiltration areas that give trees access to large volumes of stormwater
+          while it absorbs into the ground. <br />
+          Green Roof/Planter: Vegetated areas, at ground level or on roofs, that consist of planting
+          soil or other lightweight planting materials, and native plants.
         </div>
       </p>
-    </div>
+    </div >
   );
-}
+
+};
