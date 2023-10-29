@@ -13,14 +13,13 @@ export function createMapIcon(
   fillOpacity: number,
   strokeWeight: number,
   rotation: number,
-  scale: number,
-): MapIcon {
+  scale: number): MapIcon {
   return {
     path: path,
     fillColor: fillColor,
     fillOpacity: fillOpacity,
     strokeWeight: strokeWeight,
     rotation: rotation,
-    scale: scale,
+    scale: scale
   };
 }
