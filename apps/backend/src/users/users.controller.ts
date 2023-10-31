@@ -10,11 +10,11 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './user.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
-import { UpdateUserDTO } from './update-user.dto';
 
 @Controller('users')
 @UseInterceptors(CurrentUserInterceptor)

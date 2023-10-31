@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
-
+import { ApplicationsModule } from './applications/applications.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -22,8 +22,9 @@ import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
       synchronize: true,
       namingStrategy: new PluralNamingStrategy(),
     }),
-    UsersModule,
     AuthModule,
+    UsersModule,
+    ApplicationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

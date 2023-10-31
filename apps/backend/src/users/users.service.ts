@@ -7,8 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { User } from './user.entity';
-import { UpdateUserDTO } from './update-user.dto';
-import { Status } from './types';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { UserStatus } from './types';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +21,7 @@ export class UsersService {
     const userId = (await this.usersRepository.count()) + 1;
     const user = this.usersRepository.create({
       userId,
-      status: Status.MEMBER,
+      status: UserStatus.MEMBER,
       firstName,
       lastName,
       email,
@@ -33,20 +33,20 @@ export class UsersService {
   async findAll(currentUser: User, getAllMembers: boolean): Promise<User[]> {
     if (!getAllMembers) return [];
 
-    if (currentUser.status === Status.APPLICANT) {
+    if (currentUser.status === UserStatus.APPLICANT) {
       throw new UnauthorizedException();
     }
 
     const users: User[] = await this.usersRepository.find({
       where: {
-        status: { $not: { $eq: Status.APPLICANT } },
+        status: { $not: { $eq: UserStatus.APPLICANT } },
       },
     });
 
     return users;
   }
 
-  async findOne(currentUser: User, userId: number) {
+  async findOne(currentUser: User, userId: number): Promise<User> {
     const user = await this.usersRepository.findOneBy({ userId });
 
     if (!user) {
@@ -55,23 +55,25 @@ export class UsersService {
 
     const currentStatus = currentUser.status;
     const targetStatus = user.status;
+
     switch (currentStatus) {
-      //admin can access all users
-      case Status.ADMIN:
+      //admin & recruiter can access all
+      case UserStatus.ADMIN:
+      case UserStatus.RECRUITER:
         break;
-      //recruiter can access applicant, and themselves
-      case Status.RECRUITER:
-        if (targetStatus == Status.APPLICANT) {
-          break;
-        } else if (currentUser.userId !== user.userId) {
-          throw new BadRequestException('User not found');
+      //alumni and member can access all except for applicants
+      case UserStatus.ALUMNI:
+      case UserStatus.MEMBER:
+        if (targetStatus == UserStatus.APPLICANT) {
+          throw new UnauthorizedException('User not found');
         }
         break;
-      //everyone else can only access themselves
-      default:
+      //applicants can only access themselves
+      case UserStatus.APPLICANT:
         if (currentUser.userId !== user.userId) {
-          throw new BadRequestException('User not found');
+          throw new UnauthorizedException('User not found');
         }
+        break;
     }
 
     return user;
@@ -92,7 +94,10 @@ export class UsersService {
       throw new BadRequestException(`User ${userId} not found.`);
     }
 
-    if (currentUser.status !== Status.ADMIN && userId !== currentUser.userId) {
+    if (
+      currentUser.status !== UserStatus.ADMIN &&
+      userId !== currentUser.userId
+    ) {
       throw new UnauthorizedException();
     }
 
