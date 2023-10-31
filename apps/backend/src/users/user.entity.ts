@@ -1,11 +1,11 @@
 import { IsEmail, IsUrl } from 'class-validator';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, ObjectIdColumn, ObjectId } from 'typeorm';
 import { Role, Status, Team } from './types';
 
 @Entity()
 export class User {
-  // @ObjectIdColumn()
-  // _id: ObjectId;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column({ primary: true })
   userId: number;

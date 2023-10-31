@@ -38,16 +38,15 @@ export class AuthService {
     });
   }
 
-  async getUser(userSub: string): Promise<AttributeType[]> {
+  async getUserAttributes(userSub: string): Promise<AttributeType[]> {
     const listUsersCommand = new ListUsersCommand({
       UserPoolId: CognitoAuthConfig.userPoolId,
       Filter: `sub = "${userSub}"`,
     });
 
-    // TODO need error handling
     const { Users } = await this.providerClient.send(listUsersCommand);
     if (Users.length === 0) {
-      throw new BadRequestException('There is no user with the given sub');
+      throw new BadRequestException('The given bearer token is invalid');
     }
 
     return Users[0].Attributes;

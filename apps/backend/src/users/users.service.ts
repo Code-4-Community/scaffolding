@@ -9,7 +9,6 @@ import { MongoRepository } from 'typeorm';
 import { User } from './user.entity';
 import { UpdateUserDTO } from './update-user.dto';
 import { Status } from './types';
-import { getCurrentUser } from './utils';
 
 @Injectable()
 export class UsersService {
@@ -31,10 +30,8 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async findAll(getAllMembers: boolean): Promise<User[]> {
+  async findAll(currentUser: User, getAllMembers: boolean): Promise<User[]> {
     if (!getAllMembers) return [];
-
-    const currentUser = getCurrentUser();
 
     if (currentUser.status === Status.APPLICANT) {
       throw new UnauthorizedException();
@@ -49,14 +46,12 @@ export class UsersService {
     return users;
   }
 
-  async findOne(userId: number) {
+  async findOne(currentUser: User, userId: number) {
     const user = await this.usersRepository.findOneBy({ userId });
 
     if (!user) {
       throw new BadRequestException('User not found');
     }
-
-    const currentUser = getCurrentUser();
 
     const currentStatus = currentUser.status;
     const targetStatus = user.status;
@@ -83,6 +78,7 @@ export class UsersService {
   }
 
   async updateUser(
+    currentUser: User,
     updateUserDTO: UpdateUserDTO,
     userId: number,
   ): Promise<User> {
@@ -95,8 +91,6 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException(`User ${userId} not found.`);
     }
-
-    const currentUser = getCurrentUser();
 
     if (currentUser.status !== Status.ADMIN && userId !== currentUser.userId) {
       throw new UnauthorizedException();
@@ -115,8 +109,8 @@ export class UsersService {
     return this.usersRepository.find({ where: { email } });
   }
 
-  async update(id: number, attrs: Partial<User>) {
-    const user = await this.findOne(id);
+  async update(currentUser: User, userId: number, attrs: Partial<User>) {
+    const user = await this.findOne(currentUser, userId);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -127,8 +121,8 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async remove(id: number) {
-    const user = await this.findOne(id);
+  async remove(currentUser: User, userId: number) {
+    const user = await this.findOne(currentUser, userId);
 
     if (!user) {
       throw new NotFoundException('User not found');

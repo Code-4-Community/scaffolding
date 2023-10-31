@@ -5,9 +5,10 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
+  Request,
   UseGuards,
   UseInterceptors,
-  Patch,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -17,25 +18,27 @@ import { UpdateUserDTO } from './update-user.dto';
 
 @Controller('users')
 @UseInterceptors(CurrentUserInterceptor)
+@UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('/:userId')
-  getUser(@Param('userId', ParseIntPipe) userId: number) {
-    return this.usersService.findOne(userId);
+  getUser(@Param('userId', ParseIntPipe) userId: number, @Request() req) {
+    return this.usersService.findOne(req.user, userId);
   }
 
   @Patch(':userId')
   async updateUser(
     @Body() updateUserDTO: UpdateUserDTO,
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req,
   ): Promise<User> {
-    return this.usersService.updateUser(updateUserDTO, userId);
+    return this.usersService.updateUser(req.user, updateUserDTO, userId);
   }
 
-  @Delete('/:id')
-  removeUser(@Param('id') id: string) {
-    return this.usersService.remove(parseInt(id));
+  @Delete('/:userId')
+  removeUser(@Param('userId', ParseIntPipe) userId: number, @Request() req) {
+    // TODO add authentication
+    return this.usersService.remove(req.user, userId);
   }
 }
