@@ -67,6 +67,9 @@ export class AuthController {
     // session.userId = null;
   }
 
+  // TODO implement change/forgotPassword endpoint
+  // https://dev.to/fstbraz/authentication-with-aws-cognito-passport-and-nestjs-part-iii-2da5
+
   @Post('/delete')
   async delete(@Body() body: DeleteUserDto) {
     const user = await this.usersService.findOne(body.userId);
