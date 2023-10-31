@@ -4,15 +4,19 @@ import {
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool,
-  CognitoUserSession,
   ISignUpResult,
 } from 'amazon-cognito-identity-js';
 import {
   AdminDeleteUserCommand,
+  AttributeType,
   CognitoIdentityProviderClient,
+  ListUsersCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 
 import CognitoAuthConfig from './aws-exports';
+import { SignUpDto } from './dtos/sign-up.dto';
+import { SignInDto } from './dtos/sign-in.dto';
+import { SignInResponseDto } from './dtos/sign-in-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,12 +38,33 @@ export class AuthService {
     });
   }
 
-  signup(email: string, password: string): Promise<ISignUpResult> {
+  async getUser(userSub: string): Promise<AttributeType[]> {
+    const listUsersCommand = new ListUsersCommand({
+      UserPoolId: CognitoAuthConfig.userPoolId,
+      Filter: `sub = "${userSub}"`,
+    });
+
+    // TODO need error handling
+    const { Users } = await this.providerClient.send(listUsersCommand);
+    return Users[0].Attributes;
+  }
+
+  signup({
+    firstName,
+    lastName,
+    email,
+    password,
+  }: SignUpDto): Promise<ISignUpResult> {
     return new Promise((resolve, reject) => {
       return this.userPool.signUp(
         email,
         password,
-        [new CognitoUserAttribute({ Name: 'email', Value: email })],
+        [
+          new CognitoUserAttribute({
+            Name: 'name',
+            Value: `${firstName} ${lastName}`,
+          }),
+        ],
         null,
         (err, result) => {
           if (err) {
@@ -52,9 +77,8 @@ export class AuthService {
     });
   }
 
-  verifyUser(email: string, verificationCode: string) {
+  verifyUser(email: string, verificationCode: string): Promise<unknown> {
     return new Promise((resolve, reject) => {
-      console.log(verificationCode);
       return new CognitoUser({
         Username: email,
         Pool: this.userPool,
@@ -68,7 +92,7 @@ export class AuthService {
     });
   }
 
-  signin(email: string, password: string) {
+  signin({ email, password }: SignInDto): Promise<SignInResponseDto> {
     const authenticationDetails = new AuthenticationDetails({
       Username: email,
       Password: password,
@@ -79,12 +103,15 @@ export class AuthService {
       Pool: this.userPool,
     };
 
-    const newUser = new CognitoUser(userData);
+    const cognitoUser = new CognitoUser(userData);
 
-    return new Promise<CognitoUserSession>((resolve, reject) => {
-      return newUser.authenticateUser(authenticationDetails, {
+    return new Promise<SignInResponseDto>((resolve, reject) => {
+      return cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
-          resolve(result);
+          resolve({
+            accessToken: result.getAccessToken().getJwtToken(),
+            refreshToken: result.getRefreshToken().getToken(),
+          });
         },
         onFailure: (err) => {
           reject(err);
@@ -93,7 +120,8 @@ export class AuthService {
     });
   }
 
-  forgotPassword(email: string) {
+  // TODO not currently used
+  forgotPassword(email: string): Promise<unknown> {
     return new Promise((resolve, reject) => {
       return new CognitoUser({
         Username: email,
@@ -109,11 +137,12 @@ export class AuthService {
     });
   }
 
+  // TODO not currently used
   confirmPassword(
     email: string,
     verificationCode: string,
     newPassword: string,
-  ) {
+  ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       return new CognitoUser({
         Username: email,
@@ -129,7 +158,7 @@ export class AuthService {
     });
   }
 
-  async deleteUser(email: string) {
+  async deleteUser(email: string): Promise<void> {
     const adminDeleteUserCommand = new AdminDeleteUserCommand({
       Username: email,
       UserPoolId: CognitoAuthConfig.userPoolId,

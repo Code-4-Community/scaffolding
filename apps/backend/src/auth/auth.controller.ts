@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Post,
-  Session,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignUpDto } from './dtos/sign-up.dto';
@@ -12,6 +6,8 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { VerifyUserDto } from './dtos/verify-user.dto';
 import { DeleteUserDto } from './dtos/delete-user.dto';
+import { User } from '../users/user.entity';
+import { SignInResponseDto } from './dtos/sign-in-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,57 +17,42 @@ export class AuthController {
   ) {}
 
   @Post('/signup')
-  async createUser(@Body() body: SignUpDto) {
+  async createUser(@Body() signUpDto: SignUpDto): Promise<User> {
     try {
-      await this.authService.signup(body.email, body.password);
+      await this.authService.signup(signUpDto);
     } catch (e) {
       throw new BadRequestException(e.message);
     }
 
     const user = await this.usersService.create(
-      body.email,
-      body.firstName,
-      body.lastName,
+      signUpDto.email,
+      signUpDto.firstName,
+      signUpDto.lastName,
     );
 
     return user;
   }
 
+  // TODO deprecated if verification code is replaced by link
   @Post('/verify')
-  async verifyUser(@Body() body: VerifyUserDto) {
+  verifyUser(@Body() body: VerifyUserDto): void {
     try {
-      await this.authService.verifyUser(
-        body.email,
-        String(body.verificationCode),
-      );
+      this.authService.verifyUser(body.email, String(body.verificationCode));
     } catch (e) {
       throw new BadRequestException(e.message);
     }
   }
 
   @Post('/signin')
-  async signin(@Body() body: SignInDto, @Session() session) {
-    const userSession = await this.authService.signin(
-      body.email,
-      body.password,
-    );
-
-    // session.userId = user.id;
-
-    // TODO exclude unnecessary fields in `userSession`
-    return userSession;
-  }
-
-  @Post('/signout')
-  signOut(@Session() session) {
-    // session.userId = null;
+  signin(@Body() signInDto: SignInDto): Promise<SignInResponseDto> {
+    return this.authService.signin(signInDto);
   }
 
   // TODO implement change/forgotPassword endpoint
   // https://dev.to/fstbraz/authentication-with-aws-cognito-passport-and-nestjs-part-iii-2da5
 
   @Post('/delete')
-  async delete(@Body() body: DeleteUserDto) {
+  async delete(@Body() body: DeleteUserDto): Promise<void> {
     const user = await this.usersService.findOne(body.userId);
 
     try {
