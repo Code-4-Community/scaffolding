@@ -13,7 +13,7 @@ import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
       type: 'mongodb',
       host: '127.0.0.1',
       port: 27017,
-      database: 'scaffoldingTest',
+      database: 'c4cOpsTest',
       // username: 'root',
       // password: 'root',
       autoLoadEntities: true,
