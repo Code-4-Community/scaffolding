@@ -1,14 +1,13 @@
-import { Entity, Column, ObjectIdColumn, ObjectId } from 'typeorm';
-
-import type { Status } from './types';
+import { Entity, Column } from 'typeorm';
+import { Status, Role, Team } from './types';
 
 @Entity()
 export class User {
-  @ObjectIdColumn()
-  _id: ObjectId;
+  // @ObjectIdColumn()
+  // _id: ObjectId;
 
   @Column({ primary: true })
-  id: number;
+  userId: number;
 
   @Column()
   status: Status;
@@ -21,4 +20,19 @@ export class User {
 
   @Column()
   email: string;
+
+  @Column()
+  profilePicture: string | null;
+
+  @Column()
+  linkedin: string | null;
+
+  @Column()
+  github: string | null;
+
+  @Column()
+  team: Team | null;
+
+  @Column()
+  role: Role[] | null;
 }
