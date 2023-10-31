@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -38,14 +38,17 @@ export class AuthService {
     });
   }
 
-  async getUser(userSub: string): Promise<AttributeType[]> {
+  async getUserAttributes(userSub: string): Promise<AttributeType[]> {
     const listUsersCommand = new ListUsersCommand({
       UserPoolId: CognitoAuthConfig.userPoolId,
       Filter: `sub = "${userSub}"`,
     });
 
-    // TODO need error handling
     const { Users } = await this.providerClient.send(listUsersCommand);
+    if (Users.length === 0) {
+      throw new BadRequestException('The given bearer token is invalid');
+    }
+
     return Users[0].Attributes;
   }
 
