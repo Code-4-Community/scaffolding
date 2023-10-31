@@ -21,7 +21,7 @@ export class AuthController {
   ) {}
 
   @Post('/signup')
-  async createUser(@Body() body: SignUpDto, @Session() session) {
+  async createUser(@Body() body: SignUpDto) {
     try {
       await this.authService.signup(body.email, body.password);
     } catch (e) {
@@ -34,13 +34,11 @@ export class AuthController {
       body.lastName,
     );
 
-    // session.userId = user.id;
-
     return user;
   }
 
   @Post('/verify')
-  async verifyUser(@Body() body: VerifyUserDto, @Session() session) {
+  async verifyUser(@Body() body: VerifyUserDto) {
     try {
       await this.authService.verifyUser(
         body.email,
