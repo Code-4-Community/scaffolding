@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -31,6 +27,10 @@ export class AuthService {
 
     this.providerClient = new CognitoIdentityProviderClient({
       region: CognitoAuthConfig.region,
+      credentials: {
+        accessKeyId: process.env.NX_AWS_ACCESS_KEY,
+        secretAccessKey: process.env.NX_AWS_SECRET_ACCESS_KEY,
+      },
     });
   }
 

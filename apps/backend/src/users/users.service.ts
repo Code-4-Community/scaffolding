@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -9,9 +9,10 @@ import { Status } from './types';
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  create(email: string, firstName: string, lastName: string) {
-    Logger.log('create user');
+  async create(email: string, firstName: string, lastName: string) {
+    const userId = (await this.repo.count()) + 1;
     const user = this.repo.create({
+      id: userId,
       status: Status.STANDARD,
       firstName,
       lastName,

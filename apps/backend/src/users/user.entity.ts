@@ -1,10 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ObjectIdColumn,
+  ObjectId,
+} from 'typeorm';
 
 import type { Status } from './types';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @ObjectIdColumn()
+  _id: ObjectId;
+
+  @Column({ primary: true })
   id: number;
 
   @Column()
