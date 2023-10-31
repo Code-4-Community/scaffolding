@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -46,6 +46,10 @@ export class AuthService {
 
     // TODO need error handling
     const { Users } = await this.providerClient.send(listUsersCommand);
+    if (Users.length === 0) {
+      throw new BadRequestException('There is no user with the given sub');
+    }
+
     return Users[0].Attributes;
   }
 
