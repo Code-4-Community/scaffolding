@@ -31,7 +31,9 @@ const lineStyle: React.CSSProperties = {
 
 export default function AdoptedPage() {
   return (
-    <div>
+    <div style={{
+      height: "150vh"
+    }}>
       <Navbar />
       <div
         style={{
