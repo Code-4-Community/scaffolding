@@ -45,10 +45,13 @@ export class UsersService {
   }
 
   async findOne(currentUser: User, userId: number): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ userId });
+    const user = await this.usersRepository.findOne({
+      where: { userId },
+      relations: ['applications'],
+    });
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new BadRequestException(`User with ID ${userId} not found`);
     }
 
     const currentStatus = currentUser.status;
