@@ -1,13 +1,13 @@
 import {
-  BadRequestException,
   Injectable,
   UnauthorizedException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { User } from './user.entity';
-import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdateUserRequestDTO } from './dto/update-user.request.dto';
 import { UserStatus } from './types';
 
 @Injectable()
@@ -17,7 +17,11 @@ export class UsersService {
     private usersRepository: MongoRepository<User>,
   ) {}
 
-  async create(email: string, firstName: string, lastName: string) {
+  async create(
+    email: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<User> {
     const user = this.usersRepository.create({
       status: UserStatus.MEMBER,
       firstName,
@@ -28,6 +32,7 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
+  // TODO not currently used and not refactored
   async findAll(currentUser: User, getAllMembers: boolean): Promise<User[]> {
     if (!getAllMembers) return [];
 
@@ -44,35 +49,39 @@ export class UsersService {
     return users;
   }
 
+  // TODO refactor method to not take in currentUser
   async findOne(currentUser: User, userId: number): Promise<User> {
     const user = await this.usersRepository.findOne({
-      where: { userId },
+      where: { id: userId },
       relations: ['applications'],
     });
 
     if (!user) {
-      throw new BadRequestException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
     const currentStatus = currentUser.status;
     const targetStatus = user.status;
 
     switch (currentStatus) {
-      //admin & recruiter can access all
+      // Admins and recruiters can access all users
       case UserStatus.ADMIN:
       case UserStatus.RECRUITER:
         break;
-      //alumni and member can access all except for applicants
+      // Alumni and members can access all users except for applicants
       case UserStatus.ALUMNI:
       case UserStatus.MEMBER:
-        if (targetStatus == UserStatus.APPLICANT) {
-          throw new UnauthorizedException('User not found');
+        if (targetStatus === UserStatus.APPLICANT) {
+          throw new NotFoundException(`User with ID ${userId} not found`);
         }
         break;
-      //applicants can only access themselves
+      // Applicants can access all users except for applications that are not their own
       case UserStatus.APPLICANT:
-        if (currentUser.userId !== user.userId) {
-          throw new UnauthorizedException('User not found');
+        if (
+          targetStatus === UserStatus.APPLICANT &&
+          currentUser.id !== user.id
+        ) {
+          throw new NotFoundException(`User with ID ${userId} not found`);
         }
         break;
     }
@@ -80,61 +89,37 @@ export class UsersService {
     return user;
   }
 
-  async updateUser(
-    currentUser: User,
-    updateUserDTO: UpdateUserDTO,
-    userId: number,
-  ): Promise<User> {
-    const user: User = await this.usersRepository.findOne({
-      where: {
-        userId: { $eq: userId },
-      },
-    });
-
-    if (!user) {
-      throw new BadRequestException(`User ${userId} not found.`);
-    }
-
-    if (
-      currentUser.status !== UserStatus.ADMIN &&
-      userId !== currentUser.userId
-    ) {
-      throw new UnauthorizedException();
-    }
-
-    await this.usersRepository.update({ userId }, updateUserDTO);
-    return await this.usersRepository.findOne({
-      where: {
-        userId: { $eq: userId },
-      },
-    });
-  }
-
-  /* TODO merge these methods with the above methods */
-  find(email: string) {
+  findByEmail(email: string): Promise<User[]> {
     return this.usersRepository.find({ where: { email } });
   }
 
-  async update(currentUser: User, userId: number, attrs: Partial<User>) {
-    const user = await this.findOne(currentUser, userId);
+  async updateUser(
+    currentUser: User,
+    userId: number,
+    updateUserDTO: UpdateUserRequestDTO,
+  ): Promise<User> {
+    const user: User = await this.findOne(currentUser, userId);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
-    Object.assign(user, attrs);
+    try {
+      await this.usersRepository.update({ id: userId }, updateUserDTO);
+    } catch (e) {
+      throw new BadRequestException('Cannot update user');
+    }
 
-    return this.usersRepository.save(user);
+    return await this.findOne(currentUser, userId);
   }
 
-  async remove(currentUser: User, userId: number) {
+  async remove(currentUser: User, userId: number): Promise<User> {
     const user = await this.findOne(currentUser, userId);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
     return this.usersRepository.remove(user);
   }
-  /* TODO merge these methods with the above methods */
 }
