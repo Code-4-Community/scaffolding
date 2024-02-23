@@ -1,5 +1,5 @@
 import { useState } from "react"; 
-import './FlippableTile.scss';
+import './FlippableTIle.scss';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function FlipCard({ ...props }) {
