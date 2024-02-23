@@ -1,7 +1,7 @@
 {
   "name": "green-infrastructure-frontend",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/green-infrastructure/frontend/src",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/frontend/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/green-infrastructure/frontend"
+        "outputPath": "dist/apps/frontend"
       },
       "configurations": {
         "development": {
@@ -54,10 +54,10 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/apps/green-infrastructure/frontend"],
+      "outputs": ["coverage/apps/frontend"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../../coverage/apps/green-infrastructure/frontend"
+        "reportsDirectory": "../../../coverage/apps/frontend"
       }
     },
     "lint": {
@@ -65,7 +65,7 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "apps/green-infrastructure/frontend/**/*.{ts,tsx,js,jsx}"
+          "apps/frontend/**/*.{ts,tsx,js,jsx}"
         ]
       }
     },
