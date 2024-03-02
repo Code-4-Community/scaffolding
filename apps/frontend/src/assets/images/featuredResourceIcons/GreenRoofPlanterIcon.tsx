@@ -1,4 +1,11 @@
-export default function generateGreenRoofPlanterSVG(color: string) {
+export default function generateGreenRoofPlanterSVG(hovered: boolean) {
+  let color: string;
+  if (hovered) {
+    color = '#FFFDFD';
+  } else {
+    color = '#091F2F';
+  }
+
   return (
     <svg
       width="50"

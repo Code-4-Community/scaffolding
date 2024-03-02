@@ -1,4 +1,11 @@
-export default function generateTreeTrenchPlanterSVG(color: string) {
+export default function generateTreeTrenchPlanterSVG(hovered: boolean) {
+  let color: string;
+  if (hovered) {
+    color = '#FFFDFD';
+  } else {
+    color = '#091F2F';
+  }
+
   return (
     <svg
       width="50"
@@ -13,10 +20,10 @@ export default function generateTreeTrenchPlanterSVG(color: string) {
         stroke-width="2"
       />
       <path
-        d="M18 14.2361L18.8451 16.8369L19.0696 17.5279H19.7961H22.5308L20.3184 19.1353L19.7306 19.5623L19.9551 20.2533L20.8002 22.8541L18.5878 21.2467L18 20.8197L17.4122 21.2467L15.1998 22.8541L16.0449 20.2533L16.2694 19.5623L15.6816 19.1353L13.4692 17.5279H16.2039H16.9304L17.1549 16.8369Z"
+        d="M19 15.2361L19.8451 17.8369L20.0696 18.5279H20.7961H23.5308L21.3184 20.1353L20.7306 20.5623L20.9551 21.2533L21.8002 23.8541L19.5878 22.2467L19 21.8197L18.4122 22.2467L16.1998 23.8541L17.0449 21.2533L17.2694 20.5623L16.6816 20.1353L14.4692 18.5279H17.2039H17.9304L18.1549 17.8369L19 15.2361Z"
         fill={color}
         stroke={color}
-        strokeWidth="2"
+        stroke-width="2"
       />
     </svg>
   );

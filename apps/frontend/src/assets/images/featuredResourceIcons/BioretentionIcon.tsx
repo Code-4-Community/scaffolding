@@ -1,4 +1,11 @@
-export default function generateBioretentionSVG(color: string) {
+export default function generateBioretentionSVG(hovered: boolean) {
+  let color: string;
+  if (hovered) {
+    color = '#FFFDFD';
+  } else {
+    color = '#091F2F';
+  }
+
   return (
     <svg
       width="50"

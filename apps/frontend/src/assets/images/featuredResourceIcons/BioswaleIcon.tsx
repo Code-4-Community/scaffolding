@@ -1,4 +1,11 @@
-export default function generateBioswaleIcon(color: string) {
+export default function generateBioswaleIcon(hovered: boolean) {
+  let color: string;
+  if (hovered) {
+    color = '#FFFDFD';
+  } else {
+    color = '#091F2F';
+  }
+
   return (
     <svg
       width="50"
@@ -13,9 +20,9 @@ export default function generateBioswaleIcon(color: string) {
         stroke-width="2"
       />
       <path
-        d="M11.809 25.5L18 13.118L24.191 25.5H11.809Z"
+        d="M12.809 25.5L19 13.118L25.191 25.5H12.809Z"
         fill={color}
-        stroke="black"
+        stroke={color}
       />
     </svg>
   );

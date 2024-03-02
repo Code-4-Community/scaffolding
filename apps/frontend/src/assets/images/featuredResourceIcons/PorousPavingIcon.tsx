@@ -1,4 +1,11 @@
-export default function generatePorousPavingSVG(color: string) {
+export default function generatePorousPavingSVG(hovered: boolean) {
+  let color: string;
+  if (hovered) {
+    color = '#FFFDFD';
+  } else {
+    color = '#091F2F';
+  }
+
   return (
     <svg
       width="50"
@@ -13,7 +20,7 @@ export default function generatePorousPavingSVG(color: string) {
         stroke-width="2"
       />
       <path
-        d="M13.4142 18L19 12.4142L24.5858 18L19 23.5858L13.4142 18Z"
+        d="M13.4142 20L19 14.4142L24.5858 20L19 25.5858L13.4142 20Z"
         fill={color}
         stroke={color}
         stroke-width="2"
