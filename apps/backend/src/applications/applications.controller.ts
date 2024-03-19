@@ -10,6 +10,7 @@ import {
   Body,
   BadRequestException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Response } from './types';
 import { ApplicationsService } from './applications.service';
@@ -19,6 +20,7 @@ import { GetApplicationResponseDTO } from './dto/get-application.response.dto';
 import { getAppForCurrentCycle } from './utils';
 import { UserStatus } from '../users/types';
 import { Application } from './application.entity';
+import { GetAllApplicationResponseDTO } from './dto/get-all-application.response.dto';
 
 @Controller('apps')
 @UseInterceptors(CurrentUserInterceptor)
@@ -36,6 +38,25 @@ export class ApplicationsController {
       signature,
     );
     return await this.applicationsService.submitApp(application, user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/')
+  async getApplications(
+    @Request() req,
+  ): Promise<GetAllApplicationResponseDTO[]> {
+    if (
+      !(
+        req.user.status === UserStatus.RECRUITER ||
+        req.user.status === UserStatus.ADMIN
+      )
+    ) {
+      throw new UnauthorizedException(
+        'Calling user is not a recruiter or admin.',
+      );
+    }
+
+    return this.applicationsService.findAllCurrentApplications();
   }
 
   @Get('/:userId')
