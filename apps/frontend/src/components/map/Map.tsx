@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { loader, BOSTON_BOUNDS, BOSTON_PLACE_ID } from '../../constants';
-import { createPopupBoxContent } from '../mapIcon/PopupBox';
 import styled from 'styled-components';
 import { SITES } from '../../GIBostonSites';
 import generateCircleSVG from '../../images/markers/circle';
@@ -9,6 +8,10 @@ import generateDiamondSVG from '../../images/markers/diamond';
 import generateTriangleSVG from '../../images/markers/triangle';
 import generateStarSVG from '../../images/markers/star';
 import generatePentagonSVG from '../../images/markers/pentagon';
+import PopupBox from '../mapIcon/PopupBox';
+import { createRoot } from 'react-dom/client';
+import { createPortal } from 'react-dom';
+import SignUpPage from '../volunteer/signup/SignUpPage';
 
 const MapDiv = styled.div`
   height: 100%;
@@ -71,6 +74,7 @@ const Map: React.FC<MapProps> = ({
   selectedStatuses,
 }) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const [showSignUp, setShowSignUp] = useState(false);
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
 
   let map: google.maps.Map;
@@ -172,16 +176,28 @@ const Map: React.FC<MapProps> = ({
               tempIcon,
             )}`;
 
+            const infoWindowContent = document.createElement('div');
+            infoWindowContent.id = 'info-window-content';
+
             const infoWindow = new google.maps.InfoWindow({
-              content: createPopupBoxContent(
-                markerInfo['Asset Name'],
-                markerInfo['Address'],
-                'Available',
-                markerInfo['Symbol Type'],
-                typeColor,
-                iconFunc as (color: string) => string,
-              ),
+              content: infoWindowContent,
             });
+
+            const infoWindowRoot = createRoot(infoWindowContent);
+            infoWindowRoot.render(
+              createPortal(
+                <PopupBox
+                  setShowSignUp={setShowSignUp}
+                  name={markerInfo['Asset Name']}
+                  location={markerInfo['Address']}
+                  status={'Available'}
+                  type={markerInfo['Symbol Type']}
+                  color={typeColor}
+                  svgFunction={iconFunc as (color: string) => string}
+                />,
+                infoWindowContent,
+              ),
+            );
 
             const customIcon = {
               url: typeIcon,
@@ -253,6 +269,7 @@ const Map: React.FC<MapProps> = ({
         ref={mapRef}
         style={{ width: '100%', height: '495px' }}
       />
+      {showSignUp && <SignUpPage />}
     </div>
   );
 };
