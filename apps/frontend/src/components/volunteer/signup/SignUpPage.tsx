@@ -1,6 +1,14 @@
-import { Box, Input, Text, Stack, HStack, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Input,
+  Text,
+  HStack,
+  VStack,
+  Button,
+  IconButton,
+} from '@chakra-ui/react';
 import { Checkbox } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface InputField {
   label: string;
@@ -60,17 +68,6 @@ const inputFieldsMap: InputFieldGroup[] = [
     type: 'single',
     height: '40px',
     width: '107px',
-  },
-  {
-    fields: [
-      {
-        label: 'Which days are you available to volunteer',
-        placeholder: 'Select days',
-      },
-    ],
-    type: 'single',
-    height: '40px',
-    width: '454px',
   },
 ];
 
@@ -152,7 +149,15 @@ function CheckboxFields() {
   );
 }
 
-export default function SignUpPage() {
+interface Props {
+  setShowSignUp: (value: boolean) => void;
+}
+
+export default function SignUpPage({ setShowSignUp }: Props) {
+  const closeSignUp = () => {
+    setShowSignUp(false);
+  };
+
   return (
     <Box
       className="outermost-box"
@@ -164,9 +169,19 @@ export default function SignUpPage() {
       justifyContent="center"
       bg="#D9D9D9"
       width="80%"
-      height="250%"
+      height="220%"
       zIndex={'200'}
     >
+      <IconButton
+        aria-label="close"
+        size="small"
+        position="absolute"
+        top="10px"
+        right="10px"
+        onClick={closeSignUp}
+      >
+        <CloseIcon />
+      </IconButton>
       <Box
         className="inner-box"
         bg="#FFFDFD"
@@ -210,6 +225,9 @@ export default function SignUpPage() {
         >
           <CheckboxFields />
         </Box>
+        <Button size="large" marginBottom="7%" fontSize="20px">
+          Submit
+        </Button>
       </Box>
     </Box>
   );

@@ -269,7 +269,7 @@ const Map: React.FC<MapProps> = ({
         ref={mapRef}
         style={{ width: '100%', height: '495px' }}
       />
-      {showSignUp && <SignUpPage />}
+      {showSignUp && <SignUpPage setShowSignUp={setShowSignUp} />}
     </div>
   );
 };

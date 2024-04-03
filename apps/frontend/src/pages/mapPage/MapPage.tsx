@@ -1,5 +1,5 @@
 import Map from '../../components/map/Map';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Divider from '../Divider';
 import About from './About';
 import Header from './Header';
@@ -7,7 +7,6 @@ import MapLegend from '../../components/map/MapLegend';
 import Navbar from '../Navbar';
 import { SITE_STATUS_ROADMAP } from '../../constants';
 import Tiles from './Tiles';
-import SignUpPage from '../../components/volunteer/signup/SignUpPage';
 
 const icons: string[] = SITE_STATUS_ROADMAP.map((option) => option.image);
 
