@@ -12,7 +12,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Response } from './types';
+import { Decision, Response } from './types';
 import { ApplicationsService } from './applications.service';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { AuthGuard } from '@nestjs/passport';
@@ -40,6 +40,27 @@ export class ApplicationsController {
     return await this.applicationsService.submitApp(application, user);
   }
 
+  @Post('/decision/:appId')
+  @UseGuards(AuthGuard('jwt'))
+  async makeDecision(
+    @Param('appId', ParseIntPipe) applicantId: number,
+    @Body('decision') decision: Decision,
+    @Request() req,
+  ): Promise<void> {
+    //Authorization check for admin and recruiters
+    if (![UserStatus.ADMIN, UserStatus.RECRUITER].includes(req.user.status)) {
+      throw new UnauthorizedException();
+    }
+
+    //Check if the string decision matches with the Decision enum
+    const decisionEnum: Decision = Decision[decision];
+    if (!decisionEnum) {
+      throw new BadRequestException('Invalid decision value');
+    }
+
+    //Delegate the decision making to the service.
+    await this.applicationsService.processDecision(applicantId, decisionEnum);
+  }
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
   async getApplications(

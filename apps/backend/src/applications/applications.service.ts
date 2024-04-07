@@ -13,11 +13,12 @@ import {
   getCurrentSemester,
   getCurrentYear,
 } from './utils';
-import { Response } from './types';
+import { Decision, Response } from './types';
 import * as crypto from 'crypto';
 import { User } from '../users/user.entity';
 import { Position, ApplicationStage, ApplicationStep } from './types';
 import { GetAllApplicationResponseDTO } from './dto/get-all-application.response.dto';
+import { stagesMap } from './applications.constants';
 
 @Injectable()
 export class ApplicationsService {
@@ -92,6 +93,37 @@ export class ApplicationsService {
     }
     // If the caller of this endpoint submits from anywhere other than our google forms
     throw new UnauthorizedException();
+  }
+
+  /**
+   * Updates the application stage of the applicant.
+   * Moves the stage to either the next stage or to rejected.
+   *
+   * @param applicantId the id of the applicant.
+   * @param decision enum that contains either the applicant was 'ACCEPT' or 'REJECT'
+   * @returns { void } only updates the stage of the applicant.
+   */
+  async processDecision(
+    applicantId: number,
+    decision: Decision,
+  ): Promise<void> {
+    const application = await this.findCurrent(applicantId);
+
+    let newStage: ApplicationStage;
+    if (decision === Decision.REJECT) {
+      newStage = ApplicationStage.REJECTED;
+    } else {
+      const stagesArr = stagesMap[application.position];
+      const stageIndex = stagesArr.indexOf(application.stage);
+      if (stageIndex === -1) {
+        return;
+      }
+      newStage = stagesArr[stageIndex + 1];
+    }
+    application.stage = newStage;
+
+    //Save the updated stage
+    await this.applicationsRepository.save(application);
   }
 
   async findAll(userId: number): Promise<Application[]> {
