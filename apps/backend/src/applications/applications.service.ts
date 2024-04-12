@@ -131,7 +131,6 @@ export class ApplicationsService {
       where: { user: { id: userId } },
       relations: ['user'],
     });
-
     return apps;
   }
 
@@ -141,14 +140,80 @@ export class ApplicationsService {
         year: getCurrentYear(),
         semester: getCurrentSemester(),
       },
-      relations: ['user'],
+      relations: ['reviews'],
     });
 
-    const dtos: GetAllApplicationResponseDTO[] = applications.map((app) =>
-      app.toGetAllApplicationResponseDTO(),
-    );
+    const allApplicationsDto = applications.map((app) => {
+      // Initialize variables for storing mean ratings
+      let meanRatingAllReviews = null;
+      let meanRatingResume = null;
+      let meanRatingChallenge = null; // Default to null for DESIGNERS
+      let meanRatingTechnicalChallenge = null;
+      let meanRatingInterview = null;
 
-    return dtos;
+      // Calculate mean rating of all reviews
+      if (app.reviews.length > 0) {
+        meanRatingAllReviews =
+          app.reviews.reduce((acc, review) => acc + review.rating, 0) /
+          app.reviews.length;
+      }
+
+      // Filter reviews by stage and calculate mean ratings accordingly
+      const resumeReviews = app.reviews.filter(
+        (review) => review.stage === ApplicationStage.RESUME,
+      );
+      const challengeReviews = app.reviews.filter(
+        (review) =>
+          review.stage === ApplicationStage.TECHNICAL_CHALLENGE ||
+          review.stage === ApplicationStage.PM_CHALLENGE,
+      );
+      const technicalChallengeReviews = app.reviews.filter(
+        (review) => review.stage === ApplicationStage.TECHNICAL_CHALLENGE,
+      );
+      const interviewReviews = app.reviews.filter(
+        (review) => review.stage === ApplicationStage.INTERVIEW,
+      );
+
+      // Mean rating for RESUME stage
+      if (resumeReviews.length > 0) {
+        meanRatingResume =
+          resumeReviews.reduce((acc, review) => acc + review.rating, 0) /
+          resumeReviews.length;
+      }
+
+      // Mean rating for CHALLENGE stage (for DEVS and PMS)
+      if (challengeReviews.length > 0) {
+        meanRatingChallenge =
+          challengeReviews.reduce((acc, review) => acc + review.rating, 0) /
+          challengeReviews.length;
+      }
+
+      // Mean rating for TECHNICAL_CHALLENGE stage (specifically for DEVS)
+      if (technicalChallengeReviews.length > 0) {
+        meanRatingTechnicalChallenge =
+          technicalChallengeReviews.reduce(
+            (acc, review) => acc + review.rating,
+            0,
+          ) / technicalChallengeReviews.length;
+      }
+
+      // Mean rating for INTERVIEW stage
+      if (interviewReviews.length > 0) {
+        meanRatingInterview =
+          interviewReviews.reduce((acc, review) => acc + review.rating, 0) /
+          interviewReviews.length;
+      }
+
+      return app.toGetAllApplicationResponseDTO(
+        meanRatingAllReviews,
+        meanRatingResume,
+        meanRatingChallenge,
+        meanRatingTechnicalChallenge,
+        meanRatingInterview,
+      );
+    });
+
+    return allApplicationsDto;
   }
 
   async findCurrent(userId: number): Promise<Application> {
