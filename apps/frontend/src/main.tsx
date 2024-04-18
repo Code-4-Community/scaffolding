@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MapPage from './pages/mapPage/MapPage';
+import SuccessPage from './components/volunteer/signup/SuccessPage';
+import VolunteerPage from './pages/volunteerPage/VolunteerPage';
+
 
 const queryClient = new QueryClient();
 
@@ -12,6 +15,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MapPage />} />
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="/volunteer" element={<VolunteerPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
