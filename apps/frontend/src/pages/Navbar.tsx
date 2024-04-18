@@ -6,9 +6,15 @@ import Container from '@mui/material/Container';
 import c4cLogo from '../images/logos/c4cLogo.png';
 import profileLogo from '../images/logos/profileLogo.png';
 import cityOfBostonLogo from '../images/logos/cityOfBostonLogo.png';
+import SignupPopup from '../components/volunteer/signup/SignupPopup';
 
 function Navbar() {
   const [selected, setSelected] = useState(false);
+  const [showSignupPopup, setShowSignupPopup] = useState(false);
+
+  const openSignupPopup = () => {
+    setShowSignupPopup(true);
+  };
 
   const handleClick = () => {
     if (!selected) {
@@ -49,28 +55,38 @@ function Navbar() {
             />
             <img src={c4cLogo} />
             <div style={{ marginRight: 0, marginLeft: 'auto' }}>
-              <a
+              <button
                 style={{
                   font: 'Montserrat',
                   color: selected ? 'red' : 'black',
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
                   marginRight: '40px',
+                  cursor: 'pointer',
                 }}
+                onClick={openSignupPopup}
               >
                 SIGN UP
-              </a>
-              <a
+              </button>
+              <button
                 style={{
                   font: 'Montserrat',
                   color: 'black',
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
                   marginRight: '50px',
+                  cursor: 'pointer',
                 }}
               >
                 LOG IN
-              </a>
+              </button>
               <img src={profileLogo} />
             </div>
           </Toolbar>
         </Container>
+        {showSignupPopup && <SignupPopup setShowSignupPopup={setShowSignupPopup} />}
       </AppBar>
     </div>
   );
