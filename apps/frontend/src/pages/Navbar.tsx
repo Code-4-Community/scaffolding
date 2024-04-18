@@ -6,11 +6,13 @@ import c4cLogo from '../images/logos/c4cLogo.png';
 import profileLogo from '../images/logos/profileLogo.png';
 import cityOfBostonLogo from '../images/logos/cityOfBostonLogo.png';
 import SignupPopup from '../components/volunteer/signup/SignupPopup';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [selected, setSelected] = useState(false);
   const [showSignupPopup, setShowSignupPopup] = useState(false);
   const [showSidePanel, setShowSidePanel] = useState(false);
+
 
   const openSignupPopup = () => {
     setShowSignupPopup(true);
@@ -73,6 +75,7 @@ function Navbar() {
               >
                 SIGN UP
               </button>
+              <Link to="/login" style={{ textDecoration: 'none' }}></Link>
               <button
                 style={{
                   font: 'Montserrat',

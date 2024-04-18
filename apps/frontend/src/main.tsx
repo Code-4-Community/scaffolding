@@ -20,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/volunteer" element={<VolunteerPage />} />
           <Route path="/volunteer/my-adopted-gi" element={<MyAdoptedGIPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
