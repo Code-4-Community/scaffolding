@@ -122,7 +122,7 @@ export default function PopupBox({
           <text>{status}</text>
         </div>
 
-        <button
+        {(status === 'Available') && <button
           style={{
             display: 'flex',
             justifyContent: 'flex-start',
@@ -141,7 +141,7 @@ export default function PopupBox({
           onClick={openSignUp}
         >
           Interested in adopting →
-        </button>
+        </button>}
       </div>
     </div>
   );
