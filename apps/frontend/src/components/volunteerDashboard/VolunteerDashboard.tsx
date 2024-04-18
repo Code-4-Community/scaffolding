@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import generateInstagramIcon from './InstagramIcon';
+import { Link } from 'react-router-dom';
 
 const textStyles = {
   fontFamily: 'Montserrat, sans-serif',
@@ -84,7 +85,9 @@ function VolunteerDashboard() {
                 gap: '4%',
               }}
             >
-              <Box sx={{ ...boxStyles, width: '100%' }}>Adoption Map</Box>
+              <Link to="../" style={{ ...boxStyles, textDecoration: 'none', color: 'inherit', width: '100%', height: '100%' }}>
+                  <Box sx={{ ...boxStyles, width: '100%', height: '100%' }}>Adoption Map</Box>
+              </Link>
               <Box sx={{ ...boxStyles, width: '100%', padding: '3%' }}>
                 Maintenance Guide
               </Box>
