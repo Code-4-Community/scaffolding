@@ -1,26 +1,29 @@
-import Map from '../../components/map/Map';
-import { useState } from 'react';
-import Divider from '../Divider';
-import About from './About';
-import Header from './Header';
-import MapLegend from '../../components/map/MapLegend';
 import Navbar from '../Navbar';
+import VolunteerDashboard from '../../components/volunteerDashboard/VolunteerDashboard';
+import Map from '../../components/map/Map';
+import MapLegend from '../../components/map/MapLegend';
+import { useState } from 'react';
 import { SITE_STATUS_ROADMAP } from '../../constants';
-import Tiles from './Tiles';
 
 const icons: string[] = SITE_STATUS_ROADMAP.map((option) => option.image);
 
-export default function MapPage() {
+export default function VolunteerPage() {
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
   return (
-    <div style={{ background: 'var(--Foreground, #F2F2F2)' }}>
+    <div>
       <Navbar />
       <div style={{ marginTop: '50px' }} />
-      <Header />
-      <Divider />
-      <div style={{ position: 'relative' }}>
+      <VolunteerDashboard />
+      <div
+        style={{
+          position: 'relative',
+          width: '88%',
+          margin: '0 auto',
+          paddingBottom: '7%',
+        }}
+      >
         <Map
           selectedFeatures={selectedFeatures}
           selectedStatuses={selectedStatuses}
@@ -48,13 +51,6 @@ export default function MapPage() {
             }}
           />
         </div>
-      </div>
-      <Divider />
-      <About />
-      <Divider />
-      <div style={{ paddingTop: '15px' }} />
-      <div style={{ alignContent: 'center' }}>
-        <Tiles />
       </div>
     </div>
   );

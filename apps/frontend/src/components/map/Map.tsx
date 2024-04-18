@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { loader, BOSTON_BOUNDS, BOSTON_PLACE_ID } from '../../constants';
-import { createPopupBoxContent } from '../mapIcon/PopupBox';
 import styled from 'styled-components';
 import { SITES } from '../../GIBostonSites';
 import generateCircleSVG from '../../images/markers/circle';
@@ -9,29 +8,34 @@ import generateDiamondSVG from '../../images/markers/diamond';
 import generateTriangleSVG from '../../images/markers/triangle';
 import generateStarSVG from '../../images/markers/star';
 import generatePentagonSVG from '../../images/markers/pentagon';
-
-
+import PopupBox from '../mapIcon/PopupBox';
+import { createRoot } from 'react-dom/client';
+import { createPortal } from 'react-dom';
+import SignUpPage from '../volunteer/signup/SignUpPage';
 
 const MapDiv = styled.div`
   height: 100%;
 `;
 
-
-function filterMarkers(selectedFeatures: string[], selectedStatuses: string[], markers: google.maps.Marker[], map: google.maps.Map) {
+function filterMarkers(
+  selectedFeatures: string[],
+  selectedStatuses: string[],
+  markers: google.maps.Marker[],
+  map: google.maps.Map,
+) {
   let tempMarkers: google.maps.Marker[] = [];
   if (selectedFeatures.length === 0) {
     markers.forEach((marker: google.maps.Marker) => {
       marker.setMap(map);
-    })
+    });
     tempMarkers = markers;
-  }
-  else {
+  } else {
     markers.forEach((marker: google.maps.Marker) => marker.setMap(null));
     markers.forEach((marker: google.maps.Marker) => {
-      const featureType = marker.get("featureType");
+      const featureType = marker.get('featureType');
       if (selectedFeatures.includes(featureType)) {
         marker.setMap(map);
-        tempMarkers.push(marker)
+        tempMarkers.push(marker);
       }
     });
   }
@@ -40,13 +44,12 @@ function filterMarkers(selectedFeatures: string[], selectedStatuses: string[], m
   if (selectedStatuses.length === 0) {
     tempMarkers.forEach((marker: google.maps.Marker) => {
       marker.setMap(map);
-    })
-  }
-  else {
+    });
+  } else {
     tempMarkers.forEach((marker: google.maps.Marker) => marker.setMap(null));
     tempMarkers.forEach((marker: google.maps.Marker) => {
-      const status = marker.get("status");
-      console.log(selectedStatuses)
+      const status = marker.get('status');
+      console.log(selectedStatuses);
       if (selectedStatuses.includes(status)) {
         marker.setMap(map);
       }
@@ -54,16 +57,14 @@ function filterMarkers(selectedFeatures: string[], selectedStatuses: string[], m
   }
 }
 
-
 interface MapProps {
   readonly zoom: number;
   selectedFeatures: string[];
   selectedStatuses: string[];
 }
 
-
 function randomizeStatus(): string {
-  const statuses = ["Available", "Adopted"];
+  const statuses = ['Available', 'Adopted'];
   return statuses[Math.floor(Math.random() * statuses.length)];
 }
 
@@ -72,14 +73,11 @@ const Map: React.FC<MapProps> = ({
   selectedFeatures,
   selectedStatuses,
 }) => {
-
-
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const [showSignUp, setShowSignUp] = useState(false);
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
 
-
   let map: google.maps.Map;
-
 
   useEffect(() => {
     if (mapRef.current) {
@@ -103,79 +101,103 @@ const Map: React.FC<MapProps> = ({
           },
         });
 
-
         // sets the style for the boundary
-        const featureLayer = map.getFeatureLayer(google.maps.FeatureType.LOCALITY);
+        const featureLayer = map.getFeatureLayer(
+          google.maps.FeatureType.LOCALITY,
+        );
         const featureStyleOptions: google.maps.FeatureStyleOptions = {
           strokeColor: '#50B0E6',
           strokeOpacity: 1.0,
           strokeWeight: 3.0,
           fillColor: '#50B0E6',
-          fillOpacity: 0.3
+          fillOpacity: 0.3,
         };
 
         featureLayer.style = (options) => {
           const feature = options.feature as google.maps.PlaceFeature;
-          if (feature.placeId === BOSTON_PLACE_ID) { // Place ID for Boston
+          if (feature.placeId === BOSTON_PLACE_ID) {
+            // Place ID for Boston
             return featureStyleOptions;
           }
         };
 
         let currentInfoWindow: google.maps.InfoWindow | null = null;
 
-
         const markersArray: google.maps.Marker[] = [];
 
+        SITES.forEach((markerInfo) => {
+          const types = [
+            'Rain Garden',
+            'Bioswale',
+            'Bioretention',
+            'Porous Paving',
+            'Tree Trench/Pit',
+            'Green Roof/Planter',
+          ];
 
-        SITES.forEach(markerInfo => {
+          if (
+            markerInfo['Lat'] != null &&
+            markerInfo['Long'] != null &&
+            types.includes(markerInfo['Symbol Type'])
+          ) {
+            const status = randomizeStatus();
 
-          const types = ['Rain Garden', 'Bioswale', 'Bioretention', 'Porous Paving', 'Tree Trench/Pit', 'Green Roof/Planter']
-
-          if (markerInfo["Lat"] != null && markerInfo["Long"] != null && types.includes(markerInfo['Symbol Type'])) {
-
-            const status = randomizeStatus()
-
-            let typeColor = "";
+            let typeColor = '';
             if (status === 'Available') {
-              typeColor = "#2D6A4F"
-            }
-            else if (status === 'Adopted') {
-              typeColor = "#FB4D42"
+              typeColor = '#2D6A4F';
+            } else if (status === 'Adopted') {
+              typeColor = '#FB4D42';
             }
 
-            let tempIcon = "";
+            let tempIcon = '';
             let iconFunc = null;
 
             if (markerInfo['Symbol Type'] === 'Rain Garden') {
               tempIcon = generateSquareSVG(typeColor);
               iconFunc = generateSquareSVG;
-            }
-            else if (markerInfo['Symbol Type'] === 'Bioswale') {
+            } else if (markerInfo['Symbol Type'] === 'Bioswale') {
               tempIcon = generateTriangleSVG(typeColor);
               iconFunc = generateTriangleSVG;
-            }
-            else if (markerInfo['Symbol Type'] === 'Bioretention') {
+            } else if (markerInfo['Symbol Type'] === 'Bioretention') {
               tempIcon = generateCircleSVG(typeColor);
               iconFunc = generateCircleSVG;
-            }
-            else if (markerInfo['Symbol Type'] === 'Porous Paving') {
+            } else if (markerInfo['Symbol Type'] === 'Porous Paving') {
               tempIcon = generateDiamondSVG(typeColor);
               iconFunc = generateDiamondSVG;
-            }
-            else if (markerInfo['Symbol Type'] === 'Tree Trench/Pit') {
+            } else if (markerInfo['Symbol Type'] === 'Tree Trench/Pit') {
               tempIcon = generateStarSVG(typeColor);
               iconFunc = generateStarSVG;
-            }
-            else if (markerInfo['Symbol Type'] === 'Green Roof/Planter') {
+            } else if (markerInfo['Symbol Type'] === 'Green Roof/Planter') {
               tempIcon = generatePentagonSVG(typeColor);
               iconFunc = generatePentagonSVG;
             }
 
-            const typeIcon = `data:image/svg+xml;utf8,${encodeURIComponent(tempIcon)}`;
+            const typeIcon = `data:image/svg+xml;utf8,${encodeURIComponent(
+              tempIcon,
+            )}`;
+
+            const infoWindowContent = document.createElement('div');
+            infoWindowContent.id = 'info-window-content';
 
             const infoWindow = new google.maps.InfoWindow({
-              content: createPopupBoxContent(markerInfo['Asset Name'], markerInfo['Address'], 'Available', markerInfo['Symbol Type'], typeColor, iconFunc as (color: string) => string),
+              content: infoWindowContent,
             });
+
+            const infoWindowRoot = createRoot(infoWindowContent);
+            infoWindowRoot.render(
+              createPortal(
+                <PopupBox
+                  setShowSignUp={setShowSignUp}
+                  name={markerInfo['Asset Name']}
+                  location={markerInfo['Address']}
+                  status={'Available'}
+                  type={markerInfo['Symbol Type']}
+                  color={typeColor}
+                  svgFunction={iconFunc as (color: string) => string}
+                />,
+                infoWindowContent,
+              ),
+            );
 
             const customIcon = {
               url: typeIcon,
@@ -186,13 +208,16 @@ const Map: React.FC<MapProps> = ({
             };
 
             const marker: google.maps.Marker = new google.maps.Marker({
-              position: { lat: Number(markerInfo["Lat"]), lng: markerInfo["Long"] },
+              position: {
+                lat: Number(markerInfo['Lat']),
+                lng: markerInfo['Long'],
+              },
               map: map,
-              icon: customIcon
+              icon: customIcon,
             });
 
-            marker.set("featureType", markerInfo['Symbol Type']);
-            marker.set("status", status);
+            marker.set('featureType', markerInfo['Symbol Type']);
+            marker.set('status', status);
 
             marker.addListener('click', () => {
               if (currentInfoWindow) {
@@ -203,11 +228,10 @@ const Map: React.FC<MapProps> = ({
             });
             markersArray.push(marker);
           }
-
-        })
+        });
 
         setMarkers(markersArray);
-        console.log(selectedFeatures)
+        console.log(selectedFeatures);
         filterMarkers(selectedFeatures, selectedStatuses, markersArray, map);
 
         const input = document.getElementById('pac-input') as HTMLInputElement;
@@ -215,9 +239,7 @@ const Map: React.FC<MapProps> = ({
         const autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo('bounds', map);
 
-
         autocomplete.addListener('place_changed', () => {
-
           // marker.setVisible(false);
           const place = autocomplete.getPlace();
 
@@ -238,19 +260,18 @@ const Map: React.FC<MapProps> = ({
         });
       });
     }
-
-
-
   }, [zoom, selectedFeatures, selectedStatuses]);
-
-
 
   return (
     <div>
-      <MapDiv id="map" ref={mapRef} style={{ width: '100%', height: '495px' }} />
+      <MapDiv
+        id="map"
+        ref={mapRef}
+        style={{ width: '100%', height: '495px' }}
+      />
+      {showSignUp && <SignUpPage setShowSignUp={setShowSignUp} />}
     </div>
   );
 };
-
 
 export default Map;
