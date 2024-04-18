@@ -3,7 +3,6 @@
 .container {
   font-family: Lora;
   font-size: 40px;
-  font-style: italic;
   font-weight: 500;
   line-height: 51px;
   letter-spacing: 0em;
@@ -22,9 +21,9 @@
 .card-text {
   display: flex;
   align-items: flex-start;
-  justify-content: flex-start; 
-  padding-left: 30px;
   text-align: left;
+  padding: 12px;
+  font-size: 16px;
 }
 
 

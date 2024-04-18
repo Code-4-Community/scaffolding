@@ -90,23 +90,6 @@ export default function About() {
           laboris nisi ut aliquip ex
         </div>
       </p>
-
-      <p style={headings}>Feature Type and Descriptions: <br />
-        <div style={content}>
-          Rain Garden: Small shallow depressed planted areas consisting of biosoil and simple plant palettes. <br />
-          Bioswale: Medium-sized depressed planted features that are often longer than they are wide
-          and may have overflow structures/pipes. <br />
-          Bioretention: Larger depressed planted features that vary in size and shape and can capture
-          and infiltrate larger volumes of runoff (typically have pipes and structures). <br />
-          Porous Paving: Paving materials, like asphalt, concrete or pavers, with voids or gaps that
-          water is able to pass through. <br />
-          Tree Trench/Planter: Hybrid features that are planted with trees at the surface and have
-          subsurface infiltration areas that give trees access to large volumes of stormwater
-          while it absorbs into the ground. <br />
-          Green Roof/Planter: Vegetated areas, at ground level or on roofs, that consist of planting
-          soil or other lightweight planting materials, and native plants.
-        </div>
-      </p>
     </div >
   );
 
