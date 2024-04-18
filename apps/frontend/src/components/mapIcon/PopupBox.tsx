@@ -1,22 +1,148 @@
-export function createPopupBoxContent(name: string, location: string, status: string, type: string, color: string, svgFunction: (color: string) => string) {
+import { CSSProperties } from 'react';
 
-  return `
-  <head><link rel='stylesheet'/></head>
-  <body>
-    <div class='popup'>
-      <div class='typeBox'>
-        ${type ? 
-          `${svgFunction(color)}
-          <p class='featureType'>Feature Type: </p><p><b>${type.toUpperCase()}</b></p>` 
-          : ''}
+interface Props {
+  setShowSignUp: (value: boolean) => void;
+  name: string;
+  location: string;
+  status: string;
+  type: string;
+  color: string;
+  svgFunction: (color: string) => string;
+}
+
+interface PopupStyles {
+  [key: string]: CSSProperties;
+}
+
+const popupStyles: PopupStyles = {
+  featureType: {
+    backgroundColor: '#2D6A4F',
+    width: '45%',
+    height: '130px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  details: {
+    backgroundColor: 'white',
+    width: '60%',
+    height: '130px',
+    marginLeft: '4%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+};
+
+export default function PopupBox({
+  setShowSignUp,
+  name,
+  location,
+  status,
+  type,
+  color,
+  svgFunction,
+}: Props) {
+  const openSignUp = () => {
+    setShowSignUp(true);
+  };
+
+  return (
+    <div style={{ display: 'flex', width: '400px', margin: '0', padding: '0' }}>
+      <div style={popupStyles.featureType}>
+        <text
+          style={{
+            fontFamily: 'Lora',
+            fontStyle: 'italic',
+            fontSize: '14px',
+            color: '#ffffff',
+          }}
+        >
+          Feature Type:
+        </text>
+        <text
+          style={{
+            fontFamily: 'system-ui',
+            fontWeight: '700',
+            fontSize: '16px',
+            color: '#ffffff',
+            textTransform: 'uppercase',
+            marginTop: '1%',
+            textAlign: 'center',
+          }}
+        >
+          {type}
+        </text>
+        <div
+          style={{ marginTop: '9%' }}
+          dangerouslySetInnerHTML={{ __html: svgFunction('#ffffff') }}
+        />
       </div>
-      <div class='infoBox'>
-        ${name ? `<p><b>Name: </b>${name}</p>` : ''}
-        ${location ? `<p><b>Location: </b>${location}</p>` : ''}
-        ${status ? `<p><b>Status: </b>${status}</p>` : ''}
-        <a href="https://ma.adopt-a-drain.org/register?selectedDrainId=1084">Click here to adopt!</a>
+
+      <div style={popupStyles.details}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: '5%',
+            gap: '5px',
+          }}
+        >
+          <text style={{ fontFamily: 'system-ui', fontWeight: '700' }}>
+            NAME:
+          </text>
+          <text style={{ fontFamily: 'system-ui', whiteSpace: 'nowrap' }}>
+            {name}
+          </text>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: '5%',
+            gap: '5px',
+          }}
+        >
+          <text style={{ fontFamily: 'system-ui', fontWeight: '700' }}>
+            LOCATION:
+          </text>
+          <text>{location}</text>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: '5%',
+            gap: '5px',
+          }}
+        >
+          <text style={{ fontFamily: 'system-ui', fontWeight: '700' }}>
+            STATUS:
+          </text>
+          <text>{status}</text>
+        </div>
+
+        <button
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            marginTop: '7%',
+            fontFamily: 'Lora',
+            fontStyle: 'italic',
+            fontSize: '15px',
+            color: '#288BE4',
+            backgroundColor: '#ffffff',
+            border: '0',
+            marginLeft: '0',
+            paddingLeft: '0',
+            borderLeft: '0',
+            textDecoration: 'underline',
+          }}
+          onClick={openSignUp}
+        >
+          Interested in adopting →
+        </button>
       </div>
     </div>
-    </body>
-    `;
+  );
 }
