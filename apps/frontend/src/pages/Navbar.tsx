@@ -1,19 +1,29 @@
 import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import c4cLogo from '../images/logos/c4cLogo.png';
 import profileLogo from '../images/logos/profileLogo.png';
 import cityOfBostonLogo from '../images/logos/cityOfBostonLogo.png';
+import SignupPopup from '../components/volunteer/signup/SignupPopup';
 
 function Navbar() {
   const [selected, setSelected] = useState(false);
+  const [showSignupPopup, setShowSignupPopup] = useState(false);
+  const [showSidePanel, setShowSidePanel] = useState(false);
+
+  const openSignupPopup = () => {
+    setShowSignupPopup(true);
+  };
 
   const handleClick = () => {
     if (!selected) {
       setSelected(true);
     }
+  };
+
+  const toggleSidePanel = () => {
+    setShowSidePanel(!showSidePanel);
   };
 
   return (
@@ -49,30 +59,77 @@ function Navbar() {
             />
             <img src={c4cLogo} />
             <div style={{ marginRight: 0, marginLeft: 'auto' }}>
-              <a
+              <button
                 style={{
                   font: 'Montserrat',
                   color: selected ? 'red' : 'black',
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
                   marginRight: '40px',
+                  cursor: 'pointer',
                 }}
+                onClick={openSignupPopup}
               >
                 SIGN UP
-              </a>
-              <a
+              </button>
+              <button
                 style={{
                   font: 'Montserrat',
                   color: 'black',
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
                   marginRight: '50px',
+                  cursor: 'pointer',
                 }}
               >
                 LOG IN
-              </a>
-              <img src={profileLogo} />
+              </button>
+              <img src={profileLogo} style={{ cursor: 'pointer' }} onClick={toggleSidePanel} />
             </div>
-          </Toolbar>
+            </Toolbar>
         </Container>
+        {showSignupPopup && <SignupPopup setShowSignupPopup={setShowSignupPopup} />}
       </AppBar>
+      {showSidePanel && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '109px',
+            right: 0,
+            height: 'calc(100vh - 109px)',
+            backgroundColor: '#fff',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+            padding: '1rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            zIndex: 1000,
+          }}
+        >
+          <div>
+            <span style={{ display: 'block', textAlign: 'center', fontSize: '20px', fontWeight: 'bold' }}>Hamsini Malli</span>
+            <span style={{ display: 'block', textAlign: 'center' }}>Volunteer since April 2024</span>
+          </div>
+          <div style={{ margin: '1rem 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <span style={{ marginRight: '0.5rem' }}>🌳</span>
+              <div style={{ textAlign: 'center' }}>
+  <span style={{ display: 'block', fontSize: '20px', fontWeight: 'bold', textAlign: 'center' }}>10</span>
+  <span style={{ textAlign: 'center' }}>Green Infrastructure Adopted</span>
+</div>
+            </div>
+
+          </div>
+          <div>
+            <button style={{ marginRight: '0.5rem' }}>Settings</button>
+            <button>Log Out</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
 export default Navbar;

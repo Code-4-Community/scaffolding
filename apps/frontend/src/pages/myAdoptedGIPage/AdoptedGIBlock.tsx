@@ -4,12 +4,9 @@ import generateFeatureAddress from '../../assets/images/adoptedGIIcons/FeatureAd
 import generateFeatureType from '../../assets/images/adoptedGIIcons/FeatureType';
 import generateFeatureYearBuilt from '../../assets/images/adoptedGIIcons/FeatureYearBuilt';
 import generateMaintenanceDate from '../../assets/images/adoptedGIIcons/MaintenanceDate';
-import BioswaleImage from './BioswaleImage.png';
-
 const textStyles: CSSProperties = {
   fontFamily: 'Lora',
-  fontStyle: 'italic',
-  fontSize: '19px',
+  fontSize: '14px',
   paddingLeft: '10%',
 };
 
@@ -45,17 +42,17 @@ const featureStyle: CSSProperties = {
 
 interface AdoptedGIBlockProps {
   img: string;
+  featureName: string;
   featureType: string;
   featureAddress: string;
-  featureYearBuilt: string;
   lastMaintenanceDate: string;
 }
 
 const AdoptedGIBlock: React.FC<AdoptedGIBlockProps> = ({
   img,
+  featureName,
   featureType,
   featureAddress,
-  featureYearBuilt,
   lastMaintenanceDate,
 }) => {
   return (
@@ -64,6 +61,10 @@ const AdoptedGIBlock: React.FC<AdoptedGIBlockProps> = ({
         <img style={{ width: '55%', height: '80%' }} src={img} alt="Image" />
       </div>
       <div style={featureStyle}>
+        <div>
+          {generateMaintenanceDate()}
+          <text style={textStyles}>{featureName}</text>
+        </div>
         <div>
           {generateFeatureType()}
           <text style={textStyles}>{featureType}</text>
@@ -74,10 +75,6 @@ const AdoptedGIBlock: React.FC<AdoptedGIBlockProps> = ({
         </div>
         <div>
           {generateFeatureYearBuilt()}
-          <text style={textStyles}>{featureYearBuilt}</text>
-        </div>
-        <div>
-          {generateMaintenanceDate()}
           <text style={textStyles}>{lastMaintenanceDate}</text>
         </div>
       </div>

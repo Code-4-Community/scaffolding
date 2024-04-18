@@ -74,9 +74,11 @@ function VolunteerDashboard() {
               width: '100%',
             }}
           >
-            <Box sx={{ ...boxStyles, height: '50%', width: '100%' }}>
+          <Link to="my-adopted-gi" style={{ ...boxStyles, textDecoration: 'none', color: 'inherit', width: '100%', height: '50%' }}>
+            <Box sx={{ ...boxStyles, height: '100%', width: '100%'}}>
               My Adopted Green Infrastructure
             </Box>
+          </Link>
             <Box
               sx={{
                 display: 'flex',

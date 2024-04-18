@@ -9,6 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 interface InputField {
   label: string;
@@ -27,6 +30,9 @@ interface InputFieldGroup {
 }
 
 const checkboxesMap: CheckboxField[] = [
+  {
+    label: 'Are you signing up as a group?',
+  },
   {
     label: 'I have reviewed the General Safety Guidelines',
   },
@@ -64,7 +70,7 @@ const inputFieldsMap: InputFieldGroup[] = [
     width: '369px',
   },
   {
-    fields: [{ label: 'Age' }],
+    fields: [{ label: 'Birth Date', placeholder: 'MM/DD/YYYY' }],
     type: 'single',
     height: '40px',
     width: '107px',
@@ -154,8 +160,18 @@ interface Props {
 }
 
 export default function SignUpPage({ setShowSignUp }: Props) {
+  const [isSubmitted, setIsSubmitted] = useState(false); // Step 1
+  const navigate = useNavigate();
+
   const closeSignUp = () => {
     setShowSignUp(false);
+  };
+
+  
+  const handleSubmit = () => {
+    // You can add form validation logic here if needed
+    setIsSubmitted(true);
+    navigate('/success'); // Step 2
   };
 
   return (
@@ -225,9 +241,26 @@ export default function SignUpPage({ setShowSignUp }: Props) {
         >
           <CheckboxFields />
         </Box>
-        <Button size="large" marginBottom="7%" fontSize="20px">
-          Submit
-        </Button>
+
+        {/* Conditional rendering for the submit button */}
+        {!isSubmitted && (
+          <Button size="large" marginBottom="7%" fontSize="20px" onClick={handleSubmit}
+          bottom="10%"
+          left="50%"
+          transform="translateX(-50%)">
+            Submit
+          </Button>
+        )}
+
+        {/* Success message */}
+        {isSubmitted && (
+          <Box>
+            <Text fontSize="24px" fontWeight={600}>
+              Thank you for submitting the form!
+            </Text>
+            {/* You can add additional content for the success page */}
+          </Box>
+        )}
       </Box>
     </Box>
   );
