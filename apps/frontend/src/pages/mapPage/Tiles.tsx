@@ -16,42 +16,48 @@ const cards = [
   {
     id: '0',
     front: 'Rain Garden',
-    back: 'back',
+    back: 'Small shallow depressed planted areas consisting of biosoil and simple plant palettes.',
     icon: generateRainGardenSVG,
     background: RainGarden,
   },
   {
     id: '1',
     front: 'Porous Paving',
-    back: 'back',
+    back: `Paving materials, like asphalt, concrete or pavers, with voids or gaps that
+    water is able to pass through.`,
     icon: generatePorousPavingSVG,
     background: PorousPaving,
   },
   {
     id: '2',
     front: 'Bioswale',
-    back: 'back',
+    back: `Medium-sized depressed planted features that are often longer than they are wide
+    and may have overflow structures/pipes.`,
     icon: generateBioswaleIcon,
     background: Bioswale,
   },
   {
     id: '3',
     front: 'Tree Trench /Planter',
-    back: 'back',
+    back: `Hybrid features that are planted with trees at the surface and have
+    subsurface infiltration areas that give trees access to large volumes of stormwater
+    while it absorbs into the ground.`,
     icon: generateTreeTrenchPlanterSVG,
     background: TreeTrench,
   },
   {
     id: '4',
     front: 'Biorentention',
-    back: 'back',
+    back: `Larger depressed planted features that vary in size and shape and can capture
+    and infiltrate larger volumes of runoff (typically have pipes and structures).`,
     icon: generateBioretentionSVG,
     background: Bioretention,
   },
   {
     id: '5',
     front: 'Green Roof /Planter',
-    back: 'back',
+    back: `Vegetated areas, at ground level or on roofs, that consist of planting
+    soil or other lightweight planting materials, and native plants.`,
     icon: generateGreenRoofPlanterSVG,
     background: GreenRoofPlanter,
   },
