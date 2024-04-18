@@ -1,3 +1,21 @@
+export interface SiteType {
+  "Object ID?": string;
+  "Symbol Type": string;
+  "Asset Name": string;
+  "Lat": string;
+  "Long": number | null;
+  "Neighborhood": string;
+  "Address": string;
+  "Asset Type": string;
+  "Partner Depts.": string;
+  "Maintenance Agreement?": string;
+  "Link to Maintenance Agreement": string,
+  "Link to Maintenance Checklist": string,
+  "Link to Construction Cost + Plans": string,
+  "Link to RFQ or Bid Invitation": string,
+  "Link to Final Reports": string
+}
+
 export const SITES = [
    {
      "Object ID?": "",

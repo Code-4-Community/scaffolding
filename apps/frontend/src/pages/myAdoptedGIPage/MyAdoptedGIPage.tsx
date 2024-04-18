@@ -8,9 +8,10 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Navbar from '../Navbar';
-import { CSSProperties } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import AdoptedGIBlock from './AdoptedGIBlock';
 import BioswaleImage from './BioswaleImage.png';
+import { SiteType, SITES } from '../../GIBostonSites'
 
 const containerStyles: CSSProperties = {
   width: '100%',
@@ -30,7 +31,6 @@ const rowStyles: CSSProperties = {
   display: 'flex',
   flexDirection: 'row',
   width: '92%',
-  justifyContent: 'space-between',
   marginTop: '2%',
 };
 
@@ -47,61 +47,51 @@ const blueLineStyle: CSSProperties = {
   marginTop: '1.5%',
 };
 
-const dummyData = [
-  {
-    img: BioswaleImage,
-    featureType: 'Feature Type',
-    featureAddress: 'Feature Address',
-    featureYearBuilt: 'Year Built',
-    lastMaintenanceDate: 'Last Maintenance Date',
-  },
-  {
-    img: BioswaleImage,
-    featureType: 'Feature Type',
-    featureAddress: 'Feature Address',
-    featureYearBuilt: 'Year Built',
-    lastMaintenanceDate: 'Last Maintenance Date',
-  },
-];
-
-function RenderFormControls() {
+interface Props {
+  selectedFilter: string
+  setSelectedFilter: (value: string) => void;
+  selectedName: string
+  setSelectedName: (value: string) => void;
+}
+function RenderFormControls({ selectedFilter, setSelectedFilter, selectedName, setSelectedName }: Props) {
+  const handleSiteTypeChange = (event: { target: { value: string; }; }) => {
+    setSelectedFilter(event.target.value);
+  };
+  const handleNameChange = (event: { target: { value: string; }; }) => {
+    setSelectedName(event.target.value);
+  };
   return (
     <div style={rowStyles}>
-      <FormControl variant="filled" sx={{ width: '20%' }} size="small">
+      <FormControl variant="filled" sx={{ width: '20%', marginRight: '20px' }} size="small">
         <InputLabel
           id="filter-one-select"
           sx={{ fontFamily: 'Montserrat, sans-serif', color: 'black' }}
         >
-          Filter 1
+          Site Type
         </InputLabel>
         <Select
           labelId="filter-one-select"
           label="Filter 1"
+          value={selectedFilter}
+          onChange={handleSiteTypeChange}
           sx={{ borderRadius: '7px' }}
           disableUnderline
         >
-          <MenuItem>Test</MenuItem>
-        </Select>
-      </FormControl>
-      <FormControl variant="filled" sx={{ width: '20%' }} size="small">
-        <InputLabel
-          id="filter-two-select"
-          sx={{ fontFamily: 'Montserrat, sans-serif', color: 'black' }}
-        >
-          Filter 2
-        </InputLabel>
-        <Select
-          labelId="filter-two-select"
-          label="Filter 2"
-          sx={{ borderRadius: '7px' }}
-          disableUnderline
-        >
-          <MenuItem>Test</MenuItem>
+          <MenuItem value="" style={{ color: 'grey' }}>Show All</MenuItem>
+          <MenuItem value="Rain Garden">Rain Garden</MenuItem>
+          <MenuItem value="Bioswale">Bioswale</MenuItem>
+          <MenuItem value="Bioretention">Bioretention</MenuItem>
+          <MenuItem value="Porous Paving">Porous Paving</MenuItem>
+          <MenuItem value="Tree Trench/Pit">Tree Trench/Pit</MenuItem>
+          <MenuItem value="Green Roof/Planter">Green Roof/Planter</MenuItem>
+          <MenuItem value="Curb Inlet">Curb Inlet</MenuItem>
         </Select>
       </FormControl>
       <TextField
         id="filled-search"
         label="Search for a site"
+        value={selectedName}
+        onChange={handleNameChange}
         type="search"
         sx={{ width: '50%' }}
         variant="filled"
@@ -123,12 +113,24 @@ function RenderFormControls() {
 }
 
 export default function MyAdoptedGIPage() {
+  const [sites, setSites] = useState<Array<SiteType>>([]);
+  const [selectedFilter, setSelectedFilter] = useState('')
+  const [selectedName, setSelectedName] = useState('')
+  useEffect(() => {
+    const sitesCopy = [...SITES];
+    const splicedSites = sitesCopy.splice(0, 30);
+    setSites(splicedSites);
+  }, [])
   return (
     <div>
       <Navbar />
       <div style={containerStyles}>
         <div style={titleStyles}>My Adopted Green Infrastructure</div>
-        <RenderFormControls />
+        <RenderFormControls 
+        selectedFilter={selectedFilter} 
+        setSelectedFilter={setSelectedFilter}
+        selectedName={selectedName}
+        setSelectedName={setSelectedName} />
       </div>
       <div
         style={{
@@ -138,18 +140,21 @@ export default function MyAdoptedGIPage() {
           marginTop: '3%',
         }}
       >
-        <div style={bioswaleTitleStyles}>Bioswale 1</div>
+        <div style={bioswaleTitleStyles}>Features</div>
         <div className="blueLine" style={blueLineStyle} />
-        {dummyData.map((props, index) => (
-          <AdoptedGIBlock
-            key={index}
-            img={props.img}
-            featureType={props.featureType}
-            featureAddress={props.featureAddress}
-            featureYearBuilt={props.featureYearBuilt}
-            lastMaintenanceDate={props.lastMaintenanceDate}
-          />
-        ))}
+        {sites
+          .filter(props => props["Asset Type"].toLowerCase().includes(selectedFilter.toLowerCase()))
+          .filter(props => props["Asset Name"].toLowerCase().includes(selectedName.toLowerCase()))
+          .map((props, index) => (
+            <AdoptedGIBlock
+              key={index}
+              img={BioswaleImage}
+              featureName={props["Asset Name"]}
+              featureType={props["Asset Type"]}
+              featureAddress={props["Address"]}
+              lastMaintenanceDate='Last Maintenance Date'
+            />
+          ))}
       </div>
     </div>
   );
