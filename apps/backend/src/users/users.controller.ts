@@ -3,13 +3,12 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from './user.entity';
+import { User } from './user.interface';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 
 @Controller('users')
@@ -19,12 +18,12 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/:userId')
-  async getUser(@Param('userId', ParseIntPipe) userId: number): Promise<User> {
+  async getUser(@Param('userId') userId: string): Promise<User> {
     return this.usersService.findOne(userId);
   }
 
   @Delete('/:id')
   removeUser(@Param('id') id: string) {
-    return this.usersService.remove(parseInt(id));
+    return this.usersService.remove(id);
   }
 }

@@ -6,10 +6,23 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
+import * as dynamoose from 'dynamoose';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  // Create new DynamoDB instance
+  const ddb = new dynamoose.aws.ddb.DynamoDB({
+    credentials: {
+      accessKeyId: process.env.NX_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.NX_AWS_SECRET_ACCESS_KEY,
+    },
+    region: process.env.AWS_REGION,
+  });
+
+  // Set DynamoDB instance to the Dynamoose DDB instance
+  dynamoose.aws.ddb.set(ddb);
+
   const app = await NestFactory.create(AppModule);
   app.enableCors();
 

@@ -1,40 +1,40 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { User } from './user.entity';
+import { InjectModel, Model } from 'nestjs-dynamoose';
+import { randomUUID } from 'crypto';
 import { Status } from './types';
+import { User, UserKey } from './user.interface';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectModel('User')
+    private userModel: Model<User, UserKey>,
+  ) {}
 
   async create(email: string, firstName: string, lastName: string) {
-    const userId = (await this.repo.count()) + 1;
-    const user = this.repo.create({
+    const userId = randomUUID();
+    return this.userModel.create({
       id: userId,
       status: Status.STANDARD,
       firstName,
       lastName,
       email,
     });
-
-    return this.repo.save(user);
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     if (!id) {
       return null;
     }
 
-    return this.repo.findOneBy({ id });
+    return this.userModel.get({ id });
   }
 
-  find(email: string) {
-    return this.repo.find({ where: { email } });
+  async findByEmail(email: string) {
+    return this.userModel.scan({ email: { eq: email } }).exec();
   }
 
-  async update(id: number, attrs: Partial<User>) {
+  async update(id: string, attrs: Partial<User>) {
     const user = await this.findOne(id);
 
     if (!user) {
@@ -43,16 +43,16 @@ export class UsersService {
 
     Object.assign(user, attrs);
 
-    return this.repo.save(user);
+    return this.userModel.update({ id }, user);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const user = await this.findOne(id);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    return this.repo.remove(user);
+    return this.userModel.delete({ id });
   }
 }
