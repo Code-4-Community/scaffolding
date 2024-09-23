@@ -50,7 +50,7 @@ export default function MaintenanceChecklistPopup({
     >
       <DialogTitle>
         <Box display="flex" alignItems="center">
-          <Box flexGrow={1}>Maintenance Visit Checklist</Box>
+          <Box flexGrow={1} style={{ fontFamily: 'Montserrat', fontSize: '24px', fontWeight: '600' }}>Maintenance Visit Checklist</Box>
           <Box>
             <IconButton onClick={handleClose}>
               <CloseIcon />
@@ -59,8 +59,8 @@ export default function MaintenanceChecklistPopup({
         </Box>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText sx={{ paddingBottom: '8px' }}>
-          Select the site you'd like to see a checklist for:
+        <DialogContentText sx={{ paddingBottom: '8px' }} style={{ fontFamily: 'Lora', fontSize: '16px', fontWeight: '400', color: 'black' }}>
+          Select the site you'd like to see a checklist for
         </DialogContentText>
         <FormControl fullWidth>
           <InputLabel id="select-site">Site</InputLabel>
@@ -69,6 +69,21 @@ export default function MaintenanceChecklistPopup({
             value={site}
             label="Site"
             onChange={handleChange}
+            sx={{fontFamily: 'Montserrat', fontSize: '20px', fontWeight: '400'}}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  '& .MuiMenuItem-root': {
+                    fontFamily: 'Montserrat',
+                    fontSize: '20px',
+                    fontWeight: '400',
+                    '&:hover': {
+                      fontWeight: '600',
+                    },
+                  },
+                },
+              },
+            }}
           >
             <MenuItem value={'Rain Garden 1'}>Rain Garden 1</MenuItem>
             <MenuItem value={'Green Roof 2'}>Green Roof 2</MenuItem>
