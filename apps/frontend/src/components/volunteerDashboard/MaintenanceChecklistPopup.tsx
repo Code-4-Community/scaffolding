@@ -63,12 +63,17 @@ export default function MaintenanceChecklistPopup({
           Select the site you'd like to see a checklist for
         </DialogContentText>
         <FormControl fullWidth>
-          <InputLabel id="select-site">Site</InputLabel>
           <Select
             id="select-site"
             value={site}
-            label="Site"
             onChange={handleChange}
+            displayEmpty
+            renderValue={(selected) => {
+              if (!selected) {
+                return 'Most recently adopted';
+              }
+              return selected;
+            }}
             sx={{fontFamily: 'Montserrat', fontSize: '20px', fontWeight: '400'}}
             MenuProps={{
               PaperProps: {
