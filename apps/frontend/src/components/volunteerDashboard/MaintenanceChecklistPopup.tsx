@@ -49,7 +49,16 @@ export default function MaintenanceChecklistPopup({
     >
       <DialogTitle>
         <Box display="flex" alignItems="center">
-          <Box flexGrow={1} style={{ fontFamily: 'Montserrat', fontSize: '24px', fontWeight: '600' }}>Maintenance Visit Checklist</Box>
+          <Box
+            flexGrow={1}
+            style={{
+              fontFamily: 'Montserrat',
+              fontSize: '24px',
+              fontWeight: '600',
+            }}
+          >
+            Maintenance Visit Checklist
+          </Box>
           <Box>
             <IconButton onClick={handleClose}>
               <CloseIcon />
@@ -58,7 +67,15 @@ export default function MaintenanceChecklistPopup({
         </Box>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText sx={{ paddingBottom: '8px' }} style={{ fontFamily: 'Lora', fontSize: '16px', fontWeight: '400', color: 'black' }}>
+        <DialogContentText
+          sx={{ paddingBottom: '8px' }}
+          style={{
+            fontFamily: 'Lora',
+            fontSize: '16px',
+            fontWeight: '400',
+            color: 'black',
+          }}
+        >
           Select the site you'd like to see a checklist for
         </DialogContentText>
         <FormControl fullWidth>
@@ -73,7 +90,11 @@ export default function MaintenanceChecklistPopup({
               }
               return selected;
             }}
-            sx={{fontFamily: 'Montserrat', fontSize: '20px', fontWeight: '400'}}
+            sx={{
+              fontFamily: 'Montserrat',
+              fontSize: '20px',
+              fontWeight: '400',
+            }}
             MenuProps={{
               PaperProps: {
                 sx: {
@@ -95,8 +116,23 @@ export default function MaintenanceChecklistPopup({
           </Select>
         </FormControl>
       </DialogContent>
-      <DialogActions sx={{ padding: '24px', paddingBottom: '16px', paddingTop: '0px' }}>
-        <Button type="submit" variant="contained" sx={{ backgroundColor: '#D9D9D9', color: 'black', fontFamily: 'Montserrat', fontSize: '20px', fontWeight: '400', px: 4}}>Next</Button>
+      <DialogActions
+        sx={{ padding: '24px', paddingBottom: '16px', paddingTop: '0px' }}
+      >
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            backgroundColor: '#D9D9D9',
+            color: 'black',
+            fontFamily: 'Montserrat',
+            fontSize: '20px',
+            fontWeight: '400',
+            px: 4,
+          }}
+        >
+          Next
+        </Button>
       </DialogActions>
     </Dialog>
   );
