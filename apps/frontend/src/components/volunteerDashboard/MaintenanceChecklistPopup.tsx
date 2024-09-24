@@ -96,8 +96,8 @@ export default function MaintenanceChecklistPopup({
           </Select>
         </FormControl>
       </DialogContent>
-      <DialogActions>
-        <Button type="submit">Next</Button>
+      <DialogActions sx={{ padding: '24px', paddingBottom: '16px', paddingTop: '0px' }}>
+        <Button type="submit" variant="contained" sx={{ backgroundColor: '#D9D9D9', color: 'black', fontFamily: 'Montserrat', fontSize: '20px', fontWeight: '400', px: 4}}>Next</Button>
       </DialogActions>
     </Dialog>
   );
