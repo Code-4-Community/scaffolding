@@ -61,6 +61,7 @@ export class ApplicationsController {
     //Delegate the decision making to the service.
     await this.applicationsService.processDecision(applicantId, decisionEnum);
   }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
   async getApplications(
@@ -76,7 +77,6 @@ export class ApplicationsController {
         'Calling user is not a recruiter or admin.',
       );
     }
-
     return this.applicationsService.findAllCurrentApplications();
   }
 

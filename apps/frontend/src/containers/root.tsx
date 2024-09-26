@@ -1,5 +1,7 @@
+import { ApplicationTable } from '@components/ApplicationTables.jsx';
+
 const Root: React.FC = () => {
-  return <>Welcome to scaffolding!</>;
+  return <ApplicationTable />;
 };
 
 export default Root;
