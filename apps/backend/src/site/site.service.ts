@@ -5,11 +5,11 @@ import { SiteModel } from "./site.model";
 export class SiteService {
 
     /**
-     * Gets a company information based on that company's id.
-     * @param companyId
+     * Gets a site information based on that site's id.
+     * @param siteId
      * @returns
     */
-    public async getCompany(siteId: number): Promise<SiteModel> {
+    public async getSite(siteId: number): Promise<SiteModel> {
         try{
             return await getSiteData(siteId) as Promise<SiteModel>
         }  
