@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from '../user/user.module'
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PluralNamingStrategy } from '../strategies/plural-naming.strategy';
 
+
 @Module({
-  imports: [
+  imports: [UserModule
     // TypeOrmModule.forRoot({
     //   type: 'mongodb',
     //   host: '127.0.0.1',
