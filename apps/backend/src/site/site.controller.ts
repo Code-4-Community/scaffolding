@@ -1,18 +1,18 @@
 import {
     Controller,
     Get,
-    Query,
+    Param,
 } from "@nestjs/common";
 import { SiteService } from "./site.service";
 import { SiteModel } from "./site.model";
 
-@Controller("site")
+@Controller("sites")
 export class SiteController {
     constructor(private siteService: SiteService) {}
 
-    @Get("siteInfo")
+    @Get(":id")
     public async getSite(
-        @Query("siteId") siteId?: number
+        @Param("id") siteId: number
     ): Promise<SiteModel> {
         return this.siteService.getSite(siteId);
     }  
