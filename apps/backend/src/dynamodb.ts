@@ -30,45 +30,4 @@ export class DynamoDbService {
     }
   }
 
-  public async scanTable(tableName: string): Promise<any[]> {
-    const params = {
-      TableName: tableName,
-    };
-
-    try {
-      const data = await this.dynamoDbClient.send(new ScanCommand(params));
-      return data.Items || [];
-    } catch (error) {
-      console.error('DynamoDB Scan Error:', error);
-      throw new Error(`Unable to scan table ${tableName}`);
-    }
-  }
-
-  public async putItem(tableName: string, item: { [key: string]: any }): Promise<void> {
-    const params = {
-      TableName: tableName,
-      Item: item,
-    };
-
-    try {
-      await this.dynamoDbClient.send(new PutItemCommand(params));
-    } catch (error) {
-      console.error('DynamoDB PutItem Error:', error);
-      throw new Error(`Unable to put item into ${tableName}`);
-    }
-  }
-
-  public async deleteItem(tableName: string, key: { [key: string]: any }): Promise<void> {
-    const params = {
-      TableName: tableName,
-      Key: key,
-    };
-
-    try {
-      await this.dynamoDbClient.send(new DeleteItemCommand(params));
-    } catch (error) {
-      console.error('DynamoDB DeleteItem Error:', error);
-      throw new Error(`Unable to delete item from ${tableName}`);
-    }
-  }
 }
