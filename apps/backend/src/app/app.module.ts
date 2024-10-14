@@ -4,10 +4,12 @@ import { UserModule } from '../user/user.module'
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PluralNamingStrategy } from '../strategies/plural-naming.strategy';
+import { SiteModule } from '../site/site.module';
+import { DynamoDbService } from '../dynamodb';
 
 
 @Module({
+<<<<<<< HEAD
   imports: [UserModule
     // TypeOrmModule.forRoot({
     //   type: 'mongodb',
@@ -23,7 +25,10 @@ import { PluralNamingStrategy } from '../strategies/plural-naming.strategy';
     //   namingStrategy: new PluralNamingStrategy(),
     // }),
   ],
+=======
+  imports: [SiteModule],
+>>>>>>> origin/main
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DynamoDbService],
 })
 export class AppModule {}
