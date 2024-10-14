@@ -36,6 +36,7 @@ export class UserService {
 
     }
 
+
     /**
      * Maps a user's data from DynamoDB to a UserModel object.
      * @param objectId the user's id
@@ -44,11 +45,13 @@ export class UserService {
      * @returns the user's information as a UserModel object
      */
     private mapDynamoDBItemToUserModel(objectId: number, data: {[key: string]: any}): UserModel {
-        const userStatus: UserStatus = UserStatus[data['status'].S as keyof typeof UserStatus];
+        const userStatus: UserStatus = data['status'].S as UserStatus;
+
+        
         if (!userStatus) {
             throw new Error(`Invalid status for user with id ${objectId}: ${data['status'].S}`);
         }
-        const userRole: Role = Role[data['role'].S as keyof typeof Role];
+        const userRole: Role = data['role'].S as Role;
         if (!userRole) {
             throw new Error(`Invalid role for user with id ${objectId}: ${data['role'].S}`);
         }

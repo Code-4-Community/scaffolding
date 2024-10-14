@@ -20,15 +20,5 @@ export class UserController {
             return this.userService.getUser(userId);
         }
 
-    // @Get("siteInfo")
-    // public async getSite(
-    //     @Query("siteId") siteId?: number
-    // ): Promise<SiteModel> {
-    //     return this.siteService.getSite(siteId);
-    // }  
-    @Get()
-    public async testEndpoint(): Promise<string> {
-        return "This is a test endpoint";
-    }
 
 }
