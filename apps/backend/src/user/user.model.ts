@@ -1,14 +1,14 @@
-import { PhoneNumberDto } from "./phoneNumber.dto";
+
 /**
- * Represents the model schema of a user.
+ * A DTO representing a user.
  */
 export type UserModel = {
     userID: number,
     firstName: string,
     lastName: string,
-    phoneNumber: PhoneNumberDto,
+    phoneNumber: number,
     email: string,
-    siteIDs: number[],
+    siteIds: number[],
     zipCode: number,
     birthDate: Date,
     role: Role,
