@@ -16,7 +16,15 @@
         "tsConfig": "apps/backend/tsconfig.app.json",
         "assets": ["apps/backend/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/backend/webpack.config.js"
+        "webpackConfig": "apps/backend/webpack.config.js",
+        "transformers": [
+          {
+            "name": "@nestjs/swagger/plugin",
+            "options": {
+              "introspectComments": true
+            }
+          }
+        ]
       },
       "configurations": {
         "development": {},

@@ -11,13 +11,16 @@ import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './user.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
+@ApiBearerAuth()
 @Controller('users')
+@UseGuards(AuthGuard('jwt'))
 @UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('/:userId')
   async getUser(@Param('userId', ParseIntPipe) userId: number): Promise<User> {
     return this.usersService.findOne(userId);

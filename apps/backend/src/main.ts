@@ -24,6 +24,9 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Scaffolding API Docs')
     .setDescription('Documentation for the scaffolding REST API routes')
+    .addBearerAuth()
+    .addTag('Users', 'Operations on users')
+    .addTag('Auth', 'Operations for authentication')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

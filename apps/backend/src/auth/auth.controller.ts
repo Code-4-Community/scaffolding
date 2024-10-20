@@ -19,7 +19,9 @@ import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ConfirmPasswordDto } from './dtos/confirm-password.dto';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
