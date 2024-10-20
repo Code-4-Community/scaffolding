@@ -3,17 +3,17 @@
  */
 
 export type ApplicationsModel = {
-    appID: number,
-    userID: number,
-    siteID: number,
-    names: Array<string>,
-    status: ApplicationStatus,
-    dateApplied: Date,
-    isFirstApplication: boolean
-}
+  appId: number;
+  userId: number;
+  siteId: number;
+  names: Array<string>;
+  status: ApplicationStatus;
+  dateApplied: Date;
+  isFirstApplication: boolean;
+};
 
-export enum ApplicationStatus{
-    APPROVED = "Approved",
-    PENDING = "Pending",
-    REJECTED = "Rejected"
+export enum ApplicationStatus {
+  APPROVED = 'Approved',
+  PENDING = 'Pending',
+  REJECTED = 'Rejected',
 }

@@ -1,12 +1,12 @@
-import { Module } from "@nestjs/common";
-import { ApplicationsService } from "./applications.service";
-import { ApplicationsController } from "./applications.controller";
+import { Module } from '@nestjs/common';
+import { ApplicationsService } from './applications.service';
+import { ApplicationsController } from './applications.controller';
+import { DynamoDbService } from '../dynamodb';
 
 @Module({
-    imports: [],
-    providers: [ApplicationsService],
-    controllers: [ApplicationsController],
-    exports: [ApplicationsService],
+  imports: [],
+  providers: [ApplicationsService, DynamoDbService],
+  controllers: [ApplicationsController],
+  exports: [ApplicationsService],
 })
-
-export class ApplicationsModule{}
+export class ApplicationsModule {}
