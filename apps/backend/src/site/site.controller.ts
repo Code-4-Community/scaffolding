@@ -9,7 +9,6 @@ import {
 import { SiteService } from "./site.service";
 import { SiteModel } from "./site.model";
 import { NewSiteInput } from "../dtos/newSiteDTO";
-
 import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("sites")

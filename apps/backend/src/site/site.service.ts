@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { SiteModel, SiteStatus, SymbolType } from "./site.model";
+import { SiteInputModel, SiteModel, SiteStatus, SymbolType } from "./site.model";
 import { DynamoDbService } from "../dynamodb"; 
 import { NewSiteInput } from "../dtos/newSiteDTO";
 
@@ -28,6 +28,9 @@ export class SiteService {
 
     public async postSite(siteData: NewSiteInput) {
         const siteModel = this.PostInputToSiteModel(siteData);
+        const newId = await this.dynamoDbService.getHighestSiteId(this.tableName) + 1;
+        siteModel.siteId.S = newId.toString();
+        console.log("Using new ID:" + siteModel.siteId.S)
         try {
             const result = await this.dynamoDbService.postItem(this.tableName, siteModel);
             return result;
@@ -35,7 +38,7 @@ export class SiteService {
             throw new Error("Unable to post new site: " + e);
         }
     }
-    
+
     public async getFilteredSites(filters: { status?: string, symbolType?: string }): Promise<SiteModel[]> {
         try {
             const filterExpressionParts = [];
@@ -87,19 +90,17 @@ export class SiteService {
         };
     };
 
-    private PostInputToSiteModel = (input: NewSiteInput): SiteModel => {
+    private PostInputToSiteModel = (input: NewSiteInput): SiteInputModel => {
         return {
-            siteID: 1,
-            siteName: input.siteName,
-            siteStatus: SiteStatus.AVAILABLE,
-            assetType: input.assetType,
-            symbolType: input.symbolType as SymbolType,
-            siteLatitude: input.siteLatitude,
-            siteLongitude: input.siteLongitude,
-            dateAdopted: null,
-            maintenanceReports: input.maintenanceReports,
-            neighborhood: input.neighborhood,
-            address: input.address
+            siteId: {S: "131"},
+            siteName: {S: input.siteName},
+            siteStatus: {S: SiteStatus.AVAILABLE},
+            assetType: {S: input.assetType},
+            symbolType: {S: input.symbolType as SymbolType},
+            siteLatitude: {S: input.siteLatitude},
+            siteLongitude: {S: input.siteLongitude},
+            neighborhood: {S: input.neighborhood},
+            address: {S: input.address},
         };
     }
 

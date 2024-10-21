@@ -4,10 +4,9 @@ export type NewSiteInput = {
     // siteStatus: string, will always be "AVAILABLE"
     assetType: string,
     symbolType: string,
-    siteLatitude: number,
-    siteLongitude: number,
+    siteLatitude: string,
+    siteLongitude: string,
     // dateAdopted: Date, will be null
-    maintenanceReports: number[],
     neighborhood: string,
     address: string
 };
