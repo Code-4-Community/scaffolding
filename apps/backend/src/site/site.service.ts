@@ -33,7 +33,7 @@ export class SiteService {
         console.log("Using new ID:" + siteModel.siteId.S)
         try {
             const result = await this.dynamoDbService.postItem(this.tableName, siteModel);
-            return result;
+            return {...result, newSiteId: newId.toString()};
         } catch (e) {
             throw new Error("Unable to post new site: " + e);
         }
@@ -92,7 +92,7 @@ export class SiteService {
 
     private PostInputToSiteModel = (input: NewSiteInput): SiteInputModel => {
         return {
-            siteId: {S: "131"},
+            siteId: {S: ""},
             siteName: {S: input.siteName},
             siteStatus: {S: SiteStatus.AVAILABLE},
             assetType: {S: input.assetType},
