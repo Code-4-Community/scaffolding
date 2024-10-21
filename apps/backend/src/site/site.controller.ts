@@ -19,10 +19,10 @@ export class SiteController {
     }  
 
     @Get()
-    public async getSitesByStatus(
+    public async getAllSitesByStatus(
         @Query("status") status: string
     ): Promise<SiteModel[]> {
-        return this.siteService.getSitesByStatus(status);
+        return this.siteService.getAllSitesByStatus(status);
     }
 
 

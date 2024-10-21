@@ -25,7 +25,7 @@ export class SiteService {
         }
     }
 
-    public async getSitesByStatus(status: string): Promise<SiteModel[]> {
+    public async getAllSitesByStatus(status: string): Promise<SiteModel[]> {
         try {
             const data = await this.dynamoDbService.scanTable(this.tableName, "siteStatus = :status", { ":status": { S: status } }  );
             const sites: SiteModel[] = [];
