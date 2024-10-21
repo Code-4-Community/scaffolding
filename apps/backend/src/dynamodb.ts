@@ -1,5 +1,6 @@
-import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
-import { Injectable } from "@nestjs/common";
+import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { Injectable, Put } from "@nestjs/common";
+import { table } from "console";
 
 @Injectable()
 export class DynamoDbService {
@@ -30,4 +31,19 @@ export class DynamoDbService {
     }
   }
 
+  public async postItem(tableName: string, item) {
+    const command = new PutItemCommand({
+      TableName: tableName,
+      Item: item,
+    });
+
+    console.log(item);
+    try {
+      const result = await this.dynamoDbClient.send(command);
+      return result;
+    } catch (error) {
+      console.log(`Error posting item to table ${tableName}`);
+      throw new Error(error);
+    }
+  }
 }

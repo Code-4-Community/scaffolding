@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { SiteModel, SiteStatus } from "./site.model";
+import { SiteModel, SiteStatus, SymbolType } from "./site.model";
 import { DynamoDbService } from "../dynamodb"; 
+import { NewSiteInput } from "../dtos/newSiteDTO";
 
 @Injectable()
 export class SiteService {
 
-    private readonly tableName = 'GIBostonSites';
+    private readonly tableName = 'greenInfraBostonSites';
 
     constructor(private readonly dynamoDbService: DynamoDbService) {}
 
@@ -25,6 +26,16 @@ export class SiteService {
         }
     }
 
+    public async postSite(siteData: NewSiteInput) {
+        const siteModel = this.PostInputToSiteModel(siteData);
+        try {
+            const result = await this.dynamoDbService.postItem(this.tableName, siteModel);
+            return result;
+        } catch (e) {
+            throw new Error("Unable to post new site: " + e);
+        }
+    }
+
     private mapDynamoDBItemToSite = (objectId: number, item: { [key: string]: any }): SiteModel => {
         return {
             siteID: objectId,
@@ -40,5 +51,21 @@ export class SiteService {
             address: item["Address"].S
         };
     };
+
+    private PostInputToSiteModel = (input: NewSiteInput): SiteModel => {
+        return {
+            siteID: 1,
+            siteName: input.siteName,
+            siteStatus: SiteStatus.AVAILABLE,
+            assetType: input.assetType,
+            symbolType: input.symbolType as SymbolType,
+            siteLatitude: input.siteLatitude,
+            siteLongitude: input.siteLongitude,
+            dateAdopted: null,
+            maintenanceReports: input.maintenanceReports,
+            neighborhood: input.neighborhood,
+            address: input.address
+        };
+    }
 
 }
