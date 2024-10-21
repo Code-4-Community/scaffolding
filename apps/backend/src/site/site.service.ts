@@ -25,9 +25,22 @@ export class SiteService {
         }
     }
 
-    public async getAllSitesByStatus(status: string): Promise<SiteModel[]> {
+    public async getFilteredSites(filters: { status?: string, symbolType?: string }): Promise<SiteModel[]> {
         try {
-            const data = await this.dynamoDbService.scanTable(this.tableName, "siteStatus = :status", { ":status": { S: status } }  );
+            const filterExpressionParts = [];
+            const expressionAttributeValues: { [key: string]: any } = {};
+            // add filters based on provided values
+            if (filters.status) {
+                filterExpressionParts.push("siteStatus = :status");
+                expressionAttributeValues[":status"] = { S: filters.status };
+            }
+            if (filters.symbolType) {
+                filterExpressionParts.push("symbolType = :symbolType");
+                expressionAttributeValues[":symbolType"] = { S: filters.symbolType };
+            }
+            // if there are more than 1 filter, combine them all with AND
+            const filterExpression = filterExpressionParts.length > 0 ? filterExpressionParts.join(" AND ") : null;
+            const data = await this.dynamoDbService.scanTable(this.tableName, filterExpression, expressionAttributeValues);
             const sites: SiteModel[] = [];
             for (let i = 0; i < data.length; i++) {
                 try {
@@ -35,15 +48,12 @@ export class SiteService {
                 } catch (error) {
                     console.error('Error mapping site:', error, data[i]);
                 }
-
             }
-            console.log("Found " + sites.length + " sites with status \"" + status + "\"");
+            console.log(`Found ${sites.length} sites matching the criteria.`);
             return sites;
+        } catch (e) {
+            throw new Error("Unable to get site data: " + e);
         }
-        catch(e) {
-            throw new Error("Unable to get site data: "+ e)
-        }
-
     }
 
     private mapDynamoDBItemToSite = (objectId: number, item: { [key: string]: any }): SiteModel => {

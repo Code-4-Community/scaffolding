@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { SiteService } from "./site.service";
 import { SiteModel } from "./site.model";
+import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("sites")
 export class SiteController {
@@ -19,10 +20,13 @@ export class SiteController {
     }  
 
     @Get()
-    public async getAllSitesByStatus(
-        @Query("status") status: string
+    @ApiQuery({ name: 'status', required: false }) // makes query parameter optional
+    @ApiQuery({ name: 'symbol-type', required: false })
+    public async getSites(
+        @Query("status") status?: string,
+        @Query("symbol-type") symbolType?: string
     ): Promise<SiteModel[]> {
-        return this.siteService.getAllSitesByStatus(status);
+        return this.siteService.getFilteredSites({ status, symbolType });
     }
 
 
