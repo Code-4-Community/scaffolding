@@ -1,4 +1,4 @@
-import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, GetItemCommand, PutItemCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { Injectable, Put } from "@nestjs/common";
 import { table } from "console";
 
@@ -15,6 +15,28 @@ export class DynamoDbService {
       },
     });
   }
+
+  public async scanTable(tableName: string, filterExpression?: string, expressionAttributeValues?: { [key: string]: any }): Promise<any[]> {
+    // By default, scan the entire table
+    const params: any = {
+      TableName: tableName,
+    };
+    // Conditionally add FilterExpression and ExpressionAttributeValues if they exist
+    if (filterExpression) {
+      params.FilterExpression = filterExpression;
+    }
+    if (expressionAttributeValues) {
+      params.ExpressionAttributeValues = expressionAttributeValues;
+    }
+    try {
+      const data = await this.dynamoDbClient.send(new ScanCommand(params));
+      return data.Items || [];
+    } catch (error) {
+      console.error('DynamoDB Scan Error:', error);
+      throw new Error(`Unable to scan table ${tableName}`);
+    }
+  }
+
 
   public async getItem(tableName: string, key: { [key: string]: any }): Promise<any> {
     const params = {

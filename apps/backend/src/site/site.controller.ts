@@ -4,11 +4,13 @@ import {
     Post,
     Body,
     Param,
+    Query
 } from "@nestjs/common";
 import { SiteService } from "./site.service";
 import { SiteModel } from "./site.model";
 import { NewSiteInput } from "../dtos/newSiteDTO";
 
+import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("sites")
 export class SiteController {
@@ -21,9 +23,19 @@ export class SiteController {
         return this.siteService.getSite(siteId);
     }  
 
-    @Post("")
+    @Post()
     public async postSite(@Body() siteData: NewSiteInput) {
         return this.siteService.postSite(siteData);
+    }
+
+    @Get()
+    @ApiQuery({ name: 'status', required: false }) // makes query parameter optional
+    @ApiQuery({ name: 'symbol-type', required: false })
+    public async getSites(
+        @Query("status") status?: string,
+        @Query("symbol-type") symbolType?: string
+    ): Promise<SiteModel[]> {
+        return this.siteService.getFilteredSites({ status, symbolType });
     }
 
 
