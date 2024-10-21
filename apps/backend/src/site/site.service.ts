@@ -38,9 +38,13 @@ export class SiteService {
                 filterExpressionParts.push("symbolType = :symbolType");
                 expressionAttributeValues[":symbolType"] = { S: filters.symbolType };
             }
-            // if there are more than 1 filter, combine them all with AND
-            const filterExpression = filterExpressionParts.length > 0 ? filterExpressionParts.join(" AND ") : null;
-            const data = await this.dynamoDbService.scanTable(this.tableName, filterExpression, expressionAttributeValues);
+            const data = await this.dynamoDbService.scanTable(
+                this.tableName, 
+                // if there are filter expression parts, join them with "AND", otherwise pass undefined
+                filterExpressionParts.length > 0 ? filterExpressionParts.join(" AND ") : undefined, 
+                // if there are expression attribute values, pass them, otherwise pass undefined
+                Object.keys(expressionAttributeValues).length > 0 ? expressionAttributeValues : undefined
+            );
             const sites: SiteModel[] = [];
             for (let i = 0; i < data.length; i++) {
                 try {

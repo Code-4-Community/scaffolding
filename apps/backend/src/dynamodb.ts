@@ -16,12 +16,17 @@ export class DynamoDbService {
   }
 
   public async scanTable(tableName: string, filterExpression?: string, expressionAttributeValues?: { [key: string]: any }): Promise<any[]> {
-    const params = {
+    // By default, scan the entire table
+    const params: any = {
       TableName: tableName,
-      FilterExpression: filterExpression,
-      ExpressionAttributeValues: expressionAttributeValues,
     };
-
+    // Conditionally add FilterExpression and ExpressionAttributeValues if they exist
+    if (filterExpression) {
+      params.FilterExpression = filterExpression;
+    }
+    if (expressionAttributeValues) {
+      params.ExpressionAttributeValues = expressionAttributeValues;
+    }
     try {
       const data = await this.dynamoDbClient.send(new ScanCommand(params));
       return data.Items || [];
