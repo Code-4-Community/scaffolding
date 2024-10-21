@@ -27,11 +27,17 @@ export class SiteService {
 
     public async getSitesByStatus(status: string): Promise<SiteModel[]> {
         try {
-            const data = await this.dynamoDbService.scanTable(this.tableName, "Site Status = :status", { ":status": { S: status } });
+            const data = await this.dynamoDbService.scanTable(this.tableName, "siteStatus = :status", { ":status": { S: status } }  );
             const sites: SiteModel[] = [];
             for (let i = 0; i < data.length; i++) {
-                sites.push(this.mapDynamoDBItemToSite(data[i]["Object ID?"].N, data[i]));
+                try {
+                    sites.push(this.mapDynamoDBItemToSite(parseInt(data[i]["siteId"].S), data[i]));
+                } catch (error) {
+                    console.error('Error mapping site:', error, data[i]);
+                }
+
             }
+            console.log("Found " + sites.length + " sites with status \"" + status + "\"");
             return sites;
         }
         catch(e) {
