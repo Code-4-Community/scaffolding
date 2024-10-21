@@ -5,7 +5,7 @@ import { DynamoDbService } from "../dynamodb";
 @Injectable()
 export class SiteService {
 
-    private readonly tableName = 'GIBostonSites';
+    private readonly tableName = 'greenInfraBostonSites';
 
     constructor(private readonly dynamoDbService: DynamoDbService) {}
 
@@ -23,6 +23,21 @@ export class SiteService {
         catch(e) {
             throw new Error("Unable to get site data: "+ e)
         }
+    }
+
+    public async getSitesByStatus(status: string): Promise<SiteModel[]> {
+        try {
+            const data = await this.dynamoDbService.scanTable(this.tableName, "Site Status = :status", { ":status": { S: status } });
+            const sites: SiteModel[] = [];
+            for (let i = 0; i < data.length; i++) {
+                sites.push(this.mapDynamoDBItemToSite(data[i]["Object ID?"].N, data[i]));
+            }
+            return sites;
+        }
+        catch(e) {
+            throw new Error("Unable to get site data: "+ e)
+        }
+
     }
 
     private mapDynamoDBItemToSite = (objectId: number, item: { [key: string]: any }): SiteModel => {
