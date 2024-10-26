@@ -30,8 +30,8 @@ export class SiteController {
         return this.siteService.getFilteredSites({ status, symbolType });
     }
 
-    @Delete(":id")
-    public async deleteSite(
+    @Delete("/deleteSite/:id")
+    public async deleteSiteById(
         @Param("id") siteId: number
     ): Promise<void> {
         return this.siteService.deleteSite(siteId);
