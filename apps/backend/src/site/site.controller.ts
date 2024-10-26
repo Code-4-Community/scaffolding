@@ -1,5 +1,6 @@
 import {
     Controller,
+    Delete,
     Get,
     Param,
     Query
@@ -27,6 +28,13 @@ export class SiteController {
         @Query("symbol-type") symbolType?: string
     ): Promise<SiteModel[]> {
         return this.siteService.getFilteredSites({ status, symbolType });
+    }
+
+    @Delete(":id")
+    public async deleteSite(
+        @Param("id") siteId: number
+    ): Promise<void> {
+        return this.siteService.deleteSite(siteId);
     }
 
 
