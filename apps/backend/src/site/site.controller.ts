@@ -48,15 +48,7 @@ export class SiteController {
         return this.siteService.postSite(siteData);
     }
 
-    @Get()
-    @ApiQuery({ name: 'status', required: false }) // makes query parameter optional
-    @ApiQuery({ name: 'symbol-type', required: false })
-    public async getSites(
-        @Query("status") status?: string,
-        @Query("symbol-type") symbolType?: string
-    ): Promise<SiteModel[]> {
-        return this.siteService.getFilteredSites({ status, symbolType });
-    }
+ 
 
 
 
