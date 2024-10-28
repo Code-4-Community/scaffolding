@@ -1,5 +1,6 @@
 import {
     Controller,
+    Delete,
     Get,
     Post,
     Body,
@@ -48,8 +49,15 @@ export class SiteController {
         return this.siteService.postSite(siteData);
     }
 
- 
 
+    @Delete("/deleteSite/:id")
+    public async deleteSiteById(
+        @Param("id") siteId: number
+    ): Promise<void> {
+        return this.siteService.deleteSite(siteId);
+    }
+
+ 
 
 
 }

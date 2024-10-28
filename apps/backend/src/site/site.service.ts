@@ -83,6 +83,16 @@ export class SiteService {
 
     }
 
+    public async deleteSite(siteId: number): Promise<void> {
+        try {
+            const key = { 'siteId': { S: siteId.toString() } };
+            await this.dynamoDbService.deleteItem(this.tableName, key);
+            console.log(`Deleted site with id ${siteId}`);
+        } catch (e) {
+            throw new Error("Unable to delete site data: " + e);
+        }
+    }
+
 
     private mapDynamoDBItemToSite = (objectId: number, item: { [key: string]: any }): SiteModel => {
         return {
