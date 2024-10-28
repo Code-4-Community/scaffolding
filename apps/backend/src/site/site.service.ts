@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { SiteModel, SiteStatus } from "./site.model";
+import { SiteInputModel, SiteModel, SiteStatus, SymbolType } from "./site.model";
 import { DynamoDbService } from "../dynamodb"; 
+import { NewSiteInput } from "../dtos/newSiteDTO";
 
 @Injectable()
 export class SiteService {
@@ -24,6 +25,21 @@ export class SiteService {
             throw new Error("Unable to get site data: "+ e)
         }
     }
+  
+    public async postSite(siteData: NewSiteInput) {
+        const siteModel = this.PostInputToSiteModel(siteData);
+        const newId = await this.dynamoDbService.getHighestSiteId(this.tableName) + 1;
+        siteModel.siteId.S = newId.toString();
+        console.log("Using new ID:" + siteModel.siteId.S)
+        try {
+            const result = await this.dynamoDbService.postItem(this.tableName, siteModel);
+            return {...result, newSiteId: newId.toString()};
+        } catch (e) {
+            throw new Error("Unable to post new site: " + e);
+        }
+    }
+
+
 
     public async getSitesByStatus(status: string): Promise<SiteModel[]> {
         try {
@@ -83,5 +99,19 @@ export class SiteService {
             address: item["address"].S
         };
     };
+
+    private PostInputToSiteModel = (input: NewSiteInput): SiteInputModel => {
+        return {
+            siteId: {S: ""},
+            siteName: {S: input.siteName},
+            siteStatus: {S: SiteStatus.AVAILABLE},
+            assetType: {S: input.assetType},
+            symbolType: {S: input.symbolType as SymbolType},
+            siteLatitude: {S: input.siteLatitude},
+            siteLongitude: {S: input.siteLongitude},
+            neighborhood: {S: input.neighborhood},
+            address: {S: input.address},
+        };
+    }
 
 }
