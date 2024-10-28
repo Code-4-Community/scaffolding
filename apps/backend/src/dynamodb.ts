@@ -15,7 +15,7 @@ export class DynamoDbService {
     });
   }
 
-  public async scanTable(tableName: string, filterExpression?: string, expressionAttributeValues?: { [key: string]: any }): Promise<any[]> {
+  public async scanTable(tableName: string, filterExpression?: string, expressionAttributeValues?: { [key: string]: any }, expressionAttributeNames?: { [key: string]: any }): Promise<any[]> {
     // By default, scan the entire table
     const params: any = {
       TableName: tableName,
@@ -26,6 +26,9 @@ export class DynamoDbService {
     }
     if (expressionAttributeValues) {
       params.ExpressionAttributeValues = expressionAttributeValues;
+    }
+    if (expressionAttributeNames) {
+      params.ExpressionAttributeNames = expressionAttributeNames;
     }
     try {
       const data = await this.dynamoDbClient.send(new ScanCommand(params));
