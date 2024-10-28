@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { SiteModel, SiteStatus } from "./site.model";
+import { SiteInputModel, SiteModel, SiteStatus, SymbolType } from "./site.model";
 import { DynamoDbService } from "../dynamodb"; 
+import { NewSiteInput } from "../dtos/newSiteDTO";
 
 @Injectable()
 export class SiteService {
@@ -24,27 +25,25 @@ export class SiteService {
             throw new Error("Unable to get site data: "+ e)
         }
     }
-
-    public async getFilteredSites(filters: { status?: string, symbolType?: string }): Promise<SiteModel[]> {
+  
+    public async postSite(siteData: NewSiteInput) {
+        const siteModel = this.PostInputToSiteModel(siteData);
+        const newId = await this.dynamoDbService.getHighestSiteId(this.tableName) + 1;
+        siteModel.siteId.S = newId.toString();
+        console.log("Using new ID:" + siteModel.siteId.S)
         try {
-            const filterExpressionParts = [];
-            const expressionAttributeValues: { [key: string]: any } = {};
-            // add filters based on provided values
-            if (filters.status) {
-                filterExpressionParts.push("siteStatus = :status");
-                expressionAttributeValues[":status"] = { S: filters.status };
-            }
-            if (filters.symbolType) {
-                filterExpressionParts.push("symbolType = :symbolType");
-                expressionAttributeValues[":symbolType"] = { S: filters.symbolType };
-            }
-            const data = await this.dynamoDbService.scanTable(
-                this.tableName, 
-                // if there are filter expression parts, join them with "AND", otherwise pass undefined
-                filterExpressionParts.length > 0 ? filterExpressionParts.join(" AND ") : undefined, 
-                // if there are expression attribute values, pass them, otherwise pass undefined
-                Object.keys(expressionAttributeValues).length > 0 ? expressionAttributeValues : undefined
-            );
+            const result = await this.dynamoDbService.postItem(this.tableName, siteModel);
+            return {...result, newSiteId: newId.toString()};
+        } catch (e) {
+            throw new Error("Unable to post new site: " + e);
+        }
+    }
+
+
+
+    public async getSitesByStatus(status: string): Promise<SiteModel[]> {
+        try {
+            const data = await this.dynamoDbService.scanTable(this.tableName, "siteStatus = :status", { ":status": { S: status } }  );
             const sites: SiteModel[] = [];
             for (let i = 0; i < data.length; i++) {
                 try {
@@ -52,12 +51,36 @@ export class SiteService {
                 } catch (error) {
                     console.error('Error mapping site:', error, data[i]);
                 }
+
             }
-            console.log(`Found ${sites.length} sites matching the criteria.`);
+            console.log("Found " + sites.length + " \"" + status + "' sites");
             return sites;
-        } catch (e) {
-            throw new Error("Unable to get site data: " + e);
         }
+        catch(e) {
+            throw new Error("Unable to get site by status: "+ e)
+        }
+
+    }
+
+    public async getSitesBySymbolType(symbolType: string): Promise<SiteModel[]> {
+        try {
+            const data = await this.dynamoDbService.scanTable(this.tableName, "symbolType = :symbolType", { ":symbolType": { S: symbolType } }  );
+            const sites: SiteModel[] = [];
+            for (let i = 0; i < data.length; i++) {
+                try {
+                    sites.push(this.mapDynamoDBItemToSite(parseInt(data[i]["siteId"].S), data[i]));
+                } catch (error) {
+                    console.error('Error mapping site:', error, data[i]);
+                }
+
+            }
+            console.log("Found " + sites.length + " \"" + symbolType + "' sites");
+            return sites;
+        }
+        catch(e) {
+            throw new Error("Unable to get site by symbol: "+ e)
+        }
+
     }
 
     public async deleteSite(siteId: number): Promise<void> {
@@ -69,6 +92,7 @@ export class SiteService {
             throw new Error("Unable to delete site data: " + e);
         }
     }
+
 
     private mapDynamoDBItemToSite = (objectId: number, item: { [key: string]: any }): SiteModel => {
         return {
@@ -85,5 +109,19 @@ export class SiteService {
             address: item["address"].S
         };
     };
+
+    private PostInputToSiteModel = (input: NewSiteInput): SiteInputModel => {
+        return {
+            siteId: {S: ""},
+            siteName: {S: input.siteName},
+            siteStatus: {S: SiteStatus.AVAILABLE},
+            assetType: {S: input.assetType},
+            symbolType: {S: input.symbolType as SymbolType},
+            siteLatitude: {S: input.siteLatitude},
+            siteLongitude: {S: input.siteLongitude},
+            neighborhood: {S: input.neighborhood},
+            address: {S: input.address},
+        };
+    }
 
 }
