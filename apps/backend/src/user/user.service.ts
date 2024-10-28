@@ -36,6 +36,7 @@ export class UserService {
 
     }
 
+
     public async getUserTables(userId: number): Promise<Array<number>> {
         try {
             const key = { 'userId' : {N: userId.toString()}};
@@ -64,6 +65,7 @@ export class UserService {
 
         const siteIds = data["siteIds"]?.NS?.map(Number) ?? [];
 
+
         return {
             userID: objectId,
             firstName: data['firstName'].S,
@@ -77,5 +79,6 @@ export class UserService {
             status: data['status'].S
         };
     }
+
 
 }

@@ -19,10 +19,12 @@ export class UserController {
         ): Promise<UserModel> {
             return this.userService.getUser(userId);
         }
+
     
     @Get(":id/sites")
     public async getUserSites(@Param("id") userId?: number): Promise<any> {
         return this.userService.getUserTables(userId);
     }
+
 
 }
