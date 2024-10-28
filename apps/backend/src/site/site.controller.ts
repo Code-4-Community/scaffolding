@@ -5,9 +5,9 @@ import {
     Post,
     Body,
     Param,
-    Query,
-    Delete
-} from "@nestjs/common";
+    Query
+} 
+from "@nestjs/common";
 import { SiteService } from "./site.service";
 import { SiteModel } from "./site.model";
 import { NewSiteInput } from "../dtos/newSiteDTO";
