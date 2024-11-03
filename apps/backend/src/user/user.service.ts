@@ -10,8 +10,6 @@ export class UserService {
     private readonly tableName = 'gibostonUsers';
     constructor(private readonly dynamoDbService: DynamoDbService) {}
 
- 
-
     /**
      * Gets a user's information based on the user's id.
      * @param userId The user's id
@@ -36,6 +34,23 @@ export class UserService {
 
     }
 
+    /**
+     * Removes the user of the given user id.
+     * @param userId The user's id
+     * @throws Error if the user's data could not be fetched from DynamoDB
+     * @returns The user's information as a UserModel object
+     */
+    public async remove(userId: number): Promise<void> {
+        try {
+            const key = { 'userId' : {N: userId.toString()}};
+            await this.dynamoDbService.deleteItem(this.tableName, key);
+            console.log(`Deleted user with id ${userId}`);
+        }
+        catch(e) {
+            throw new Error(`Unable to delete user: ${userId}: ${e.message}`);
+        }
+
+    }
 
     /**
      * Maps a user's data from DynamoDB to a UserModel object.

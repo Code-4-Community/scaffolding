@@ -1,6 +1,7 @@
 import {
     Controller,
     Get,
+    Delete,
     Param,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
@@ -18,6 +19,13 @@ export class UserController {
         @Param("id") userId?: number
         ): Promise<UserModel> {
             return this.userService.getUser(userId);
+        }
+
+    @Delete(":id")
+    public async removeUser(
+        @Param("id") userId?: number
+        ): Promise<void> {
+            return this.userService.remove(userId);
         }
 
 
