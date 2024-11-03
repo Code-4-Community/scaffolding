@@ -23,6 +23,22 @@ export class ApplicationsService {
   }
 
   /**
+   * Gets all applications that are first applications.
+   *
+   * @returns a list of all first applications as ApplicationsModel objects.
+   */
+  public async getFirstApplications(): Promise<ApplicationsModel[]> {
+    try {
+      const data = await this.dynamoDbService.scanTable(this.tableName, 'isFirstApplication = :isFirst', {
+        ':isFirst': { BOOL: true },
+      });
+      return data.map(this.mapDynamoDBItemToApplication);
+    } catch (e) {
+      throw new Error('Unable to retrieve first applications: ' + e);
+    }
+  }
+
+  /**
    * Updates the status of the given application id.
    *
    * @returns the modified application.

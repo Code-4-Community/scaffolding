@@ -12,6 +12,11 @@ export class ApplicationsController {
     return this.applicationsService.getApplications();
   }
 
+  @Get('getFirstApplications')
+  public async getFirstApplications(): Promise<ApplicationsModel[]> {
+    return this.applicationsService.getFirstApplications();
+  }
+
   @Put('applicationStatus/:appId')
   public async changeApplicationStatus(
     @Param('appId') appId: number,
