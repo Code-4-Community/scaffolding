@@ -37,6 +37,23 @@ export class UserService {
     }
 
 
+    public async getUserTables(userId: number): Promise<Array<number>> {
+        try {
+            const key = { 'userId' : {N: userId.toString()}};
+            const data = await this.dynamoDbService.getItem(this.tableName, key);
+            if (!data) {
+                throw new Error(`No user found with id: ${userId}`);
+            }
+            console.log(data);
+            const siteIds = data["siteIds"].L.map(item => Number(item.N));
+            return siteIds;
+        } 
+        catch(e) {
+            throw new Error(`Error fetching data for user with id: ${userId}: ${e.message}`);
+        }
+    }
+
+
     /**
      * Maps a user's data from DynamoDB to a UserModel object.
      * @param objectId the user's id
@@ -62,7 +79,6 @@ export class UserService {
             status: data['status'].S
         };
     }
-
 
 
 }
