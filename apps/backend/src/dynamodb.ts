@@ -1,5 +1,13 @@
-import { DynamoDBClient, GetItemCommand, PutItemCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
-import { Injectable } from "@nestjs/common";
+import {
+  DynamoDBClient,
+  GetItemCommand,
+  ScanCommand,
+  DeleteItemCommand,
+  PutItemCommand,
+  UpdateItemCommand,
+} from '@aws-sdk/client-dynamodb';
+import { Injectable, Put } from '@nestjs/common';
+import { table } from 'console';
 
 @Injectable()
 export class DynamoDbService {
@@ -15,7 +23,28 @@ export class DynamoDbService {
     });
   }
 
-  public async scanTable(tableName: string, filterExpression?: string, expressionAttributeValues?: { [key: string]: any }): Promise<any[]> {
+  public async deleteItem(
+    tableName: string,
+    key: { [key: string]: any },
+  ): Promise<void> {
+    const params = {
+      TableName: tableName,
+      Key: key,
+    };
+
+    try {
+      await this.dynamoDbClient.send(new DeleteItemCommand(params));
+    } catch (error) {
+      console.error('DynamoDB DeleteItem Error:', error);
+      throw new Error(`Unable to delete item from ${tableName}`);
+    }
+  }
+
+  public async scanTable(
+    tableName: string,
+    filterExpression?: string,
+    expressionAttributeValues?: { [key: string]: any },
+  ): Promise<any[]> {
     // By default, scan the entire table
     const params: any = {
       TableName: tableName,
@@ -61,8 +90,39 @@ export class DynamoDbService {
     }
   }
 
+  public async getHighestSiteId(
+    tableName: string,
+  ): Promise<number | undefined> {
+    const params: any = {
+      TableName: tableName,
+      ProjectionExpression: 'siteId', // Project only the siteId attribute
+    };
 
-  public async getItem(tableName: string, key: { [key: string]: any }): Promise<any> {
+    try {
+      const data = await this.dynamoDbClient.send(new ScanCommand(params));
+      const siteIds = data.Items.map((item) => parseInt(item.siteId.S, 10)); // Convert to numbers
+
+      // Handle potential parsing errors
+      const validSiteIds = siteIds.filter((id) => !isNaN(id));
+
+      if (validSiteIds.length === 0) {
+        return undefined; // No valid site IDs found
+      }
+
+      const highestSiteId = validSiteIds.reduce((max, current) =>
+        Math.max(max, current),
+      );
+      return highestSiteId;
+    } catch (error) {
+      console.error('DynamoDB Scan Error:', error);
+      throw new Error(`Unable to scan table ${tableName}`);
+    }
+  }
+
+  public async getItem(
+    tableName: string,
+    key: { [key: string]: any },
+  ): Promise<any> {
     const params = {
       TableName: tableName,
       Key: key,
@@ -91,5 +151,21 @@ export class DynamoDbService {
       console.log(`Error posting item to table ${tableName}`);
       throw new Error(error);
     }
+  }
+
+  public async updateItem(
+    tableName: string,
+    key: { [key: string]: any },
+    status: string,
+  ): Promise<any> {
+    const params = {
+      TableName: tableName,
+      Key: key,
+      UpdateExpression: `SET status = ${status}`,
+      ReturnValue: 'ALL_NEW',
+    };
+    const command = new UpdateItemCommand(params);
+    const result = await this.dynamoDbClient.send(command);
+    return result.Attributes;
   }
 }
