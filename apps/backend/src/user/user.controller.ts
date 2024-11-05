@@ -27,5 +27,11 @@ export class UserController {
     public async addVolunteer( @Body() userData: NewUserInput) {
         return this.userService.postUserVolunteer(userData);
     }
+    
+    @Get(":id/sites")
+    public async getUserSites(@Param("id") userId?: number): Promise<any> {
+        return this.userService.getUserTables(userId);
+    }
+
 
 }
