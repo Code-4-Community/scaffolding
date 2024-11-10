@@ -27,6 +27,11 @@ export class UserController {
         ): Promise<void> {
             return this.userService.remove(userId);
         }
+    
+    @Get(":id/sites")
+    public async getUserSites(@Param("id") userId?: number): Promise<any> {
+        return this.userService.getUserTables(userId);
+    }
 
 
 }
