@@ -33,14 +33,13 @@ export class ApplicationsService {
     appStatus: ApplicationStatus,
   ): Promise<ApplicationsModel> {
     try {
-      const key = { 'Object ID?': { N: appId } };
+      const key = { 'appId': { N: appId } };
       const application = await this.dynamoDbService.updateItem(
         this.tableName,
         key,
         appStatus,
       );
-
-      return application;
+      return this.mapDynamoDBItemToApplication(application);
     } catch (e) {
       throw new Error('Unable to update application status: ' + e);
     }

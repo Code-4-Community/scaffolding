@@ -136,11 +136,18 @@ export class DynamoDbService {
     const params = {
       TableName: tableName,
       Key: key,
-      UpdateExpression: `SET status = ${status}`,
+      UpdateExpression: 'SET #status = :status',
+      ExpressionAttributeNames: {
+        '#status': 'status',
+      },
+      ExpressionAttributeValues: {
+        ':status': { S: status },
+      },
       ReturnValue: 'ALL_NEW',
     };
     const command = new UpdateItemCommand(params);
-    const result = await this.dynamoDbClient.send(command);
-    return result.Attributes;
+    await this.dynamoDbClient.send(command);
+    const result = this.getItem(tableName, key);
+    return result;
   }
 }
