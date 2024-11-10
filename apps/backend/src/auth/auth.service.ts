@@ -17,7 +17,7 @@ import { SignInDto } from '../dtos/sign-in.dto';
 import { SignInResponseDto } from '../dtos/sign-in-response.dto';
 import { createHmac } from 'crypto';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
-import { Status } from '../users/types';
+import { UserStatus } from '../user/user.model';
 import { ConfirmPasswordDto } from '../dtos/confirm-password.dto';
 
 @Injectable()
@@ -60,7 +60,7 @@ export class AuthService {
 
   async signup(
     { firstName, lastName, email, password }: SignUpDto,
-    status: Status = Status.STANDARD,
+    status: UserStatus = UserStatus.PENDING,
   ): Promise<boolean> {
     // Needs error handling
     const signUpCommand = new SignUpCommand({
