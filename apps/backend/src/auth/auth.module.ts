@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.entity';
 import { JwtStrategy } from './jwt.strategy';
+import { DynamoDbService } from '../dynamodb';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { JwtStrategy } from './jwt.strategy';
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, JwtStrategy],
+  providers: [AuthService, UserService, JwtStrategy, DynamoDbService],
+  exports: [AuthService]
 })
 export class AuthModule {}

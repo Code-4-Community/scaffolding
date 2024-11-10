@@ -5,6 +5,7 @@ Controller,
 Post
 } from '@nestjs/common';
 
+import { NewUserInput } from '../dtos/newUserDTO';
 import { SignInDto } from '../dtos/sign-in.dto';
 import { SignUpDto } from '../dtos/sign-up.dto';
 import { AuthService } from './auth.service';
@@ -28,7 +29,7 @@ export class AuthController {
     ) {}
 
     @Post('/signup')
-    async createUser(@Body() signUpDto: SignUpDto): Promise<User> {
+    async createUser(@Body() signUpDto: SignUpDto) {
         // By default, creates a standard user
         try {
         await this.authService.signup(signUpDto);
@@ -36,11 +37,16 @@ export class AuthController {
         throw new BadRequestException(e.message);
         }
 
-        const user = await this.userService.create(
-        signUpDto.email,
-        signUpDto.firstName,
-        signUpDto.lastName,
-        );
+        const newUser: NewUserInput = {
+            firstName: signUpDto.firstName,
+            lastName: signUpDto.lastName,
+            phoneNumber: signUpDto.phoneNumber,
+            email: signUpDto.email,
+            zipCode: signUpDto.zipCode,
+            birthDate: signUpDto.birthDate,
+        };
+
+        const user = await this.userService.postUserVolunteer(newUser);
 
         return user;
     }
@@ -85,6 +91,6 @@ export class AuthController {
         throw new BadRequestException(e.message);
         }
 
-        this.userService.remove(user.userID);
+        this.userService.remove(user.userId);
     }
 }
