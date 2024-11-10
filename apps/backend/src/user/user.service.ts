@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { UserModel } from "./user.model";
 import { DynamoDbService } from "../dynamodb";
-import {UserStatus} from "./user.model";
-import {Role} from "./user.model";
+import { UserInputModel, UserStatus, Role } from "./user.model";
+import { NewUserInput } from "../dtos/newUserDTO";
 
 @Injectable()
 export class UserService {
@@ -51,6 +51,36 @@ export class UserService {
         }
 
     }
+    public async postUserVolunteer(userData: NewUserInput) {
+        const userModel = this.PostInputToUserVolunteerModel(userData);
+        const newId = await this.dynamoDbService.getHighestUserId(this.tableName) + 1;
+        userModel.userId.N = newId.toString();
+        console.log("Using new ID:" + userModel.userId.N);
+        try {
+            const result = await this.dynamoDbService.postItem(this.tableName, userModel);
+            return {...result, newUserID: newId.toString()};
+        } catch (e) {
+            throw new Error("Unable to post new user: " + e);
+        }
+    }
+
+
+    public async getUserTables(userId: number): Promise<Array<number>> {
+        try {
+            const key = { 'userId' : {N: userId.toString()}};
+            const data = await this.dynamoDbService.getItem(this.tableName, key);
+            if (!data) {
+                throw new Error(`No user found with id: ${userId}`);
+            }
+            console.log(data);
+            const siteIds = data["siteIds"].L.map(item => Number(item.N));
+            return siteIds;
+        } 
+        catch(e) {
+            throw new Error(`Error fetching data for user with id: ${userId}: ${e.message}`);
+        }
+    }
+
 
     /**
      * Maps a user's data from DynamoDB to a UserModel object.
@@ -65,7 +95,7 @@ export class UserService {
 
 
         return {
-            userID: objectId,
+            userId: objectId,
             firstName: data['firstName'].S,
             lastName: data['lastName'].S,
             email: data['email'].S,
@@ -78,6 +108,19 @@ export class UserService {
         };
     }
 
-
+    private PostInputToUserVolunteerModel = (input: NewUserInput): UserInputModel => {
+        return {
+            userId: {N: "0"},
+            firstName: {S: input.firstName},
+            lastName: {S: input.lastName},
+            phoneNumber: {S: input.phoneNumber},
+            email: {S: input.email},
+            zipCode: {S: input.zipCode},
+            birthDate: {S: input.birthDate},
+            role: {S: Role.VOLUNTEER},
+            siteIds: {S: "null"},
+            status: {S: UserStatus.PENDING}
+        };
+    }
 
 }
