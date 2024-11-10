@@ -34,12 +34,19 @@ export class ApplicationsService {
   ): Promise<ApplicationsModel> {
     try {
       const key = { 'appId': { N: appId } };
-      const application = await this.dynamoDbService.updateItem(
+      const application = await this.dynamoDbService.getItem(
+        this.tableName,
+        key,
+      );
+      if (!application) {
+        throw new Error('Application not found');
+      }
+      const updatedApplication = await this.dynamoDbService.updateItem(
         this.tableName,
         key,
         appStatus,
       );
-      return this.mapDynamoDBItemToApplication(application);
+      return this.mapDynamoDBItemToApplication(updatedApplication);
     } catch (e) {
       throw new Error('Unable to update application status: ' + e);
     }
