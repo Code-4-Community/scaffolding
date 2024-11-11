@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
-  AdminDeleteUserCommand,
   AdminInitiateAuthCommand,
   AttributeType,
   CognitoIdentityProviderClient,
-  ConfirmForgotPasswordCommand,
-  ConfirmSignUpCommand,
-  ForgotPasswordCommand,
   ListUsersCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -16,9 +12,7 @@ import { SignUpDto } from '../dtos/sign-up.dto';
 import { SignInDto } from '../dtos/sign-in.dto';
 import { SignInResponseDto } from '../dtos/sign-in-response.dto';
 import { createHmac } from 'crypto';
-import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { UserStatus } from '../user/user.model';
-import { ConfirmPasswordDto } from '../dtos/confirm-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -86,17 +80,6 @@ export class AuthService {
     return response.UserConfirmed;
   }
 
-  async verifyUser(email: string, verificationCode: string): Promise<void> {
-    const confirmCommand = new ConfirmSignUpCommand({
-      ClientId: CognitoAuthConfig.clientId,
-      SecretHash: this.calculateHash(email),
-      Username: email,
-      ConfirmationCode: verificationCode,
-    });
-
-    await this.providerClient.send(confirmCommand);
-  }
-
   async signin({ email, password }: SignInDto): Promise<SignInResponseDto> {
     const signInCommand = new AdminInitiateAuthCommand({
       AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
@@ -118,62 +101,4 @@ export class AuthService {
     };
   }
 
-  // Refresh token hash uses a user's sub (unique ID), not their username (typically their email)
-  async refreshToken({
-    refreshToken,
-    userSub,
-  }: RefreshTokenDto): Promise<SignInResponseDto> {
-    const refreshCommand = new AdminInitiateAuthCommand({
-      AuthFlow: 'REFRESH_TOKEN_AUTH',
-      ClientId: CognitoAuthConfig.clientId,
-      UserPoolId: CognitoAuthConfig.userPoolId,
-      AuthParameters: {
-        REFRESH_TOKEN: refreshToken,
-        SECRET_HASH: this.calculateHash(userSub),
-      },
-    });
-
-    const response = await this.providerClient.send(refreshCommand);
-
-    return {
-      accessToken: response.AuthenticationResult.AccessToken,
-      refreshToken: refreshToken,
-      idToken: response.AuthenticationResult.IdToken,
-    };
-  }
-
-  async forgotPassword(email: string) {
-    const forgotCommand = new ForgotPasswordCommand({
-      ClientId: CognitoAuthConfig.clientId,
-      Username: email,
-      SecretHash: this.calculateHash(email),
-    });
-
-    await this.providerClient.send(forgotCommand);
-  }
-
-  async confirmForgotPassword({
-    email,
-    confirmationCode,
-    newPassword,
-  }: ConfirmPasswordDto) {
-    const confirmComamnd = new ConfirmForgotPasswordCommand({
-      ClientId: CognitoAuthConfig.clientId,
-      SecretHash: this.calculateHash(email),
-      Username: email,
-      ConfirmationCode: confirmationCode,
-      Password: newPassword,
-    });
-
-    await this.providerClient.send(confirmComamnd);
-  }
-
-  async deleteUser(email: string): Promise<void> {
-    const adminDeleteUserCommand = new AdminDeleteUserCommand({
-      Username: email,
-      UserPoolId: CognitoAuthConfig.userPoolId,
-    });
-
-    await this.providerClient.send(adminDeleteUserCommand);
-  }
 }

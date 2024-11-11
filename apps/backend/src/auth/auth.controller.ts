@@ -10,14 +10,8 @@ import { SignInDto } from '../dtos/sign-in.dto';
 import { SignUpDto } from '../dtos/sign-up.dto';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
-import { VerifyUserDto } from '../dtos/verify-user.dto';
-import { DeleteUserDto } from '../dtos/delete-user.dto';
-import { User } from '../user/user.entity';
 import { SignInResponseDto } from '../dtos/sign-in-response.dto';
-import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 //import { AuthGuard } from '@nestjs/passport';
-import { ConfirmPasswordDto } from '../dtos/confirm-password.dto';
-import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
@@ -51,46 +45,9 @@ export class AuthController {
         return user;
     }
 
-    // TODO deprecated if verification code is replaced by link
-    @Post('/verify')
-    verifyUser(@Body() body: VerifyUserDto): void {
-        try {
-        this.authService.verifyUser(body.email, body.verificationCode);
-        } catch (e) {
-        throw new BadRequestException(e.message);
-        }
-    }
-
     @Post('/signin')
     signin(@Body() signInDto: SignInDto): Promise<SignInResponseDto> {
         return this.authService.signin(signInDto);
     }
 
-    @Post('/refresh')
-    refresh(@Body() refreshDto: RefreshTokenDto): Promise<SignInResponseDto> {
-        return this.authService.refreshToken(refreshDto);
-    }
-
-    @Post('/forgotPassword')
-    forgotPassword(@Body() body: ForgotPasswordDto): Promise<void> {
-        return this.authService.forgotPassword(body.email);
-    }
-
-    @Post('/confirmPassword')
-    confirmPassword(@Body() body: ConfirmPasswordDto): Promise<void> {
-        return this.authService.confirmForgotPassword(body);
-    }
-
-    @Post('/delete')
-    async delete(@Body() body: DeleteUserDto): Promise<void> {
-        const user = await this.userService.getUser(body.userId);
-
-        try {
-        await this.authService.deleteUser(user.email);
-        } catch (e) {
-        throw new BadRequestException(e.message);
-        }
-
-        this.userService.remove(user.userId);
-    }
 }
