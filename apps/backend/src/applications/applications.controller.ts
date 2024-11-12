@@ -34,8 +34,5 @@ export class ApplicationsController {
     return appToModify;
   }
 
-  // @Post()
-  // public async postSite(@Body() applicationData: NewApplicationInput) {
-  //     return this.applicationsService.postSite(applicationData);
-  // }
+
 }

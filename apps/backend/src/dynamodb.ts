@@ -149,3 +149,4 @@ export class DynamoDbService {
     return result.Attributes;
   }
 }
+
