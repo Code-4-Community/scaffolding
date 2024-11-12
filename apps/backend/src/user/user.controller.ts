@@ -2,9 +2,11 @@ import {
     Controller,
     Get,
     Param,
+    Put,
+    Body
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { UserModel } from "./user.model";
+import { UserModel, EditUserModel } from "./user.model";
 
 /**
  * The controller for user endpoints.
@@ -24,6 +26,14 @@ export class UserController {
     @Get(":id/sites")
     public async getUserSites(@Param("id") userId?: number): Promise<any> {
         return this.userService.getUserTables(userId);
+    }
+
+    @Put("/editUser/:id")
+    public async editUser(
+        @Param("id") userId?: number, 
+        @Body() editUserModel?: EditUserModel
+    ): Promise<UserModel> {
+        return this.userService.editUser(userId, editUserModel);
     }
 
 
