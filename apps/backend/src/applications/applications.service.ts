@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ApplicationsModel } from './applications.model';
+import { ApplicationInputModel, ApplicationsModel } from './applications.model';
 import { DynamoDbService } from '../dynamodb';
 import { ApplicationStatus } from './applications.model';
+// import { NewApplicationInput } from '../dtos/newApplicationsDTO';
 
 @Injectable()
 export class ApplicationsService {
