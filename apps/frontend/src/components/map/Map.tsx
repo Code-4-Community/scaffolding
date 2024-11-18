@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { loader, BOSTON_BOUNDS, BOSTON_PLACE_ID } from '../../constants';
 import styled from 'styled-components';
-import { SITES } from '../../GIBostonSites';
 import generateCircleSVG from '../../images/markers/circle';
 import generateSquareSVG from '../../images/markers/square';
 import generateDiamondSVG from '../../images/markers/diamond';
@@ -13,10 +12,32 @@ import { createRoot } from 'react-dom/client';
 import { createPortal } from 'react-dom';
 import SignUpPage from '../volunteer/signup/SignUpPage';
 
-
 const MapDiv = styled.div`
   height: 100%;
 `;
+
+async function fetchAllSites() {
+  const response = await fetch('http://localhost:3000/sites'); 
+  if (!response.ok) {
+    throw new Error('Failed to fetch site data');
+  }
+  return response.json();
+}
+
+const iconGenerators = {
+  'Rain Garden': generateSquareSVG,
+  'Bioswale': generateTriangleSVG,
+  'Bioretention': generateCircleSVG,
+  'Porous Paving': generateDiamondSVG,
+  'Tree Trench/Pit': generateStarSVG,
+  'Green Roof/Planter': generatePentagonSVG,
+} as const;
+
+type SymbolType = keyof typeof iconGenerators;
+
+function isValidSymbolType(symbol: string): symbol is SymbolType {
+  return symbol in iconGenerators;
+}
 
 function filterMarkers(
   selectedFeatures: string[],
@@ -41,7 +62,6 @@ function filterMarkers(
     });
   }
 
-  // need to apply filtering from site type as well
   if (selectedStatuses.length === 0) {
     tempMarkers.forEach((marker: google.maps.Marker) => {
       marker.setMap(map);
@@ -50,7 +70,6 @@ function filterMarkers(
     tempMarkers.forEach((marker: google.maps.Marker) => marker.setMap(null));
     tempMarkers.forEach((marker: google.maps.Marker) => {
       const status = marker.get('status');
-      console.log(selectedStatuses);
       if (selectedStatuses.includes(status)) {
         marker.setMap(map);
       }
@@ -62,11 +81,6 @@ interface MapProps {
   readonly zoom: number;
   selectedFeatures: string[];
   selectedStatuses: string[];
-}
-
-function randomizeStatus(): string {
-  const statuses = ['Available', 'Adopted'];
-  return statuses[Math.floor(Math.random() * statuses.length)];
 }
 
 const Map: React.FC<MapProps> = ({
@@ -82,7 +96,7 @@ const Map: React.FC<MapProps> = ({
 
   useEffect(() => {
     if (mapRef.current) {
-      loader.load().then(() => {
+      loader.load().then(async () => {
         map = new google.maps.Map(mapRef.current as HTMLElement, {
           center: { lat: 42.36, lng: -71.06 },
           zoom: 8,
@@ -102,80 +116,26 @@ const Map: React.FC<MapProps> = ({
           },
         });
 
-        // sets the style for the boundary
-        const featureLayer = map.getFeatureLayer(
-          google.maps.FeatureType.LOCALITY,
-        );
-        const featureStyleOptions: google.maps.FeatureStyleOptions = {
-          strokeColor: '#50B0E6',
-          strokeOpacity: 1.0,
-          strokeWeight: 3.0,
-          fillColor: '#50B0E6',
-          fillOpacity: 0.3,
-        };
-
-        featureLayer.style = (options) => {
-          const feature = options.feature as google.maps.PlaceFeature;
-          if (feature.placeId === BOSTON_PLACE_ID) {
-            // Place ID for Boston
-            return featureStyleOptions;
-          }
-        };
-
         let currentInfoWindow: google.maps.InfoWindow | null = null;
 
-        const markersArray: google.maps.Marker[] = [];
+        try {
+          const sites = await fetchAllSites();
+          const markersArray: google.maps.Marker[] = [];
 
-        SITES.forEach((markerInfo) => {
-          const types = [
-            'Rain Garden',
-            'Bioswale',
-            'Bioretention',
-            'Porous Paving',
-            'Tree Trench/Pit',
-            'Green Roof/Planter',
-          ];
+          sites.forEach((markerInfo: any) => {
+            const symbolType = markerInfo.symbolType;
 
-          if (
-            markerInfo['Lat'] != null &&
-            markerInfo['Long'] != null &&
-            types.includes(markerInfo['Symbol Type'])
-          ) {
-            const status = randomizeStatus();
-
-            let typeColor = '';
-            if (status === 'Available') {
-              typeColor = '#2D6A4F';
-            } else if (status === 'Adopted') {
-              typeColor = '#FB4D42';
+            if (!isValidSymbolType(symbolType)) {
+              console.warn(`Unknown symbol type: ${symbolType}`);
+              return;
             }
 
-            let tempIcon = '';
-            let iconFunc = null;
+            const typeColor =
+              markerInfo.siteStatus === 'Available' ? '#2D6A4F' : '#FB4D42';
 
-            if (markerInfo['Symbol Type'] === 'Rain Garden') {
-              tempIcon = generateSquareSVG(typeColor);
-              iconFunc = generateSquareSVG;
-            } else if (markerInfo['Symbol Type'] === 'Bioswale') {
-              tempIcon = generateTriangleSVG(typeColor);
-              iconFunc = generateTriangleSVG;
-            } else if (markerInfo['Symbol Type'] === 'Bioretention') {
-              tempIcon = generateCircleSVG(typeColor);
-              iconFunc = generateCircleSVG;
-            } else if (markerInfo['Symbol Type'] === 'Porous Paving') {
-              tempIcon = generateDiamondSVG(typeColor);
-              iconFunc = generateDiamondSVG;
-            } else if (markerInfo['Symbol Type'] === 'Tree Trench/Pit') {
-              tempIcon = generateStarSVG(typeColor);
-              iconFunc = generateStarSVG;
-            } else if (markerInfo['Symbol Type'] === 'Green Roof/Planter') {
-              tempIcon = generatePentagonSVG(typeColor);
-              iconFunc = generatePentagonSVG;
-            }
-
-            const typeIcon = `data:image/svg+xml;utf8,${encodeURIComponent(
-              tempIcon,
-            )}`;
+            const generateIcon = iconGenerators[symbolType];
+            const tempIcon = generateIcon(typeColor);
+            const typeIcon = `data:image/svg+xml;utf8,${encodeURIComponent(tempIcon)}`;
 
             const infoWindowContent = document.createElement('div');
             infoWindowContent.id = 'info-window-content';
@@ -189,12 +149,12 @@ const Map: React.FC<MapProps> = ({
               createPortal(
                 <PopupBox
                   setShowSignUp={setShowSignUp}
-                  name={markerInfo['Asset Name']}
-                  location={markerInfo['Address']}
-                  status={'Available'}
-                  type={markerInfo['Symbol Type']}
+                  name={markerInfo.siteName}
+                  location={markerInfo.address}
+                  status={markerInfo.siteStatus}
+                  type={symbolType}
                   color={typeColor}
-                  svgFunction={iconFunc as (color: string) => string}
+                  svgFunction={generateIcon}
                 />,
                 infoWindowContent,
               ),
@@ -210,15 +170,15 @@ const Map: React.FC<MapProps> = ({
 
             const marker: google.maps.Marker = new google.maps.Marker({
               position: {
-                lat: Number(markerInfo['Lat']),
-                lng: markerInfo['Long'],
+                lat: Number(markerInfo.siteLatitude),
+                lng: Number(markerInfo.siteLongitude),
               },
               map: map,
               icon: customIcon,
             });
 
-            marker.set('featureType', markerInfo['Symbol Type']);
-            marker.set('status', status);
+            marker.set('featureType', symbolType);
+            marker.set('status', markerInfo.siteStatus);
 
             marker.addListener('click', () => {
               if (currentInfoWindow) {
@@ -227,38 +187,15 @@ const Map: React.FC<MapProps> = ({
               infoWindow.open(map, marker);
               currentInfoWindow = infoWindow;
             });
+
             markersArray.push(marker);
-          }
-        });
+          });
 
-        setMarkers(markersArray);
-        console.log(selectedFeatures);
-        filterMarkers(selectedFeatures, selectedStatuses, markersArray, map);
-
-        const input = document.getElementById('pac-input') as HTMLInputElement;
-
-        const autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
-
-        autocomplete.addListener('place_changed', () => {
-          // marker.setVisible(false);
-          const place = autocomplete.getPlace();
-
-          if (!place.geometry || !place.geometry.location) {
-            window.alert(`No details available for input: '${place.name}'`);
-            return;
-          }
-
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
-          }
-
-          // marker.setPosition(place.geometry.location);
-          // marker.setVisible(true);
-        });
+          setMarkers(markersArray);
+          filterMarkers(selectedFeatures, selectedStatuses, markersArray, map);
+        } catch (error) {
+          console.error('Failed to load sites:', error);
+        }
       });
     }
   }, [zoom, selectedFeatures, selectedStatuses]);
