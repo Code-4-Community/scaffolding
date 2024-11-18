@@ -3,6 +3,7 @@ import {
     Get,
     Param,
 } from "@nestjs/common";
+import { ApiParam } from '@nestjs/swagger';
 import { UserService } from "./user.service";
 import { UserModel, UserStatus } from "./user.model";
 
@@ -32,6 +33,11 @@ export class UserController {
      * @returns A list of users with the specified status.
      */
     @Get("status/:status")
+    @ApiParam({
+        name: 'status',
+        description: 'The status to filter users by (e.g., Approved, Pending, Denied)',
+        enum: UserStatus,
+    })
     public async getUserByStatus(
         @Param("status") status: UserStatus
     ): Promise<UserModel[]> {
