@@ -17,6 +17,11 @@ import { ApiQuery } from "@nestjs/swagger";
 export class SiteController {
     constructor(private siteService: SiteService) {}
 
+    @Get()
+    public async getAllSites(): Promise<SiteModel[]> {
+        return this.siteService.getAllSites();
+    }
+
     @Get("/status/")
     @ApiQuery({ name: "status", required: true })
     public async getSitesByStatus(
@@ -44,7 +49,7 @@ export class SiteController {
         return this.siteService.getSite(siteId);
     }  
 
-    @Post()
+    @Post("/addSite")
     public async postSite(@Body() siteData: NewSiteInput) {
         return this.siteService.postSite(siteData);
     }

@@ -25,6 +25,29 @@ export class SiteService {
             throw new Error("Unable to get site data: "+ e)
         }
     }
+
+    /**
+     * Scans the entire sites table and returns all rows.
+     * @returns the full list of sites
+     */
+    public async getAllSites(): Promise<SiteModel[]> {
+        try {
+            const data = await this.dynamoDbService.scanTable(this.tableName);
+            const sites: SiteModel[] = [];
+            for (let i = 0; i < data.length; i++) {
+                try {
+                    sites.push(this.mapDynamoDBItemToSite(parseInt(data[i]["siteId"].S), data[i]));
+                } catch (error) {
+                    console.error('Error mapping site:', error, data[i]);
+                }
+
+            }
+            return sites;
+        }
+        catch(e) {
+            throw new Error("Unable to get all site data: "+ e)
+        }
+    }
   
     public async postSite(siteData: NewSiteInput) {
         const siteModel = this.PostInputToSiteModel(siteData);
