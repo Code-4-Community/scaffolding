@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ApplicationInputModel, ApplicationsModel } from './applications.model';
 import { DynamoDbService } from '../dynamodb';
 import { ApplicationStatus } from './applications.model';
-// import { NewApplicationInput } from '../dtos/newApplicationsDTO';
+import { NewApplicationInput } from '../dtos/newApplicationsDTO';
 
 @Injectable()
 export class ApplicationsService {
@@ -46,6 +46,40 @@ export class ApplicationsService {
       throw new Error('Unable to update application status: ' + e);
     }
   }
+ 
+  public async postApplication(applicationData: NewApplicationInput) {
+    const applicationModel = this.PostInputToApplicationModel(applicationData);
+    console.log("Received application data:", applicationData);
+
+    const newId = await this.dynamoDbService.getHighestAppId(this.tableName) + 1;
+    
+    applicationModel.appId.N = newId.toString();
+    console.log("Using new ID:" + applicationModel.appId.N)
+    try {
+        const result = await this.dynamoDbService.postItem(this.tableName, applicationModel);
+        return {...result, newApplicationId: newId.toString()};
+    } catch (e) {
+        throw new Error("Unable to post new application: " + e);
+    }
+}
+
+
+private PostInputToApplicationModel = (input: NewApplicationInput): ApplicationInputModel => {
+
+  return {
+    appId: { N: input.appId.toString() },
+    userId: { N: input.userId.toString() }, 
+    siteId: { N: input.siteId.toString() }, 
+    names: { SS: input.names },
+    status: { S: input.status as ApplicationStatus}, 
+    dateApplied: { S: input.dateApplied}, 
+    isFirstApplication: { S: input.isFirstApplication.toString() }, 
+  };
+};
+
+
+
+
 
   private mapDynamoDBItemToApplication = (item: {
     [key: string]: any;
@@ -61,3 +95,5 @@ export class ApplicationsService {
     };
   };
 }
+
+
