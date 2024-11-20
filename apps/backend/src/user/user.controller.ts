@@ -5,8 +5,10 @@ import {
     Put,
     Body
 } from "@nestjs/common";
+import { ApiParam } from '@nestjs/swagger';
 import { UserService } from "./user.service";
-import { UserModel, EditUserModel } from "./user.model";
+import { UserModel, UserStatus, EditUserModel } from "./user.model";
+
 
 /**
  * The controller for user endpoints.
@@ -28,6 +30,7 @@ export class UserController {
         return this.userService.getUserTables(userId);
     }
 
+
     @Put("/editUser/:id")
     public async editUser(
         @Param("id") userId?: number, 
@@ -35,6 +38,26 @@ export class UserController {
     ): Promise<UserModel> {
         return this.userService.editUser(userId, editUserModel);
     }
+
+    /**
+     * Gets users by their status.
+     * @param status The status to filter users by (e.g., Approved, Pending, Denied).
+     * @returns A list of users with the specified status.
+     */
+    @Get("status/:status")
+    @ApiParam({
+        name: 'status',
+        description: 'The status to filter users by (e.g., Approved, Pending, Denied)',
+        enum: UserStatus,
+    })
+    public async getUserByStatus(
+        @Param("status") status: UserStatus
+    ): Promise<UserModel[]> {
+        console.log(status);
+        return this.userService.getUserByStatus(status);
+    }
+
+
 
 
 }
