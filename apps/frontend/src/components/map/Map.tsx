@@ -31,6 +31,7 @@ const iconGenerators = {
   'Porous Paving': generateDiamondSVG,
   'Tree Trench/Pit': generateStarSVG,
   'Green Roof/Planter': generatePentagonSVG,
+  'Other': generatePentagonSVG // Placeholder, will remove
 } as const;
 
 type SymbolType = keyof typeof iconGenerators;
