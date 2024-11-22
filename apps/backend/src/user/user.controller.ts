@@ -1,19 +1,21 @@
 import {
     Controller,
     Get,
+    Post,
+    Body,
     Param,
     Put,
-    Body
 } from "@nestjs/common";
 import { ApiParam } from '@nestjs/swagger';
 import { UserService } from "./user.service";
+import { NewUserInput } from "../dtos/newUserDTO";
 import { UserModel, UserStatus, EditUserModel } from "./user.model";
 
 
 /**
  * The controller for user endpoints.
  */
-@Controller("user")
+@Controller("users")
 export class UserController {
     constructor(private userService: UserService) {}
 
@@ -24,6 +26,10 @@ export class UserController {
             return this.userService.getUser(userId);
         }
 
+    @Post("/addVolunteer")
+    public async addVolunteer( @Body() userData: NewUserInput) {
+        return this.userService.postUserVolunteer(userData);
+    }
     
     @Get(":id/sites")
     public async getUserSites(@Param("id") userId?: number): Promise<any> {
