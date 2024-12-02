@@ -175,7 +175,6 @@ export class DynamoDbService {
     return result.Attributes;
   }
 
-<<<<<<< HEAD
   public async updateField(
     tableName: string,
     key: { [key: string]: any },
@@ -207,7 +206,7 @@ export class DynamoDbService {
       throw new Error(`Unable to update item in ${tableName}`);
     }
   }
-=======
+  
   public async updateItemWithExpression(
     tableName: string,
     key: { [key: string]: any },
@@ -243,7 +242,6 @@ export class DynamoDbService {
     }
 
  
->>>>>>> main
 }
 
 
