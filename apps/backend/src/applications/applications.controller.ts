@@ -2,7 +2,6 @@ import { Controller, Get, Put, Post, Param, Body } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { ApplicationsModel } from './applications.model';
 import { ApplicationStatus } from './applications.model';
-// import { NewApplicationInput } from '../dtos/newApplicationsDTO';
 
 @Controller('applications')
 export class ApplicationsController {
@@ -11,6 +10,13 @@ export class ApplicationsController {
   @Get('applicationsInfo')
   public async getApplications(): Promise<ApplicationsModel[]> {
     return this.applicationsService.getApplications();
+  }
+
+  @Get('nonFirstTimeApplications')
+  public async getNonFirstTimeApplications(): Promise<ApplicationsModel[]> {
+    return (await this.applicationsService.getApplications()).filter(
+      (app) => app.isFirstApplication === false,
+    );
   }
 
   @Get('getFirstApplications')
@@ -38,6 +44,4 @@ export class ApplicationsController {
 
     return appToModify;
   }
-
-
 }
