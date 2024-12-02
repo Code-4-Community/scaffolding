@@ -175,6 +175,38 @@ export class DynamoDbService {
     return result.Attributes;
   }
 
+  public async updateField(
+    tableName: string,
+    key: { [key: string]: any },
+    field: string,
+    value: string,
+  ): Promise<any> {
+    const params = {
+      TableName: tableName,
+      Key: key,
+      UpdateExpression: `SET #field = :value`,
+      ExpressionAttributeNames: {
+        '#field': field,
+      },
+      ExpressionAttributeValues: {
+        ':value': { S: value },
+      },
+      ReturnValue: 'ALL_NEW',
+    };
+    console.log(key);
+    console.log(params)
+    try {
+      const command = new UpdateItemCommand(params);
+      await this.dynamoDbClient.send(command);
+      const result = await this.getItem(tableName, key);
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.error('DynamoDB UpdateItem Error:', error);
+      throw new Error(`Unable to update item in ${tableName}`);
+    }
+  }
+  
   public async updateItemWithExpression(
     tableName: string,
     key: { [key: string]: any },

@@ -3,6 +3,7 @@ import {
     Delete,
     Get,
     Post,
+    Put,
     Body,
     Param,
     Query
@@ -57,6 +58,10 @@ export class SiteController {
         return this.siteService.deleteSite(siteId);
     }
 
+    @Put("/adopt/:id")
+    public async setSiteStatusAdopt(@Param("id") siteId: number): Promise<void> {
+        return this.siteService.adoptSite(siteId);
+    }
  
 
 
