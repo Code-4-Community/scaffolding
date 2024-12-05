@@ -93,12 +93,20 @@ export class SiteService {
         }
     }
 
+    public async adoptSite(siteId: number): Promise<void> {
+        try {
+            const key = { 'siteId': { S: siteId.toString() } };
+            const result = await this.dynamoDbService.updateField(this.tableName, key, "siteStatus", "Adopted")
+        } catch (e) {
+            throw new Error("Unable to set site status to Adopted:" + e);
+        }
+    }
 
     private mapDynamoDBItemToSite = (objectId: number, item: { [key: string]: any }): SiteModel => {
         return {
             siteID: objectId,
             siteName: item["siteName"].S,
-            siteStatus: SiteStatus.AVAILABLE, //placeholder until table is updated
+            siteStatus: item["siteStatus"].S,
             assetType: item["assetType"].S,
             symbolType: item["symbolType"].S,
             siteLatitude: item["siteLatitude"].S,

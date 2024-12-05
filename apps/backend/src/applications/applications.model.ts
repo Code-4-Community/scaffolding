@@ -29,5 +29,5 @@ export type ApplicationInputModel = {
 export enum ApplicationStatus {
   APPROVED = 'Approved',
   PENDING = 'Pending',
-  REJECTED = 'Rejected',
+  DENIED = 'Denied',
 }

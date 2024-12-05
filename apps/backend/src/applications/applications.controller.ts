@@ -1,8 +1,9 @@
-import { Controller, Get, Put, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Put, Param, Query } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { ApplicationsModel } from './applications.model';
 import { ApplicationStatus } from './applications.model';
 import { NewApplicationInput } from '../dtos/newApplicationsDTO';
+
 
 @Controller('applications')
 export class ApplicationsController {
@@ -13,31 +14,34 @@ export class ApplicationsController {
     return this.applicationsService.getApplications();
   }
 
-  @Put('applicationStatus/:appId')
+  @Get('getNonFirstApplications')
+  public async getNonFirstTimeApplications(): Promise<ApplicationsModel[]> {
+    return (await this.applicationsService.getApplications()).filter(
+      (app) => app.isFirstApplication === false,
+    );
+  }
+
+  @Get('getFirstApplications')
+  public async getFirstApplications(): Promise<ApplicationsModel[]> {
+    return this.applicationsService.getFirstApplications();
+  }
+
+  @Put('editApplication/:appId')
   public async changeApplicationStatus(
     @Param('appId') appId: number,
-    @Body('appStatus') appStatus: ApplicationStatus,
+    @Query('applicationStatus') appStatus: ApplicationStatus
   ): Promise<ApplicationsModel> {
     // Check if the provided appStatus is a valid enum value
     if (!Object.values(ApplicationStatus).includes(appStatus)) {
       throw new Error(`Invalid application status: ${appStatus}`);
     }
 
-    const applications = await this.applicationsService.getApplications();
-
-    const appToModify = applications.find((app) => app.appId === appId);
-
-    if (appToModify) {
-      appToModify.status = appStatus;
-    }
-
-    return appToModify;
+    return this.applicationsService.updateApplicationStatus(appId, appStatus);
   }
 
    @Post()
   public async postApplication(@Body() applicationData: NewApplicationInput) {
       return this.applicationsService.postApplication(applicationData);
   }
-
 
 }

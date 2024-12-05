@@ -24,6 +24,22 @@ export class ApplicationsService {
   }
 
   /**
+   * Gets all applications that are first applications.
+   *
+   * @returns a list of all first applications as ApplicationsModel objects.
+   */
+  public async getFirstApplications(): Promise<ApplicationsModel[]> {
+    try {
+      const data = await this.dynamoDbService.scanTable(this.tableName, 'isFirstApplication = :isFirst', {
+        ':isFirst': { BOOL: true },
+      });
+      return data.map(this.mapDynamoDBItemToApplication);
+    } catch (e) {
+      throw new Error('Unable to retrieve first applications: ' + e);
+    }
+  }
+
+  /**
    * Updates the status of the given application id.
    *
    * @returns the modified application.
@@ -34,14 +50,20 @@ export class ApplicationsService {
     appStatus: ApplicationStatus,
   ): Promise<ApplicationsModel> {
     try {
-      const key = { 'Object ID?': { N: appId } };
-      const application = await this.dynamoDbService.updateItem(
+      const key = { 'appId': { N: appId } };
+      const application = await this.dynamoDbService.getItem(
+        this.tableName,
+        key,
+      );
+      if (!application) {
+        throw new Error('Application not found');
+      }
+      const updatedApplication = await this.dynamoDbService.updateItem(
         this.tableName,
         key,
         appStatus,
       );
-
-      return application;
+      return this.mapDynamoDBItemToApplication(updatedApplication);
     } catch (e) {
       throw new Error('Unable to update application status: ' + e);
     }
