@@ -125,6 +125,38 @@ export class DynamoDbService {
     }
   }
 
+  public async getHighestAppId(
+    tableName: string,
+  ): Promise<number | undefined> {
+    const params: any = {
+      TableName: tableName,
+      ProjectionExpression: 'appId', // Project only the appID attribute
+    };
+
+    try {
+      const data = await this.dynamoDbClient.send(new ScanCommand(params));
+      console.log(data);
+      const appIds = data.Items.map((item) => parseInt(item.appId.N, 10)); // Convert to numbers
+      console.log("Scanned Items:", data.Items);
+
+     console.log(appIds);
+      // Handle potential parsing errors
+      const validAppIds = appIds.filter((id) => !isNaN(id));
+
+      if (validAppIds.length === 0) {
+        return undefined; // No valid apps IDs found
+      }
+
+      const highestAppId = validAppIds.reduce((max, current) =>
+        Math.max(max, current),
+      );
+      return highestAppId;
+    } catch (error) {
+      console.error('DynamoDB Scan Error:', error);
+      throw new Error(`Unable to scan table ${tableName}`);
+    }
+  }
+
   public async getItem(
     tableName: string,
     key: { [key: string]: any },

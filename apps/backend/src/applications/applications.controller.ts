@@ -1,7 +1,9 @@
-import { Controller, Get, Put, Param, Query } from '@nestjs/common';
+import { Controller, Get, Put, Post, Body, Param, Query } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { ApplicationsModel } from './applications.model';
 import { ApplicationStatus } from './applications.model';
+import { NewApplicationInput } from '../dtos/newApplicationsDTO';
+
 
 @Controller('applications')
 export class ApplicationsController {
@@ -36,4 +38,10 @@ export class ApplicationsController {
 
     return this.applicationsService.updateApplicationStatus(appId, appStatus);
   }
+
+   @Post()
+  public async postApplication(@Body() applicationData: NewApplicationInput) {
+      return this.applicationsService.postApplication(applicationData);
+  }
+
 }

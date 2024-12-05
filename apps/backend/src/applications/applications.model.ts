@@ -13,14 +13,17 @@ export type ApplicationsModel = {
 };
 
 export type ApplicationInputModel = {
-  appId: {S: string},
-  userId: {S: string},
-  siteId: {S: string},
-  names: {S: string},
-  status: {S: string},
-  dateApplied: {S: string},
-  isFirstApplication: {S: string},
+  appId: {
+   N: string 
+},
+  userId: { N: string },
+  siteId: { N: string },
+  names: { SS: string[] },  // For an array of strings, use SS (String Set) in DynamoDB
+  status: { S: string },
+  dateApplied: { S: string },  // Date should be formatted as a string, typically ISO string
+  isFirstApplication: { S: string },
 };
+
 
 
 export enum ApplicationStatus {
