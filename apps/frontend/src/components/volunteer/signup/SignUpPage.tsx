@@ -133,7 +133,9 @@ function PersonalInfo() {
                       name={field}
                       type={formFields[field].type}
                     />
-                    <FormErrorMessage>{errors[field]}</FormErrorMessage>
+                    <FormErrorMessage color='red'>
+                      {errors[field]}
+                    </FormErrorMessage>
                   </FormControl>
                 ))}
               </SimpleGrid>
@@ -251,7 +253,7 @@ export default function SignUpPage({ setShowSignUp }: Props) {
       justifyContent="center"
       bg="#D9D9D9"
       width="80%"
-      height="140%"
+      height="100%"
       zIndex={'200'}
     >
       <IconButton
