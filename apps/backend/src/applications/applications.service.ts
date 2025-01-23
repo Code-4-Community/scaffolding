@@ -70,13 +70,9 @@ export class ApplicationsService {
   }
  
   public async postApplication(applicationData: NewApplicationInput) {
-    const applicationModel = this.PostInputToApplicationModel(applicationData);
-    console.log("Received application data:", applicationData);
-
     const newId = await this.dynamoDbService.getHighestAppId(this.tableName) + 1;
-    
-    applicationModel.appId.N = newId.toString();
-    console.log("Using new ID:" + applicationModel.appId.N)
+    const applicationModel = this.PostInputToApplicationModel(applicationData, newId.toString());
+    console.log("Received application data:", applicationData);
     try {
         const result = await this.dynamoDbService.postItem(this.tableName, applicationModel);
         return {...result, newApplicationId: newId.toString()};
@@ -86,10 +82,10 @@ export class ApplicationsService {
 }
 
 
-private PostInputToApplicationModel = (input: NewApplicationInput): ApplicationInputModel => {
+private PostInputToApplicationModel = (input: NewApplicationInput, appId: string): ApplicationInputModel => {
 
   return {
-    appId: { N: input.appId.toString() },
+    appId: { N: appId },
     userId: { N: input.userId.toString() }, 
     siteId: { N: input.siteId.toString() }, 
     names: { SS: input.names },
