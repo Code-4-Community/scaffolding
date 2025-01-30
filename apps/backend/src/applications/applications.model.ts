@@ -24,8 +24,6 @@ export type ApplicationInputModel = {
   isFirstApplication: { S: string },
 };
 
-
-
 export enum ApplicationStatus {
   APPROVED = 'Approved',
   PENDING = 'Pending',

@@ -1,5 +1,4 @@
 export type NewApplicationInput = {
-    appId: number; // Optional if auto-generated
     userId: number;
     siteId: number;
     names: string[]; // Array with empty string by default if not provided
