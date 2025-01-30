@@ -166,11 +166,12 @@ const FullWidthSpace = styled(Space)`
   width: 100%;
 `;
 const statusSpan = (statusIcon: string, labelString: string): ReactNode => {
+  const isInvalid = labelString.toLowerCase().includes('invalid');
   return (
     <FullWidthSpace direction={'horizontal'} size={'small'}>
       <LegendImage
         src={statusIcon}
-        alt="Adopted"
+        alt={labelString}
         style={{
           width: '20px',
           height: '20px',
@@ -186,7 +187,7 @@ const statusSpan = (statusIcon: string, labelString: string): ReactNode => {
           letterSpacing: '0em',
           textAlign: 'left',
           alignItems: 'center',
-          color: 'rgba(24, 112, 188, 1)',
+          color: isInvalid ? '#808080' : 'rgba(24, 112, 188, 1)',
         }}
       >
         {labelString.replace(' Sites', '').toUpperCase()}
