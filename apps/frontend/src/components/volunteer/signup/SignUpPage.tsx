@@ -114,7 +114,7 @@ function PersonalInfo() {
                 <Input
                   variant="filled"
                   height={personalInfoInputFieldsMap[0].height}
-                  
+                  placeholder="example"
                   width="100%"
                 />
               </VStack>
@@ -140,7 +140,7 @@ function PersonalInfo() {
                 <Input
                   variant="filled"
                   height={group.height}
-                  
+                  placeholder="example"
                   width={group.width}
                 />
               </VStack>
@@ -285,17 +285,24 @@ export default function SignUpPage({ setShowSignUp }: Props) {
           <PersonalInfo />
         </Box>
 
-        <Button
-          size="large"
-          marginBottom="7%"
-          fontSize="20px"
-          onClick={handleSubmit}
+        {/* Conditional rendering for the submit button */}
+        {/* {!isSubmitted && (
+          <Button size="large" marginBottom="7%" fontSize="20px" onClick={handleSubmit}
           bottom="10%"
           left="50%"
-          transform="translateX(-50%)"
-        >
-          Submit
-        </Button>
+          transform="translateX(-50%)">
+            Submit
+          </Button>
+        )} */}
+
+        {/* Success message */}
+        {/* {isSubmitted && (
+          <Box>
+            <Text fontSize="24px" fontWeight={600}>
+              Thank you for submitting the form!
+            </Text>
+          </Box>
+        )} */}
       </Box>
     </Box>
   );
