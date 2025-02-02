@@ -21,7 +21,7 @@ export class Review {
   @Column({ nullable: false })
   reviewerId: number;
 
-  @Column('decimal', { precision: 2, scale: 2 })
+  @Column({ type: 'double precision', nullable: false })
   rating: number;
 
   @Column({ type: 'varchar', nullable: false })
