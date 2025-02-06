@@ -10,6 +10,9 @@ import Tiles from './Tiles';
 
 const icons: string[] = SITE_STATUS_ROADMAP.map((option) => option.image);
 
+
+
+
 export default function MapPage() {
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);

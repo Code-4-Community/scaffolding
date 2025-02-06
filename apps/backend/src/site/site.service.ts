@@ -25,6 +25,29 @@ export class SiteService {
             throw new Error("Unable to get site data: "+ e)
         }
     }
+
+    /**
+     * Scans the entire sites table and returns all rows.
+     * @returns the full list of sites
+     */
+    public async getAllSites(): Promise<SiteModel[]> {
+        try {
+            const data = await this.dynamoDbService.scanTable(this.tableName);
+            const sites: SiteModel[] = [];
+            for (let i = 0; i < data.length; i++) {
+                try {
+                    sites.push(this.mapDynamoDBItemToSite(parseInt(data[i]["siteId"].S), data[i]));
+                } catch (error) {
+                    console.error('Error mapping site:', error, data[i]);
+                }
+
+            }
+            return sites;
+        }
+        catch(e) {
+            throw new Error("Unable to get all site data: "+ e)
+        }
+    }
   
     public async postSite(siteData: NewSiteInput) {
         const siteModel = this.PostInputToSiteModel(siteData);
@@ -93,12 +116,20 @@ export class SiteService {
         }
     }
 
+    public async adoptSite(siteId: number): Promise<void> {
+        try {
+            const key = { 'siteId': { S: siteId.toString() } };
+            const result = await this.dynamoDbService.updateField(this.tableName, key, "siteStatus", "Adopted")
+        } catch (e) {
+            throw new Error("Unable to set site status to Adopted:" + e);
+        }
+    }
 
     private mapDynamoDBItemToSite = (objectId: number, item: { [key: string]: any }): SiteModel => {
         return {
             siteID: objectId,
             siteName: item["siteName"].S,
-            siteStatus: SiteStatus.AVAILABLE, //placeholder until table is updated
+            siteStatus: item["siteStatus"].S,
             assetType: item["assetType"].S,
             symbolType: item["symbolType"].S,
             siteLatitude: item["siteLatitude"].S,

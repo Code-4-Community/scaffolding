@@ -5,6 +5,7 @@ import {
   DeleteItemCommand,
   PutItemCommand,
   UpdateItemCommand,
+  UpdateItemCommandInput
 } from '@aws-sdk/client-dynamodb';
 import { Injectable, Put } from '@nestjs/common';
 import { table } from 'console';
@@ -44,6 +45,7 @@ export class DynamoDbService {
     tableName: string,
     filterExpression?: string,
     expressionAttributeValues?: { [key: string]: any },
+    expressionAttributeNames? : { [key: string]: any},
   ): Promise<any[]> {
     // By default, scan the entire table
     const params: any = {
@@ -56,6 +58,10 @@ export class DynamoDbService {
     if (expressionAttributeValues) {
       params.ExpressionAttributeValues = expressionAttributeValues;
     }
+    if(expressionAttributeNames) {
+      params.ExpressionAttributeNames = expressionAttributeNames;
+    }
+    
     try {
       const data = await this.dynamoDbClient.send(new ScanCommand(params));
       return data.Items || [];
@@ -119,6 +125,38 @@ export class DynamoDbService {
     }
   }
 
+  public async getHighestAppId(
+    tableName: string,
+  ): Promise<number | undefined> {
+    const params: any = {
+      TableName: tableName,
+      ProjectionExpression: 'appId', // Project only the appID attribute
+    };
+
+    try {
+      const data = await this.dynamoDbClient.send(new ScanCommand(params));
+      console.log(data);
+      const appIds = data.Items.map((item) => parseInt(item.appId.N, 10)); // Convert to numbers
+      console.log("Scanned Items:", data.Items);
+
+     console.log(appIds);
+      // Handle potential parsing errors
+      const validAppIds = appIds.filter((id) => !isNaN(id));
+
+      if (validAppIds.length === 0) {
+        return undefined; // No valid apps IDs found
+      }
+
+      const highestAppId = validAppIds.reduce((max, current) =>
+        Math.max(max, current),
+      );
+      return highestAppId;
+    } catch (error) {
+      console.error('DynamoDB Scan Error:', error);
+      throw new Error(`Unable to scan table ${tableName}`);
+    }
+  }
+
   public async getItem(
     tableName: string,
     key: { [key: string]: any },
@@ -161,11 +199,90 @@ export class DynamoDbService {
     const params = {
       TableName: tableName,
       Key: key,
-      UpdateExpression: `SET status = ${status}`,
+      UpdateExpression: 'SET #status = :status',
+      ExpressionAttributeNames: {
+        '#status': 'status',
+      },
+      ExpressionAttributeValues: {
+        ':status': { S: status },
+      },
       ReturnValue: 'ALL_NEW',
     };
     const command = new UpdateItemCommand(params);
-    const result = await this.dynamoDbClient.send(command);
-    return result.Attributes;
+    await this.dynamoDbClient.send(command);
+    const result = this.getItem(tableName, key);
+    return result;
   }
+
+  public async updateField(
+    tableName: string,
+    key: { [key: string]: any },
+    field: string,
+    value: string,
+  ): Promise<any> {
+    const params = {
+      TableName: tableName,
+      Key: key,
+      UpdateExpression: `SET #field = :value`,
+      ExpressionAttributeNames: {
+        '#field': field,
+      },
+      ExpressionAttributeValues: {
+        ':value': { S: value },
+      },
+      ReturnValue: 'ALL_NEW',
+    };
+    console.log(key);
+    console.log(params)
+    try {
+      const command = new UpdateItemCommand(params);
+      await this.dynamoDbClient.send(command);
+      const result = await this.getItem(tableName, key);
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.error('DynamoDB UpdateItem Error:', error);
+      throw new Error(`Unable to update item in ${tableName}`);
+    }
+  }
+  
+  public async updateItemWithExpression(
+    tableName: string,
+    key: { [key: string]: any },
+    updateExpression: string,
+    expressionAttributeValues?: Record<string, any>,
+    expressionAttributeNames?: Record<string, string>,
+): Promise<any> {
+    const params: UpdateItemCommandInput = {
+        TableName: tableName,
+        Key: key,
+        UpdateExpression: updateExpression,
+        ReturnValues: 'ALL_NEW',
+    };
+
+
+    if (expressionAttributeNames) {
+        params.ExpressionAttributeNames = expressionAttributeNames;
+    }
+    
+
+    if (expressionAttributeValues) {
+        params.ExpressionAttributeValues = expressionAttributeValues;
+    }
+
+    try {
+        const command = new UpdateItemCommand(params);
+        const result = await this.dynamoDbClient.send(command);
+        return result.Attributes;
+    } catch (error) {
+        // Log detailed error info
+        console.error("DynamoDB Update Error:", error);
+        throw new Error(`Failed to update item in DynamoDB: ${error.message}`);
+    }
+
+ 
 }
+
+
+}
+

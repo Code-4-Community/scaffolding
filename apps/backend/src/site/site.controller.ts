@@ -3,6 +3,7 @@ import {
     Delete,
     Get,
     Post,
+    Put,
     Body,
     Param,
     Query
@@ -16,6 +17,11 @@ import { ApiQuery } from "@nestjs/swagger";
 @Controller("sites")
 export class SiteController {
     constructor(private siteService: SiteService) {}
+
+    @Get()
+    public async getAllSites(): Promise<SiteModel[]> {
+        return this.siteService.getAllSites();
+    }
 
     @Get("/status/")
     @ApiQuery({ name: "status", required: true })
@@ -44,7 +50,7 @@ export class SiteController {
         return this.siteService.getSite(siteId);
     }  
 
-    @Post()
+    @Post("/addSite")
     public async postSite(@Body() siteData: NewSiteInput) {
         return this.siteService.postSite(siteData);
     }
@@ -57,6 +63,10 @@ export class SiteController {
         return this.siteService.deleteSite(siteId);
     }
 
+    @Put("/adopt/:id")
+    public async setSiteStatusAdopt(@Param("id") siteId: number): Promise<void> {
+        return this.siteService.adoptSite(siteId);
+    }
  
 
 

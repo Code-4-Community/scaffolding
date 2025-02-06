@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ApplicationsModel } from './applications.model';
+import { ApplicationInputModel, ApplicationsModel } from './applications.model';
 import { DynamoDbService } from '../dynamodb';
 import { ApplicationStatus } from './applications.model';
+import { NewApplicationInput } from '../dtos/newApplicationsDTO';
 
 @Injectable()
 export class ApplicationsService {
@@ -23,6 +24,22 @@ export class ApplicationsService {
   }
 
   /**
+   * Gets all applications that are first applications.
+   *
+   * @returns a list of all first applications as ApplicationsModel objects.
+   */
+  public async getFirstApplications(): Promise<ApplicationsModel[]> {
+    try {
+      const data = await this.dynamoDbService.scanTable(this.tableName, 'isFirstApplication = :isFirst', {
+        ':isFirst': { BOOL: true },
+      });
+      return data.map(this.mapDynamoDBItemToApplication);
+    } catch (e) {
+      throw new Error('Unable to retrieve first applications: ' + e);
+    }
+  }
+
+  /**
    * Updates the status of the given application id.
    *
    * @returns the modified application.
@@ -33,18 +50,54 @@ export class ApplicationsService {
     appStatus: ApplicationStatus,
   ): Promise<ApplicationsModel> {
     try {
-      const key = { 'Object ID?': { N: appId } };
-      const application = await this.dynamoDbService.updateItem(
+      const key = { 'appId': { N: appId } };
+      const application = await this.dynamoDbService.getItem(
+        this.tableName,
+        key,
+      );
+      if (!application) {
+        throw new Error('Application not found');
+      }
+      const updatedApplication = await this.dynamoDbService.updateItem(
         this.tableName,
         key,
         appStatus,
       );
-
-      return application;
+      return this.mapDynamoDBItemToApplication(updatedApplication);
     } catch (e) {
       throw new Error('Unable to update application status: ' + e);
     }
   }
+ 
+  public async postApplication(applicationData: NewApplicationInput) {
+    const newId = await this.dynamoDbService.getHighestAppId(this.tableName) + 1;
+    const applicationModel = this.PostInputToApplicationModel(applicationData, newId.toString());
+    console.log("Received application data:", applicationData);
+    try {
+        const result = await this.dynamoDbService.postItem(this.tableName, applicationModel);
+        return {...result, newApplicationId: newId.toString()};
+    } catch (e) {
+        throw new Error("Unable to post new application: " + e);
+    }
+}
+
+
+private PostInputToApplicationModel = (input: NewApplicationInput, appId: string): ApplicationInputModel => {
+
+  return {
+    appId: { N: appId },
+    userId: { N: input.userId.toString() }, 
+    siteId: { N: input.siteId.toString() }, 
+    names: { SS: input.names },
+    status: { S: input.status as ApplicationStatus}, 
+    dateApplied: { S: input.dateApplied}, 
+    isFirstApplication: { S: input.isFirstApplication.toString() }, 
+  };
+};
+
+
+
+
 
   private mapDynamoDBItemToApplication = (item: {
     [key: string]: any;
@@ -60,3 +113,5 @@ export class ApplicationsService {
     };
   };
 }
+
+
