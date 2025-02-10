@@ -1,21 +1,19 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
-import { User } from '../user/user.entity';
+import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './jwt.strategy';
-import { DynamoDbService } from '../dynamodb';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    UserModule,
+    PassportModule.register({ defaultStrategy: 'jwt '}),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, JwtStrategy, DynamoDbService],
+  providers: [AuthService, JwtStrategy],
   exports: [AuthService]
 })
 export class AuthModule {}

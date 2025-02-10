@@ -27,12 +27,7 @@ export class UserController {
             return this.userService.getUser(userId);
         }
 
-    @Delete(":id")
-    public async removeUser(
-        @Param("id") userId?: number
-        ): Promise<void> {
-            return this.userService.remove(userId);
-        }
+
     @Post("/addVolunteer")
     public async addVolunteer( @Body() userData: NewUserInput) {
         return this.userService.postUser(userData, Role.VOLUNTEER);

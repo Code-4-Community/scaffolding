@@ -6,13 +6,11 @@ import {
   ListUsersCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-
 import CognitoAuthConfig from './aws-exports';
 import { SignUpDto } from '../dtos/sign-up.dto';
 import { SignInDto } from '../dtos/sign-in.dto';
 import { SignInResponseDto } from '../dtos/sign-in-response.dto';
 import { createHmac } from 'crypto';
-import { UserStatus } from '../user/user.model';
 
 @Injectable()
 export class AuthService {
@@ -23,12 +21,12 @@ export class AuthService {
     this.providerClient = new CognitoIdentityProviderClient({
       region: CognitoAuthConfig.region,
       credentials: {
-        accessKeyId: process.env.NX_AWS_ACCESS_KEY,
-        secretAccessKey: process.env.NX_AWS_SECRET_ACCESS_KEY,
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
     });
 
-    this.clientSecret = process.env.COGNITO_CLIENT_SECRET;
+    this.clientSecret = process.env.AWS_COGNITO_CLIENT_SECRET;
   }
 
   // Computes secret hash to authenticate this backend to Cognito
@@ -53,27 +51,13 @@ export class AuthService {
   }
 
   async signup(
-    { firstName, lastName, email, password }: SignUpDto,
-    status: UserStatus = UserStatus.PENDING,
+    { email, password }: SignUpDto,
   ): Promise<boolean> {
-    // Needs error handling
     const signUpCommand = new SignUpCommand({
       ClientId: CognitoAuthConfig.clientId,
       SecretHash: this.calculateHash(email),
       Username: email,
       Password: password,
-      UserAttributes: [
-        {
-          Name: 'name',
-          Value: `${firstName} ${lastName}`,
-        },
-        // Optional: add a custom Cognito attribute called "role" that also stores the user's status/role
-        // If you choose to do so, you'll have to first add this custom attribute in your user pool
-        {
-          Name: 'custom:role',
-          Value: status,
-        },
-      ],
     });
 
     const response = await this.providerClient.send(signUpCommand);

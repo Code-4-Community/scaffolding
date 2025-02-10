@@ -13,8 +13,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      _audience: CognitoAuthConfig.clientId,
-      issuer: cognitoAuthority,
       algorithms: ['RS256'],
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
@@ -25,7 +23,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload) {
-    return { idUser: payload.sub, email: payload.email };
+  async validate(payload: any) {
+    return { 
+      idUser: payload.sub, 
+      email: payload.email,
+      usernmae: payload['cognito:username']
+    };
   }
 }
