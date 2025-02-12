@@ -11,19 +11,27 @@ import { User } from '../users/user.entity';
 import {
   Response,
   Semester,
-  Position,
-  ApplicationStage,
+  Position, 
+  ApplicationStage,  
   ApplicationStep,
 } from './types';
 import { GetApplicationResponseDTO } from './dto/get-application.response.dto';
 import { Review } from '../reviews/review.entity';
 import { GetAllApplicationResponseDTO } from './dto/get-all-application.response.dto';
+import { FileUpload } from '../file-upload/entities/file-upload.entity';
+import { PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Application {
-  @Column({ primary: true, generated: true })
+  @PrimaryGeneratedColumn()
   @IsPositive()
   id: number;
+
+  @Column({ nullable: true })
+  content: string;
+
+  @OneToMany(() => FileUpload, (file) => file.application)
+  attachments: FileUpload[];
 
   @ManyToOne(() => User, (user) => user.applications, { nullable: false })
   @JoinColumn()

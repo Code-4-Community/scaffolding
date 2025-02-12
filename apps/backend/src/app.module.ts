@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
 import { ApplicationsModule } from './applications/applications.module';
+import { Application } from './applications/application.entity';
+import { FileUpload } from './file-upload/entities/file-upload.entity';
 
 @Module({
   imports: [
@@ -19,11 +21,12 @@ import { ApplicationsModule } from './applications/applications.module';
       password: process.env.NX_DB_PASSWORD,
       autoLoadEntities: true,
       database: process.env.NX_DB_DATABASE || 'c4c-ops',
-      // entities: [join(__dirname, '**/**.entity.{ts,js}')],
+      entities: [Application, FileUpload],
       // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
       synchronize: true,
       namingStrategy: new PluralNamingStrategy(),
     }),
+    TypeOrmModule.forFeature([Application, FileUpload]), 
     AuthModule,
     UsersModule,
     ApplicationsModule,
