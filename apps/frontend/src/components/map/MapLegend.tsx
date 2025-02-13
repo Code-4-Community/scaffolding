@@ -166,7 +166,6 @@ const FullWidthSpace = styled(Space)`
   width: 100%;
 `;
 const statusSpan = (statusIcon: string, labelString: string): ReactNode => {
-  const isInvalid = labelString.toLowerCase().includes('invalid');
   return (
     <FullWidthSpace direction={'horizontal'} size={'small'}>
       <LegendImage
@@ -187,7 +186,7 @@ const statusSpan = (statusIcon: string, labelString: string): ReactNode => {
           letterSpacing: '0em',
           textAlign: 'left',
           alignItems: 'center',
-          color: isInvalid ? '#808080' : 'rgba(24, 112, 188, 1)',
+          color: 'rgba(24, 112, 188, 1)',
         }}
       >
         {labelString.replace(' Sites', '').toUpperCase()}
