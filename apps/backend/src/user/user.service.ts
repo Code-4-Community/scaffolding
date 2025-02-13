@@ -187,8 +187,9 @@ export class UserService {
      * @returns the user's information as a UserModel object
      */
     private mapDynamoDBItemToUserModel(objectId: number, data?: {[key: string]: any}): UserModel {
-
-        const siteIds = data["siteIds"].L.map(item => Number(item.N)) ?? [];
+        const siteIds = Array.isArray(data["siteIds"]?.L) 
+        ? data["siteIds"].L.map(item => Number(item.N)) 
+        : [];
 
 
         return {
@@ -215,7 +216,7 @@ export class UserService {
             zipCode: {S: input.zipCode},
             birthDate: {S: input.birthDate},
             role: {S: Role.VOLUNTEER},
-            siteIds: {S: "null"},
+            siteIds: { L: [] },
             status: {S: UserStatus.PENDING}
         };
     }
