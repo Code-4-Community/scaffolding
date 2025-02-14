@@ -40,6 +40,44 @@ function isValidSymbolType(symbol: string): symbol is SymbolType {
   return symbol in iconGenerators;
 }
 
+function filterMarkers(
+  selectedFeatures: string[],
+  selectedStatuses: string[],
+  markers: google.maps.Marker[],
+  map: google.maps.Map,
+) {
+  let tempMarkers: google.maps.Marker[] = [];
+  if (selectedFeatures.length === 0) {
+    markers.forEach((marker: google.maps.Marker) => {
+      marker.setMap(map);
+    });
+    tempMarkers = markers;
+  } else {
+    markers.forEach((marker: google.maps.Marker) => marker.setMap(null));
+    markers.forEach((marker: google.maps.Marker) => {
+      const featureType = marker.get('featureType');
+      if (selectedFeatures.includes(featureType)) {
+        marker.setMap(map);
+        tempMarkers.push(marker);
+      }
+    });
+  }
+
+  if (selectedStatuses.length === 0) {
+    tempMarkers.forEach((marker: google.maps.Marker) => {
+      marker.setMap(map);
+    });
+  } else {
+    tempMarkers.forEach((marker: google.maps.Marker) => marker.setMap(null));
+    tempMarkers.forEach((marker: google.maps.Marker) => {
+      const status = marker.get('status');
+      if (selectedStatuses.includes(status)) {
+        marker.setMap(map);
+      }
+    });
+  }
+}
+
 interface MapProps {
   readonly zoom: number;
   selectedFeatures: string[];
@@ -147,7 +185,7 @@ const Map: React.FC<MapProps> = ({ zoom, selectedFeatures, selectedStatuses }) =
               currentInfoWindow = infoWindow;
 
               // CHANGED: Store the selected site's ID in state for later use in the sign-up form.
-              setSelectedSiteId(markerInfo.siteId);
+              setSelectedSiteId(markerInfo.siteID);
               console.log("Selected Site ID set to:", markerInfo.siteID);
             });
 
@@ -155,6 +193,7 @@ const Map: React.FC<MapProps> = ({ zoom, selectedFeatures, selectedStatuses }) =
           });
 
           setMarkers(markersArray);
+          filterMarkers(selectedFeatures, selectedStatuses, markersArray, map);
         } catch (error) {
           console.error('Failed to load sites:', error);
         }
@@ -166,7 +205,7 @@ const Map: React.FC<MapProps> = ({ zoom, selectedFeatures, selectedStatuses }) =
     <div>
       <MapDiv id="map" ref={mapRef} style={{ width: '100%', height: '675px' }} />
       {}
-      {showSignUp && <SignUpPage setShowSignUp={setShowSignUp} siteId={selectedSiteId} />}
+      {showSignUp && <SignUpPage setShowSignUp={setShowSignUp} siteID={selectedSiteId} />}
     </div>
   );
 };

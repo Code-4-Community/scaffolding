@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 // CHANGED: Props now include the siteId.
 interface Props {
   setShowSignUp: (value: boolean) => void;
-  siteId: string | null;
+  siteID: string | null;
 }
 
 function PersonalInfo() {
@@ -123,7 +123,7 @@ function TermsAndConditions() {
   );
 }
 
-export default function SignUpPage({ setShowSignUp, siteId }: Props) {
+export default function SignUpPage({ setShowSignUp, siteID }: Props) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
@@ -141,7 +141,7 @@ export default function SignUpPage({ setShowSignUp, siteId }: Props) {
 
   const handleSubmit = () => {
     // CHANGED: Use the siteId (passed as a prop) for the POST application endpoint.
-    console.log("Submitting application for siteId:", siteId);
+    console.log("Submitting application for siteID:", siteID);
     navigate('/success');
   };
 
