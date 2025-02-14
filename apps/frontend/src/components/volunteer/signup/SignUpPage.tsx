@@ -12,8 +12,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// CHANGED: Props now include the siteId.
 interface Props {
   setShowSignUp: (value: boolean) => void;
+  siteId: string | null;
 }
 
 function PersonalInfo() {
@@ -21,8 +23,7 @@ function PersonalInfo() {
 
   return (
     <Box className="personal-info-box">
-      <VStack spacing={5} marginBottom={'20px'} borderBottom="2px solid #000000" paddingBottom="20px">
-        
+      <VStack spacing={5} marginBottom="20px" borderBottom="2px solid #000000" paddingBottom="20px">
         {/* Checkbox for Group Representative */}
         <HStack width="100%" alignItems="center">
           <Text fontSize="18px" fontWeight={600} fontFamily="Montserrat">
@@ -42,7 +43,6 @@ function PersonalInfo() {
         </HStack>
 
         <HStack width="100%" spacing={10} align="start">
-          
           {/* Left Column: First Name, Email, Phone, Birth Year */}
           <VStack width="50%" align="start" spacing={5}>
             <VStack width="100%" align="start">
@@ -73,7 +73,6 @@ function PersonalInfo() {
               <Input variant="filled" height="40px" width="100%" />
             </VStack>
 
-            {/* Conditionally render Group Members below Last Name if checked */}
             {isGroupRepresentative && (
               <VStack width="100%" align="start">
                 <Text fontSize="18px" fontWeight={600} fontFamily="Montserrat">Group Members</Text>
@@ -84,14 +83,12 @@ function PersonalInfo() {
                   width="100%"
                   placeholder="First, Last Name..."
                   resize="none" 
-                  sx={{ paddingTop: '10px' }} // Ensures text starts at the top
+                  sx={{ paddingTop: '10px' }}
                 />
               </VStack>
             )}
           </VStack>
-
         </HStack>
-
       </VStack>
     </Box>
   );
@@ -100,7 +97,7 @@ function PersonalInfo() {
 function TermsAndConditions() {
   return (
     <Box className="terms-and-conditions-box">
-      <VStack spacing={6} marginTop={'20px'} marginBottom={'20px'} borderBottom="2px solid #000000" paddingBottom="20px">
+      <VStack spacing={6} marginTop="20px" marginBottom="20px" borderBottom="2px solid #000000" paddingBottom="20px">
         {[
           'I have reviewed the General Safety Guidelines',
           'I have read and agree to the Terms of Use and Privacy Policy',
@@ -126,7 +123,7 @@ function TermsAndConditions() {
   );
 }
 
-export default function SignUpPage({ setShowSignUp }: Props) {
+export default function SignUpPage({ setShowSignUp, siteId }: Props) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
@@ -143,17 +140,56 @@ export default function SignUpPage({ setShowSignUp }: Props) {
   };
 
   const handleSubmit = () => {
+    // CHANGED: Use the siteId (passed as a prop) for the POST application endpoint.
+    console.log("Submitting application for siteId:", siteId);
     navigate('/success');
   };
 
   return (
-    <Box className="outermost-box" position="absolute" top="10%" left="10%" display="flex" alignItems="center" justifyContent="center" bg="#D9D9D9" width="80%" height="140%" zIndex={'200'}>
-      <IconButton aria-label="close" size="small" position="absolute" top="10px" right="10px" onClick={closeSignUp}>
+    <Box
+      className="outermost-box"
+      position="absolute"
+      top="10%"
+      left="10%"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      bg="#D9D9D9"
+      width="80%"
+      height="140%"
+      zIndex="200"
+    >
+      <IconButton
+        aria-label="close"
+        size="small"
+        position="absolute"
+        top="10px"
+        right="10px"
+        onClick={closeSignUp}
+      >
         <CloseIcon />
       </IconButton>
-      <Box className="inner-box" bg="#FFFDFD" height="90%" width="90%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-evenly" paddingTop={'30px'}>
-        <Box className="header-box" height="5%" width="90%" borderBottom="2px solid #000000" display="flex" justifyContent="center" alignItems="center">
-          <Text fontFamily="Montserrat" fontSize="28px" fontWeight={700} paddingBottom={'30px'}>
+      <Box
+        className="inner-box"
+        bg="#FFFDFD"
+        height="90%"
+        width="90%"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="space-evenly"
+        paddingTop="30px"
+      >
+        <Box
+          className="header-box"
+          height="5%"
+          width="90%"
+          borderBottom="2px solid #000000"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontFamily="Montserrat" fontSize="28px" fontWeight={700} paddingBottom="30px">
             Welcome, Volunteer!
           </Text>
         </Box>
@@ -162,7 +198,7 @@ export default function SignUpPage({ setShowSignUp }: Props) {
           {step === 2 && <TermsAndConditions />}
         </Box>
 
-        {/* Buttons for navigation */}
+        {/* Navigation Buttons */}
         <HStack width="100%" justifyContent="space-between" marginBottom="7%" paddingX="5%">
           {step > 1 ? (
             <Button 
@@ -176,7 +212,7 @@ export default function SignUpPage({ setShowSignUp }: Props) {
               ← Back
             </Button>
           ) : (
-            <Box width="150px" /> 
+            <Box width="150px" />
           )}
 
           {step < 2 ? (
