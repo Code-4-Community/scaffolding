@@ -10,11 +10,14 @@ import {
 } from '@chakra-ui/react';
 import { Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import CircleIcon from '@mui/icons-material/Circle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
 
+// ns-add-group-signup interfaces and maps
 interface InputField {
   label: string;
   width?: string;
@@ -72,130 +75,254 @@ const termsAndConditionsCheckboxesMap: CheckboxField[] = [
   { label: 'I have read and agree to the Release of Liability' },
 ];
 
-function PersonalInfo() {
-  const [isGroupRepresentative, setIsGroupRepresentative] = useState(false);
+// Yup validation schema (from the form validation ticket)
+const validationSchema = Yup.object({
+  firstname: Yup.string().required('First name is required'),
+  lastname: Yup.string().required('Last name is required'),
+  email: Yup.string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  phone: Yup.string()
+    .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
+    .required('Phone number is required'),
+  birthyear: Yup.number()
+    .min(1900, 'Invalid birth year')
+    .max(new Date().getFullYear(), 'Invalid birth year')
+    .required('Birth year is required'),
+  groupRepresentative: Yup.boolean(),
+  // groupMembers remains optional
+});
 
+interface PersonalInfoProps {
+  onSubmit: (values: any) => void;
+}
+
+function PersonalInfo({ onSubmit }: PersonalInfoProps) {
   return (
-    <Box className="personal-info-box">
-      <VStack spacing={0} marginBottom={'20px'} borderBottom="2px solid #000000" paddingBottom="20px">
-        {personalInfoCheckboxesMap.map((field, i) => (
-          <HStack key={i} width="100%" marginBottom={'20px'} alignItems="flex-start">
-            <Text fontSize="18px" fontWeight={600} fontFamily="Montserrat">
-              {field.label}
-            </Text>
-            <Checkbox
-              checked={isGroupRepresentative}
-              onChange={(e) => setIsGroupRepresentative(e.target.checked)}
-              sx={{
-                color: '#808080',
-                '&.Mui-checked': { color: '#808080' },
-                '& .MuiSvgIcon-root': { fontSize: 23 },
-                padding: '2px',
-                marginLeft: '20px',
-              }}
-            />
-          </HStack>
-        ))}
-
-        {/* Name Fields */}
-        <VStack width="100%" align="flex-start">
-          <HStack width="100%" justifyContent="left" spacing="20%">
-            {personalInfoInputFieldsMap[0].fields.map((field, j) => (
-              <VStack key={j} width={field.width}>
-                <Text
-                  fontSize="18px"
-                  fontWeight={600}
-                  fontFamily="Montserrat"
-                  alignSelf="flex-start"
-                  marginBottom={-10}
-                >
-                  {field.label}
-                </Text>
-                <Input
-                  variant="filled"
-                  height={personalInfoInputFieldsMap[0].height}
-                  placeholder="example"
+    <Formik
+      initialValues={{
+        firstname: '',
+        lastname: '',
+        email: '',
+        phone: '',
+        birthyear: '',
+        groupRepresentative: false,
+        groupMembers: '',
+      }}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+    >
+      {({ values, errors, touched, setFieldValue }) => (
+        <Form>
+          <Box className="personal-info-box">
+            <VStack
+              spacing={0}
+              marginBottom="20px"
+              borderBottom="2px solid #000000"
+              paddingBottom="20px"
+            >
+              {personalInfoCheckboxesMap.map((field, i) => (
+                <HStack
+                  key={i}
                   width="100%"
-                />
-              </VStack>
-            ))}
-          </HStack>
-        </VStack>
-
-        {/* Lower Section */}
-        <HStack width="100%" align="start" spacing={4} mt={4}>
-          {/* Left Column - Email/Phone/Birth Year */}
-          <VStack width="380px" align="flex-start" spacing={0}>
-            {personalInfoInputFieldsMap.slice(1).map((group, i) => (
-              <VStack key={i} width="100%" align="flex-start">
-                <Text
-                  fontSize="18px"
-                  fontWeight={600}
-                  fontFamily="Montserrat"
-                  marginTop="30px"
-                  marginBottom={-10}
+                  marginBottom="20px"
+                  alignItems="flex-start"
                 >
-                  {group.fields[0].label}
-                </Text>
-                <Input
-                  variant="filled"
-                  height={group.height}
-                  placeholder="example"
-                  width={group.width}
-                />
+                  <Text
+                    fontSize="18px"
+                    fontWeight={600}
+                    fontFamily="Montserrat"
+                  >
+                    {field.label}
+                  </Text>
+                  <Checkbox
+                    checked={values.groupRepresentative}
+                    onChange={(e) =>
+                      setFieldValue('groupRepresentative', e.target.checked)
+                    }
+                    sx={{
+                      color: '#808080',
+                      '&.Mui-checked': { color: '#808080' },
+                      '& .MuiSvgIcon-root': { fontSize: 23 },
+                      padding: '2px',
+                      marginLeft: '20px',
+                    }}
+                  />
+                </HStack>
+              ))}
+
+              {/* Name Fields */}
+              <VStack width="100%" align="flex-start">
+                <HStack
+                  width="100%"
+                  justifyContent="left"
+                  spacing="20%"
+                >
+                  {personalInfoInputFieldsMap[0].fields.map((field, j) => {
+                    const fieldName =
+                      field.label === 'First Name'
+                        ? 'firstname'
+                        : 'lastname';
+                    return (
+                      <VStack key={j} width={field.width}>
+                        <Text
+                          fontSize="18px"
+                          fontWeight={600}
+                          fontFamily="Montserrat"
+                          alignSelf="flex-start"
+                          marginBottom={-10}
+                        >
+                          {field.label}
+                        </Text>
+                        <Field
+                          as={Input}
+                          name={fieldName}
+                          variant="filled"
+                          height={personalInfoInputFieldsMap[0].height}
+                          placeholder="example"
+                          width="100%"
+                        />
+                        {errors[fieldName] && touched[fieldName] && (
+                          <Text color="red" fontSize="sm">
+                            {errors[fieldName]}
+                          </Text>
+                        )}
+                      </VStack>
+                    );
+                  })}
+                </HStack>
               </VStack>
-            ))}
-          </VStack>
 
-          {/* Right Column - Group Members */}
-          {isGroupRepresentative && (
-            <VStack width="350px" align="flex-start" marginTop="30px" marginLeft="90px">
-              <Text
-                fontSize="18px"
-                fontWeight={600}
-                fontFamily="Montserrat"
-                marginBottom={-10}
-              >
-                Group Members
-              </Text>
-              <Textarea
-                variant="filled"
-                placeholder="First, last name..."
-                height="230px"
-                width="100%"
-                resize="none"
-                sx={{
-                  border: '1px solid #E2E8F0',
-                  _focus: {
-                    borderColor: '#3182CE',
-                    boxShadow: '0 0 0 1px #3182CE',
-                  },
-                  _hover: {
-                    borderColor: '#CBD5E0',
-                  },
-                }}
-              />
+              {/* Lower Section */}
+              <HStack width="100%" align="start" spacing={4} mt={4}>
+                {/* Left Column - Email/Phone/Birth Year */}
+                <VStack width="380px" align="flex-start" spacing={0}>
+                  {personalInfoInputFieldsMap.slice(1).map((group, i) => {
+                    const label = group.fields[0].label;
+                    let fieldName = '';
+                    if (label === 'Email Address') fieldName = 'email';
+                    else if (label === 'Phone Number') fieldName = 'phone';
+                    else if (label === 'Birth Year') fieldName = 'birthyear';
+                    return (
+                      <VStack key={i} width="100%" align="flex-start">
+                        <Text
+                          fontSize="18px"
+                          fontWeight={600}
+                          fontFamily="Montserrat"
+                          marginTop="30px"
+                          marginBottom={-10}
+                        >
+                          {label}
+                        </Text>
+                        <Field
+                          as={Input}
+                          name={fieldName}
+                          variant="filled"
+                          height={group.height}
+                          placeholder="example"
+                          width={group.width}
+                        />
+                      {errors[fieldName as keyof typeof errors] &&
+                        touched[fieldName as keyof typeof touched] && (
+                          <Text color="red" fontSize="sm">
+                            {errors[fieldName as keyof typeof errors]}
+                          </Text>
+                      )}
+                      </VStack>
+                    );
+                  })}
+                </VStack>
+
+                {/* Right Column - Group Members */}
+                {values.groupRepresentative && (
+                  <VStack
+                    width="350px"
+                    align="flex-start"
+                    marginTop="30px"
+                    marginLeft="90px"
+                  >
+                    <Text
+                      fontSize="18px"
+                      fontWeight={600}
+                      fontFamily="Montserrat"
+                      marginBottom={-10}
+                    >
+                      Group Members
+                    </Text>
+                    <Field
+                      as={Textarea}
+                      name="groupMembers"
+                      variant="filled"
+                      placeholder="First, last name..."
+                      height="230px"
+                      width="100%"
+                      resize="none"
+                      sx={{
+                        border: '1px solid #E2E8F0',
+                        _focus: {
+                          borderColor: '#3182CE',
+                          boxShadow: '0 0 0 1px #3182CE',
+                        },
+                        _hover: {
+                          borderColor: '#CBD5E0',
+                        },
+                      }}
+                    />
+                    {errors.groupMembers && touched.groupMembers && (
+                      <Text color="red" fontSize="sm">
+                        {errors.groupMembers}
+                      </Text>
+                    )}
+                  </VStack>
+                )}
+              </HStack>
             </VStack>
-          )}
-        </HStack>
-      </VStack>
 
-      <HStack className="circle-progress" justifyContent="center" spacing="30px">
-        <CircleIcon />
-        <CircleOutlinedIcon />
-        <CircleOutlinedIcon />
-      </HStack>
-    </Box>
+            <HStack
+              className="circle-progress"
+              justifyContent="center"
+              spacing="30px"
+            >
+              <CircleIcon />
+              <CircleOutlinedIcon />
+              <CircleOutlinedIcon />
+            </HStack>
+          </Box>
+          <Box textAlign="center" mt="20px">
+            <Button colorScheme="teal" type="submit">
+              Submit
+            </Button>
+          </Box>
+        </Form>
+      )}
+    </Formik>
   );
 }
 
 function TermsAndConditions() {
   return (
     <Box className="terms-and-conditions-box">
-      <VStack spacing={102} marginTop={'20px'} marginBottom={'20px'} borderBottom="2px solid #000000" paddingBottom="20px">
+      <VStack
+        spacing={102}
+        marginTop="20px"
+        marginBottom="20px"
+        borderBottom="2px solid #000000"
+        paddingBottom="20px"
+      >
         {termsAndConditionsCheckboxesMap.map((field, i) => (
-          <HStack key={i} width="100%" marginTop={'20px'} alignItems="flex-start">
-            <Text textDecoration="underline" fontSize="18px" fontWeight={600} fontFamily="Montserrat" marginTop={'4px'}>
+          <HStack
+            key={i}
+            width="100%"
+            marginTop="20px"
+            alignItems="flex-start"
+          >
+            <Text
+              textDecoration="underline"
+              fontSize="18px"
+              fontWeight={600}
+              fontFamily="Montserrat"
+              marginTop="4px"
+            >
               {field.label}
             </Text>
             <Checkbox
@@ -210,7 +337,11 @@ function TermsAndConditions() {
           </HStack>
         ))}
       </VStack>
-      <HStack className="circle-progress" justifyContent="center" spacing="30px">
+      <HStack
+        className="circle-progress"
+        justifyContent="center"
+        spacing="30px"
+      >
         <CircleIcon />
         <CircleIcon />
         <CircleOutlinedIcon />
@@ -224,14 +355,15 @@ interface Props {
 }
 
 export default function SignUpPage({ setShowSignUp }: Props) {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
   const navigate = useNavigate();
 
   const closeSignUp = () => {
     setShowSignUp(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (values: any) => {
+    console.log(values);
     setIsSubmitted(true);
     navigate('/success');
   };
@@ -246,8 +378,8 @@ export default function SignUpPage({ setShowSignUp }: Props) {
       justifyContent="center"
       bg="#D9D9D9"
       width="80%"
-      height="140%"
-      zIndex={'200'}
+      height="100%"
+      zIndex="200"
     >
       <IconButton
         aria-label="close"
@@ -267,7 +399,7 @@ export default function SignUpPage({ setShowSignUp }: Props) {
         flexDirection="column"
         alignItems="center"
         justifyContent="space-evenly"
-        paddingTop={'30px'}
+        paddingTop="30px"
       >
         <Box
           height="5%"
@@ -277,32 +409,18 @@ export default function SignUpPage({ setShowSignUp }: Props) {
           justifyContent="center"
           alignItems="center"
         >
-          <Text fontFamily="Montserrat" fontSize="28px" fontWeight={700} paddingBottom={'30px'}>
+          <Text
+            fontFamily="Montserrat"
+            fontSize="28px"
+            fontWeight={700}
+            paddingBottom="30px"
+          >
             Welcome, Volunteer!
           </Text>
         </Box>
         <Box width="90%" mt="10px">
-          <PersonalInfo />
+          <PersonalInfo onSubmit={handleSubmit} />
         </Box>
-
-        {/* Conditional rendering for the submit button */}
-        {/* {!isSubmitted && (
-          <Button size="large" marginBottom="7%" fontSize="20px" onClick={handleSubmit}
-          bottom="10%"
-          left="50%"
-          transform="translateX(-50%)">
-            Submit
-          </Button>
-        )} */}
-
-        {/* Success message */}
-        {/* {isSubmitted && (
-          <Box>
-            <Text fontSize="24px" fontWeight={600}>
-              Thank you for submitting the form!
-            </Text>
-          </Box>
-        )} */}
       </Box>
     </Box>
   );
