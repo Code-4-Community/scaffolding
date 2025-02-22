@@ -17,7 +17,6 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-// ns-add-group-signup interfaces and maps
 interface InputField {
   label: string;
   width?: string;
@@ -69,11 +68,6 @@ const personalInfoInputFieldsMap: InputFieldGroup[] = [
   },
 ];
 
-const termsAndConditionsCheckboxesMap: CheckboxField[] = [
-  { label: 'I have reviewed the General Safety Guidelines' },
-  { label: 'I have read and agree to the Terms of Use and Privacy Policy' },
-  { label: 'I have read and agree to the Release of Liability' },
-];
 
 // Yup validation schema (from the form validation ticket)
 const validationSchema = Yup.object({
@@ -289,9 +283,6 @@ function PersonalInfo({ onSubmit }: PersonalInfoProps) {
             </HStack>
           </Box>
           <Box textAlign="center" mt="20px">
-            <Button colorScheme="teal" type="submit">
-              Submit
-            </Button>
           </Box>
         </Form>
       )}
@@ -340,7 +331,7 @@ function TermsAndConditions() {
 export default function SignUpPage({ setShowSignUp }: Props) {
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = React.useState(1);
 
   const closeSignUp = () => {
     setShowSignUp(false);
@@ -409,7 +400,7 @@ export default function SignUpPage({ setShowSignUp }: Props) {
           </Text>
         </Box>
         <Box className="input-fields-main" width="90%" mt="10px">
-          {step === 1 && <PersonalInfo />}
+        {step === 1 && <PersonalInfo onSubmit={handleNext} />}
           {step === 2 && <TermsAndConditions />}
         </Box>
 
