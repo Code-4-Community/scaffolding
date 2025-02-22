@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CircleIcon from '@mui/icons-material/Circle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
@@ -41,10 +41,7 @@ const personalInfoCheckboxesMap: CheckboxField[] = [
 
 const personalInfoInputFieldsMap: InputFieldGroup[] = [
   {
-    fields: [
-      { label: 'First Name', width: '250px' },
-      { label: 'Last Name', width: '350px' },
-    ],
+    fields: [{ label: 'First Name', width: '250px'}, { label: 'Last Name', width: '350px' }],
     type: 'double',
     height: '40px',
     width: '810px',
@@ -299,7 +296,22 @@ function PersonalInfo({ onSubmit }: PersonalInfoProps) {
   );
 }
 
-function TermsAndConditions() {
+function TermsAndConditions({
+  onCheckboxChange,
+}: {
+  onCheckboxChange: (checked: boolean[]) => void;
+}) {
+  const [checkedState, setCheckedState] = useState(
+    new Array(termsAndConditionsCheckboxesMap.length).fill(false),
+  );
+
+  const handleCheckboxChange = (index: number) => {
+    const updatedCheckedState = checkedState.map((item, i) =>
+      i === index ? !item : item,
+    );
+    setCheckedState(updatedCheckedState);
+    onCheckboxChange(updatedCheckedState); // notify parent component
+  };
   return (
     <Box className="terms-and-conditions-box">
       <VStack
@@ -326,6 +338,8 @@ function TermsAndConditions() {
               {field.label}
             </Text>
             <Checkbox
+              checked={checkedState[i]}
+              onChange={() => handleCheckboxChange(i)}
               sx={{
                 color: '#808080',
                 '&.Mui-checked': { color: '#808080' },
@@ -355,17 +369,23 @@ interface Props {
 }
 
 export default function SignUpPage({ setShowSignUp }: Props) {
-  const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // Step 1
+  const [isChecked, setIsChecked] = useState(
+    new Array(termsAndConditionsCheckboxesMap.length).fill(false),
+  );
   const navigate = useNavigate();
 
   const closeSignUp = () => {
     setShowSignUp(false);
   };
 
-  const handleSubmit = (values: any) => {
-    console.log(values);
-    setIsSubmitted(true);
-    navigate('/success');
+  const handleSubmit = () => {
+    if (isChecked.every(Boolean)) {
+      // check all checkboxes checked
+      // You can add form validation logic here if needed
+      setIsSubmitted(true);
+      navigate('/success'); // Step 2
+    }
   };
 
   return (
@@ -418,10 +438,39 @@ export default function SignUpPage({ setShowSignUp }: Props) {
             Welcome, Volunteer!
           </Text>
         </Box>
-        <Box width="90%" mt="10px">
-          <PersonalInfo onSubmit={handleSubmit} />
+        <Box className="input-fields-main" width="90%" mt="10px">
+          {/* Comment these in and out to display the different pop up pages */}
+          {/* <PersonalInfo onSubmit={handleSubmit} /> */}
+          <TermsAndConditions onCheckboxChange={setIsChecked} />
         </Box>
+
+        {/* Conditional rendering for the submit button */}
+        {!isSubmitted && (
+          <Button
+            size="large"
+            marginBottom="7%"
+            fontSize="20px"
+            onClick={handleSubmit}
+            bottom="10%"
+            left="50%"
+            transform="translateX(-50%)"
+            isDisabled={!isChecked.every(Boolean)}
+          >
+            Submit
+          </Button>
+        )}
+
+        {/* Success message */}
+        {isSubmitted && (
+          <Box>
+            <Text fontSize="24px" fontWeight={600}>
+              Thank you for submitting the form!
+            </Text>
+             You can add additional content for the success page 
+          </Box>
+        )}
       </Box>
     </Box>
   );
 }
+
