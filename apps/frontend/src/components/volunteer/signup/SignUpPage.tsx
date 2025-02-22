@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CircleIcon from '@mui/icons-material/Circle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
@@ -440,12 +440,12 @@ export default function SignUpPage({ setShowSignUp }: Props) {
         </Box>
         <Box className="input-fields-main" width="90%" mt="10px">
           {/* Comment these in and out to display the different pop up pages */}
-          {/*<PersonalInfo /> */}
-          {/*<TermsAndConditions onCheckboxChange={setIsChecked} /> */}
+          {/* <PersonalInfo onSubmit={handleSubmit} /> */}
+          <TermsAndConditions onCheckboxChange={setIsChecked} />
         </Box>
 
         {/* Conditional rendering for the submit button */}
-        {/*{!isSubmitted && (
+        {!isSubmitted && (
           <Button
             size="large"
             marginBottom="7%"
@@ -458,17 +458,17 @@ export default function SignUpPage({ setShowSignUp }: Props) {
           >
             Submit
           </Button>
-        )}/*}
+        )}
 
         {/* Success message */}
-        {/* {isSubmitted && (
+        {isSubmitted && (
           <Box>
             <Text fontSize="24px" fontWeight={600}>
               Thank you for submitting the form!
             </Text>
              You can add additional content for the success page 
           </Box>
-        )} */}
+        )}
       </Box>
     </Box>
   );
