@@ -16,7 +16,9 @@ import circleSVG from '../../images/markers/circle.svg';
 import diamondSVG from '../../images/markers/diamond.svg';
 import starSVG from '../../images/markers/star.svg';
 import pentagonSVG from '../../images/markers/pentagon.svg';
-import { CheckboxOptionType, CheckboxValueType } from 'antd/es/checkbox/Group';
+import { CheckboxOptionType } from 'antd/es/checkbox/Group';
+
+type CheckboxValueType = string | number | boolean;
 
 const Title = styled.h1`
 font-size: 15px;
@@ -413,8 +415,8 @@ const MapLegend: React.FC<MapLegendProps> = ({
           <LegendItem>
             {icons && (
               <StatusCheckbox
-                onChange={(values: CheckboxValueType[]) =>
-                  handleStatusClick(values)
+                onChange={(values) =>
+                  handleStatusClick(values as CheckboxValueType[])
                 }
                 value={selectedStatuses}
                 options={options}
