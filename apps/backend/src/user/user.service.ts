@@ -36,9 +36,9 @@ export class UserService {
 
     }
 
-    public async postUserVolunteer(userData: NewUserInput) {
+    public async postUser(userData: NewUserInput, role: Role) {
         const newId = await this.dynamoDbService.getHighestUserId(this.tableName) + 1;
-        const userModel = this.PostInputToUserVolunteerModel(userData, newId.toString());
+        const userModel = this.PostInputToUserVolunteerModel(userData, newId.toString(), role);
         console.log("Received user data:", userData);
         try {
             const result = await this.dynamoDbService.postItem(this.tableName, userModel);
@@ -195,7 +195,7 @@ export class UserService {
         };
     }
 
-    private PostInputToUserVolunteerModel = (input: NewUserInput, userId: string): UserInputModel => {
+    private PostInputToUserVolunteerModel = (input: NewUserInput, userId: string, role: Role): UserInputModel => {
         return {
             userId: {N: userId},
             firstName: {S: input.firstName},
@@ -204,7 +204,7 @@ export class UserService {
             email: {S: input.email},
             zipCode: {S: input.zipCode},
             birthDate: {S: input.birthDate},
-            role: {S: Role.VOLUNTEER},
+            role: {S: role},
             siteIds: {S: "null"},
             status: {S: UserStatus.PENDING}
         };
