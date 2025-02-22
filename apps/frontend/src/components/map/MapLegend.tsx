@@ -172,7 +172,7 @@ const statusSpan = (statusIcon: string, labelString: string): ReactNode => {
     <FullWidthSpace direction={'horizontal'} size={'small'}>
       <LegendImage
         src={statusIcon}
-        alt="Adopted"
+        alt={labelString}
         style={{
           width: '20px',
           height: '20px',
