@@ -6,6 +6,7 @@ import { SiteModule } from '../site/site.module';
 import { ApplicationsModule } from '../applications/applications.module';
 import { DynamoDbService } from '../dynamodb';
 import { AuthModule } from '../auth/auth.module';
+import { LambdaService } from '../lambda';
 
 
 @Module({
@@ -16,6 +17,6 @@ import { AuthModule } from '../auth/auth.module';
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService, DynamoDbService],
+  providers: [AppService, DynamoDbService, LambdaService],
 })
 export class AppModule {}
