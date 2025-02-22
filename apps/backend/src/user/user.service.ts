@@ -36,11 +36,10 @@ export class UserService {
 
     }
 
-    public async postUserVolunteer(userData: NewUserInput) {
-        const userModel = this.PostInputToUserVolunteerModel(userData);
+    public async postUser(userData: NewUserInput, role: Role) {
         const newId = await this.dynamoDbService.getHighestUserId(this.tableName) + 1;
-        userModel.userId.N = newId.toString();
-        console.log("Using new ID:" + userModel.userId.N);
+        const userModel = this.PostInputToUserVolunteerModel(userData, newId.toString(), role);
+        console.log("Received user data:", userData);
         try {
             const result = await this.dynamoDbService.postItem(this.tableName, userModel);
             return {...result, newUserID: newId.toString()};
@@ -196,16 +195,16 @@ export class UserService {
         };
     }
 
-    private PostInputToUserVolunteerModel = (input: NewUserInput): UserInputModel => {
+    private PostInputToUserVolunteerModel = (input: NewUserInput, userId: string, role: Role): UserInputModel => {
         return {
-            userId: {N: "0"},
+            userId: {N: userId},
             firstName: {S: input.firstName},
             lastName: {S: input.lastName},
             phoneNumber: {S: input.phoneNumber},
             email: {S: input.email},
             zipCode: {S: input.zipCode},
             birthDate: {S: input.birthDate},
-            role: {S: Role.VOLUNTEER},
+            role: {S: role},
             siteIds: {S: "null"},
             status: {S: UserStatus.PENDING}
         };
