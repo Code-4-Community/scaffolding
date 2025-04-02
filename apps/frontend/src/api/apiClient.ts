@@ -3,6 +3,7 @@ import type {
   Application,
   ApplicationRow,
   ApplicationStage,
+  User,
 } from '@components/types';
 
 const defaultBaseUrl =
@@ -14,6 +15,8 @@ type SubmitReviewRequest = {
   rating: number;
   content: string;
 };
+
+type DecisionRequest = { decision: 'ACCEPT' | 'REJECT' };
 
 export class ApiClient {
   private readonly axiosInstance: AxiosInstance;
@@ -77,6 +80,14 @@ export class ApiClient {
     }) as Promise<void>;
   }
 
+  public async getUser(accessToken: string): Promise<User> {
+    return this.get('/api/users/', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }) as Promise<User>;
+  }
+
   private async get(
     path: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,6 +101,17 @@ export class ApiClient {
   private async post(
     path: string,
     body: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    headers: AxiosRequestConfig<any> | undefined = undefined,
+  ): Promise<unknown> {
+    return this.axiosInstance
+      .post(path, body, headers)
+      .then((response) => response.data);
+  }
+
+  private async postTwo(
+    path: string,
+    body: DecisionRequest,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     headers: AxiosRequestConfig<any> | undefined = undefined,
   ): Promise<unknown> {
