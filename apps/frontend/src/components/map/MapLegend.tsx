@@ -125,6 +125,29 @@ const MapLegend: React.FC<MapLegendProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
+  const allFeatureTypes = [
+    'Bioretention',
+    'Rain Garden',
+    'Bioswale',
+    'Porous Paving',
+    'Tree Trench/Pit',
+    'Green Roof/Planter',
+    'Other',
+  ];
+
+  useState(() => {
+    setSelectedFeatures(allFeatureTypes);
+
+    const defaultStatus = SITE_STATUS_ROADMAP.find((s) =>
+      s.label.toLowerCase().includes('available')
+    );
+    if (defaultStatus) {
+      setSelectedStatuses([defaultStatus.value]);
+    }
+
+    return;
+  });
+
   const options: CheckboxOptionType[] = SITE_STATUS_ROADMAP.map((option) => ({
     label: statusSpan(option.image, option.label),
     value: option.value,
@@ -135,19 +158,16 @@ const MapLegend: React.FC<MapLegendProps> = ({
   };
 
   const handleFeatureClick = (feature: string) => {
-  setSelectedFeatures((prevSelected: string[]) => {
-    if (prevSelected.includes(feature)) {
-      // Remove it
-      return prevSelected.filter((f) => f !== feature);
-    } else {
-      // Add it
-      return [...prevSelected, feature];
-    }
-  });
-};
+    setSelectedFeatures((prevSelected: string[]) => {
+      if (prevSelected.includes(feature)) {
+        return prevSelected.filter((f) => f !== feature);
+      } else {
+        return [...prevSelected, feature];
+      }
+    });
+  };
 
   const handleStatusClick = (values: CheckboxValueType[]) => {
-    // set selected statuses
     setSelectedStatuses(values);
   };
 
