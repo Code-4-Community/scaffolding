@@ -22,6 +22,7 @@ import * as Yup from 'yup';
 interface Props {
   setShowSignUp: (value: boolean) => void;
   siteID: string | null;
+}
 
 interface InputField {
   label: string;
