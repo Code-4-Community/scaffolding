@@ -9,7 +9,7 @@ import {
 import { ApiParam } from '@nestjs/swagger';
 import { UserService } from "./user.service";
 import { NewUserInput } from "../dtos/newUserDTO";
-import { UserModel, UserStatus, EditUserModel } from "./user.model";
+import { UserModel, UserStatus, EditUserModel, Role } from "./user.model";
 
 
 /**
@@ -26,9 +26,15 @@ export class UserController {
             return this.userService.getUser(userId);
         }
 
+
     @Post("/addVolunteer")
     public async addVolunteer( @Body() userData: NewUserInput) {
-        return this.userService.postUserVolunteer(userData);
+        return this.userService.postUser(userData, Role.VOLUNTEER);
+    }
+
+    @Post('addAdmin')
+    public async addAdmin(@Body() userData: NewUserInput) {
+        return this.userService.postUser(userData, Role.ADMIN);
     }
     
     @Get(":id/sites")
