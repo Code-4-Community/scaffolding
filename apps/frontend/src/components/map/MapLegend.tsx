@@ -85,8 +85,9 @@ const ToggleContainer = styled.div<{ isVisible: boolean }>`
   font-size: 16px;
   position: absolute;
   width: 280px;
-  height: 20px;
+  height: 30px;
   display: flex;
+  align-items: center;
   justify-content: center;
   background: #0072C4;
   bottom: 0px;
