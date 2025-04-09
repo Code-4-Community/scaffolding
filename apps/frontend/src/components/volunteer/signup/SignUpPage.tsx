@@ -17,6 +17,13 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
+
+// CHANGED: Props now include the siteId.
+interface Props {
+  setShowSignUp: (value: boolean) => void;
+  siteID: string | null;
+}
+
 interface InputField {
   label: string;
   width?: string;
@@ -390,6 +397,7 @@ function PersonalInfo({ onSubmit, setIsFormValid }: PersonalInfoProps) {
         );
       }}
     </Formik>
+
   );
 }
 
@@ -411,6 +419,7 @@ function TermsAndConditions({
   };
   return (
     <Box className="terms-and-conditions-box">
+
       <VStack
         spacing={6}
         marginTop={'20px'}
@@ -419,6 +428,7 @@ function TermsAndConditions({
         paddingBottom="20px"
       >
         {termsAndConditionsCheckboxesMap.map((field, i) => (
+
           <HStack key={i} width="100%" alignItems="center">
             <Text
               textDecoration="underline"
@@ -455,16 +465,14 @@ function TermsAndConditions({
   );
 }
 
-export default function SignUpPage({
-  setShowSignUp,
-}: {
-  setShowSignUp: (show: boolean) => void;
-}) {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+
+export default function SignUpPage({ setShowSignUp, siteID }: Props) {
+
   const [isChecked, setIsChecked] = useState(
     new Array(termsAndConditionsCheckboxesMap.length).fill(false),
   );
   const [isFormValid, setIsFormValid] = useState(false); // Track form validity
+
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
@@ -481,23 +489,28 @@ export default function SignUpPage({
   };
 
   const handleSubmit = () => {
-    if (isChecked.every(Boolean)) {
-      setIsSubmitted(true);
-      navigate('/success');
-    }
-  };
+  if (isChecked.every(Boolean)) {
+    console.log("Submitting application for siteID:", siteID);
+    navigate('/success');
+  }
+};
 
   return (
     <Box
+
+      className="outermost-box"
       position="absolute"
       top="10%"
-      left="15%"
+      left="10%"
+
       display="flex"
       alignItems="center"
       justifyContent="center"
       bg="#D9D9D9"
-      width="70%"
-      height="100%"
+
+      width="80%"
+      height="140%"
+
       zIndex="200"
     >
       <IconButton
@@ -511,6 +524,9 @@ export default function SignUpPage({
         <CloseIcon />
       </IconButton>
       <Box
+
+        className="inner-box"
+
         bg="#FFFDFD"
         height="90%"
         width="90%"
@@ -521,20 +537,19 @@ export default function SignUpPage({
         paddingTop="30px"
       >
         <Box
+
+          className="header-box"
           height="5%"
-          width="70%"
+          width="90%"
+
           borderBottom="2px solid #000000"
           display="flex"
           justifyContent="center"
           alignItems="center"
         >
-          <Text
-            fontFamily="Montserrat"
-            fontSize="28px"
-            fontWeight={700}
-            paddingTop="20px"
-            paddingBottom="30px"
-          >
+
+          <Text fontFamily="Montserrat" fontSize="28px" fontWeight={700} paddingBottom="30px">
+
             Welcome, Volunteer!
           </Text>
         </Box>
@@ -548,12 +563,10 @@ export default function SignUpPage({
           {step === 2 && <TermsAndConditions onCheckboxChange={setIsChecked} />}
         </Box>
 
-        <HStack
-          width="100%"
-          justifyContent="space-between"
-          marginBottom="4%"
-          paddingX="5%"
-        >
+
+        {/* Navigation Buttons */}
+        <HStack width="100%" justifyContent="space-between" marginBottom="7%" paddingX="5%">
+
           {step > 1 ? (
             <Button
               onClick={handleBack}
@@ -566,7 +579,9 @@ export default function SignUpPage({
               Back
             </Button>
           ) : (
-            <Box width="45%" />
+
+            <Box width="150px" />
+
           )}
           {step === 2 && (
             <Button
