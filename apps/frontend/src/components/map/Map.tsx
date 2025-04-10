@@ -7,6 +7,7 @@ import generateDiamondSVG from '../../images/markers/diamond';
 import generateTriangleSVG from '../../images/markers/triangle';
 import generateStarSVG from '../../images/markers/star';
 import generatePentagonSVG from '../../images/markers/pentagon';
+import generateOtherSVG from '../../images/markers/other';
 import PopupBox from '../mapIcon/PopupBox';
 import { createRoot } from 'react-dom/client';
 import { createPortal } from 'react-dom';
@@ -31,7 +32,7 @@ const iconGenerators = {
   'Porous Paving': generateDiamondSVG,
   'Tree Trench/Pit': generateStarSVG,
   'Green Roof/Planter': generatePentagonSVG,
-  'Other': generatePentagonSVG // Placeholder, will remove
+  'Other': generateOtherSVG // Placeholder, will remove
 } as const;
 
 type SymbolType = keyof typeof iconGenerators;
@@ -50,7 +51,7 @@ function filterMarkers(
   if (selectedFeatures.length === 0) {
     markers.forEach((marker: google.maps.Marker) => {
       marker.setMap(map);
-    });
+    }); 
     tempMarkers = markers;
   } else {
     markers.forEach((marker: google.maps.Marker) => marker.setMap(null));
@@ -130,9 +131,16 @@ const Map: React.FC<MapProps> = ({
               console.warn(`Unknown symbol type: ${symbolType}`);
               return;
             }
-
-            const typeColor =
-              markerInfo.siteStatus === 'Available' ? '#2D6A4F' : '#FB4D42';
+            
+            
+            let typeColor = '#58585B';    
+              if (markerInfo.siteStatus === 'Available') {
+  typeColor = '#2D6A4F'; // Green
+              } else if (markerInfo.siteStatus === 'Adopted') {
+              typeColor = '#DFC22A'; // Yellow (match legend)
+              } else if (markerInfo.siteStatus === 'Inactive') {
+  typeColor = '#58585B'; // Gray
+              }
 
             const generateIcon = iconGenerators[symbolType];
             const tempIcon = generateIcon(typeColor);

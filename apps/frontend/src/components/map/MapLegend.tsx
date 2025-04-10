@@ -18,6 +18,8 @@ import starSVG from '../../images/markers/star.svg';
 import pentagonSVG from '../../images/markers/pentagon.svg';
 import otherSVG from '../../images/markers/other.svg';
 import { CheckboxOptionType } from 'antd/es/checkbox/Group';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 type CheckboxValueType = string | number | boolean;
 
@@ -53,10 +55,11 @@ const LegendItem = styled.div`
 `;
 
 const LegendImage = styled(Image)`
-  width: 18px;
-  height: 18px;
+  width: 21px;
+  height: 20px;
   display: inline-block;
 `;
+
 
 const LegendText = styled.div`
   font-family: 'Lora', serif;
@@ -168,6 +171,14 @@ const MapLegend: React.FC<MapLegendProps> = ({
     });
   };
 
+  const CenteredIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`;
+
   const handleStatusClick = (values: CheckboxValueType[]) => {
     setSelectedStatuses(values);
   };
@@ -244,8 +255,17 @@ const MapLegend: React.FC<MapLegendProps> = ({
       </MapLegendContainer>
 
       <ToggleContainer isVisible={isVisible} onClick={toggleShowLegend}>
-        {isVisible ? <ArrowBackIosIcon style={{ transform: 'rotate(-90deg)', color: 'white' }} /> : <ArrowBackIosIcon style={{ transform: 'rotate(90deg)', color: 'white' }} />}
-      </ToggleContainer>
+  <KeyboardArrowDownIcon
+    style={{
+      transform: isVisible ? 'rotate(180deg)' : 'rotate(0deg)',
+      color: 'white',
+      fontSize: '24px',
+    }}
+  />
+</ToggleContainer>
+
+
+
     </Collapse>
   );
 };
