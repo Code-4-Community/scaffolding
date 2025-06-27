@@ -124,6 +124,18 @@ export function ApplicationTable() {
       <DataGrid
         rows={data}
         columns={applicationColumns}
+        // TODO: refactor this to be more specific, currently bolded everything
+        sx={{
+          '& .MuiDataGrid-columnHeaders': {
+            fontWeight: 'bold',
+          },
+          '& .MuiDataGrid-columnHeaderTitle': {
+            fontWeight: 'bold',
+          },
+          '& .MuiDataGrid-columnHeaderTitleContainer': {
+            fontWeight: 'bold',
+          },
+        }}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
@@ -139,7 +151,7 @@ export function ApplicationTable() {
 
       <Typography variant="h6" mt={3}>
         {selectedUserRow
-          ? `Selected Applicant: ${selectedUserRow.firstName} ${selectedUserRow.lastName}`
+          ? `Selected Applicant: ${selectedUserRow.name}`
           : 'No Applicant Selected'}
       </Typography>
 

@@ -4,6 +4,7 @@ import type {
   ApplicationRow,
   ApplicationStage,
   User,
+  BackendApplicationDTO,
 } from '@components/types';
 
 const defaultBaseUrl =
@@ -43,11 +44,28 @@ export class ApiClient {
   public async getAllApplications(
     accessToken: string,
   ): Promise<ApplicationRow[]> {
-    return (await this.get('/api/apps', {
+    const rawData = (await this.get('/api/apps', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    })) as Promise<ApplicationRow[]>;
+    })) as BackendApplicationDTO[];
+
+    return rawData.map((app, index) => ({
+      id: index,
+      userId: app.userId,
+      name: app.firstName + ' ' + app.lastName,
+      position: app.position,
+      stage: app.stage,
+      // If no reviews/ratings, set to null, else display
+      rating:
+        app.meanRatingAllReviews && app.meanRatingAllReviews > 0
+          ? app.meanRatingAllReviews
+          : null,
+      createdAt: app.createdAt,
+      // If no rating, set as no, if not, set as yes
+      reviewed: app.meanRatingAllReviews ? 'Yes' : 'No',
+      assignedTo: [],
+    }));
   }
 
   public async getApplication(

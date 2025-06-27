@@ -1,12 +1,22 @@
 export const applicationColumns = [
   {
-    field: 'firstName',
-    headerName: 'First Name',
+    field: 'name',
+    headerName: 'Name',
     width: 150,
   },
   {
-    field: 'lastName',
-    headerName: 'Last Name',
+    field: 'position',
+    headerName: 'Position',
+    width: 150,
+  },
+  {
+    field: 'reviewed',
+    headerName: 'Reviewed',
+    width: 150,
+  },
+  {
+    field: 'assignedTo',
+    headerName: 'Assigned To',
     width: 150,
   },
   {
@@ -15,28 +25,13 @@ export const applicationColumns = [
     width: 125,
   },
   {
-    field: 'step',
-    headerName: 'Status',
+    field: 'rating',
+    headerName: 'Rating',
     width: 125,
-  },
-  {
-    field: 'position',
-    headerName: 'Position',
-    width: 150,
   },
   {
     field: 'createdAt',
     headerName: 'Date',
-    width: 150,
-  },
-  {
-    field: 'meanRatingAllStages',
-    headerName: 'Rating All Stages',
-    width: 150,
-  },
-  {
-    field: 'meanRatingSingleStages',
-    headerName: 'Rating Single Stage',
     width: 150,
   },
 ];
