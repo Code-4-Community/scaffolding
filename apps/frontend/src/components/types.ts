@@ -28,6 +28,11 @@ type ApplicationRow = {
   stage: ApplicationStage;
   rating: number | null;
   createdAt: Date;
+  meanRatingAllReviews: number | null;
+  meanRatingResume: number | null;
+  meanRatingChallenge: number | null;
+  meanRatingTechnicalChallenge: number | null;
+  meanRatingInterview: number | null;
 };
 
 type BackendApplicationDTO = {

@@ -141,7 +141,7 @@ export function ApplicationTable() {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[5, 10, 25]}
         onRowSelectionModelChange={(newRowSelectionModel) => {
           setRowSelection(newRowSelectionModel);
           getApplication(data[newRowSelectionModel[0] as number].userId);

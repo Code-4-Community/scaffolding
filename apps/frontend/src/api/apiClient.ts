@@ -65,6 +65,12 @@ export class ApiClient {
       // If no rating, set as no, if not, set as yes
       reviewed: app.meanRatingAllReviews ? 'Yes' : 'No',
       assignedTo: [],
+      // Include detailed ratings for dropdown
+      meanRatingAllReviews: app.meanRatingAllReviews,
+      meanRatingResume: app.meanRatingResume,
+      meanRatingChallenge: app.meanRatingChallenge,
+      meanRatingTechnicalChallenge: app.meanRatingTechnicalChallenge,
+      meanRatingInterview: app.meanRatingInterview,
     }));
   }
 
