@@ -87,6 +87,14 @@ type Application = {
 type User = {
   id: number;
   status: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profilePicture: string | null;
+  linkedin: string | null;
+  github: string | null;
+  team: string | null;
+  role: string[] | null;
 };
 
 export {

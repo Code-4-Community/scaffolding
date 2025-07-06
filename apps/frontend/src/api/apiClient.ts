@@ -62,8 +62,8 @@ export class ApiClient {
           ? app.meanRatingAllReviews
           : null,
       createdAt: app.createdAt,
-      // If no rating, set as no, if not, set as yes
-      reviewed: app.meanRatingAllReviews ? 'Yes' : 'No',
+      // TODO: CHANGE ONCE THERE IS A BACKEND ENDPOINT FOR REVIEWED STAGE
+      reviewed: app.meanRatingAllReviews ? 'Reviewed' : 'Unassigned',
       assignedTo: [],
       // Include detailed ratings for dropdown
       meanRatingAllReviews: app.meanRatingAllReviews,
@@ -106,6 +106,14 @@ export class ApiClient {
 
   public async getUser(accessToken: string): Promise<User> {
     return this.get('/api/users/', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }) as Promise<User>;
+  }
+
+  public async getUserById(accessToken: string, userId: number): Promise<User> {
+    return this.get(`/api/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

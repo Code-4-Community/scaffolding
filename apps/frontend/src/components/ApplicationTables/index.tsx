@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid';
+import { DataGrid, GridRowSelectionModel, GridColDef } from '@mui/x-data-grid';
 import {
   Container,
   Typography,
@@ -11,7 +11,6 @@ import {
   Button,
 } from '@mui/material';
 import { DoneOutline } from '@mui/icons-material';
-
 import { ApplicationRow, Application, Semester } from '../types';
 import apiClient from '@api/apiClient';
 import { applicationColumns } from './columns';
@@ -123,22 +122,10 @@ export function ApplicationTable() {
       </Typography>
       <DataGrid
         rows={data}
-        columns={applicationColumns}
-        // TODO: refactor this to be more specific, currently bolded everything
-        sx={{
-          '& .MuiDataGrid-columnHeaders': {
-            fontWeight: 'bold',
-          },
-          '& .MuiDataGrid-columnHeaderTitle': {
-            fontWeight: 'bold',
-          },
-          '& .MuiDataGrid-columnHeaderTitleContainer': {
-            fontWeight: 'bold',
-          },
-        }}
+        columns={applicationColumns as GridColDef[]}
         initialState={{
           pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
+            paginationModel: { page: 0, pageSize: 10 },
           },
         }}
         pageSizeOptions={[5, 10, 25]}
@@ -148,7 +135,6 @@ export function ApplicationTable() {
         }}
         rowSelectionModel={rowSelection}
       />
-
       <Typography variant="h6" mt={3}>
         {selectedUserRow
           ? `Selected Applicant: ${selectedUserRow.name}`
