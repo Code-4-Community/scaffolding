@@ -13,9 +13,9 @@ const AppDataSource = new DataSource({
   password: process.env.NX_DB_PASSWORD,
   database: process.env.NX_DB_DATABASE,
   entities: [Task],
-  migrations: ['apps/backend/src/migrations/*.ts'],
+  migrations: ['apps/backend/src/migrations/*.js'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
-  synchronize: true,
+  synchronize: false,
   namingStrategy: new PluralNamingStrategy(),
 });
 
