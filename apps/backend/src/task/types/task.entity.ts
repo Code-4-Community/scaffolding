@@ -20,7 +20,7 @@ export class Task {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @CreateDateColumn()
@@ -29,7 +29,7 @@ export class Task {
   @Column({ nullable: true })
   dueDate?: Date;
 
-  @Column('jsonb')
+  @Column('jsonb', { default: () => "'[]'" })
   labels: Label[];
 
   @Column({
