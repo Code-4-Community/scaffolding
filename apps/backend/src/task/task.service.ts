@@ -9,4 +9,18 @@ export class TasksService {
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
   ) {}
+
+  /** Creates a new task. */
+
+  /** Edits a task by its ID. */
+
+  /** Retrieves all tasks. */
+
+  /** Deletes a task by its ID. */
+
+  /** Move task category by its ID. */
+
+  /** Add labels to task by its ID. */
+
+  /** Remove labels from task by its ID. */
 }
