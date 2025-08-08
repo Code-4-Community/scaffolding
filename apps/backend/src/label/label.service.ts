@@ -9,4 +9,6 @@ export class LabelsService {
     @InjectRepository(Label)
     private labelRepository: Repository<Label>,
   ) {}
+
+  // Creates a new label
 }
