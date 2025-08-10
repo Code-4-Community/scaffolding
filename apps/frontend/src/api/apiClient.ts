@@ -170,6 +170,22 @@ export class ApiClient {
     }) as Promise<User>;
   }
 
+  public async updateStage(
+    accessToken: string,
+    userId: number,
+    stage: ApplicationStage,
+  ): Promise<Application> {
+    return this.put(
+      `/api/apps/stage/${userId}`,
+      { stage },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    ) as Promise<Application>;
+  }
+
   public async getUserById(accessToken: string, userId: number): Promise<User> {
     return this.get(`/api/users/${userId}`, {
       headers: {
@@ -196,6 +212,17 @@ export class ApiClient {
   ): Promise<unknown> {
     return this.axiosInstance
       .post(path, body, headers)
+      .then((response) => response.data);
+  }
+
+  private async put(
+    path: string,
+    body: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    headers: AxiosRequestConfig<any> | undefined = undefined,
+  ): Promise<unknown> {
+    return this.axiosInstance
+      .put(path, body, headers)
       .then((response) => response.data);
   }
 
