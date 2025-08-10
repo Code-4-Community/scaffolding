@@ -1,7 +1,8 @@
 import { Task } from './types/task.entity';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateTaskDTO } from './dtos/create-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -9,4 +10,18 @@ export class TasksService {
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
   ) {}
+
+  // Creates a new task
+  async createTask(createTaskDto: CreateTaskDTO): Promise<Task> {
+    if (!createTaskDto.title) {
+      throw new BadRequestException("The 'title' field cannot be null");
+    }
+
+    try {
+      const newTask = await this.taskRepository.create(createTaskDto);
+      return newTask;
+    } catch (error) {
+      throw new BadRequestException('Error creating task: ', error);
+    }
+  }
 }
