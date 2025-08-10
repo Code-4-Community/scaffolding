@@ -3,14 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm';
 import { TaskCategory } from './category'; // Adjust path as needed
-
-export interface Label {
-  id: string;
-  name: string;
-  color?: string;
-}
+import { Label } from '../../label/types/label.entity';
 
 @Entity('tasks')
 export class Task {
@@ -29,7 +26,8 @@ export class Task {
   @Column({ nullable: true })
   dueDate?: Date;
 
-  @Column('jsonb', { default: () => "'[]'" })
+  @ManyToMany(() => Label, (label) => label.tasks, { cascade: true })
+  @JoinTable()
   labels: Label[];
 
   @Column({
