@@ -1,6 +1,6 @@
 import { IsArray, IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
 import { TaskCategory } from '../types/category';
-import { Label } from '../types/task.entity';
+import { Label } from '../../label/types/label.entity';
 
 export class CreateTaskDTO {
   @IsString()
