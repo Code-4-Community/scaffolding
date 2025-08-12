@@ -19,7 +19,7 @@ export class TasksService {
 
     try {
       const newTask = await this.taskRepository.create(createTaskDto);
-      return newTask;
+      return this.taskRepository.save(newTask);
     } catch (error) {
       throw new BadRequestException('Error creating task: ', error);
     }
