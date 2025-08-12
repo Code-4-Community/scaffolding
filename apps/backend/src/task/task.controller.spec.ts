@@ -5,33 +5,33 @@ import { TaskCategory } from './types/category';
 import { Task } from './types/task.entity';
 
 // Mock implementation for Task Service
+export const mockTasks: Task[] = [
+  {
+    id: 1,
+    title: 'Task 1',
+    description: 'Desc 1',
+    dateCreated: new Date('2025-02-10T00:00:00Z'),
+    dueDate: new Date('2025-02-20T00:00:00Z'),
+    labels: [],
+    category: TaskCategory.TODO,
+  },
+  {
+    id: 2,
+    title: 'Task 2',
+    description: 'Desc 2',
+    dateCreated: new Date('2025-02-11T00:00:00Z'),
+    dueDate: new Date('2025-02-25T00:00:00Z'),
+    labels: [],
+    category: TaskCategory.IN_PROGRESS,
+  },
+];
+
 export const mockTaskService: Partial<TasksService> = {
-  getAllTasks: jest.fn(),
+  getAllTasks: jest.fn(() => Promise.resolve(mockTasks)),
 };
 
 describe('TasksController', () => {
   let controller: TasksController;
-
-  const mockTasks: Task[] = [
-    {
-      id: 1,
-      title: 'Task 1',
-      description: 'Desc 1',
-      dateCreated: new Date('2025-02-10T00:00:00Z'),
-      dueDate: new Date('2025-02-20T00:00:00Z'),
-      labels: [],
-      category: TaskCategory.TODO,
-    },
-    {
-      id: 2,
-      title: 'Task 2',
-      description: 'Desc 2',
-      dateCreated: new Date('2025-02-11T00:00:00Z'),
-      dueDate: new Date('2025-02-25T00:00:00Z'),
-      labels: [],
-      category: TaskCategory.IN_PROGRESS,
-    },
-  ];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -57,9 +57,8 @@ describe('TasksController', () => {
 
   /* Tests for retrieve all tasks */
   it('should return an array of tasks', async () => {
-    jest.spyOn(mockTaskService, 'getAllTasks').mockResolvedValue(mockTasks);
-
-    expect(await controller.getAllTasks()).toBe(mockTasks);
+    expect(await controller.getAllTasks()).toEqual(mockTasks);
+    expect(mockTaskService.getAllTasks).toHaveBeenCalled();
   });
   /* Tests for delete task by id */
 
