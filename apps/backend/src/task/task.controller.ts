@@ -24,7 +24,7 @@ export class TasksController {
    * @returns The created task.
    * @throws BadRequestException if the task data is invalid.
    */
-  @Post('/create-task')
+  @Post('/task')
   async createTask(@Body() createTaskDto: CreateTaskDTO): Promise<Task> {
     return this.tasksService.createTask(createTaskDto);
   }

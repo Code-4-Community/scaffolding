@@ -17,11 +17,7 @@ export class TasksService {
       throw new BadRequestException("The 'title' field cannot be null");
     }
 
-    try {
-      const newTask = await this.taskRepository.create(createTaskDto);
-      return this.taskRepository.save(newTask);
-    } catch (error) {
-      throw new BadRequestException('Error creating task: ', error);
-    }
+    const newTask = this.taskRepository.create(createTaskDto);
+    return this.taskRepository.save(newTask);
   }
 }
