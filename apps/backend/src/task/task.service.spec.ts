@@ -56,6 +56,8 @@ describe('TasksService', () => {
 
   /* Tests for retrieve all tasks */
   it('should return all tasks', async () => {
+    mockTaskRepository.find.mockResolvedValue(mockTasks);
+
     const result = await service.getAllTasks();
 
     expect(result).toEqual(mockTasks);

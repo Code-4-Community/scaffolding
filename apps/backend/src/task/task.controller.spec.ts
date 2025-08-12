@@ -5,7 +5,9 @@ import { TaskCategory } from './types/category';
 import { Task } from './types/task.entity';
 
 // Mock implementation for Task Service
-export const mockTaskService: Partial<TasksService> = {};
+export const mockTaskService: Partial<TasksService> = {
+  getAllTasks: jest.fn(),
+};
 
 describe('TasksController', () => {
   let controller: TasksController;
