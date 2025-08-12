@@ -15,6 +15,9 @@ export class TasksService {
   /** Edits a task by its ID. */
 
   /** Retrieves all tasks. */
+  async getAllTasks() {
+    return this.taskRepository.find();
+  }
 
   /** Deletes a task by its ID. */
 

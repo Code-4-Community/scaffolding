@@ -36,6 +36,10 @@ export class TasksController {
   /** Retrieves all tasks.
    * @returns An array of all tasks.
    */
+  @Get('/task')
+  async getAllTasks(): Promise<Task[]> {
+    return this.tasksService.getAllTasks();
+  }
 
   /**
    * Deletes a task by its ID.
