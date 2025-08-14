@@ -9,24 +9,24 @@ export const mockTaskService: Partial<TasksService> = {
   createTask: jest.fn(),
 };
 
+const mockCreateTaskDTO = {
+  title: 'Task 1',
+  description: 'Desc 1',
+  dueDate: new Date('2025-08-13'),
+};
+
+export const mockTask: Task = {
+  id: 1,
+  title: mockCreateTaskDTO.title,
+  description: mockCreateTaskDTO.description,
+  dateCreated: new Date(Date.now()),
+  dueDate: mockCreateTaskDTO.dueDate,
+  labels: [],
+  category: TaskCategory.DRAFT,
+};
+
 describe('TasksController', () => {
   let controller: TasksController;
-
-  const mockCreateTaskDTO = {
-    title: 'Task 1',
-    description: 'Desc 1',
-    dueDate: new Date('2025-08-13'),
-  };
-
-  const mockTask: Task = {
-    id: 1,
-    title: mockCreateTaskDTO.title,
-    description: mockCreateTaskDTO.description,
-    dateCreated: new Date(Date.now()),
-    dueDate: mockCreateTaskDTO.dueDate,
-    labels: [],
-    category: TaskCategory.DRAFT,
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -47,7 +47,7 @@ describe('TasksController', () => {
   });
 
   /* Tests for create new task */
-  describe('POST /api/tasks/task', () => {
+  describe('POST /tasks/task', () => {
     it('should create a task and return it', async () => {
       jest.spyOn(mockTaskService, 'createTask').mockResolvedValue(mockTask);
 

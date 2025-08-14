@@ -1,14 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mock } from 'jest-mock-extended';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from './types/task.entity';
 import { TasksService } from './task.service';
+import { mockTask } from './task.controller.spec';
 
-const mockTaskRepository = mock<Repository<Task>>();
+const mockTaskRepository: Partial<Repository<Task>> = {
+  create: jest.fn().mockImplementation(async () => mockTask),
+  save: jest.fn().mockImplementation(async () => mockTask),
+};
 
 describe('TasksService', () => {
   let service: TasksService;
+
+  const mockValidCreateTaskDTO = {
+    title: 'Task 1',
+    description: 'Desc 1',
+    dueDate: new Date('2025-08-13'),
+  };
+
+  const mockInvalidCreateTaskDTO = {
+    title: '',
+    description: 'Desc 2',
+    dueDate: new Date('2025-03-13'),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,6 +44,18 @@ describe('TasksService', () => {
   });
 
   /* Tests for create new task */
+  describe('createTask', () => {
+    it('should save a valid task into the database', async () => {
+      const res = await service.createTask(mockValidCreateTaskDTO);
+
+      expect(res).toEqual(mockTask);
+    });
+    it('should throw a BadRequestException when given bad data', async () => {
+      expect(async () => {
+        await service.createTask(mockInvalidCreateTaskDTO);
+      }).rejects.toThrow("The 'title' field cannot be null");
+    });
+  });
 
   /* Tests for edit task by id */
 
