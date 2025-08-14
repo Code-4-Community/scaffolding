@@ -5,7 +5,7 @@ import { TaskCategory } from './types/category';
 import { BadRequestException } from '@nestjs/common';
 import { Task } from './types/task.entity';
 
-export const mockTasks = {
+export const mockTask = {
   id: 1,
   title: 'Task 1',
   description: 'Desc 1',
@@ -15,8 +15,22 @@ export const mockTasks = {
   category: TaskCategory.TODO,
 };
 
+// Mock implementation for Task Service
+export const mockTasks: Task[] = [
+  mockTask,
+  {
+    id: 2,
+    title: 'Task 2',
+    description: 'Desc 2',
+    dateCreated: new Date('2025-02-11T00:00:00Z'),
+    dueDate: new Date('2025-02-25T00:00:00Z'),
+    labels: [],
+    category: TaskCategory.IN_PROGRESS,
+  },
+];
+
 export const mockUpdatedTaskCategory: Task = {
-  ...mockTasks,
+  ...mockTask,
   category: TaskCategory.IN_PROGRESS,
 };
 
@@ -24,6 +38,7 @@ export const mockTaskService: Partial<TasksService> = {
   updateTaskCategory: jest.fn((id: number, newCategory: TaskCategory) =>
     Promise.resolve(mockUpdatedTaskCategory),
   ),
+  getAllTasks: jest.fn(() => Promise.resolve(mockTasks)),
 };
 
 describe('TasksController', () => {
@@ -53,12 +68,15 @@ describe('TasksController', () => {
   /* Tests for edit task by id */
 
   /* Tests for retrieve all tasks */
-
+  it('should return an array of tasks', async () => {
+    expect(await controller.getAllTasks()).toEqual(mockTasks);
+    expect(mockTaskService.getAllTasks).toHaveBeenCalled();
+  });
   /* Tests for delete task by id */
 
   /* Tests for move task category by id */
   it('should successfully update task category when valid data is provided', async () => {
-    const taskId = mockTasks.id;
+    const taskId = mockTask.id;
     const newCategory = TaskCategory.IN_PROGRESS;
 
     const result = await controller.updateTaskCategory(taskId, newCategory);

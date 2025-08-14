@@ -8,6 +8,7 @@ import { TaskCategory } from './types/category';
 import { mockTasks } from './task.controller.spec';
 
 const mockTaskRepository = mock<Repository<Task>>();
+mockTaskRepository.find.mockResolvedValue(mockTasks);
 
 describe('TasksService', () => {
   let service: TasksService;
@@ -50,6 +51,11 @@ describe('TasksService', () => {
   /* Tests for edit task by id */
 
   /* Tests for retrieve all tasks */
+  it('should return all tasks', async () => {
+    const taskDataReturned = await service.getAllTasks();
+    expect(taskDataReturned[0]).toEqual(mockTasks[0]);
+    expect(taskDataReturned[1]).toEqual(mockTasks[1]);
+  });
 
   /* Tests for delete task by id */
 
