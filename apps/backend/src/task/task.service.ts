@@ -3,6 +3,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTaskDTO } from './dtos/create-task.dto';
+import { TaskCategory } from './types/category';
 
 @Injectable()
 export class TasksService {
@@ -20,4 +21,27 @@ export class TasksService {
     const newTask = this.taskRepository.create(createTaskDto);
     return this.taskRepository.save(newTask);
   }
+  /** Edits a task by its ID. */
+
+  /** Retrieves all tasks. */
+  async getAllTasks() {
+    return this.taskRepository.find();
+  }
+
+  /** Deletes a task by its ID. */
+
+  /** Move task category by its ID. */
+  async updateTaskCategory(id: number, newCategory: TaskCategory) {
+    const task = await this.taskRepository.findOneBy({ id });
+    if (!task) {
+      return null;
+    }
+
+    task.category = newCategory;
+    return this.taskRepository.save(task);
+  }
+
+  /** Add labels to task by its ID. */
+
+  /** Remove labels from task by its ID. */
 }

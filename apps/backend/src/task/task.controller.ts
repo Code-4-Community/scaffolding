@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   Query,
+  Put,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TasksService } from './task.service';
 import { Task } from './types/task.entity';
 import { CreateTaskDTO } from './dtos/create-task.dto';
+import { TaskCategory } from './types/category';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -41,6 +44,10 @@ export class TasksController {
   /** Retrieves all tasks.
    * @returns An array of all tasks.
    */
+  @Get('/task')
+  async getAllTasks(): Promise<Task[]> {
+    return this.tasksService.getAllTasks();
+  }
 
   /**
    * Deletes a task by its ID.
@@ -58,6 +65,25 @@ export class TasksController {
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the new category is invalid.
    */
+  @Put('/:taskId/category')
+  async updateTaskCategory(
+    @Param('taskId') id: number,
+    @Body('categoryId') newCategory: TaskCategory,
+  ): Promise<Task> {
+    if (!newCategory) {
+      throw new BadRequestException('New category does not exist');
+    }
+
+    const updatedTask = await this.tasksService.updateTaskCategory(
+      id,
+      newCategory,
+    );
+    if (!updatedTask) {
+      throw new BadRequestException(`No tasks exists with id ${id}`);
+    }
+
+    return updatedTask;
+  }
 
   /** Add labels to task by its ID
    * @param id The ID of the task to add labels to.
