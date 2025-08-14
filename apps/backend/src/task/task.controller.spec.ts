@@ -1,9 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TasksService } from './task.service';
 import { TasksController } from './task.controller';
+import { Task } from './types/task.entity';
 import { TaskCategory } from './types/category';
 import { BadRequestException } from '@nestjs/common';
-import { Task } from './types/task.entity';
+
+const mockCreateTaskDTO = {
+  title: 'Task 1',
+  description: 'Desc 1',
+  dueDate: new Date('2025-08-13'),
+};
 
 export const mockTask = {
   id: 1,
@@ -39,7 +45,9 @@ export const mockTaskService: Partial<TasksService> = {
     Promise.resolve(mockUpdatedTaskCategory),
   ),
   getAllTasks: jest.fn(() => Promise.resolve(mockTasks)),
+  createTask: jest.fn(),
 };
+
 
 describe('TasksController', () => {
   let controller: TasksController;
@@ -64,6 +72,18 @@ describe('TasksController', () => {
   });
 
   /* Tests for create new task */
+  describe('POST /tasks/task', () => {
+    it('should create a task and return it', async () => {
+      jest.spyOn(mockTaskService, 'createTask').mockResolvedValue(mockTask);
+
+      const res = await controller.createTask(mockCreateTaskDTO);
+
+      expect(res).toEqual(mockTask);
+      expect(mockTaskService.createTask).toHaveBeenCalledWith(
+        mockCreateTaskDTO,
+      );
+    });
+  });
 
   /* Tests for edit task by id */
 

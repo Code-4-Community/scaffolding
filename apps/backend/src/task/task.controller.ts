@@ -13,6 +13,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TasksService } from './task.service';
 import { Task } from './types/task.entity';
+import { CreateTaskDTO } from './dtos/create-task.dto';
 import { TaskCategory } from './types/category';
 
 @ApiTags('tasks')
@@ -26,6 +27,10 @@ export class TasksController {
    * @returns The created task.
    * @throws BadRequestException if the task data is invalid.
    */
+  @Post('/task')
+  async createTask(@Body() createTaskDto: CreateTaskDTO): Promise<Task> {
+    return this.tasksService.createTask(createTaskDto);
+  }
 
   /**
    * Edits a task by its ID.
