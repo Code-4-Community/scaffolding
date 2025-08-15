@@ -11,6 +11,12 @@ const mockCreateTaskDTO = {
   dueDate: new Date('2025-08-13'),
 };
 
+const mockUpdateTaskDTO = {
+  title: 'Updated Task 1',
+  description: 'Updated Desc 1',
+  dueDate: new Date('2026-04-01'),
+};
+
 export const mockTask = {
   id: 1,
   title: 'Task 1',
@@ -40,14 +46,21 @@ export const mockUpdatedTaskCategory: Task = {
   category: TaskCategory.IN_PROGRESS,
 };
 
+export const mockGeneralUpdatedTask = {
+  ...mockTask,
+  title: 'Updated Task 1',
+  description: 'Updated Desc 1',
+  dueDate: new Date('2026-04-01'),
+};
+
 export const mockTaskService: Partial<TasksService> = {
   updateTaskCategory: jest.fn((id: number, newCategory: TaskCategory) =>
     Promise.resolve(mockUpdatedTaskCategory),
   ),
   getAllTasks: jest.fn(() => Promise.resolve(mockTasks)),
   createTask: jest.fn(),
+  updateTask: jest.fn(),
 };
-
 
 describe('TasksController', () => {
   let controller: TasksController;
@@ -86,6 +99,21 @@ describe('TasksController', () => {
   });
 
   /* Tests for edit task by id */
+  describe('PUT /tasks/:taskId/edit', () => {
+    it('should update the task with the given id and return it', async () => {
+      jest
+        .spyOn(mockTaskService, 'updateTask')
+        .mockResolvedValue(mockGeneralUpdatedTask);
+
+      const res = await controller.updateTask(1, mockUpdateTaskDTO);
+
+      expect(res).toEqual(mockGeneralUpdatedTask);
+      expect(mockTaskService.updateTask).toHaveBeenCalledWith(
+        1,
+        mockUpdateTaskDTO,
+      );
+    });
+  });
 
   /* Tests for retrieve all tasks */
   it('should return an array of tasks', async () => {
