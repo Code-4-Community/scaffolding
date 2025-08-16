@@ -56,6 +56,14 @@ export class TasksController {
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the task with the given ID does not exist.
    */
+  @Delete('/:id')
+  @ApiResponse({
+    status: 400,
+    description: 'Task with the given ID does not exist',
+  })
+  async deleteTask(@Param('id') id: number) {
+    return this.tasksService.deleteTask(id);
+  }
 
   /**
    * Move task category by its ID.
