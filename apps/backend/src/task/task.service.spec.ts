@@ -23,7 +23,7 @@ describe('TasksService', () => {
     title: '',
     description: 'Desc 2',
     dueDate: new Date('2025-03-13'),
-  }
+  };
 
   const mockCurrentTask: Task = {
     id: 1,
@@ -85,7 +85,7 @@ describe('TasksService', () => {
   /* Tests for retrieve all tasks */
   it('should return all tasks', async () => {
     mockTaskRepository.find.mockResolvedValue(mockTasks);
-    
+
     const taskDataReturned = await service.getAllTasks();
     expect(taskDataReturned[0]).toEqual(mockTasks[0]);
     expect(taskDataReturned[1]).toEqual(mockTasks[1]);
