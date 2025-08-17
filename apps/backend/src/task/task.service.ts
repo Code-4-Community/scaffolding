@@ -44,14 +44,11 @@ export class TasksService {
   /** Add labels to task by its ID. */
 
   /** Remove labels from task by its ID. */
-  // Maybe replace
   async deleteTask(id: number): Promise<DeleteResult> {
-    const task = await this.taskRepository.findOne({
-      where: { id: id },
-    });
+    const task = await this.taskRepository.findOneBy({ id });
     if (!task) {
       throw new BadRequestException(`Task with id ${id} does not exist`);
     }
-    return this.taskRepository.delete({ id });
+    return this.taskRepository.delete(task);
   }
 }
