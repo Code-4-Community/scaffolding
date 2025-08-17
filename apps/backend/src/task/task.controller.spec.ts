@@ -48,7 +48,6 @@ export const mockTaskService: Partial<TasksService> = {
   createTask: jest.fn(),
 };
 
-
 describe('TasksController', () => {
   let controller: TasksController;
   let tasksService: TasksService;
