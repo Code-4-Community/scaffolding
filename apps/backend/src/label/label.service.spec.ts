@@ -13,25 +13,25 @@ describe('LabelService', () => {
   let service: LabelsService;
 
   const mockValidCreateLabelDTO = {
-    title: 'Label 1',
+    name: 'Label 1',
     description: 'Desc 1',
     color: '#000000',
   };
 
   const mockInvalidCreateLabelDTO1 = {
-    title: '',
+    name: '',
     description: 'Desc 1',
     color: '#000000',
   };
 
   const mockInvalidCreateLabelDTO2 = {
-    title: 'Label 2',
+    name: 'Label 2',
     description: 'Desc 2',
     color: '',
   };
 
   const mockInvalidCreateLabelDTO3 = {
-    title: 'Label 3',
+    name: 'Label 3',
     description: 'Desc 3',
     color: 'Hello',
   };

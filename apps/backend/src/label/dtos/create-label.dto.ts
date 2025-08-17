@@ -2,7 +2,7 @@ import { IsString, IsHexColor } from 'class-validator';
 
 export class CreateLabelDTO {
   @IsString()
-  title: string;
+  name: string;
 
   @IsString()
   description: string;

@@ -12,7 +12,7 @@ export const mockLabelService: Partial<LabelsService> = {
 };
 
 export const mockLabelDto: CreateLabelDTO = {
-  title: 'Test Label',
+  name: 'Test Label',
   description: 'Test Description',
   color: '#000000',
 };

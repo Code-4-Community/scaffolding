@@ -25,7 +25,7 @@ export class LabelsController {
    * @throws BadRequestException if label name is not provided
    * @throws BadRequestException if color is not provided or is not hexadecimal
    */
-  @Post()
+  @Post('/label')
   async createLabel(@Body() labelDto: CreateLabelDTO): Promise<Label> {
     return this.labelsService.createLabel(labelDto);
   }

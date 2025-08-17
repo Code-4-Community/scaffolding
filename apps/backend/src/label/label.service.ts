@@ -14,8 +14,8 @@ export class LabelsService {
 
   // Creates a new label
   async createLabel(labelDto: CreateLabelDTO): Promise<Label> {
-    if (!labelDto.title) {
-      throw new BadRequestException("The 'title' field cannot be null");
+    if (!labelDto.name) {
+      throw new BadRequestException("The 'name' field cannot be null");
     }
 
     if (!labelDto.color) {
