@@ -30,18 +30,18 @@ export class TasksService {
       throw new BadRequestException(`No tasks exist with id ${id}`);
     }
 
-    if (updateTaskDto.description || updateTaskDto.dueDate) {
-      Object.assign(task, updateTaskDto);
-      if (!task.title) {
-        throw new BadRequestException("The 'title' field cannot be null");
-      }
-
-      return this.taskRepository.save(task);
+    if (!updateTaskDto) {
+      throw new BadRequestException(
+        'At least one property (title, description, or dueDate) must be provided',
+      );
     }
 
-    throw new BadRequestException(
-      'At least one property (title, description, or dueDate) must be provided',
-    );
+    Object.assign(task, updateTaskDto);
+    if (!task.title) {
+      throw new BadRequestException("The 'title' field cannot be null");
+    }
+
+    return this.taskRepository.save(task);
   }
 
   /** Retrieves all tasks. */
