@@ -4,6 +4,7 @@ import { TasksController } from './task.controller';
 import { Task } from './types/task.entity';
 import { TaskCategory } from './types/category';
 import { BadRequestException } from '@nestjs/common';
+import { Label } from '../label/types/label.entity';
 
 const mockCreateTaskDTO = {
   title: 'Task 1',
@@ -46,6 +47,7 @@ export const mockTaskService: Partial<TasksService> = {
   ),
   getAllTasks: jest.fn(() => Promise.resolve(mockTasks)),
   createTask: jest.fn(),
+  removeTaskLabels: jest.fn(),
 };
 
 describe('TasksController', () => {
@@ -53,6 +55,7 @@ describe('TasksController', () => {
   let tasksService: TasksService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TasksController],
       providers: [
@@ -126,4 +129,81 @@ describe('TasksController', () => {
   /* Tests for add labels to task by id */
 
   /* Tests for remove labels from task by id */
+  describe('POST /tasks/:taskId/remove_labels', () => {
+    it('should successfully remove labels from task', async () => {
+      const taskId = 1;
+      const labelIds = [10, 20];
+      const mockTaskAfterRemoval: Task = {
+        id: taskId,
+        title: 'Test Task',
+        description: null,
+        dateCreated: new Date('2024-01-01'),
+        dueDate: new Date('2024-12-31'),
+        category: TaskCategory.DRAFT,
+        labels: [{ id: 30, name: 'Label 3' } as Label],
+      };
+      // mock service method output
+      jest
+        .spyOn(mockTaskService, 'removeTaskLabels')
+        .mockResolvedValue(mockTaskAfterRemoval);
+
+      const result = await controller.removeTaskLabels(taskId, labelIds);
+
+      expect(result).toEqual(mockTaskAfterRemoval);
+      expect(mockTaskService.removeTaskLabels).toHaveBeenCalledWith(
+        taskId,
+        labelIds,
+      );
+    });
+
+    it('should throw BadRequestException when taskId does not exist', async () => {
+      const taskId = null;
+      const labelIds = [10, 20];
+
+      await expect(
+        controller.removeTaskLabels(taskId, labelIds),
+      ).rejects.toThrow(new BadRequestException("taskId doesn't exist"));
+
+      expect(mockTaskService.removeTaskLabels).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException when labelIds do not exist', async () => {
+      const taskId = 1;
+      const labelIds = [10, null, 20];
+
+      await expect(
+        controller.removeTaskLabels(taskId, labelIds),
+      ).rejects.toThrow(
+        new BadRequestException('at least 1 label id does not exist'),
+      );
+
+      expect(mockTaskService.removeTaskLabels).not.toHaveBeenCalled();
+    });
+
+    it('should call service when all validations pass', async () => {
+      const taskId = 1;
+      const labelIds = [10, 20, 30];
+      const mockTaskAfterRemoval: Task = {
+        id: taskId,
+        title: 'Test Task',
+        description: null,
+        dateCreated: new Date('2024-01-01'),
+        dueDate: new Date('2024-12-31'),
+        category: TaskCategory.DRAFT,
+        labels: [],
+      };
+
+      jest
+        .spyOn(mockTaskService, 'removeTaskLabels')
+        .mockResolvedValue(mockTaskAfterRemoval);
+
+      const result = await controller.removeTaskLabels(taskId, labelIds);
+
+      expect(mockTaskService.removeTaskLabels).toHaveBeenCalledWith(
+        taskId,
+        labelIds,
+      );
+      expect(result).toEqual(mockTaskAfterRemoval);
+    });
+  });
 });
