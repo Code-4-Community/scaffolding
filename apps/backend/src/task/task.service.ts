@@ -30,7 +30,7 @@ export class TasksService {
       throw new BadRequestException(`No tasks exist with id ${id}`);
     }
 
-    if (!updateTaskDto) {
+    if (Object.keys(updateTaskDto).length === 0) {
       throw new BadRequestException(
         'At least one property (title, description, or dueDate) must be provided',
       );

@@ -123,7 +123,7 @@ describe('TasksService', () => {
 
       expect(async () => {
         await service.updateTask(taskId, mockUpdateTaskDtoNoTitle);
-      }).rejects.toThrow(BadRequestException);
+      }).rejects.toThrow("The 'title' field cannot be null");
     });
 
     it('should throw a BadRequestException if nothing is provided in the given updateTaskDto', async () => {
@@ -133,13 +133,15 @@ describe('TasksService', () => {
 
       expect(async () => {
         await service.updateTask(taskId, mockUpdateTaskDtoNothing);
-      }).rejects.toThrow(BadRequestException);
+      }).rejects.toThrow(
+        'At least one property (title, description, or dueDate) must be provided',
+      );
     });
 
     it('should throw a BadRequestException if the task with the given id does not exist', async () => {
       expect(async () => {
         await service.updateTask(999, mockUpdateTaskDtoNoDesc);
-      }).rejects.toThrow(BadRequestException);
+      }).rejects.toThrow('No tasks exist with id 999');
     });
   });
 
