@@ -11,7 +11,7 @@ const tasksData = [
 
 export const TaskBoard: React.FC = () => {
   return (
-    <div className="flex flex-row gap-4 p-4 items-start">
+    <div className="flex flex-row gap-4 p-4 items-start justify-center">
       {tasksData.map((task, index) => (
         <TaskBox key={index} title={task.title} taskIds={task.taskIds} />
       ))}
