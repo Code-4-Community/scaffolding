@@ -14,6 +14,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TasksService } from './task.service';
 import { Task } from './types/task.entity';
 import { CreateTaskDTO } from './dtos/create-task.dto';
+import { UpdateTaskDTO } from './dtos/update-task.dto';
 import { TaskCategory } from './types/category';
 
 @ApiTags('tasks')
@@ -38,8 +39,15 @@ export class TasksController {
    * @param updateTaskDto The data to update the task.
    * @returns The updated task.
    * @throws BadRequestException if the task with the given ID does not exist.
-   * @throws BadRequestException if the task with the given ID does not exist.
+   * @throws BadRequestException if none of the title, description, or due date is provided in the given DTO.
    */
+  @Put('/:taskId/edit')
+  async updateTask(
+    @Param('taskId') id: number,
+    @Body() updateTaskDto: UpdateTaskDTO,
+  ): Promise<Task> {
+    return this.tasksService.updateTask(id, updateTaskDto);
+  }
 
   /** Retrieves all tasks.
    * @returns An array of all tasks.
