@@ -7,7 +7,7 @@ interface TaskBoxProps {
 
 export const TaskBox: React.FC<TaskBoxProps> = ({ title, taskIds }) => {
   return (
-    <div className="flex flex-col justify-between min-h-[200px] border-2 border-black rounded p-4 w-[327px]">
+    <div className="flex flex-col justify-between min-h-[200px] border-2 border-black rounded-lg p-4 w-[327px]">
       <div className="flex flex-col gap-4">
         <h3>{title}</h3>
 
