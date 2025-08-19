@@ -13,7 +13,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   dueDate,
 }) => {
   return (
-    <div className="w-[296px] min-h-[95px] p-3 bg-slate-200 rounded-lg relative">
+    <div className="w-[296px] min-h-[95px] bg-white p-3 rounded-lg relative">
       <div className="flex flex-row gap-1">
         {colors.map((color, index) => (
           <div
