@@ -13,8 +13,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   dueDate,
 }) => {
   return (
-    <div className="w-[296px] min-h-[95px] bg-white p-3 rounded-lg relative">
-      <div className="flex flex-row gap-1">
+    <div className="w-[296px] min-h-[95px] rounded-lg relative">
+      <div className="flex flex-row max-w-[215px] gap-1">
         {colors.map((color, index) => (
           <div
             key={index}
@@ -22,17 +22,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             style={{ backgroundColor: color }}
           ></div>
         ))}
-        {dueDate && Date.now() >= dueDate.getTime() ? (
-          <WarningAmberOutlinedIcon
-            className="absolute right-2 top-2 bg-[#fef5e6]"
-            color="warning"
-          />
-        ) : (
-          <></>
-        )}
+        <div>
+          {dueDate && Date.now() >= dueDate.getTime() && (
+            <WarningAmberOutlinedIcon
+              className="absolute right-2 top-2 bg-[#fef5e6]"
+              color="warning"
+            />
+          )}
+        </div>
       </div>
       <p className="mt-2">{title}</p>
-      {dueDate ? (
+      {dueDate && (
         <p
           className="text-xs absolute right-2 bottom-3"
           style={
@@ -41,10 +41,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               : { color: '#878787' }
           }
         >
-          Due {dueDate.getMonth() + 1}/{dueDate.getDate()}
+          Due{' '}
+          {dueDate.toLocaleDateString(undefined, {
+            month: 'numeric',
+            day: 'numeric',
+          })}
         </p>
-      ) : (
-        <></>
       )}
     </div>
   );
