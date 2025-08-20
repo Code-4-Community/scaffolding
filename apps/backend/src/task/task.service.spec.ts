@@ -27,6 +27,19 @@ describe('TasksService', () => {
     dueDate: new Date('2025-03-13'),
   };
 
+  const mockUpdateTaskDtoNoDesc = {
+    title: 'Updated Test Task',
+    dueDate: new Date('2025-07-04'),
+  };
+
+  const mockUpdateTaskDtoNoTitle = {
+    title: '',
+    description: 'Desc 2',
+    dueDate: new Date('2025-03-13'),
+  };
+
+  const mockUpdateTaskDtoNothing = {};
+
   const mockCurrentTask: Task = {
     id: 1,
     title: 'Test Task',
@@ -39,6 +52,8 @@ describe('TasksService', () => {
 
   const mockUpdatedTask: Task = {
     ...mockCurrentTask,
+    title: mockUpdateTaskDtoNoDesc.title,
+    dueDate: mockUpdateTaskDtoNoDesc.dueDate,
     category: TaskCategory.IN_PROGRESS,
   };
 
@@ -83,6 +98,53 @@ describe('TasksService', () => {
   });
 
   /* Tests for edit task by id */
+  describe('updateTask', () => {
+    it('should save a valid updated task into the database', async () => {
+      const taskId = mockCurrentTask.id;
+      const { title: newTitle, dueDate: newDueDate } = mockUpdateTaskDtoNoDesc;
+
+      mockTaskRepository.findOneBy.mockResolvedValue(mockCurrentTask);
+      mockTaskRepository.save.mockResolvedValue(mockUpdatedTask);
+
+      const res = await service.updateTask(taskId, mockUpdateTaskDtoNoDesc);
+
+      expect(mockTaskRepository.findOneBy).toHaveBeenCalledWith({ id: taskId });
+      expect(mockTaskRepository.save).toHaveBeenCalledWith({
+        ...mockCurrentTask,
+        title: newTitle,
+        dueDate: newDueDate,
+      });
+      expect(res).toEqual(mockUpdatedTask);
+    });
+
+    it('should throw a BadRequestException if the title is null', async () => {
+      const taskId = mockCurrentTask.id;
+
+      mockTaskRepository.findOneBy.mockResolvedValue(mockCurrentTask);
+
+      expect(async () => {
+        await service.updateTask(taskId, mockUpdateTaskDtoNoTitle);
+      }).rejects.toThrow("The 'title' field cannot be null");
+    });
+
+    it('should throw a BadRequestException if nothing is provided in the given updateTaskDto', async () => {
+      const taskId = mockCurrentTask.id;
+
+      mockTaskRepository.findOneBy.mockResolvedValue(mockCurrentTask);
+
+      expect(async () => {
+        await service.updateTask(taskId, mockUpdateTaskDtoNothing);
+      }).rejects.toThrow(
+        'At least one property (title, description, or dueDate) must be provided',
+      );
+    });
+
+    it('should throw a BadRequestException if the task with the given id does not exist', async () => {
+      expect(async () => {
+        await service.updateTask(999, mockUpdateTaskDtoNoDesc);
+      }).rejects.toThrow('No tasks exist with id 999');
+    });
+  });
 
   /* Tests for retrieve all tasks */
   it('should return all tasks', async () => {

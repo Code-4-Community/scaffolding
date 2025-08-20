@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTaskDTO } from './dtos/create-task.dto';
 import { TaskCategory } from './types/category';
+import { UpdateTaskDTO } from './dtos/update-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -22,6 +23,26 @@ export class TasksService {
     return this.taskRepository.save(newTask);
   }
   /** Edits a task by its ID. */
+  async updateTask(id: number, updateTaskDto: UpdateTaskDTO) {
+    const task = await this.taskRepository.findOneBy({ id });
+
+    if (!task) {
+      throw new BadRequestException(`No tasks exist with id ${id}`);
+    }
+
+    if (Object.keys(updateTaskDto).length === 0) {
+      throw new BadRequestException(
+        'At least one property (title, description, or dueDate) must be provided',
+      );
+    }
+
+    Object.assign(task, updateTaskDto);
+    if (!task.title) {
+      throw new BadRequestException("The 'title' field cannot be null");
+    }
+
+    return this.taskRepository.save(task);
+  }
 
   /** Retrieves all tasks. */
   async getAllTasks() {
