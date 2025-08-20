@@ -162,7 +162,9 @@ describe('TasksController', () => {
 
       await expect(
         controller.removeTaskLabels(taskId, labelIds),
-      ).rejects.toThrow(new BadRequestException("taskId doesn't exist"));
+      ).rejects.toThrow(
+        new BadRequestException("taskId with ID null doesn't exist"),
+      );
 
       expect(mockTaskService.removeTaskLabels).not.toHaveBeenCalled();
     });

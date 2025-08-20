@@ -48,9 +48,7 @@ export class TasksController {
     @Body('labelIds') labelIds: number[],
   ) {
     if (!taskId || typeof taskId !== 'number') {
-      console.log('fail');
-      console.log(typeof taskId);
-      throw new BadRequestException("taskId doesn't exist");
+      throw new BadRequestException(`taskId with ID ${taskId} doesn't exist`);
     }
     // checking that all the labels exist
     for (const id of labelIds) {
