@@ -13,28 +13,27 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   dueDate,
 }) => {
   return (
-    <div className="w-[296px] min-h-[95px] rounded-lg relative">
-      <div className="flex flex-row max-w-[215px] gap-1">
-        {colors.map((color, index) => (
-          <div
-            key={index}
-            className="w-[50px] h-[10px] rounded-lg"
-            style={{ backgroundColor: color }}
-          ></div>
-        ))}
-        <div>
-          {dueDate && Date.now() >= dueDate.getTime() && (
-            <WarningAmberOutlinedIcon
-              className="absolute right-2 top-2 bg-[#fef5e6]"
-              color="warning"
-            />
-          )}
+    <div className="flex flex-col w-[296px] min-h-[95px] bg-white p-3 rounded-lg relative">
+      <div className="flex flex-col">
+        <div className="flex flex-row gap-1">
+          {colors.map((color, index) => (
+            <div
+              key={index}
+              className="w-[50px] h-[10px] rounded-lg"
+              style={{ backgroundColor: color }}
+            ></div>
+          ))}
+          <div className="ml-2">
+            {dueDate && Date.now() >= dueDate.getTime() && (
+              <WarningAmberOutlinedIcon color="warning" />
+            )}
+          </div>
         </div>
+        <p className="break-words">{title}</p>
       </div>
-      <p className="mt-2">{title}</p>
       {dueDate && (
         <p
-          className="text-xs absolute right-2 bottom-3"
+          className="text-xs self-end"
           style={
             Date.now() >= dueDate.getTime()
               ? { color: '#FF0004' }
