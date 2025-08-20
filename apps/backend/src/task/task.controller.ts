@@ -9,6 +9,7 @@ import {
   Query,
   Put,
   BadRequestException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TasksService } from './task.service';
@@ -16,6 +17,7 @@ import { Task } from './types/task.entity';
 import { CreateTaskDTO } from './dtos/create-task.dto';
 import { UpdateTaskDTO } from './dtos/update-task.dto';
 import { TaskCategory } from './types/category';
+import { Label } from '../label/types/label.entity';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -102,10 +104,28 @@ export class TasksController {
    */
 
   /** Remove labels from task by its ID
-   * @param id The ID of the task to remove labels from.
-   * @param labels The labels to remove from the task.
+   * @param taskId The ID of the task to remove labels from.
+   * @param labelIds The labels to remove from the task.
    * @returns The updated task.
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the labels are invalid.
    */
+  @Post('/:taskId/remove_labels')
+  async removeTaskLabels(
+    @Param('taskId', ParseIntPipe) taskId: number,
+    @Body('labelIds') labelIds: number[],
+  ) {
+    if (!taskId || typeof taskId !== 'number') {
+      throw new BadRequestException(`taskId with ID ${taskId} doesn't exist`);
+    }
+    // checking that all the labels exist
+    for (const id of labelIds) {
+      if (!id || typeof id !== 'number') {
+        throw new BadRequestException('at least 1 label id does not exist');
+      }
+    }
+
+    // type validation done, now business logic:
+    return await this.tasksService.removeTaskLabels(taskId, labelIds);
+  }
 }
