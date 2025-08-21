@@ -37,6 +37,11 @@ describe('LabelService', () => {
   };
 
   beforeEach(async () => {
+    mockLabelsRepository.create.mockReset();
+    mockLabelsRepository.save.mockReset();
+    mockLabelsRepository.findOneBy.mockReset();
+    mockLabelsRepository.find.mockReset();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LabelsService,
@@ -68,19 +73,25 @@ describe('LabelService', () => {
     it('should throw a BadRequestException when given null label name', async () => {
       expect(async () => {
         await service.createLabel(mockInvalidCreateLabelDTO1);
-      }).rejects.toThrow(BadRequestException);
+      }).rejects.toThrow(
+        new BadRequestException("The 'name' field cannot be null"),
+      );
     });
 
     it('should throw a BadRequestException when given null label color', async () => {
       expect(async () => {
         await service.createLabel(mockInvalidCreateLabelDTO2);
-      }).rejects.toThrow(BadRequestException);
+      }).rejects.toThrow(
+        new BadRequestException("The 'color' field cannot be null"),
+      );
     });
 
     it('should throw a BadRequestException when given invalid label color', async () => {
       expect(async () => {
         await service.createLabel(mockInvalidCreateLabelDTO3);
-      }).rejects.toThrow(BadRequestException);
+      }).rejects.toThrow(
+        new BadRequestException("The 'color' field must be a valid hex color"),
+      );
     });
   });
 });
