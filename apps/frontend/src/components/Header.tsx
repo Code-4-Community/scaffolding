@@ -1,6 +1,7 @@
 import React from 'react';
+import Avatar from '@mui/material/Avatar';
 
-interface CustomNameHeaderProps {
+interface HeaderProps {
   firstName: string;
   lastName: string;
 }
@@ -10,25 +11,25 @@ const getInitials = (firstName: string, lastName: string): string => {
   return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 };
 
-const CustomNameHeader: React.FC<CustomNameHeaderProps> = ({
-  firstName,
-  lastName,
-}) => {
+const Header: React.FC<HeaderProps> = ({ firstName, lastName }) => {
   const initials = getInitials(firstName, lastName);
   const fullName = `${firstName} ${lastName}`;
 
   return (
     <div className="w-full">
-      {/* Header Section - no background, inherits from parent */}
       <div className="flex items-center gap-4 px-6 py-4">
-        {/* Custom Avatar with Initials */}
-        <div
-          className="w-10 h-10 rounded-full flex items-center justify-center"
-          style={{ backgroundColor: '#D0D0D0' }}
+        {/* Initials */}
+        <Avatar
+          sx={{
+            width: 40,
+            height: 40,
+            backgroundColor: '#D0D0D0',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+          }}
         >
-          <span className="text-white text-sm font-medium">{initials}</span>
-        </div>
-
+          {initials}
+        </Avatar>
         {/* Custom Name */}
         <h1 className="text-2xl font-medium text-gray-900">{fullName}</h1>
       </div>
@@ -39,4 +40,4 @@ const CustomNameHeader: React.FC<CustomNameHeaderProps> = ({
   );
 };
 
-export default CustomNameHeader;
+export default Header;
