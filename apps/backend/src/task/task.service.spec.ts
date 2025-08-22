@@ -196,12 +196,6 @@ describe('TasksService', () => {
   });
   /* Tests for add labels to task by id */
   describe('addTaskLabels', () => {
-    beforeEach(async () => {
-      mockTaskRepository.findOne.mockReset();
-      mockTaskRepository.save.mockReset();
-      mockLabelRepository.find.mockReset();
-    });
-
     it('should successfully add labels to a task', async () => {
       const taskId = 1;
       const labelIdsToAdd = [10, 20];
@@ -465,9 +459,7 @@ describe('TasksService', () => {
       await expect(
         service.removeTaskLabels(nonExistentTaskId, labelIdsToRemove),
       ).rejects.toThrow(
-        new BadRequestException(
-          'taskId with ID 999 does not exist in database',
-        ),
+        new BadRequestException('Task with ID 999 does not exist in database'),
       );
 
       expect(mockTaskRepository.findOne).toHaveBeenCalledWith({

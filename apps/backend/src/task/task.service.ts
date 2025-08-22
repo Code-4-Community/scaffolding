@@ -123,7 +123,7 @@ export class TasksService {
     });
     if (!task) {
       throw new BadRequestException(
-        `taskId with ID ${taskId} does not exist in database`,
+        `Task with ID ${taskId} does not exist in database`,
       );
     }
     // validate that the labelIds are associated with the given task
