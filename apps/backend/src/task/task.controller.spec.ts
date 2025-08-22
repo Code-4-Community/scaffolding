@@ -4,7 +4,6 @@ import { TasksController } from './task.controller';
 import { Task } from './types/task.entity';
 import { TaskCategory } from './types/category';
 import { BadRequestException } from '@nestjs/common';
-import { Label } from '../label/types/label.entity';
 
 const mockCreateTaskDTO = {
   title: 'Task 1',
@@ -60,6 +59,7 @@ export const mockTaskService: Partial<TasksService> = {
   ),
   getAllTasks: jest.fn(() => Promise.resolve(mockTasks)),
   createTask: jest.fn(),
+  addTaskLabels: jest.fn(),
   removeTaskLabels: jest.fn(),
   updateTask: jest.fn(),
 };
@@ -156,85 +156,49 @@ describe('TasksController', () => {
   });
 
   /* Tests for add labels to task by id */
+  describe('POST /tasks/add_labels', () => {
+    it('should call service with correct parameters and return the result', async () => {
+      const updateLabelsDto = {
+        // actual schema doesn't matter here
+        taskId: 1,
+        labelIds: [10, 20],
+      };
+      const mockServiceResponse = { ...mockTask, labels: [] };
+
+      jest
+        .spyOn(mockTaskService, 'addTaskLabels')
+        .mockResolvedValue(mockServiceResponse);
+
+      const result = await controller.addTaskLabels(updateLabelsDto);
+
+      expect(mockTaskService.addTaskLabels).toHaveBeenCalledWith(
+        updateLabelsDto.taskId,
+        updateLabelsDto.labelIds,
+      );
+      expect(result).toBe(mockServiceResponse);
+    });
+  });
 
   /* Tests for remove labels from task by id */
-  describe('POST /tasks/:taskId/remove_labels', () => {
-    it('should successfully remove labels from task', async () => {
-      const taskId = 1;
-      const labelIds = [10, 20];
-      const mockTaskAfterRemoval: Task = {
-        id: taskId,
-        title: 'Test Task',
-        description: null,
-        dateCreated: new Date('2024-01-01'),
-        dueDate: new Date('2024-12-31'),
-        category: TaskCategory.DRAFT,
-        labels: [{ id: 30, name: 'Label 3' } as Label],
+  describe('POST /tasks/remove_labels', () => {
+    it('should call service with correct parameters and return the result', async () => {
+      const updateLabelsDto = {
+        taskId: 1,
+        labelIds: [10, 20],
       };
-      // mock service method output
-      jest
-        .spyOn(mockTaskService, 'removeTaskLabels')
-        .mockResolvedValue(mockTaskAfterRemoval);
-
-      const result = await controller.removeTaskLabels(taskId, labelIds);
-
-      expect(result).toEqual(mockTaskAfterRemoval);
-      expect(mockTaskService.removeTaskLabels).toHaveBeenCalledWith(
-        taskId,
-        labelIds,
-      );
-    });
-
-    it('should throw BadRequestException when taskId does not exist', async () => {
-      const taskId = null;
-      const labelIds = [10, 20];
-
-      await expect(
-        controller.removeTaskLabels(taskId, labelIds),
-      ).rejects.toThrow(
-        new BadRequestException("taskId with ID null doesn't exist"),
-      );
-
-      expect(mockTaskService.removeTaskLabels).not.toHaveBeenCalled();
-    });
-
-    it('should throw BadRequestException when labelIds do not exist', async () => {
-      const taskId = 1;
-      const labelIds = [10, null, 20];
-
-      await expect(
-        controller.removeTaskLabels(taskId, labelIds),
-      ).rejects.toThrow(
-        new BadRequestException('at least 1 label id does not exist'),
-      );
-
-      expect(mockTaskService.removeTaskLabels).not.toHaveBeenCalled();
-    });
-
-    it('should call service when all validations pass', async () => {
-      const taskId = 1;
-      const labelIds = [10, 20, 30];
-      const mockTaskAfterRemoval: Task = {
-        id: taskId,
-        title: 'Test Task',
-        description: null,
-        dateCreated: new Date('2024-01-01'),
-        dueDate: new Date('2024-12-31'),
-        category: TaskCategory.DRAFT,
-        labels: [],
-      };
+      const mockServiceResponse = { ...mockTask, labels: [] };
 
       jest
         .spyOn(mockTaskService, 'removeTaskLabels')
-        .mockResolvedValue(mockTaskAfterRemoval);
+        .mockResolvedValue(mockServiceResponse);
 
-      const result = await controller.removeTaskLabels(taskId, labelIds);
+      const result = await controller.removeTaskLabels(updateLabelsDto);
 
       expect(mockTaskService.removeTaskLabels).toHaveBeenCalledWith(
-        taskId,
-        labelIds,
+        updateLabelsDto.taskId,
+        updateLabelsDto.labelIds,
       );
-      expect(result).toEqual(mockTaskAfterRemoval);
+      expect(result).toBe(mockServiceResponse);
     });
   });
 });

@@ -10,12 +10,14 @@ import {
   Put,
   BadRequestException,
   ParseIntPipe,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TasksService } from './task.service';
 import { Task } from './types/task.entity';
 import { CreateTaskDTO } from './dtos/create-task.dto';
 import { UpdateTaskDTO } from './dtos/update-task.dto';
+import { UpdateLabelsDTO } from './dtos/update-labels.dto';
 import { TaskCategory } from './types/category';
 import { Label } from '../label/types/label.entity';
 
@@ -96,36 +98,32 @@ export class TasksController {
   }
 
   /** Add labels to task by its ID
-   * @param id The ID of the task to add labels to.
-   * @param labels The labels to add to the task.
+   * @param updateLabelsDto The DTO containing taskId and labelIds to add.
    * @returns The updated task.
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the labels are invalid.
    */
+  @Post('/add_labels')
+  async addTaskLabels(@Body(ValidationPipe) updateLabelsDto: UpdateLabelsDTO) {
+    return await this.tasksService.addTaskLabels(
+      updateLabelsDto.taskId,
+      updateLabelsDto.labelIds,
+    );
+  }
 
   /** Remove labels from task by its ID
-   * @param taskId The ID of the task to remove labels from.
-   * @param labelIds The labels to remove from the task.
+   * @param updateLabelsDto The DTO containing taskId and labelIds to remove.
    * @returns The updated task.
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the labels are invalid.
    */
-  @Post('/:taskId/remove_labels')
+  @Post('/remove_labels')
   async removeTaskLabels(
-    @Param('taskId', ParseIntPipe) taskId: number,
-    @Body('labelIds') labelIds: number[],
+    @Body(ValidationPipe) updateLabelsDto: UpdateLabelsDTO,
   ) {
-    if (!taskId || typeof taskId !== 'number') {
-      throw new BadRequestException(`taskId with ID ${taskId} doesn't exist`);
-    }
-    // checking that all the labels exist
-    for (const id of labelIds) {
-      if (!id || typeof id !== 'number') {
-        throw new BadRequestException('at least 1 label id does not exist');
-      }
-    }
-
-    // type validation done, now business logic:
-    return await this.tasksService.removeTaskLabels(taskId, labelIds);
+    return await this.tasksService.removeTaskLabels(
+      updateLabelsDto.taskId,
+      updateLabelsDto.labelIds,
+    );
   }
 }
