@@ -126,4 +126,14 @@ export class TasksController {
       updateLabelsDto.labelIds,
     );
   }
+
+  /** Gets a task by its ID.
+   * @param id The ID of the task to retrieve.
+   * @returns The requested task.
+   * @throws BadRequestException if the task with the given ID does not exist.
+   */
+  @Get('/:taskId')
+  async getTaskById(@Param('taskId') id: number): Promise<Task> {
+    return await this.tasksService.getTaskById(id);
+  }
 }
