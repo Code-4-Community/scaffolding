@@ -43,9 +43,10 @@ export class ApiClient {
     return response as Task[];
   }
 
-  // public async updateTaskCategory(id: number, body: unknown): Promise<Task> {
-  //   return this.patch(`/api/tasks/${id}/category`, body) as Promise<Task>;
-  // }
+  public async updateTaskCategory(id: number, body: unknown): Promise<Task> {
+    const response = await this.patch(`/api/tasks/${id}/category`, body);
+    return response as Task;
+  }
 }
 
 export default new ApiClient();

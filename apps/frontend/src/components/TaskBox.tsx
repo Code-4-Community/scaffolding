@@ -36,7 +36,7 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
 
     if (!taskID || fromBoxCategory === toBoxCategory) return; // ignore invalid drops
 
-    //await apiClient.updateTaskCategory(taskID, { categoryId: toBoxCategory });
+    await apiClient.updateTaskCategory(taskID, { categoryId: toBoxCategory });
     if (onTaskDrop) onTaskDrop();
   };
 
