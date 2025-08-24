@@ -470,4 +470,27 @@ describe('TasksService', () => {
       expect(mockTaskRepository.save).not.toHaveBeenCalled();
     });
   });
+
+  describe('getTaskById', () => {
+    it('should return a task when it exists', async () => {
+      const taskId = 1;
+      mockTaskRepository.findOneBy.mockResolvedValue(mockTask);
+
+      const result = await service.getTaskById(taskId);
+
+      expect(result).toEqual(mockTask);
+      expect(mockTaskRepository.findOneBy).toHaveBeenCalledWith({ id: taskId });
+    });
+
+    it('should throw BadRequestException when task does not exist', async () => {
+      const taskId = 999;
+      mockTaskRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.getTaskById(taskId)).rejects.toThrow(
+        new BadRequestException(`No task exists with id ${taskId}`),
+      );
+
+      expect(mockTaskRepository.findOneBy).toHaveBeenCalledWith({ id: taskId });
+    });
+  });
 });

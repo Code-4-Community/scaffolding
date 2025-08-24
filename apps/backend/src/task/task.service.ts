@@ -146,4 +146,13 @@ export class TasksService {
     task.labels = task.labels.filter((label) => !labelIds.includes(label.id));
     return this.taskRepository.save(task);
   }
+
+  /** Gets a task by its ID. */
+  async getTaskById(id: number): Promise<Task> {
+    const task = await this.taskRepository.findOneBy({ id });
+    if (!task) {
+      throw new BadRequestException(`No task exists with id ${id}`);
+    }
+    return task;
+  }
 }
