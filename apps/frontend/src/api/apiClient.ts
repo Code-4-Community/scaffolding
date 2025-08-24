@@ -5,10 +5,8 @@ const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
 export class ApiClient {
-  /* eslint-disable @typescript-eslint/no-useless-constructor */
   private axiosInstance: AxiosInstance;
 
-  /* eslint-disable @typescript-eslint/no-useless-constructor */
   constructor() {
     this.axiosInstance = axios.create({ baseURL: defaultBaseUrl });
   }
