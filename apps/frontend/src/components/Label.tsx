@@ -15,7 +15,7 @@ export const Label: React.FC<LabelProps> = ({ title, color, checked }) => {
 
   return (
     <div
-      className="flex w-[137px] h-[31px] rounded-full"
+      className="flex w-[137px] h-[31px] rounded-full text-center align-middle"
       style={{ backgroundColor: color }}
     >
       <FormControlLabel
@@ -32,8 +32,10 @@ export const Label: React.FC<LabelProps> = ({ title, color, checked }) => {
             }
           />
         }
-        label={title}
+        label={title.length >= 10 ? title.slice(0, 9) + '..' : title}
         labelPlacement="start"
+        className="flex justify-between items-center w-full"
+        sx={{ m: 0, pl: 2 }}
       />
     </div>
   );
