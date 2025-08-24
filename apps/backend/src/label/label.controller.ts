@@ -29,4 +29,12 @@ export class LabelsController {
   async createLabel(@Body() labelDto: CreateLabelDTO): Promise<Label> {
     return this.labelsService.createLabel(labelDto);
   }
+
+  /** Gets all labels.
+   * @returns An array of all labels.
+   */
+  @Get()
+  async getAllLabels(): Promise<Label[]> {
+    return this.labelsService.getAllLabels();
+  }
 }

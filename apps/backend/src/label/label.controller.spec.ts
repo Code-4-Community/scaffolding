@@ -9,6 +9,7 @@ export const mockLabelService: Partial<LabelsService> = {
   createLabel: jest.fn((labelDto: CreateLabelDTO) =>
     Promise.resolve(mockLabel),
   ),
+  getAllLabels: jest.fn(() => Promise.resolve([mockLabel])),
 };
 
 export const mockLabelDto: CreateLabelDTO = {
@@ -55,6 +56,20 @@ describe('LabelController', () => {
 
       expect(res).toEqual(mockLabel);
       expect(mockLabelService.createLabel).toHaveBeenCalledWith(mockLabelDto);
+    });
+  });
+
+  /* Test for retrieve all labels */
+  describe('GET /labels', () => {
+    it('should return an array of labels', async () => {
+      jest
+        .spyOn(mockLabelService, 'getAllLabels')
+        .mockResolvedValue([mockLabel]);
+
+      const res = await controller.getAllLabels();
+
+      expect(res).toEqual([mockLabel]);
+      expect(mockLabelService.getAllLabels).toHaveBeenCalled();
     });
   });
 });
