@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from './Label';
 import Button from '@mui/material/Button';
 
@@ -27,33 +27,40 @@ interface LabelsViewProps {
 }
 
 export const LabelsView: React.FC<LabelsViewProps> = ({ currentTaskId }) => {
+  const [labelData, setLabelData] = useState(sampleLabels);
+
+  const changeCheckedState = (
+    targetLabelId: number,
+    wasAlreadyChecked: boolean,
+  ) => {
+    const updatedLabels = labelData.map((label) => {
+      if (label.id === targetLabelId) {
+        if (wasAlreadyChecked) {
+          label.tasks = label.tasks.filter((id) => id !== currentTaskId);
+        } else {
+          label.tasks.push(currentTaskId);
+        }
+      }
+
+      return label;
+    });
+
+    setLabelData(updatedLabels);
+  };
   return (
     <div>
-      <h2 className="text-3xl font-semibold">Labels</h2>
-      <div className="transparent-scrollbar-container bg-white w-[344px] h-[407px] p-3 grid auto-cols-min auto-rows-min grid-cols-2 gap-4 overflow-scroll">
+      <h2 className="text-3xl font-semibold mb-2">Labels</h2>
+      <div className="transparent-scrollbar-container bg-white w-fit h-[407px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
         {sampleLabels.map((label) => (
           <Label
+            key={label.id}
+            id={label.id}
             title={label.name}
             color={label.color}
-            checked={label.tasks.includes(currentTaskId)}
+            defaultChecked={label.tasks.includes(currentTaskId)}
+            changeCheckedState={changeCheckedState}
           />
         ))}
-        <Button
-          sx={{
-            width: '137px',
-            height: '31px',
-            borderRadius: '9999px',
-            textAlign: 'center',
-            verticalAlign: 'center',
-            backgroundColor: '#868686',
-            color: 'white',
-            fontWeight: '550',
-            textTransform: 'none',
-            fontSize: '16px',
-          }}
-        >
-          + Add Label
-        </Button>
       </div>
     </div>
   );

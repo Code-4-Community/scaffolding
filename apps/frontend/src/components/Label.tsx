@@ -5,13 +5,30 @@ import CircleIcon from '@mui/icons-material/Circle';
 import React, { useState } from 'react';
 
 interface LabelProps {
+  id: number;
   title: string;
   color: string;
-  checked: boolean;
+  defaultChecked: boolean;
+
+  changeCheckedState: (
+    targetLabelId: number,
+    wasAlreadyChecked: boolean,
+  ) => void;
 }
 
-export const Label: React.FC<LabelProps> = ({ title, color, checked }) => {
-  const [currentlyChecked, setCurrentlyChecked] = useState(checked);
+export const Label: React.FC<LabelProps> = ({
+  id,
+  title,
+  color,
+  defaultChecked,
+  changeCheckedState,
+}) => {
+  const [currentlyChecked, setCurrentlyChecked] = useState(defaultChecked);
+
+  const handleChange = () => {
+    changeCheckedState(id, currentlyChecked);
+    setCurrentlyChecked(!currentlyChecked);
+  };
 
   return (
     <div
@@ -22,8 +39,8 @@ export const Label: React.FC<LabelProps> = ({ title, color, checked }) => {
         control={
           <Checkbox
             checked={currentlyChecked}
-            onChange={() => setCurrentlyChecked(!currentlyChecked)}
-            icon={<CircleIcon sx={{ fontSize: 20 }} className="text-white" />}
+            onChange={handleChange}
+            icon={<CircleIcon sx={{ fontSize: 24 }} className="text-white" />}
             checkedIcon={
               <CheckIcon
                 sx={{ fontSize: 20 }}
