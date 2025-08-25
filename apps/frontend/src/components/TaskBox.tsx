@@ -1,6 +1,7 @@
 import apiClient from '@api/apiClient';
 import AddIcon from '@mui/icons-material/Add';
 import { Task } from 'types/types';
+import { TaskCard } from './TaskCard';
 
 interface TaskBoxProps {
   title: string;
@@ -57,7 +58,11 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
                 draggable
                 onDragStart={(e) => handleDragStart(e, task, title)}
               >
-                {task.title}
+                <TaskCard
+                  colors={[]}
+                  title={task.title}
+                  dueDate={task.dueDate ? new Date(task.dueDate) : undefined}
+                />
               </div>
             ))
           ) : (
