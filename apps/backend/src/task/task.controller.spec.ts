@@ -62,6 +62,7 @@ export const mockTaskService: Partial<TasksService> = {
   addTaskLabels: jest.fn(),
   removeTaskLabels: jest.fn(),
   updateTask: jest.fn(),
+  getTaskById: jest.fn(() => Promise.resolve(mockTask)),
 };
 
 describe('TasksController', () => {
@@ -199,6 +200,17 @@ describe('TasksController', () => {
         updateLabelsDto.labelIds,
       );
       expect(result).toBe(mockServiceResponse);
+    });
+  });
+
+  describe('GET /tasks/:taskId', () => {
+    it('should return the task with the given ID', async () => {
+      jest.spyOn(mockTaskService, 'getTaskById').mockResolvedValue(mockTask);
+
+      const res = await controller.getTaskById(1);
+
+      expect(res).toEqual(mockTask);
+      expect(mockTaskService.getTaskById).toHaveBeenCalledWith(1);
     });
   });
 });
