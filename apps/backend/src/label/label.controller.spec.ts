@@ -26,6 +26,14 @@ export const mockLabel: Label = {
   tasks: [],
 };
 
+export const mockLabel2: Label = {
+  id: 2,
+  name: 'Test Label 2',
+  description: 'Test Description 2',
+  color: '#802b2bff',
+  tasks: [],
+};
+
 describe('LabelController', () => {
   let controller: LabelsController;
 
@@ -69,6 +77,16 @@ describe('LabelController', () => {
       const res = await controller.getAllLabels();
 
       expect(res).toEqual([mockLabel]);
+      expect(mockLabelService.getAllLabels).toHaveBeenCalled();
+    });
+    it('should return an array of labels with 2 labels', async () => {
+      jest
+        .spyOn(mockLabelService, 'getAllLabels')
+        .mockResolvedValue([mockLabel, mockLabel2]);
+
+      const res = await controller.getAllLabels();
+
+      expect(res).toEqual([mockLabel, mockLabel2]);
       expect(mockLabelService.getAllLabels).toHaveBeenCalled();
     });
   });
