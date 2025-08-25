@@ -35,11 +35,11 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTaskId }) => {
   ) => {
     const updatedLabels = labelData.map((label) => {
       if (label.id === targetLabelId) {
-        if (wasAlreadyChecked) {
-          label.tasks = label.tasks.filter((id) => id !== currentTaskId);
-        } else {
-          label.tasks.push(currentTaskId);
-        }
+        const newTasks = wasAlreadyChecked
+          ? label.tasks.filter((id) => id !== currentTaskId)
+          : [...label.tasks, currentTaskId];
+
+        return { ...label, tasks: newTasks };
       }
 
       return label;
