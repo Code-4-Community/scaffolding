@@ -19,7 +19,6 @@ import { CreateTaskDTO } from './dtos/create-task.dto';
 import { UpdateTaskDTO } from './dtos/update-task.dto';
 import { UpdateLabelsDTO } from './dtos/update-labels.dto';
 import { TaskCategory } from './types/category';
-import { Label } from '../label/types/label.entity';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -32,7 +31,7 @@ export class TasksController {
    * @returns The created task.
    * @throws BadRequestException if the task data is invalid.
    */
-  @Post('/task')
+  @Post('/')
   async createTask(@Body() createTaskDto: CreateTaskDTO): Promise<Task> {
     return this.tasksService.createTask(createTaskDto);
   }
@@ -56,7 +55,7 @@ export class TasksController {
   /** Retrieves all tasks.
    * @returns An array of all tasks.
    */
-  @Get('/task')
+  @Get('/')
   async getAllTasks(): Promise<Task[]> {
     return this.tasksService.getAllTasks();
   }
