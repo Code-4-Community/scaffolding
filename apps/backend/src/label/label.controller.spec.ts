@@ -9,6 +9,7 @@ export const mockLabelService: Partial<LabelsService> = {
   createLabel: jest.fn((labelDto: CreateLabelDTO) =>
     Promise.resolve(mockLabel),
   ),
+  getAllLabels: jest.fn(() => Promise.resolve([mockLabel])),
 };
 
 export const mockLabelDto: CreateLabelDTO = {
@@ -22,6 +23,14 @@ export const mockLabel: Label = {
   name: 'Test Label',
   description: 'Test Description',
   color: '#000000',
+  tasks: [],
+};
+
+export const mockLabel2: Label = {
+  id: 2,
+  name: 'Test Label 2',
+  description: 'Test Description 2',
+  color: '#802b2bff',
   tasks: [],
 };
 
@@ -55,6 +64,30 @@ describe('LabelController', () => {
 
       expect(res).toEqual(mockLabel);
       expect(mockLabelService.createLabel).toHaveBeenCalledWith(mockLabelDto);
+    });
+  });
+
+  /* Test for retrieve all labels */
+  describe('GET /labels', () => {
+    it('should return an array of labels', async () => {
+      jest
+        .spyOn(mockLabelService, 'getAllLabels')
+        .mockResolvedValue([mockLabel]);
+
+      const res = await controller.getAllLabels();
+
+      expect(res).toEqual([mockLabel]);
+      expect(mockLabelService.getAllLabels).toHaveBeenCalled();
+    });
+    it('should return an array of labels with 2 labels', async () => {
+      jest
+        .spyOn(mockLabelService, 'getAllLabels')
+        .mockResolvedValue([mockLabel, mockLabel2]);
+
+      const res = await controller.getAllLabels();
+
+      expect(res).toEqual([mockLabel, mockLabel2]);
+      expect(mockLabelService.getAllLabels).toHaveBeenCalled();
     });
   });
 });

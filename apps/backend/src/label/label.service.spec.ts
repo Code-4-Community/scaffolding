@@ -94,4 +94,15 @@ describe('LabelService', () => {
       );
     });
   });
+
+  describe('getAllLabels', () => {
+    it('should return an array of labels', async () => {
+      mockLabelsRepository.find.mockResolvedValue([mockLabel]);
+
+      const result = await service.getAllLabels();
+
+      expect(result).toEqual([mockLabel]);
+      expect(mockLabelsRepository.find).toHaveBeenCalled();
+    });
+  });
 });
