@@ -32,25 +32,19 @@ const baseButtonStyles = {
 export const CreateEditTask: React.FC<CreateEditTaskProps> = ({ taskId }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [taskExists, setTaskExists] = useState(false);
 
   useEffect(() => {
-    if (!taskId) {
-      setTaskExists(false);
-      return;
-    }
+    if (!taskId) return;
 
     const fetchTaskData = async () => {
       try {
         const task = await apiClient.getTaskById(taskId);
         if (task) {
-          setTaskExists(true);
           setTitle(task.title);
-          setDescription(task.description || 'Add a description to your task');
+          setDescription(task.description);
         }
       } catch (err) {
-        console.log(err);
-        setTaskExists(false);
+        return;
       }
     };
     fetchTaskData();
@@ -61,14 +55,18 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({ taskId }) => {
       <div className="w-1/2 flex flex-col">
         <h1 className="text-3xl font-medium mb-4">Title</h1>
         <TextField
-          value={taskExists ? title : 'Title of task'}
+          value={taskId && title}
+          placeholder="Title of task"
           variant="outlined"
           onChange={(e) => setTitle(e.target.value)}
           sx={textFieldStyles}
         />
         <h1 className="text-3xl font-medium my-4">Description</h1>
         <TextField
-          value={taskExists ? description : 'Description of task'}
+          value={taskId && description}
+          placeholder={
+            taskId ? 'Add a description to your task' : 'Description of task'
+          }
           variant="outlined"
           multiline
           onChange={(e) => setDescription(e.target.value)}
