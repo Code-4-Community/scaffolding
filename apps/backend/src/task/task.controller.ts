@@ -54,7 +54,6 @@ export class TasksController {
    * @param id The ID of the task to delete.
    * @returns A delete result.
    * @throws BadRequestException if the task with the given ID does not exist.
-   * @throws BadRequestException if the task with the given ID does not exist.
    */
   @Delete('/:taskId')
   async deleteTask(
