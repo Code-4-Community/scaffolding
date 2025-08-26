@@ -89,7 +89,7 @@ describe('TasksController', () => {
   });
 
   /* Tests for create new task */
-  describe('POST /tasks/task', () => {
+  describe('POST /tasks', () => {
     it('should create a task and return it', async () => {
       jest.spyOn(mockTaskService, 'createTask').mockResolvedValue(mockTask);
 

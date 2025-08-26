@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Task } from './types/task.entity';
 import { TasksService } from './task.service';
 import { mockTask } from './task.controller.spec';
@@ -64,6 +64,7 @@ describe('TasksService', () => {
     mockTaskRepository.findOneBy.mockReset();
     mockTaskRepository.save.mockReset();
     mockTaskRepository.create.mockReset();
+    mockTaskRepository.delete.mockReset();
     mockLabelRepository.find.mockReset();
 
     const module: TestingModule = await Test.createTestingModule({
@@ -101,6 +102,31 @@ describe('TasksService', () => {
       expect(async () => {
         await service.createTask(mockInvalidCreateTaskDTO);
       }).rejects.toThrow("The 'title' field cannot be null");
+    });
+  });
+
+  describe('deleteTask', () => {
+    it('should delete a task given the id', async () => {
+      const taskId = 1;
+      const mockDeleteResult: DeleteResult = {
+        raw: undefined,
+        affected: 1,
+      };
+
+      mockTaskRepository.findOneBy.mockResolvedValue(mockTask);
+      mockTaskRepository.delete.mockResolvedValue(mockDeleteResult);
+
+      const res = await service.deleteTask(taskId);
+
+      expect(res).toEqual(mockDeleteResult);
+    });
+
+    it('should throw a BadRequestException when given invalid id', async () => {
+      const invalidTaskId = -999;
+      mockTaskRepository.findOneBy.mockResolvedValue(null);
+      await expect(service.deleteTask(invalidTaskId)).rejects.toThrow(
+        `Task with id ${invalidTaskId} does not exist`,
+      );
     });
   });
 

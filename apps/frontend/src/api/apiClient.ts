@@ -51,7 +51,7 @@ export class ApiClient {
     return response as Label[];
   }
 
-  public async getTask(id: number): Promise<Task> {
+  public async getTaskById(id: number): Promise<Task> {
     const response = await this.get(`/api/tasks/${id}`);
     return response as Task;
   }
