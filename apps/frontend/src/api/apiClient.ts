@@ -45,6 +45,11 @@ export class ApiClient {
     const response = await this.patch(`/api/tasks/${id}/category`, body);
     return response as Task;
   }
+
+  public async getTaskById(id: number): Promise<Task> {
+    const response = await this.get(`/api/tasks/${id}`);
+    return response as Task;
+  }
 }
 
 export default new ApiClient();
