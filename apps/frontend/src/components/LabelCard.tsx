@@ -26,8 +26,8 @@ export const LabelCard: React.FC<LabelCardProps> = ({
   const [currentlyChecked, setCurrentlyChecked] = useState(defaultChecked);
 
   const handleChange = () => {
-    changeCheckedState(id, currentlyChecked);
     setCurrentlyChecked(!currentlyChecked);
+    changeCheckedState(id, currentlyChecked);
   };
 
   return (

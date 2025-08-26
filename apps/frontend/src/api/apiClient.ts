@@ -37,7 +37,7 @@ export class ApiClient {
   }
 
   public async getTasks(): Promise<Task[]> {
-    const response = await this.get('/api/tasks/task');
+    const response = await this.get('/api/tasks');
     return response as Task[];
   }
 
