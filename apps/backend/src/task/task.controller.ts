@@ -65,8 +65,18 @@ export class TasksController {
    * @param id The ID of the task to delete.
    * @returns A delete result.
    * @throws BadRequestException if the task with the given ID does not exist.
-   * @throws BadRequestException if the task with the given ID does not exist.
    */
+  @Delete('/:taskId')
+  async deleteTask(
+    @Param('taskId') taskId: number,
+  ): Promise<{ success: boolean; message: string }> {
+    const result = await this.tasksService.deleteTask(taskId);
+
+    return {
+      success: true,
+      message: `Task with id ${taskId} has been deleted successfully`,
+    };
+  }
 
   /**
    * Move task category by its ID.

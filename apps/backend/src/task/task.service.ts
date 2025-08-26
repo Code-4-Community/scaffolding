@@ -1,7 +1,7 @@
 import { Task } from './types/task.entity';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, DeleteResult } from 'typeorm';
 import { CreateTaskDTO } from './dtos/create-task.dto';
 import { TaskCategory } from './types/category';
 import { UpdateTaskDTO } from './dtos/update-task.dto';
@@ -53,6 +53,13 @@ export class TasksService {
   }
 
   /** Deletes a task by its ID. */
+  async deleteTask(id: number): Promise<DeleteResult> {
+    const task = await this.taskRepository.findOneBy({ id });
+    if (!task) {
+      throw new BadRequestException(`Task with id ${id} does not exist`);
+    }
+    return this.taskRepository.delete(task);
+  }
 
   /** Move task category by its ID. */
   async updateTaskCategory(id: number, newCategory: TaskCategory) {
