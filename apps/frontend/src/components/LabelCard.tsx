@@ -4,7 +4,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
 import React, { useState } from 'react';
 
-interface LabelProps {
+interface LabelCardProps {
   id: number;
   title: string;
   color: string;
@@ -16,7 +16,7 @@ interface LabelProps {
   ) => void;
 }
 
-export const Label: React.FC<LabelProps> = ({
+export const LabelCard: React.FC<LabelCardProps> = ({
   id,
   title,
   color,

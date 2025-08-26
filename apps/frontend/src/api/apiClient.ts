@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
-import { Task } from '../types/types';
+import { Label, Task } from '../types/types';
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
@@ -43,6 +43,16 @@ export class ApiClient {
 
   public async updateTaskCategory(id: number, body: unknown): Promise<Task> {
     const response = await this.patch(`/api/tasks/${id}/category`, body);
+    return response as Task;
+  }
+
+  public async getLabels(): Promise<Label[]> {
+    const response = await this.get(`/api/labels`);
+    return response as Label[];
+  }
+
+  public async getTask(id: number): Promise<Task> {
+    const response = await this.get(`/api/tasks/${id}`);
     return response as Task;
   }
 }

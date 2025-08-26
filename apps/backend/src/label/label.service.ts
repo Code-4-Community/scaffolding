@@ -34,6 +34,6 @@ export class LabelsService {
 
   // Retrieves all labels
   async getAllLabels(): Promise<Label[]> {
-    return this.labelRepository.find();
+    return this.labelRepository.find({ relations: ['tasks'] });
   }
 }
