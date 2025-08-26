@@ -57,18 +57,10 @@ export class TasksController {
    * @throws BadRequestException if the task with the given ID does not exist.
    */
   @Delete('/:taskId')
-  @ApiResponse({
-    status: 400,
-    description: 'Task with the given ID does not exist',
-  })
   async deleteTask(
     @Param('taskId') taskId: number,
   ): Promise<{ success: boolean; message: string }> {
     const result = await this.tasksService.deleteTask(taskId);
-
-    if (!result) {
-      throw new BadRequestException(`Task with id ${taskId} does not exist`);
-    }
 
     return {
       success: true,
