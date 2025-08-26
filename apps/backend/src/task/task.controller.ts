@@ -77,7 +77,7 @@ export class TasksController {
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the new category is invalid.
    */
-  @Put('/:taskId/category')
+  @Patch('/:taskId/category')
   async updateTaskCategory(
     @Param('taskId') id: number,
     @Body('categoryId') newCategory: TaskCategory,

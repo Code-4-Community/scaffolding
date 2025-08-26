@@ -31,4 +31,9 @@ export class LabelsService {
     const newLabel = this.labelRepository.create(labelDto);
     return this.labelRepository.save(newLabel);
   }
+
+  // Retrieves all labels
+  async getAllLabels(): Promise<Label[]> {
+    return this.labelRepository.find();
+  }
 }
