@@ -11,6 +11,12 @@ const mockCreateTaskDTO = {
   dueDate: new Date('2025-08-13'),
 };
 
+const mockUpdateTaskDTO = {
+  title: 'Updated Task 1',
+  description: 'Updated Desc 1',
+  dueDate: new Date('2026-04-01'),
+};
+
 export const mockTask = {
   id: 1,
   title: 'Task 1',
@@ -40,20 +46,31 @@ export const mockUpdatedTaskCategory: Task = {
   category: TaskCategory.IN_PROGRESS,
 };
 
+export const mockGeneralUpdatedTask = {
+  ...mockTask,
+  title: 'Updated Task 1',
+  description: 'Updated Desc 1',
+  dueDate: new Date('2026-04-01'),
+};
+
 export const mockTaskService: Partial<TasksService> = {
   updateTaskCategory: jest.fn((id: number, newCategory: TaskCategory) =>
     Promise.resolve(mockUpdatedTaskCategory),
   ),
   getAllTasks: jest.fn(() => Promise.resolve(mockTasks)),
   createTask: jest.fn(),
+  addTaskLabels: jest.fn(),
+  removeTaskLabels: jest.fn(),
+  updateTask: jest.fn(),
+  getTaskById: jest.fn(() => Promise.resolve(mockTask)),
 };
-
 
 describe('TasksController', () => {
   let controller: TasksController;
   let tasksService: TasksService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TasksController],
       providers: [
@@ -72,7 +89,7 @@ describe('TasksController', () => {
   });
 
   /* Tests for create new task */
-  describe('POST /tasks/task', () => {
+  describe('POST /tasks', () => {
     it('should create a task and return it', async () => {
       jest.spyOn(mockTaskService, 'createTask').mockResolvedValue(mockTask);
 
@@ -86,6 +103,21 @@ describe('TasksController', () => {
   });
 
   /* Tests for edit task by id */
+  describe('PUT /tasks/:taskId/edit', () => {
+    it('should update the task with the given id and return it', async () => {
+      jest
+        .spyOn(mockTaskService, 'updateTask')
+        .mockResolvedValue(mockGeneralUpdatedTask);
+
+      const res = await controller.updateTask(1, mockUpdateTaskDTO);
+
+      expect(res).toEqual(mockGeneralUpdatedTask);
+      expect(mockTaskService.updateTask).toHaveBeenCalledWith(
+        1,
+        mockUpdateTaskDTO,
+      );
+    });
+  });
 
   /* Tests for retrieve all tasks */
   it('should return an array of tasks', async () => {
@@ -125,6 +157,60 @@ describe('TasksController', () => {
   });
 
   /* Tests for add labels to task by id */
+  describe('POST /tasks/add_labels', () => {
+    it('should call service with correct parameters and return the result', async () => {
+      const updateLabelsDto = {
+        // actual schema doesn't matter here
+        taskId: 1,
+        labelIds: [10, 20],
+      };
+      const mockServiceResponse = { ...mockTask, labels: [] };
+
+      jest
+        .spyOn(mockTaskService, 'addTaskLabels')
+        .mockResolvedValue(mockServiceResponse);
+
+      const result = await controller.addTaskLabels(updateLabelsDto);
+
+      expect(mockTaskService.addTaskLabels).toHaveBeenCalledWith(
+        updateLabelsDto.taskId,
+        updateLabelsDto.labelIds,
+      );
+      expect(result).toBe(mockServiceResponse);
+    });
+  });
 
   /* Tests for remove labels from task by id */
+  describe('POST /tasks/remove_labels', () => {
+    it('should call service with correct parameters and return the result', async () => {
+      const updateLabelsDto = {
+        taskId: 1,
+        labelIds: [10, 20],
+      };
+      const mockServiceResponse = { ...mockTask, labels: [] };
+
+      jest
+        .spyOn(mockTaskService, 'removeTaskLabels')
+        .mockResolvedValue(mockServiceResponse);
+
+      const result = await controller.removeTaskLabels(updateLabelsDto);
+
+      expect(mockTaskService.removeTaskLabels).toHaveBeenCalledWith(
+        updateLabelsDto.taskId,
+        updateLabelsDto.labelIds,
+      );
+      expect(result).toBe(mockServiceResponse);
+    });
+  });
+
+  describe('GET /tasks/:taskId', () => {
+    it('should return the task with the given ID', async () => {
+      jest.spyOn(mockTaskService, 'getTaskById').mockResolvedValue(mockTask);
+
+      const res = await controller.getTaskById(1);
+
+      expect(res).toEqual(mockTask);
+      expect(mockTaskService.getTaskById).toHaveBeenCalledWith(1);
+    });
+  });
 });

@@ -9,7 +9,7 @@
     "baseUrl": "src",
     "paths": {
       "@api/*": ["api/*"],
-      "@components/*": ["components/*"],
+      "@components/*": ["src/components/*"],
       "@containers/*": ["containers/*"],
       "@public/*": ["../public/*"],
       "@shared/*": ["../../../shared/*"],

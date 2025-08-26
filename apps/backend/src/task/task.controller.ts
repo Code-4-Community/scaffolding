@@ -9,11 +9,15 @@ import {
   Query,
   Put,
   BadRequestException,
+  ParseIntPipe,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TasksService } from './task.service';
 import { Task } from './types/task.entity';
 import { CreateTaskDTO } from './dtos/create-task.dto';
+import { UpdateTaskDTO } from './dtos/update-task.dto';
+import { UpdateLabelsDTO } from './dtos/update-labels.dto';
 import { TaskCategory } from './types/category';
 
 @ApiTags('tasks')
@@ -27,7 +31,7 @@ export class TasksController {
    * @returns The created task.
    * @throws BadRequestException if the task data is invalid.
    */
-  @Post('/task')
+  @Post('/')
   async createTask(@Body() createTaskDto: CreateTaskDTO): Promise<Task> {
     return this.tasksService.createTask(createTaskDto);
   }
@@ -38,13 +42,20 @@ export class TasksController {
    * @param updateTaskDto The data to update the task.
    * @returns The updated task.
    * @throws BadRequestException if the task with the given ID does not exist.
-   * @throws BadRequestException if the task with the given ID does not exist.
+   * @throws BadRequestException if none of the title, description, or due date is provided in the given DTO.
    */
+  @Put('/:taskId/edit')
+  async updateTask(
+    @Param('taskId') id: number,
+    @Body() updateTaskDto: UpdateTaskDTO,
+  ): Promise<Task> {
+    return this.tasksService.updateTask(id, updateTaskDto);
+  }
 
   /** Retrieves all tasks.
    * @returns An array of all tasks.
    */
-  @Get('/task')
+  @Get('/')
   async getAllTasks(): Promise<Task[]> {
     return this.tasksService.getAllTasks();
   }
@@ -75,7 +86,7 @@ export class TasksController {
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the new category is invalid.
    */
-  @Put('/:taskId/category')
+  @Patch('/:taskId/category')
   async updateTaskCategory(
     @Param('taskId') id: number,
     @Body('categoryId') newCategory: TaskCategory,
@@ -96,18 +107,42 @@ export class TasksController {
   }
 
   /** Add labels to task by its ID
-   * @param id The ID of the task to add labels to.
-   * @param labels The labels to add to the task.
+   * @param updateLabelsDto The DTO containing taskId and labelIds to add.
    * @returns The updated task.
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the labels are invalid.
    */
+  @Post('/add_labels')
+  async addTaskLabels(@Body(ValidationPipe) updateLabelsDto: UpdateLabelsDTO) {
+    return await this.tasksService.addTaskLabels(
+      updateLabelsDto.taskId,
+      updateLabelsDto.labelIds,
+    );
+  }
 
   /** Remove labels from task by its ID
-   * @param id The ID of the task to remove labels from.
-   * @param labels The labels to remove from the task.
+   * @param updateLabelsDto The DTO containing taskId and labelIds to remove.
    * @returns The updated task.
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if the labels are invalid.
    */
+  @Post('/remove_labels')
+  async removeTaskLabels(
+    @Body(ValidationPipe) updateLabelsDto: UpdateLabelsDTO,
+  ) {
+    return await this.tasksService.removeTaskLabels(
+      updateLabelsDto.taskId,
+      updateLabelsDto.labelIds,
+    );
+  }
+
+  /** Gets a task by its ID.
+   * @param id The ID of the task to retrieve.
+   * @returns The requested task.
+   * @throws BadRequestException if the task with the given ID does not exist.
+   */
+  @Get('/:taskId')
+  async getTaskById(@Param('taskId') id: number): Promise<Task> {
+    return await this.tasksService.getTaskById(id);
+  }
 }
