@@ -19,7 +19,7 @@ export const DueDate: React.FC = () => {
       </div>
       {/* MUI Date Picker */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker label="Due Date" value={dueDate} onChange={setDueDate} />
+        <DatePicker value={dueDate} onChange={setDueDate} />
       </LocalizationProvider>
     </div>
   );
