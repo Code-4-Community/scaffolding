@@ -41,7 +41,7 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
   return (
     <div>
       <h2 className="text-3xl font-semibold mb-2">Labels</h2>
-      <div className="transparent-scrollbar-container bg-white w-fit h-[407px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
+      <div className="transparent-scrollbar-container bg-slate-100 w-fit h-[407px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
         {labelData.map((label) => (
           <LabelCard
             key={label.id}
@@ -52,23 +52,17 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
             changeCheckedState={changeCheckedState}
           />
         ))}
-        <Button
-          sx={{
-            width: '137px',
-            height: '31px',
-            borderRadius: '9999px',
-            textAlign: 'center',
-            verticalAlign: 'center',
-            backgroundColor: '#868686',
-            color: 'white',
-            fontWeight: '550',
-            textTransform: 'none',
-            fontSize: '16px',
-          }}
-        >
-          + Add Label
-        </Button>
       </div>
+      <Button
+        sx={{
+          color: '#424242',
+          fontWeight: '550',
+          textTransform: 'none',
+          fontSize: '16px',
+        }}
+      >
+        + Add Label
+      </Button>
     </div>
   );
 };
