@@ -4,7 +4,7 @@ import Avatar from '@mui/material/Avatar';
 interface HeaderProps {
   firstName: string;
   lastName: string;
-  title?: string | null;
+  title: string | null;
 }
 
 // helper function to get initials from first and last name
