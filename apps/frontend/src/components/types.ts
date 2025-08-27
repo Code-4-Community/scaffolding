@@ -1,10 +1,10 @@
 enum ApplicationStage {
-  APP_RECEIVED,
-  PM_CHALLENGE,
-  B_INTERVIEW,
-  T_INTERVIEW,
-  ACCEPTED,
-  REJECTED,
+  APP_RECEIVED = 'APP_RECEIVED',
+  PM_CHALLENGE = 'PM_CHALLENGE',
+  B_INTERVIEW = 'B_INTERVIEW',
+  T_INTERVIEW = 'T_INTERVIEW',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
 }
 
 enum ReviewStatus {
@@ -14,7 +14,7 @@ enum ReviewStatus {
   REVIEWED = 'REVIEWED',
 }
 
-enum ApplicationStep {
+enum ReviewStage {
   SUBMITTED = 'SUBMITTED',
   REVIEWED = 'REVIEWED',
 }
@@ -47,8 +47,7 @@ type BackendApplicationDTO = {
   firstName: string;
   lastName: string;
   stage: ApplicationStage;
-  step: ApplicationStep;
-  review: ReviewStatus;
+  step: ReviewStage;
   position: Position;
   assignedRecruiters: AssignedRecruiter[];
   createdAt: Date;
@@ -86,10 +85,10 @@ type Application = {
   semester: Semester;
   position: Position;
   stage: ApplicationStage;
-  step: ApplicationStep;
-  review: ReviewStatus;
+  step: ReviewStage;
   response: Response[];
   numApps: number;
+  review: ReviewStatus;
   reviews: Review[];
   assignedRecruiters: AssignedRecruiter[];
 };
@@ -126,8 +125,7 @@ export {
   ApplicationRow,
   Application,
   ApplicationStage,
-  ApplicationStep,
-  ReviewStatus,
+  ReviewStage,
   Position,
   Response,
   Review,
