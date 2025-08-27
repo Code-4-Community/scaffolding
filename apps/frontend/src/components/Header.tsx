@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ firstName, lastName, title }) => {
         >
           {initials}
         </Avatar>
-        {/* Custom Name */}
+        {/* Display Name */}
         <h1 className="text-2xl font-medium text-gray-900">{displayName}</h1>
       </div>
 
