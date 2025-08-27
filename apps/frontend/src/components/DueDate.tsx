@@ -9,14 +9,10 @@ export const DueDate: React.FC = () => {
   const isOverdue = dueDate ? dueDate.isBefore(dayjs(), 'day') : false;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col max-w-[200px] gap-2">
       {/* Due Date Title and Overdue Flag */}
-      <div className="flex items-center gap-2">
-        <span className="text-lg font-semibold text-black">Due Date</span>
-        {isOverdue && (
-          <span className="text-red-500 font-medium">*Overdue</span>
-        )}
-      </div>
+      <h1 className="text-3xl font-medium">Due Date</h1>
+      {isOverdue && <p className="text-red-500 font-medium">*Overdue</p>}
       {/* MUI Date Picker */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker value={dueDate} onChange={setDueDate} />
