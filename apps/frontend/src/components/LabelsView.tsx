@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LabelCard } from './LabelCard';
 import { Label, Task } from 'types/types';
 import apiClient from '@api/apiClient';
+import Button from '@mui/material/Button';
 
 interface LabelsViewProps {
   currentTask: Task;
@@ -51,6 +52,22 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
             changeCheckedState={changeCheckedState}
           />
         ))}
+        <Button
+          sx={{
+            width: '137px',
+            height: '31px',
+            borderRadius: '9999px',
+            textAlign: 'center',
+            verticalAlign: 'center',
+            backgroundColor: '#868686',
+            color: 'white',
+            fontWeight: '550',
+            textTransform: 'none',
+            fontSize: '16px',
+          }}
+        >
+          + Add Label
+        </Button>
       </div>
     </div>
   );
