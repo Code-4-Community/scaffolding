@@ -7,12 +7,14 @@ interface TaskBoxProps {
   title: string;
   tasks?: Task[];
   onTaskDrop?: () => void;
+  handleClick: (taskId: number) => void;
 }
 
 export const TaskBox: React.FC<TaskBoxProps> = ({
   title,
   tasks,
   onTaskDrop,
+  handleClick,
 }) => {
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
@@ -55,8 +57,10 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
             tasks.map((task) => (
               <div
                 key={task.id}
+                className="hover:cursor-pointer"
                 draggable
                 onDragStart={(e) => handleDragStart(e, task, title)}
+                onClick={() => handleClick(task.id)}
               >
                 <TaskCard
                   colors={[]}

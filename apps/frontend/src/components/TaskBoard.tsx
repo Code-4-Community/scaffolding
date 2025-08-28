@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TaskBox } from './TaskBox';
 import { Task, TaskCategory } from '../types/types';
 import apiClient from '@api/apiClient';
+import { CreateEditTask } from './CreateEditTask';
 
 interface TaskCategoryData {
   title: TaskCategory;
@@ -10,6 +11,7 @@ interface TaskCategoryData {
 
 export const TaskBoard: React.FC = () => {
   const [sortedTasks, setSortedTasks] = useState<TaskCategoryData[]>([]);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   function sortTasks(data: Task[]): TaskCategoryData[] {
     const Draft = { title: TaskCategory.DRAFT, tasks: [] as Task[] };
@@ -47,20 +49,38 @@ export const TaskBoard: React.FC = () => {
     }
   };
 
+  const openCreateEditTask = (taskId: number) => {
+    setSelectedTaskId(taskId);
+  };
+
+  const cancelCreateEditTask = () => {
+    setSelectedTaskId(null);
+  };
+
   useEffect(() => {
     fetchTasks();
   }, []);
 
   return (
     <div className="flex flex-row gap-4 p-4 items-start justify-center">
-      {sortedTasks.map((taskCategory, index) => (
-        <TaskBox
-          key={index}
-          title={taskCategory.title}
-          tasks={taskCategory.tasks}
-          onTaskDrop={fetchTasks}
-        />
-      ))}
+      {selectedTaskId ? (
+        <div className="w-full">
+          <CreateEditTask
+            taskId={selectedTaskId}
+            handleCancel={cancelCreateEditTask}
+          />
+        </div>
+      ) : (
+        sortedTasks.map((taskCategory, index) => (
+          <TaskBox
+            key={index}
+            title={taskCategory.title}
+            tasks={taskCategory.tasks}
+            onTaskDrop={fetchTasks}
+            handleClick={openCreateEditTask}
+          />
+        ))
+      )}
     </div>
   );
 };

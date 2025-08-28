@@ -8,6 +8,7 @@ TODO: button functionality, add other components and states
 */
 interface CreateEditTaskProps {
   taskId?: number;
+  handleCancel: () => void;
 }
 
 const textFieldStyles = {
@@ -29,7 +30,10 @@ const baseButtonStyles = {
   position: 'absolute',
 };
 
-export const CreateEditTask: React.FC<CreateEditTaskProps> = ({ taskId }) => {
+export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
+  taskId,
+  handleCancel,
+}) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -87,6 +91,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({ taskId }) => {
             right: '160px',
             color: 'black',
           }}
+          onClick={handleCancel}
         >
           Cancel
         </Button>
