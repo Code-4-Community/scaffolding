@@ -4,7 +4,7 @@ import Avatar from '@mui/material/Avatar';
 interface HeaderProps {
   firstName: string;
   lastName: string;
-  title: string | null;
+  title?: string;
 }
 
 // helper function to get initials from first and last name
@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ firstName, lastName, title }) => {
   // if title is provided, use it, otherwise use full name
   const displayTitle = title ? title : fullName;
   return (
-    <div className="w-full">
+    <div className="w-full mb-2">
       <div className="flex items-center gap-4 px-6 py-4">
         {/* Initials */}
         <Avatar
