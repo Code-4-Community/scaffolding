@@ -18,8 +18,8 @@ export const CategoryButton = ({ inputCategory }: CategoryButtonProps) => {
   );
 
   return (
-    <FormControl>
-      <h1 className="text-3xl font-medium mb-4">Category</h1>
+    <FormControl className="flex flex-col">
+      <h1 className="text-3xl font-medium mb-4 ml-4">Category</h1>
       <RadioGroup
         row
         name="use-radio-group"
@@ -33,6 +33,11 @@ export const CategoryButton = ({ inputCategory }: CategoryButtonProps) => {
             label={category}
             control={<Radio color="default" />}
             labelPlacement="start"
+            sx={{
+              '& .MuiFormControlLabel-label': {
+                fontSize: '1.25rem', // from tailwind website: var(--text-xl) == 1.25rem (20px)
+              },
+            }}
           />
         ))}
       </RadioGroup>
