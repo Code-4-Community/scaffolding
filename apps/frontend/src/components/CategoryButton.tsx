@@ -5,12 +5,17 @@ import {
   FormControlLabel,
   Radio,
 } from '@mui/material';
-import { useRadioGroup } from '@mui/material/RadioGroup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TaskCategory } from '../types/types';
 
-export const CategoryButton = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+interface CategoryButtonProps {
+  inputCategory?: TaskCategory;
+}
+
+export const CategoryButton = ({ inputCategory }: CategoryButtonProps) => {
+  const [selectedCategory, setSelectedCategory] = useState<TaskCategory | null>(
+    inputCategory || null,
+  );
 
   return (
     <FormControl>
@@ -19,14 +24,13 @@ export const CategoryButton = () => {
         row
         name="use-radio-group"
         value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
+        onChange={(e) => setSelectedCategory(e.target.value as TaskCategory)}
       >
         {Object.values(TaskCategory).map((category: string) => (
           <FormControlLabel
             key={category}
             value={category}
             label={category}
-            checked={selectedCategory === category}
             control={<Radio color="default" />}
             labelPlacement="start"
           />
