@@ -1,11 +1,10 @@
-import { styled } from '@mui/material/styles';
 import {
   FormControl,
   RadioGroup,
   FormControlLabel,
   Radio,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { TaskCategory } from '../types/types';
 
 interface CategoryButtonProps {
@@ -13,8 +12,8 @@ interface CategoryButtonProps {
 }
 
 export const CategoryButton = ({ inputCategory }: CategoryButtonProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<TaskCategory | null>(
-    inputCategory || null,
+  const [selectedCategory, setSelectedCategory] = useState<TaskCategory>(
+    inputCategory || TaskCategory.DRAFT,
   );
 
   return (
