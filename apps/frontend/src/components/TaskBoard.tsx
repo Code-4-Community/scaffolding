@@ -64,7 +64,7 @@ export const TaskBoard: React.FC = () => {
   return (
     <div className="flex flex-row gap-4 p-4 items-start justify-center">
       {selectedTaskId ? (
-        <div className="w-full">
+        <div className="w-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <CreateEditTask
             taskId={selectedTaskId}
             handleCancel={cancelCreateEditTask}
