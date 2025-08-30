@@ -5,6 +5,7 @@ import apiClient from '@api/apiClient';
 import Root from '@containers/root';
 import NotFound from '@containers/404';
 import Test from '@containers/test';
+import { LabelPopup } from './components/LabelPopup';
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: '/test',
     element: <Test />,
+  },
+  {
+    path: '/label-popup',
+    element: <LabelPopup />,
   },
 ]);
 
