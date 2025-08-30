@@ -36,7 +36,7 @@ export const LabelPopup: React.FC = () => {
         <input
           type="text"
           placeholder="Description.."
-          value={name}
+          value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="w-full px-3 text-[22px]"
           required
