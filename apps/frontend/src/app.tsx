@@ -17,11 +17,6 @@ const router = createBrowserRouter([
     path: '/test',
     element: <Test />,
   },
-  // TODO: Delete before merge
-  {
-    path: '/label-popup',
-    element: <LabelPopup />,
-  },
 ]);
 
 export const App: React.FC = () => {

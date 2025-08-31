@@ -18,7 +18,7 @@ export const LabelPopup: React.FC = () => {
       className="w-[278px] px-4 py-1 border-2 rounded-xl bg-gray-100 space-y-2 text-[18px] text-[#424242]"
     >
       <div className="flex flex-col gap-1">
-        <label className="font-bold">Name</label>
+        <label className="font-medium">Name</label>
         <input
           type="text"
           placeholder="Label.."
@@ -30,7 +30,7 @@ export const LabelPopup: React.FC = () => {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="font-bold">
+        <label className="font-medium">
           Description <span className="text-xs">(optional)</span>
         </label>
         <input
@@ -39,7 +39,6 @@ export const LabelPopup: React.FC = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="w-[211px] px-3 text-[14px]"
-          required
         />
       </div>
 
