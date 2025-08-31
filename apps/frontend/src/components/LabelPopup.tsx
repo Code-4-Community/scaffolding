@@ -43,7 +43,7 @@ export const LabelPopup: React.FC = () => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="font-bold">Color</label>
+        <label className="font-medium">Color</label>
         <MuiColorInput
           value={colorValue}
           onChange={setColorValue}
