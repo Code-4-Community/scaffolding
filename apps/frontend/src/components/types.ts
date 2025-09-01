@@ -1,10 +1,10 @@
 enum ApplicationStage {
-  APP_RECEIVED = 'APP_RECEIVED',
-  PM_CHALLENGE = 'PM_CHALLENGE',
-  B_INTERVIEW = 'B_INTERVIEW',
-  T_INTERVIEW = 'T_INTERVIEW',
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED',
+  APP_RECEIVED,
+  PM_CHALLENGE,
+  B_INTERVIEW,
+  T_INTERVIEW,
+  ACCEPTED,
+  REJECTED,
 }
 
 enum ReviewStatus {
@@ -14,16 +14,16 @@ enum ReviewStatus {
   REVIEWED = 'REVIEWED',
 }
 
-enum ReviewStage {
-  SUBMITTED = 'SUBMITTED',
-  REVIEWED = 'REVIEWED',
-}
-
 enum Position {
   TECH_LEAD = 'TECH_LEAD',
   DEVELOPER = 'DEVELOPER',
   PM = 'PRODUCT_MANAGER',
   DESIGNER = 'DESIGNER',
+}
+
+enum ReviewStage {
+  SUBMITTED = 'SUBMITTED',
+  REVIEWED = 'REVIEWED',
 }
 
 type ApplicationRow = {
