@@ -109,7 +109,8 @@ export function AssignedRecruiters({
   );
 
   return (
-    <FormControl sx={{ minWidth: '100%', maxWidth: '100%' }}>
+    <FormControl fullWidth sx={{ minWidth: 300, mt: 2 }}>
+      <InputLabel sx={{ color: 'white' }}>Assigned Recruiters</InputLabel>
       <Select
         multiple
         size="small"
@@ -118,12 +119,25 @@ export function AssignedRecruiters({
         renderValue={renderValue}
         disabled={loading}
         sx={{
-          color: 'white',
-          backgroundColor: 'gray',
+          backgroundColor: '#333333',
+          color: 'black',
+          '.MuiSelect-icon': { color: 'black' },
+        }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              backgroundColor: '#333333',
+              color: 'white',
+            },
+          },
         }}
       >
         {allRecruiters.map((recruiter) => (
-          <MenuItem key={recruiter.id} value={recruiter.id}>
+          <MenuItem
+            key={recruiter.id}
+            value={recruiter.id}
+            sx={{ backgroundColor: '#333333', color: 'white' }}
+          >
             {recruiter.firstName} {recruiter.lastName}
           </MenuItem>
         ))}

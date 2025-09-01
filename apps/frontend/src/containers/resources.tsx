@@ -57,6 +57,7 @@ const Resources: React.FC = () => {
       const application = await apiClient.getApplication(accessToken, userId);
       setApp(application);
       setApplicationId(application.id);
+      setApplicationId(application.id);
       return application;
     } catch (error) {
       console.error('Error fetching application:', error);
