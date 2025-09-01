@@ -68,7 +68,7 @@ export function ApplicationTable() {
     <Container maxWidth="xl">
       <Stack direction="row" alignItems="center" spacing={2} mt={4} mb={8}>
         <img
-          src="/c4clogo.png"
+          src="/c4c-square.svg"
           alt="C4C Logo"
           style={{ width: 50, height: 40 }}
         />
@@ -76,7 +76,6 @@ export function ApplicationTable() {
           Database | {getCurrentSemester()} {getCurrentYear()} Recruitment Cycle
         </Typography>
       </Stack>
-
       <DataGrid
         rows={data}
         columns={applicationColumns(allRecruiters)}
