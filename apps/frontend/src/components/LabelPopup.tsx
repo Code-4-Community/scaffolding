@@ -1,15 +1,38 @@
 import React, { useState } from 'react';
 import { MuiColorInput } from 'mui-color-input';
+import { Label } from 'types/types';
+import apiClient from '@api/apiClient';
 
-export const LabelPopup: React.FC = () => {
+interface LabelPopupProps {
+  onCancel: () => void;
+  taskId: number;
+  onLabelCreated: (newLabel: Label) => void;
+}
+
+export const LabelPopup: React.FC<LabelPopupProps> = ({
+  onCancel,
+  taskId,
+  onLabelCreated,
+}) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [colorValue, setColorValue] = useState('#ffffff');
 
-  // TODO: button functionality
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ name, description, colorValue });
+
+    try {
+      const newLabel: Label = await apiClient.createLabel({
+        name,
+        description,
+        color: colorValue,
+      });
+
+      // Pass new label back to LabelsView
+      onLabelCreated(newLabel);
+    } catch (err) {
+      console.error('Failed to create label', err);
+    }
   };
 
   return (
@@ -52,10 +75,17 @@ export const LabelPopup: React.FC = () => {
       </div>
 
       <div className="flex justify-end space-x-2 py-2">
-        <button className="w-[60px] bg-gray-200 px-3 py-1 text-[12px]">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="w-[60px] bg-gray-200 px-3 py-1 text-[12px]"
+        >
           Cancel
         </button>
-        <button className="w-[60px] bg-gray-500 text-white px-3 py-1 text-[12px]">
+        <button
+          type="submit"
+          className="w-[60px] bg-gray-500 text-white px-3 py-1 text-[12px]"
+        >
           Create
         </button>
       </div>

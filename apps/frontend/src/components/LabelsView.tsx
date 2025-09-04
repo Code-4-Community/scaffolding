@@ -3,6 +3,7 @@ import { LabelCard } from './LabelCard';
 import { Label, Task } from 'types/types';
 import apiClient from '@api/apiClient';
 import Button from '@mui/material/Button';
+import { LabelPopup } from './LabelPopup';
 
 interface LabelsViewProps {
   currentTask: Task;
@@ -10,6 +11,7 @@ interface LabelsViewProps {
 
 export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
   const [labelData, setLabelData] = useState<Label[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   const fetchData = async () => {
     const data = await apiClient.getLabels();
@@ -41,7 +43,7 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
   return (
     <div>
       <h2 className="text-3xl font-semibold mb-2">Labels</h2>
-      <div className="transparent-scrollbar-container bg-slate-100 w-fit h-[407px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
+      <div className="transparent-scrollbar-container bg-slate-100 w-[344px] h-[147px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
         {labelData.map((label) => (
           <LabelCard
             key={label.id}
@@ -60,9 +62,26 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
           textTransform: 'none',
           fontSize: '16px',
         }}
+        onClick={() => {
+          setShowPopup(true);
+        }}
       >
-        + Add Label
+        {!showPopup && '+ Add Label'}
       </Button>
+      {showPopup && (
+        <LabelPopup
+          taskId={currentTask.id}
+          onCancel={() => setShowPopup(false)}
+          onLabelCreated={(newLabel) => {
+            const labelWithTask = {
+              ...newLabel,
+              tasks: [currentTask],
+            };
+            setLabelData([...labelData, labelWithTask]);
+            setShowPopup(false);
+          }}
+        />
+      )}
     </div>
   );
 };

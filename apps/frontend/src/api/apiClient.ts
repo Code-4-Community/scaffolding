@@ -51,6 +51,12 @@ export class ApiClient {
     return response as Label[];
   }
 
+  public async createLabel(body: unknown): Promise<Label> {
+    const response = await this.post(`/api/labels/label`, body);
+    console.log('DALTON response: ', response);
+    return response as Label;
+  }
+
   public async getTaskById(id: number): Promise<Task> {
     const response = await this.get(`/api/tasks/${id}`);
     return response as Task;

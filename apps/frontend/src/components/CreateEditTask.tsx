@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import apiClient from '@api/apiClient';
+import { Task, TaskCategory } from '../types/types';
+import { CategoryButton } from './CategoryButton';
+import { LabelsView } from './LabelsView';
+import { DueDate } from './DueDate';
+import dayjs, { Dayjs } from 'dayjs';
 
-/*
-TODO: button functionality, add other components and states
-*/
 interface CreateEditTaskProps {
   taskId?: number;
   handleCancel: () => void;
@@ -34,8 +36,11 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
   taskId,
   handleCancel,
 }) => {
+  const [task, setTask] = useState<Task>();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<TaskCategory>(TaskCategory.DRAFT);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
   useEffect(() => {
     if (!taskId) return;
@@ -44,22 +49,36 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
       try {
         const task = await apiClient.getTaskById(taskId);
         if (task) {
+          setTask(task);
           setTitle(task.title);
           setDescription(task.description);
+          setCategory(task.category);
+          setDueDate(task.dueDate ? dayjs(task.dueDate) : null); // convert to Dayjs
         }
       } catch (err) {
-        return;
+        console.error(err);
       }
     };
     fetchTaskData();
   }, [taskId]);
 
+  const handleSave = () => {
+    const updatedTask = {
+      ...task,
+      title,
+      description,
+      category,
+      dueDate: dueDate?.toISOString() || null,
+    };
+    console.log('Saving task', updatedTask);
+  };
+
   return (
-    <div className="flex flex-row m-14 p-8 border border-black bg-[#f6f6f6] rounded-lg relative">
-      <div className="w-1/2 flex flex-col">
+    <div className="flex flex-row m-14 p-8 border border-black bg-[#f6f6f6] rounded-lg">
+      <div className="w-1/2 flex flex-col pr-6">
         <h1 className="text-3xl font-medium mb-4">Title</h1>
         <TextField
-          value={taskId && title}
+          value={title}
           placeholder="Title of task"
           variant="outlined"
           onChange={(e) => setTitle(e.target.value)}
@@ -67,7 +86,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
         />
         <h1 className="text-3xl font-medium my-4">Description</h1>
         <TextField
-          value={taskId && description}
+          value={description}
           placeholder={
             taskId ? 'Add a description to your task' : 'Description of task'
           }
@@ -78,39 +97,51 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           sx={textFieldStyles}
         />
       </div>
-      <div className="w-1/2">
-        <Button
-          variant="contained"
-          sx={{
-            ...baseButtonStyles,
-            backgroundColor: '#d9d9d9',
-            '&:hover': {
-              backgroundColor: '#cacacaff',
-            },
-            bottom: '30px',
-            right: '160px',
-            color: 'black',
-          }}
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            ...baseButtonStyles,
-            backgroundColor: '#868686',
-            fontWeight: 'bold',
-            position: 'absolute',
-            bottom: '30px',
-            right: '30px',
-            '&:hover': {
-              backgroundColor: '#7d7d7dff',
-            },
-          }}
-        >
-          {taskId ? 'Save' : 'Create'}
-        </Button>
+
+      <div className="w-1/2 flex flex-col justify-between pl-6">
+        <div>
+          <CategoryButton value={category} onChange={setCategory} />
+
+          <div className="flex flex-row mt-8 ml-4 gap-8">
+            <LabelsView currentTask={task as Task} />
+            <DueDate value={dueDate} onChange={setDueDate} />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-4 mt-6">
+          <Button
+            variant="contained"
+            sx={{
+              ...baseButtonStyles,
+              position: 'static',
+              backgroundColor: '#d9d9d9',
+              '&:hover': { backgroundColor: '#cacacaff' },
+              color: 'black',
+              paddingX: '20px',
+              paddingY: '8px',
+              fontSize: '16px',
+            }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              ...baseButtonStyles,
+              position: 'static',
+              backgroundColor: '#868686',
+              '&:hover': { backgroundColor: '#7d7d7dff' },
+              fontWeight: 'bold',
+              paddingX: '20px',
+              paddingY: '8px',
+              fontSize: '16px',
+            }}
+            onClick={handleSave}
+          >
+            {taskId ? 'Save' : 'Create'}
+          </Button>
+        </div>
       </div>
     </div>
   );

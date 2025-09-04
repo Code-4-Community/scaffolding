@@ -4,9 +4,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs, { Dayjs } from 'dayjs';
 
-export const DueDate: React.FC = () => {
-  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
-  const isOverdue = dueDate ? dueDate.isBefore(dayjs(), 'day') : false;
+interface DueDateProps {
+  value: Dayjs | null;
+  onChange: (newDate: Dayjs | null) => void;
+}
+
+export const DueDate: React.FC<DueDateProps> = ({ value, onChange }) => {
+  const isOverdue = value ? value.isBefore(dayjs(), 'day') : false;
 
   return (
     <div className="flex flex-col max-w-[200px] gap-2">
@@ -15,7 +19,7 @@ export const DueDate: React.FC = () => {
       {isOverdue && <p className="text-red-500 font-medium">*Overdue</p>}
       {/* MUI Date Picker */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker value={dueDate} onChange={setDueDate} />
+        <DatePicker value={value} onChange={onChange} />
       </LocalizationProvider>
     </div>
   );
