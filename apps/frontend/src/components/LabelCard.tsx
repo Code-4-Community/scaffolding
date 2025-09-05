@@ -2,7 +2,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface LabelCardProps {
   id: number;
@@ -24,6 +24,10 @@ export const LabelCard: React.FC<LabelCardProps> = ({
   changeCheckedState,
 }) => {
   const [currentlyChecked, setCurrentlyChecked] = useState(defaultChecked);
+  console.log('defaultChecked:', currentlyChecked);
+  useEffect(() => {
+    setCurrentlyChecked(defaultChecked);
+  }, [defaultChecked]);
 
   const handleChange = () => {
     setCurrentlyChecked(!currentlyChecked);

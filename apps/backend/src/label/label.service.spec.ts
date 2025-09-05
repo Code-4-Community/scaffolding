@@ -14,25 +14,21 @@ describe('LabelService', () => {
 
   const mockValidCreateLabelDTO = {
     name: 'Label 1',
-    description: 'Desc 1',
     color: '#000000',
   };
 
   const mockInvalidCreateLabelDTO1 = {
     name: '',
-    description: 'Desc 1',
     color: '#000000',
   };
 
   const mockInvalidCreateLabelDTO2 = {
     name: 'Label 2',
-    description: 'Desc 2',
     color: '',
   };
 
   const mockInvalidCreateLabelDTO3 = {
     name: 'Label 3',
-    description: 'Desc 3',
     color: 'Hello',
   };
 

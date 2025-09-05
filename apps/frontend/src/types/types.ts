@@ -22,3 +22,10 @@ export enum TaskCategory {
   IN_PROGRESS = 'In Progress',
   COMPLETED = 'Completed',
 }
+
+export interface UpdateTaskDTO {
+  title?: string;
+  description?: string;
+  dueDate?: string;
+  category?: TaskCategory;
+}

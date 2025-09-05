@@ -46,6 +46,45 @@ export class ApiClient {
     return response as Task;
   }
 
+  public async updateTask(id: number, body: unknown): Promise<Task> {
+    const response = await this.patch(`/api/tasks/${id}/edit`, body);
+    return response as Task;
+  }
+
+  public async deleteTask(
+    id: number,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await this.delete(`/api/tasks/${id}`);
+    return response as { success: boolean; message: string };
+  }
+
+  public async createTask(body: unknown): Promise<Task> {
+    const response = await this.post('/api/tasks/', body);
+    return response as Task;
+  }
+
+  public async addTaskLabels(
+    taskId: number,
+    labelIds: number[],
+  ): Promise<Task> {
+    const response = await this.post('/api/tasks/add_labels', {
+      taskId,
+      labelIds,
+    });
+    return response as Task;
+  }
+
+  public async removeTaskLabels(
+    taskId: number,
+    labelIds: number[],
+  ): Promise<Task> {
+    const response = await this.post('/api/tasks/remove_labels', {
+      taskId,
+      labelIds,
+    });
+    return response as Task;
+  }
+
   public async getLabels(): Promise<Label[]> {
     const response = await this.get(`/api/labels`);
     return response as Label[];

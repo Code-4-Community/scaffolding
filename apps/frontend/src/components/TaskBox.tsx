@@ -8,6 +8,7 @@ interface TaskBoxProps {
   tasks?: Task[];
   onTaskDrop?: () => void;
   handleClick: (taskId: number) => void;
+  onAddCard: () => void;
 }
 
 export const TaskBox: React.FC<TaskBoxProps> = ({
@@ -15,6 +16,7 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
   tasks,
   onTaskDrop,
   handleClick,
+  onAddCard,
 }) => {
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
@@ -37,7 +39,7 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
     const taskID = parseInt(e.dataTransfer.getData('taskID'));
     const fromBoxCategory = e.dataTransfer.getData('fromBoxCategory');
 
-    if (!taskID || fromBoxCategory === toBoxCategory) return; // ignore invalid drops
+    if (!taskID || fromBoxCategory === toBoxCategory) return;
 
     await apiClient.updateTaskCategory(taskID, { categoryId: toBoxCategory });
     if (onTaskDrop) onTaskDrop();
@@ -75,7 +77,10 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
         </div>
       </div>
 
-      <button className="flex items-center gap-1 mt-4 w-[40%]">
+      <button
+        className="flex items-center gap-1 mt-4 w-[40%]"
+        onClick={onAddCard}
+      >
         <AddIcon sx={{ color: '#4A4A51' }} />
         <span style={{ color: '#4A4A51' }}>Add Card</span>
       </button>

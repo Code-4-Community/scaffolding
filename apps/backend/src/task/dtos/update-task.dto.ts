@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
+import { TaskCategory } from '../types/category';
 
 export class UpdateTaskDTO {
   @IsOptional()
@@ -13,4 +14,7 @@ export class UpdateTaskDTO {
   @IsOptional()
   @Transform(({ value }) => new Date(value))
   dueDate?: Date;
+
+  @IsOptional()
+  category?: TaskCategory;
 }

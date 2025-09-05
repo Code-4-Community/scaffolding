@@ -58,7 +58,7 @@ export class TasksService {
     if (!task) {
       throw new BadRequestException(`Task with id ${id} does not exist`);
     }
-    return this.taskRepository.delete(task);
+    return this.taskRepository.delete(id);
   }
 
   /** Move task category by its ID. */

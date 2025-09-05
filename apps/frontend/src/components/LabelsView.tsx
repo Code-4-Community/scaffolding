@@ -6,40 +6,78 @@ import Button from '@mui/material/Button';
 import { LabelPopup } from './LabelPopup';
 
 interface LabelsViewProps {
-  currentTask: Task;
+  currentTask?: Task;
+  taskId?: number;
 }
 
-export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
+export const LabelsView: React.FC<LabelsViewProps> = ({
+  currentTask,
+  taskId,
+}) => {
   const [labelData, setLabelData] = useState<Label[]>([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [taskLabels, setTaskLabels] = useState<number[]>([]);
 
   const fetchData = async () => {
     const data = await apiClient.getLabels();
     setLabelData(data);
   };
 
+  const fetchTaskLabels = async () => {
+    if (!currentTask?.id && !taskId) return;
+
+    try {
+      const task = await apiClient.getTaskById(currentTask?.id || taskId!);
+      setTaskLabels(task.labels?.map((label) => label.id) || []);
+    } catch (error) {
+      console.error('Error fetching task labels:', error);
+      setTaskLabels([]);
+    }
+  };
+
   useEffect(() => {
     fetchData();
-  }, []);
+    fetchTaskLabels();
+  }, [currentTask?.id, taskId]);
 
-  const changeCheckedState = (
+  const changeCheckedState = async (
     targetLabelId: number,
     wasAlreadyChecked: boolean,
   ) => {
-    const updatedLabels = labelData.map((label) => {
-      if (label.id === targetLabelId) {
-        const newTasks = wasAlreadyChecked
-          ? label.tasks.filter((task) => task.id !== currentTask.id)
-          : [...label.tasks, currentTask];
+    const currentTaskId = currentTask?.id || taskId;
+    if (!currentTaskId) return;
 
-        return { ...label, tasks: newTasks };
+    try {
+      if (wasAlreadyChecked) {
+        await apiClient.removeTaskLabels(currentTaskId, [targetLabelId]);
+        setTaskLabels((prev) => prev.filter((id) => id !== targetLabelId));
+      } else {
+        await apiClient.addTaskLabels(currentTaskId, [targetLabelId]);
+        setTaskLabels((prev) => [...prev, targetLabelId]);
       }
-
-      return label;
-    });
-
-    setLabelData(updatedLabels);
+    } catch (error) {
+      console.error('Error updating task labels:', error);
+    }
   };
+
+  const handleLabelCreated = async (newLabel: Label) => {
+    const currentTaskId = currentTask?.id || taskId;
+    if (!currentTaskId) {
+      setLabelData((prev) => [...prev, newLabel]);
+      setShowPopup(false);
+      return;
+    }
+
+    try {
+      await apiClient.addTaskLabels(currentTaskId, [newLabel.id]);
+      setTaskLabels((prev) => [...prev, newLabel.id]);
+      setLabelData((prev) => [...prev, newLabel]);
+      setShowPopup(false);
+    } catch (error) {
+      console.error('Error adding new label to task:', error);
+    }
+  };
+
   return (
     <div>
       <h2 className="text-3xl font-semibold mb-2">Labels</h2>
@@ -50,7 +88,7 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
             id={label.id}
             title={label.name}
             color={label.color}
-            defaultChecked={label.tasks.includes(currentTask)}
+            defaultChecked={taskLabels.includes(label.id)}
             changeCheckedState={changeCheckedState}
           />
         ))}
@@ -70,16 +108,9 @@ export const LabelsView: React.FC<LabelsViewProps> = ({ currentTask }) => {
       </Button>
       {showPopup && (
         <LabelPopup
-          taskId={currentTask.id}
+          taskId={currentTask?.id || taskId || 0}
           onCancel={() => setShowPopup(false)}
-          onLabelCreated={(newLabel) => {
-            const labelWithTask = {
-              ...newLabel,
-              tasks: [currentTask],
-            };
-            setLabelData([...labelData, labelWithTask]);
-            setShowPopup(false);
-          }}
+          onLabelCreated={handleLabelCreated}
         />
       )}
     </div>

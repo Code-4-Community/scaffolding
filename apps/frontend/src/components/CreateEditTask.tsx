@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import apiClient from '@api/apiClient';
-import { Task, TaskCategory } from '../types/types';
+import { Task, TaskCategory, UpdateTaskDTO } from '../types/types';
 import { CategoryButton } from './CategoryButton';
 import { LabelsView } from './LabelsView';
 import { DueDate } from './DueDate';
@@ -10,7 +10,10 @@ import dayjs, { Dayjs } from 'dayjs';
 
 interface CreateEditTaskProps {
   taskId?: number;
+  defaultCategory?: TaskCategory;
   handleCancel: () => void;
+  onTaskSaved?: () => void;
+  isEditing?: boolean; // Add this boolean parameter
 }
 
 const textFieldStyles = {
@@ -34,12 +37,17 @@ const baseButtonStyles = {
 
 export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
   taskId,
+  defaultCategory,
   handleCancel,
+  onTaskSaved,
+  isEditing = false,
 }) => {
   const [task, setTask] = useState<Task>();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<TaskCategory>(TaskCategory.DRAFT);
+  const [category, setCategory] = useState<TaskCategory>(
+    defaultCategory || TaskCategory.DRAFT,
+  );
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
   useEffect(() => {
@@ -53,7 +61,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           setTitle(task.title);
           setDescription(task.description);
           setCategory(task.category);
-          setDueDate(task.dueDate ? dayjs(task.dueDate) : null); // convert to Dayjs
+          setDueDate(task.dueDate ? dayjs(task.dueDate) : null);
         }
       } catch (err) {
         console.error(err);
@@ -62,15 +70,48 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
     fetchTaskData();
   }, [taskId]);
 
-  const handleSave = () => {
-    const updatedTask = {
-      ...task,
-      title,
-      description,
-      category,
-      dueDate: dueDate?.toISOString() || null,
-    };
-    console.log('Saving task', updatedTask);
+  const handleDelete = async () => {
+    if (!taskId) return;
+
+    try {
+      await apiClient.deleteTask(taskId);
+      if (onTaskSaved) {
+        onTaskSaved();
+      }
+      console.log('Successfully deleted task with id:', taskId);
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const updatedTask: UpdateTaskDTO = {
+        title,
+        description,
+      };
+
+      if (dueDate) {
+        updatedTask.dueDate = dueDate.toISOString();
+      }
+
+      console.log(taskId!, title, description, category, dueDate);
+
+      if (taskId) {
+        const savedTask = await apiClient.updateTask(taskId, updatedTask);
+
+        if (category !== savedTask.category) {
+          await apiClient.updateTaskCategory(taskId, { categoryId: category });
+        }
+      } else {
+        const savedTask = await apiClient.createTask(updatedTask);
+      }
+      if (onTaskSaved) {
+        onTaskSaved();
+      }
+    } catch (error) {
+      console.error('Error saving task:', error);
+    }
   };
 
   return (
@@ -103,12 +144,29 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           <CategoryButton value={category} onChange={setCategory} />
 
           <div className="flex flex-row mt-8 ml-4 gap-8">
-            <LabelsView currentTask={task as Task} />
+            <LabelsView currentTask={task as Task} taskId={taskId} />
             <DueDate value={dueDate} onChange={setDueDate} />
           </div>
         </div>
 
         <div className="flex justify-end gap-4 mt-6">
+          {isEditing && (
+            <Button
+              variant="contained"
+              sx={{
+                ...baseButtonStyles,
+                position: 'static',
+                backgroundColor: 'red',
+                color: 'black',
+                paddingX: '20px',
+                paddingY: '8px',
+                fontSize: '16px',
+              }}
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          )}
           <Button
             variant="contained"
             sx={{

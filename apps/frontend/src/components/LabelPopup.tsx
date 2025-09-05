@@ -15,7 +15,6 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
   onLabelCreated,
 }) => {
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
   const [colorValue, setColorValue] = useState('#ffffff');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,7 +23,6 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
     try {
       const newLabel: Label = await apiClient.createLabel({
         name,
-        description,
         color: colorValue,
       });
 
@@ -38,7 +36,7 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-[278px] px-4 py-1 border-2 rounded-xl bg-gray-100 space-y-2 text-[18px] text-[#424242]"
+      className="w-[278px] px-4 py-1 border-2 rounded-xl bg-[#D9D9D9] space-y-2 text-[18px] text-[#424242]"
     >
       <div className="flex flex-col gap-1">
         <label className="font-medium">Name</label>
@@ -49,19 +47,6 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
           onChange={(e) => setName(e.target.value)}
           className="w-[211px] px-3 text-[14px]"
           required
-        />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label className="font-medium">
-          Description <span className="text-xs">(optional)</span>
-        </label>
-        <input
-          type="text"
-          placeholder="Description.."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-[211px] px-3 text-[14px]"
         />
       </div>
 
