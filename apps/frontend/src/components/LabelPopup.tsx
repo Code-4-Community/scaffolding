@@ -37,11 +37,6 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
     return color;
   };
 
-  const handleColorChange = (newColor: string) => {
-    const hexColor = toHex(newColor);
-    setColorValue(hexColor);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
