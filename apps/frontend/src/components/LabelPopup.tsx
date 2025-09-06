@@ -24,7 +24,6 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
         color: colorValue,
       });
 
-      // Pass new label back to LabelsView
       onLabelCreated(newLabel);
     } catch (err) {
       console.error('Failed to create label', err);
