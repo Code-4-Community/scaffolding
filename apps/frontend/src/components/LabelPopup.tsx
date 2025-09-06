@@ -15,13 +15,40 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
   const [name, setName] = useState('');
   const [colorValue, setColorValue] = useState('#ffffff');
 
+  const toHex = (color: string): string => {
+    // If it's already a hex color, return it
+    if (color.startsWith('#')) {
+      return color;
+    }
+
+    // If it's rgb or rgba, convert to hex
+    if (color.startsWith('rgb')) {
+      const rgbMatch = color.match(/\d+/g);
+      if (rgbMatch && rgbMatch.length >= 3) {
+        const r = parseInt(rgbMatch[0]);
+        const g = parseInt(rgbMatch[1]);
+        const b = parseInt(rgbMatch[2]);
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b)
+          .toString(16)
+          .slice(1)}`;
+      }
+    }
+
+    return color;
+  };
+
+  const handleColorChange = (newColor: string) => {
+    const hexColor = toHex(newColor);
+    setColorValue(hexColor);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       const newLabel: Label = await apiClient.createLabel({
         name,
-        color: colorValue,
+        color: toHex(colorValue),
       });
 
       onLabelCreated(newLabel);
