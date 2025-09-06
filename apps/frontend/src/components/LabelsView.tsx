@@ -8,15 +8,23 @@ import { LabelPopup } from './LabelPopup';
 interface LabelsViewProps {
   currentTask?: Task;
   taskId?: number;
+  selectedLabelIds?: number[];
+  onLabelSelectionChange?: (labelIds: number[]) => void;
 }
 
 export const LabelsView: React.FC<LabelsViewProps> = ({
   currentTask,
   taskId,
+  selectedLabelIds = [],
+  onLabelSelectionChange,
 }) => {
   const [labelData, setLabelData] = useState<Label[]>([]);
   const [showPopup, setShowPopup] = useState(false);
   const [taskLabels, setTaskLabels] = useState<number[]>([]);
+
+  const isNewTask = !currentTask?.id && !taskId;
+
+  const currentLabelIds = isNewTask ? selectedLabelIds : taskLabels;
 
   const fetchData = async () => {
     const data = await apiClient.getLabels();
@@ -28,7 +36,9 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
 
     try {
       const task = await apiClient.getTaskById(currentTask?.id || taskId!);
-      setTaskLabels(task.labels?.map((label) => label.id) || []);
+      const labelIds = task.labels?.map((label) => label.id) || [];
+      setTaskLabels(labelIds);
+      console.log('Fetched task labels:', labelIds, 'from task:', task);
     } catch (error) {
       console.error('Error fetching task labels:', error);
       setTaskLabels([]);
@@ -37,42 +47,58 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
 
   useEffect(() => {
     fetchData();
-    fetchTaskLabels();
-  }, [currentTask?.id, taskId]);
+    if (!isNewTask) {
+      fetchTaskLabels();
+    }
+  }, [currentTask?.id, taskId, isNewTask]);
 
   const changeCheckedState = async (
     targetLabelId: number,
     wasAlreadyChecked: boolean,
   ) => {
+    if (isNewTask) {
+      const newLabelIds = wasAlreadyChecked
+        ? selectedLabelIds.filter((id) => id !== targetLabelId)
+        : [...selectedLabelIds, targetLabelId];
+
+      onLabelSelectionChange?.(newLabelIds);
+      return;
+    }
+
     const currentTaskId = currentTask?.id || taskId;
     if (!currentTaskId) return;
 
     try {
       if (wasAlreadyChecked) {
+        console.log('Removing label from task');
         await apiClient.removeTaskLabels(currentTaskId, [targetLabelId]);
-        setTaskLabels((prev) => prev.filter((id) => id !== targetLabelId));
       } else {
+        console.log('Adding label to task');
         await apiClient.addTaskLabels(currentTaskId, [targetLabelId]);
-        setTaskLabels((prev) => [...prev, targetLabelId]);
       }
+      await fetchTaskLabels();
     } catch (error) {
       console.error('Error updating task labels:', error);
     }
   };
 
   const handleLabelCreated = async (newLabel: Label) => {
-    const currentTaskId = currentTask?.id || taskId;
-    if (!currentTaskId) {
+    if (isNewTask) {
+      const newLabelIds = [...selectedLabelIds, newLabel.id];
+      onLabelSelectionChange?.(newLabelIds);
       setLabelData((prev) => [...prev, newLabel]);
       setShowPopup(false);
       return;
     }
 
+    const currentTaskId = currentTask?.id || taskId;
+    if (!currentTaskId) return;
+
     try {
       await apiClient.addTaskLabels(currentTaskId, [newLabel.id]);
-      setTaskLabels((prev) => [...prev, newLabel.id]);
       setLabelData((prev) => [...prev, newLabel]);
       setShowPopup(false);
+      await fetchTaskLabels();
     } catch (error) {
       console.error('Error adding new label to task:', error);
     }
@@ -88,7 +114,7 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
             id={label.id}
             title={label.name}
             color={label.color}
-            defaultChecked={taskLabels.includes(label.id)}
+            defaultChecked={currentLabelIds.includes(label.id)}
             changeCheckedState={changeCheckedState}
           />
         ))}
@@ -108,7 +134,6 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
       </Button>
       {showPopup && (
         <LabelPopup
-          taskId={currentTask?.id || taskId || 0}
           onCancel={() => setShowPopup(false)}
           onLabelCreated={handleLabelCreated}
         />

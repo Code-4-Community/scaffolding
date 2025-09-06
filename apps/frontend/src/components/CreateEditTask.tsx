@@ -13,27 +13,8 @@ interface CreateEditTaskProps {
   defaultCategory?: TaskCategory;
   handleCancel: () => void;
   onTaskSaved?: () => void;
-  isEditing?: boolean; // Add this boolean parameter
+  isEditing?: boolean;
 }
-
-const textFieldStyles = {
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      border: 'none',
-    },
-    backgroundColor: 'white',
-    borderRadius: '10px',
-  },
-};
-
-const baseButtonStyles = {
-  textTransform: 'none',
-  borderRadius: '10px',
-  paddingX: '30px',
-  paddingY: '10px',
-  fontSize: '18px',
-  position: 'absolute',
-};
 
 export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
   taskId,
@@ -49,6 +30,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
     defaultCategory || TaskCategory.DRAFT,
   );
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [selectedLabelIds, setSelectedLabelIds] = useState<number[]>([]);
 
   useEffect(() => {
     if (!taskId) return;
@@ -86,26 +68,38 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
 
   const handleSave = async () => {
     try {
-      const updatedTask: UpdateTaskDTO = {
+      const taskData: UpdateTaskDTO = {
         title,
         description,
+        category,
       };
 
       if (dueDate) {
-        updatedTask.dueDate = dueDate.toISOString();
+        taskData.dueDate = dueDate.toISOString();
       }
 
-      console.log(taskId!, title, description, category, dueDate);
-
       if (taskId) {
-        const savedTask = await apiClient.updateTask(taskId, updatedTask);
+        // Update existing task
+        const savedTask = await apiClient.updateTask(taskId, taskData);
 
         if (category !== savedTask.category) {
           await apiClient.updateTaskCategory(taskId, { categoryId: category });
         }
       } else {
-        const savedTask = await apiClient.createTask(updatedTask);
+        // Create new task
+        const savedTask = await apiClient.createTask(taskData);
+        console.log('Created new task:', savedTask);
+
+        if (selectedLabelIds.length > 0) {
+          try {
+            await apiClient.addTaskLabels(savedTask.id, selectedLabelIds);
+            console.log('Applied labels to new task:', selectedLabelIds);
+          } catch (error) {
+            console.error('Error applying labels to new task:', error);
+          }
+        }
       }
+
       if (onTaskSaved) {
         onTaskSaved();
       }
@@ -123,7 +117,6 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           placeholder="Title of task"
           variant="outlined"
           onChange={(e) => setTitle(e.target.value)}
-          sx={textFieldStyles}
         />
         <h1 className="text-3xl font-medium my-4">Description</h1>
         <TextField
@@ -135,7 +128,6 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           multiline
           onChange={(e) => setDescription(e.target.value)}
           rows={18}
-          sx={textFieldStyles}
         />
       </div>
 
@@ -144,7 +136,12 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           <CategoryButton value={category} onChange={setCategory} />
 
           <div className="flex flex-row mt-8 ml-4 gap-8">
-            <LabelsView currentTask={task as Task} taskId={taskId} />
+            <LabelsView
+              currentTask={task}
+              taskId={taskId}
+              selectedLabelIds={selectedLabelIds}
+              onLabelSelectionChange={setSelectedLabelIds}
+            />
             <DueDate value={dueDate} onChange={setDueDate} />
           </div>
         </div>
@@ -154,7 +151,6 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
             <Button
               variant="contained"
               sx={{
-                ...baseButtonStyles,
                 position: 'static',
                 backgroundColor: 'red',
                 color: 'black',
@@ -170,7 +166,6 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           <Button
             variant="contained"
             sx={{
-              ...baseButtonStyles,
               position: 'static',
               backgroundColor: '#d9d9d9',
               '&:hover': { backgroundColor: '#cacacaff' },
@@ -186,7 +181,6 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           <Button
             variant="contained"
             sx={{
-              ...baseButtonStyles,
               position: 'static',
               backgroundColor: '#868686',
               '&:hover': { backgroundColor: '#7d7d7dff' },

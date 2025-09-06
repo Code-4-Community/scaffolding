@@ -9,7 +9,6 @@ interface LabelCardProps {
   title: string;
   color: string;
   defaultChecked: boolean;
-
   changeCheckedState: (
     targetLabelId: number,
     wasAlreadyChecked: boolean,
@@ -24,7 +23,7 @@ export const LabelCard: React.FC<LabelCardProps> = ({
   changeCheckedState,
 }) => {
   const [currentlyChecked, setCurrentlyChecked] = useState(defaultChecked);
-  console.log('defaultChecked:', currentlyChecked);
+
   useEffect(() => {
     setCurrentlyChecked(defaultChecked);
   }, [defaultChecked]);

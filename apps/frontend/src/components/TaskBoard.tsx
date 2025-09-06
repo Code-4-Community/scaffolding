@@ -22,7 +22,7 @@ export const TaskBoard: React.FC = () => {
     const InProgress = { title: TaskCategory.IN_PROGRESS, tasks: [] as Task[] };
     const Completed = { title: TaskCategory.COMPLETED, tasks: [] as Task[] };
 
-    data.forEach((task: Task, index: number): void => {
+    data.forEach((task: Task): void => {
       switch (task.category) {
         case TaskCategory.DRAFT:
           Draft.tasks.push(task);
@@ -54,7 +54,7 @@ export const TaskBoard: React.FC = () => {
 
   const openCreateEditTask = (taskId: number) => {
     setSelectedTaskId(taskId);
-    setSelectedCategory(null); // Clear category when editing existing task
+    setSelectedCategory(null);
   };
 
   const openCreateNewTask = (category: TaskCategory) => {

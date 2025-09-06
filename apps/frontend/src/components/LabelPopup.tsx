@@ -5,13 +5,11 @@ import apiClient from '@api/apiClient';
 
 interface LabelPopupProps {
   onCancel: () => void;
-  taskId: number;
   onLabelCreated: (newLabel: Label) => void;
 }
 
 export const LabelPopup: React.FC<LabelPopupProps> = ({
   onCancel,
-  taskId,
   onLabelCreated,
 }) => {
   const [name, setName] = useState('');

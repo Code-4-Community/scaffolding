@@ -156,7 +156,10 @@ export class TasksService {
 
   /** Gets a task by its ID. */
   async getTaskById(id: number): Promise<Task> {
-    const task = await this.taskRepository.findOneBy({ id });
+    const task = await this.taskRepository.findOne({
+      where: { id },
+      relations: ['labels'],
+    });
     if (!task) {
       throw new BadRequestException(`No task exists with id ${id}`);
     }

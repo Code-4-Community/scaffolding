@@ -92,7 +92,6 @@ export class ApiClient {
 
   public async createLabel(body: unknown): Promise<Label> {
     const response = await this.post(`/api/labels/label`, body);
-    console.log('DALTON response: ', response);
     return response as Label;
   }
 
