@@ -38,7 +38,6 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
       const task = await apiClient.getTaskById(currentTask?.id || taskId!);
       const labelIds = task.labels?.map((label) => label.id) || [];
       setTaskLabels(labelIds);
-      console.log('Fetched task labels:', labelIds, 'from task:', task);
     } catch (error) {
       console.error('Error fetching task labels:', error);
       setTaskLabels([]);
@@ -70,10 +69,8 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
 
     try {
       if (wasAlreadyChecked) {
-        console.log('Removing label from task');
         await apiClient.removeTaskLabels(currentTaskId, [targetLabelId]);
       } else {
-        console.log('Adding label to task');
         await apiClient.addTaskLabels(currentTaskId, [targetLabelId]);
       }
       await fetchTaskLabels();

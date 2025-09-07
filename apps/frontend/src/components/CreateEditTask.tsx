@@ -60,7 +60,6 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
       if (onTaskSaved) {
         onTaskSaved();
       }
-      console.log('Successfully deleted task with id:', taskId);
     } catch (error) {
       console.error('Error deleting task:', error);
     }
@@ -88,12 +87,10 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
       } else {
         // Create new task
         const savedTask = await apiClient.createTask(taskData);
-        console.log('Created new task:', savedTask);
 
         if (selectedLabelIds.length > 0) {
           try {
             await apiClient.addTaskLabels(savedTask.id, selectedLabelIds);
-            console.log('Applied labels to new task:', selectedLabelIds);
           } catch (error) {
             console.error('Error applying labels to new task:', error);
           }
