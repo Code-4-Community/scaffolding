@@ -49,7 +49,7 @@ export class TasksService {
 
   /** Retrieves all tasks. */
   async getAllTasks() {
-    return this.taskRepository.find();
+    return this.taskRepository.find({ relations: ['labels'] });
   }
 
   /** Deletes a task by its ID. */

@@ -12,6 +12,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   title,
   dueDate,
 }) => {
+  console.log('TaskCard colors:', colors);
   return (
     <div className="flex flex-col w-[296px] min-h-[95px] bg-white p-3 rounded-lg relative">
       <div className="flex flex-col">
