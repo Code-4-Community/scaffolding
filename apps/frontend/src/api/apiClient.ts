@@ -95,6 +95,18 @@ export class ApiClient {
     return response as Label;
   }
 
+  public async deleteLabel(
+    labelId: number,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await this.delete(`/api/labels/${labelId}`);
+    return response as { success: boolean; message: string };
+  }
+
+  public async updateLabel(labelId: number, body: unknown): Promise<Label> {
+    const response = await this.patch(`/api/labels/${labelId}/edit`, body);
+    return response as Label;
+  }
+
   public async getTaskById(id: number): Promise<Task> {
     const response = await this.get(`/api/tasks/${id}`);
     return response as Task;
