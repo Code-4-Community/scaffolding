@@ -6,9 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { LabelsService } from './label.service';
 import { Label } from './types/label.entity';
 import { CreateLabelDTO } from './dtos/create-label.dto';

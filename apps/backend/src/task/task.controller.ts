@@ -6,13 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
-  Put,
   BadRequestException,
-  ParseIntPipe,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { TasksService } from './task.service';
 import { Task } from './types/task.entity';
 import { CreateTaskDTO } from './dtos/create-task.dto';
