@@ -20,12 +20,14 @@ describe('TasksService', () => {
     title: 'Task 1',
     description: 'Desc 1',
     dueDate: new Date('2025-08-13'),
+    category: TaskCategory.DRAFT,
   };
 
   const mockInvalidCreateTaskDTO = {
     title: '',
     description: 'Desc 2',
     dueDate: new Date('2025-03-13'),
+    category: TaskCategory.DRAFT,
   };
 
   const mockUpdateTaskDtoNoDesc = {
@@ -500,23 +502,38 @@ describe('TasksService', () => {
   describe('getTaskById', () => {
     it('should return a task when it exists', async () => {
       const taskId = 1;
-      mockTaskRepository.findOneBy.mockResolvedValue(mockTask);
+      const mockTaskForService: Task = {
+        id: 1,
+        title: 'Task 1',
+        description: 'Desc 1',
+        dateCreated: new Date(),
+        dueDate: new Date(),
+        labels: [],
+        category: TaskCategory.TODO,
+      };
+      mockTaskRepository.findOne.mockResolvedValue(mockTaskForService);
 
       const result = await service.getTaskById(taskId);
 
-      expect(result).toEqual(mockTask);
-      expect(mockTaskRepository.findOneBy).toHaveBeenCalledWith({ id: taskId });
+      expect(result).toEqual(mockTaskForService);
+      expect(mockTaskRepository.findOne).toHaveBeenCalledWith({
+        where: { id: taskId },
+        relations: ['labels'],
+      });
     });
 
     it('should throw BadRequestException when task does not exist', async () => {
       const taskId = 999;
-      mockTaskRepository.findOneBy.mockResolvedValue(null);
+      mockTaskRepository.findOne.mockResolvedValue(null);
 
       await expect(service.getTaskById(taskId)).rejects.toThrow(
-        new BadRequestException(`No task exists with id ${taskId}`),
+        `No task exists with id ${taskId}`,
       );
 
-      expect(mockTaskRepository.findOneBy).toHaveBeenCalledWith({ id: taskId });
+      expect(mockTaskRepository.findOne).toHaveBeenCalledWith({
+        where: { id: taskId },
+        relations: ['labels'],
+      });
     });
   });
 });
