@@ -15,7 +15,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   return (
     <div className="flex flex-col w-[296px] min-h-[95px] bg-white p-3 rounded-lg relative">
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row items-center gap-1">
           {colors.map((color, index) => (
             <div
               key={index}
@@ -23,11 +23,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               style={{ backgroundColor: color }}
             ></div>
           ))}
-          <div className={`${colors.length > 0 ? '' : 'mb-1'}`}>
-            {dueDate && Date.now() >= dueDate.getTime() && (
+          {dueDate && Date.now() >= dueDate.getTime() && (
+            <div className="ml-auto">
               <WarningAmberOutlinedIcon color="warning" />
-            )}
-          </div>
+            </div>
+          )}
         </div>
         <p className="break-words">{title}</p>
       </div>
