@@ -104,7 +104,7 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
   return (
     <div>
       <h2 className="text-3xl font-semibold mb-2">Labels</h2>
-      <div className="transparent-scrollbar-container bg-slate-100 w-[344px] h-[147px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
+      <div className="transparent-scrollbar-container bg-slate-100 w-[344px] h-[120px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
         {labelData.map((label) => (
           <LabelCard
             key={label.id}
