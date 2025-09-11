@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { LabelCard } from './LabelCard';
 import { Label, Task } from 'types/types';
 import apiClient from '@api/apiClient';
 import Button from '@mui/material/Button';
 import { LabelPopup } from './LabelPopup';
+import EditDeleteLabelPopup from './EditDeleteLabelPopup';
 
 interface LabelsViewProps {
   currentTask?: Task;
   taskId?: number;
   selectedLabelIds?: number[];
   onLabelSelectionChange?: (labelIds: number[]) => void;
+  onLabelsChanged?: () => void;
 }
 
 export const LabelsView: React.FC<LabelsViewProps> = ({
@@ -17,23 +19,23 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
   taskId,
   selectedLabelIds = [],
   onLabelSelectionChange,
+  onLabelsChanged,
 }) => {
   const [labelData, setLabelData] = useState<Label[]>([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false);
   const [taskLabels, setTaskLabels] = useState<number[]>([]);
 
   const isNewTask = !currentTask?.id && !taskId;
-
-  const currentLabelIds = isNewTask ? selectedLabelIds : taskLabels;
+  const currentLabelIds = selectedLabelIds || taskLabels;
 
   const fetchData = async () => {
     const data = await apiClient.getLabels();
     setLabelData(data);
   };
 
-  const fetchTaskLabels = async () => {
+  const fetchTaskLabels = useCallback(async () => {
     if (!currentTask?.id && !taskId) return;
-
     try {
       const task = await apiClient.getTaskById(currentTask?.id || taskId!);
       const labelIds = task.labels?.map((label) => label.id) || [];
@@ -42,14 +44,14 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
       console.error('Error fetching task labels:', error);
       setTaskLabels([]);
     }
-  };
+  }, [currentTask?.id, taskId]);
 
   useEffect(() => {
     fetchData();
     if (!isNewTask) {
       fetchTaskLabels();
     }
-  }, [currentTask?.id, taskId, isNewTask]);
+  }, [currentTask?.id, taskId, isNewTask, fetchTaskLabels]);
 
   const changeCheckedState = async (
     targetLabelId: number,
@@ -64,6 +66,13 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
       return;
     }
 
+    const newLabelIds = wasAlreadyChecked
+      ? selectedLabelIds.filter((id) => id !== targetLabelId)
+      : [...selectedLabelIds, targetLabelId];
+
+    onLabelSelectionChange?.(newLabelIds);
+
+    // Then update the backend
     const currentTaskId = currentTask?.id || taskId;
     if (!currentTaskId) return;
 
@@ -73,37 +82,46 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
       } else {
         await apiClient.addTaskLabels(currentTaskId, [targetLabelId]);
       }
-      await fetchTaskLabels();
     } catch (error) {
       console.error('Error updating task labels:', error);
+      onLabelSelectionChange?.(selectedLabelIds);
     }
   };
 
-  const handleLabelCreated = async (newLabel: Label) => {
-    if (isNewTask) {
-      const newLabelIds = [...selectedLabelIds, newLabel.id];
-      onLabelSelectionChange?.(newLabelIds);
-      setLabelData((prev) => [...prev, newLabel]);
-      setShowPopup(false);
-      return;
-    }
-
-    const currentTaskId = currentTask?.id || taskId;
-    if (!currentTaskId) return;
-
-    try {
-      await apiClient.addTaskLabels(currentTaskId, [newLabel.id]);
-      setLabelData((prev) => [...prev, newLabel]);
-      setShowPopup(false);
+  const handleLabelCreated = async () => {
+    await fetchData();
+    if (!isNewTask) {
       await fetchTaskLabels();
-    } catch (error) {
-      console.error('Error adding new label to task:', error);
+    }
+  };
+
+  const handleLabelsChanged = async () => {
+    await fetchData();
+    if (!isNewTask) {
+      await fetchTaskLabels();
+    }
+    if (onLabelsChanged) {
+      onLabelsChanged();
     }
   };
 
   return (
     <div>
-      <h2 className="text-3xl font-semibold mb-2">Labels</h2>
+      <div className="text-3xl font-semibold mb-2 flex items-center justify-between">
+        <h2 className="text-3xl font-semibold mb-2">Labels</h2>
+        <Button
+          sx={{
+            color: '#424242',
+            fontWeight: '550',
+            textTransform: 'none',
+            fontSize: '16px',
+            ml: 2,
+          }}
+          onClick={() => setShowEditPopup(true)}
+        >
+          Edit/Delete Labels
+        </Button>
+      </div>
       <div className="transparent-scrollbar-container bg-slate-100 w-[344px] h-[120px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
         {labelData.map((label) => (
           <LabelCard
@@ -122,17 +140,22 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
           fontWeight: '550',
           textTransform: 'none',
           fontSize: '16px',
+          mt: 1,
         }}
-        onClick={() => {
-          setShowPopup(true);
-        }}
+        onClick={() => setShowPopup(true)}
       >
-        {!showPopup && '+ Add Label'}
+        + Add Label
       </Button>
       {showPopup && (
         <LabelPopup
           onCancel={() => setShowPopup(false)}
           onLabelCreated={handleLabelCreated}
+        />
+      )}
+      {showEditPopup && (
+        <EditDeleteLabelPopup
+          onClose={() => setShowEditPopup(false)}
+          onLabelsChanged={handleLabelsChanged}
         />
       )}
     </div>

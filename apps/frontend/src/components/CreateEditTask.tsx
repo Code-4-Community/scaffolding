@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import apiClient from '@api/apiClient';
-import { Task, TaskCategory, UpdateTaskDTO } from '../types/types';
+import { Task, TaskCategory } from '../types/types';
 import { CategoryButton } from './CategoryButton';
 import { LabelsView } from './LabelsView';
 import { DueDate } from './DueDate';
@@ -30,7 +30,19 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
     defaultCategory || TaskCategory.DRAFT,
   );
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
-  const [selectedLabelIds, setSelectedLabelIds] = useState<number[]>([]);
+  const [selectedLabelIds, setSelectedLabelIds] = useState<number[]>([]); // Add this
+
+  const refreshSelectedLabels = async () => {
+    if (!taskId) return;
+    try {
+      const task = await apiClient.getTaskById(taskId);
+      if (task) {
+        setSelectedLabelIds(task.labels?.map((label) => label.id) || []);
+      }
+    } catch (err) {
+      console.error('Error refreshing selected labels:', err);
+    }
+  };
 
   useEffect(() => {
     if (!taskId) return;
@@ -44,6 +56,8 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           setDescription(task.description);
           setCategory(task.category);
           setDueDate(task.dueDate ? dayjs(task.dueDate) : null);
+          // Set selected label IDs for existing task
+          setSelectedLabelIds(task.labels?.map((label) => label.id) || []);
         }
       } catch (err) {
         console.error(err);
@@ -60,6 +74,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
       if (onTaskSaved) {
         onTaskSaved();
       }
+      console.log('Successfully deleted task with id:', taskId);
     } catch (error) {
       console.error('Error deleting task:', error);
     }
@@ -67,7 +82,12 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
 
   const handleSave = async () => {
     try {
-      const taskData: UpdateTaskDTO = {
+      const taskData: {
+        title: string;
+        description: string;
+        category: TaskCategory;
+        dueDate?: string;
+      } = {
         title,
         description,
         category,
@@ -84,13 +104,37 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
         if (category !== savedTask.category) {
           await apiClient.updateTaskCategory(taskId, { categoryId: category });
         }
+
+        // Update task labels if they have changed
+        const currentTaskLabels = task?.labels?.map((label) => label.id) || [];
+        const labelsChanged =
+          JSON.stringify(currentTaskLabels.sort()) !==
+          JSON.stringify(selectedLabelIds.sort());
+
+        if (labelsChanged) {
+          try {
+            // Remove all current labels
+            if (currentTaskLabels.length > 0) {
+              await apiClient.removeTaskLabels(taskId, currentTaskLabels);
+            }
+            // Add selected labels
+            if (selectedLabelIds.length > 0) {
+              await apiClient.addTaskLabels(taskId, selectedLabelIds);
+            }
+            console.log('Updated task labels:', selectedLabelIds);
+          } catch (error) {
+            console.error('Error updating task labels:', error);
+          }
+        }
       } else {
         // Create new task
         const savedTask = await apiClient.createTask(taskData);
+        console.log('Created new task:', savedTask);
 
         if (selectedLabelIds.length > 0) {
           try {
             await apiClient.addTaskLabels(savedTask.id, selectedLabelIds);
+            console.log('Applied labels to new task:', selectedLabelIds);
           } catch (error) {
             console.error('Error applying labels to new task:', error);
           }
@@ -106,7 +150,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
   };
 
   return (
-    <div className="flex flex-row m-14 p-8 border border-black bg-[#f6f6f6] rounded-lg">
+    <div className="flex flex-row m-14 p-8 h-[600px] border border-black bg-[#f6f6f6] rounded-lg mt-[120px]">
       <div className="w-1/2 flex flex-col pr-6">
         <h1 className="text-3xl font-medium mb-4">Title</h1>
         <TextField
@@ -124,7 +168,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           variant="outlined"
           multiline
           onChange={(e) => setDescription(e.target.value)}
-          rows={18}
+          rows={15}
         />
       </div>
 
@@ -138,6 +182,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
               taskId={taskId}
               selectedLabelIds={selectedLabelIds}
               onLabelSelectionChange={setSelectedLabelIds}
+              onLabelsChanged={refreshSelectedLabels}
             />
             <DueDate value={dueDate} onChange={setDueDate} />
           </div>

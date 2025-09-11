@@ -7,7 +7,6 @@ const Root: React.FC = () => {
     <div className="w-screen h-screen bg-[#e8e8e8] py-14 px-10">
       <div className="">
         <Header firstName="Test" lastName="User" />
-        <EditDeleteLabel />
         <TaskBoard />
       </div>
     </div>

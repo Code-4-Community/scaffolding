@@ -8,10 +8,12 @@ import { toHex } from './LabelPopup';
 
 interface EditDeleteLabelPopupProps {
   onClose: () => void;
+  onLabelsChanged?: () => void;
 }
 
 const EditDeleteLabelPopup: React.FC<EditDeleteLabelPopupProps> = ({
   onClose,
+  onLabelsChanged,
 }) => {
   const [labels, setLabels] = useState<Label[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
@@ -39,6 +41,7 @@ const EditDeleteLabelPopup: React.FC<EditDeleteLabelPopupProps> = ({
       await apiClient.deleteLabel(selectedLabel.id);
       setLabels(labels.filter((l) => l.id !== selectedLabel.id));
       setSelectedLabel(null);
+      if (onLabelsChanged) onLabelsChanged();
     } catch (err) {
       console.error('Failed to delete label', err);
     }
@@ -53,6 +56,7 @@ const EditDeleteLabelPopup: React.FC<EditDeleteLabelPopupProps> = ({
       });
       setLabels(labels.map((l) => (l.id === updated.id ? updated : l)));
       setSelectedLabel(null);
+      if (onLabelsChanged) onLabelsChanged();
     } catch (err) {
       console.error('Failed to update label', err);
     }
