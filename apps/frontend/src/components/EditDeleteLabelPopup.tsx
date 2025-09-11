@@ -4,6 +4,7 @@ import { Label } from 'types/types';
 import { MuiColorInput } from 'mui-color-input';
 import { Button, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Edit from '@mui/icons-material/Edit';
 import { toHex } from './LabelPopup';
 
 interface EditDeleteLabelPopupProps {
@@ -64,27 +65,36 @@ const EditDeleteLabelPopup: React.FC<EditDeleteLabelPopupProps> = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-200 bg-opacity-95">
-      <div className="bg-white rounded-lg flex flex-col w-[350px] h-[400px] p-0 relative shadow-lg">
+      <div className="bg-white rounded-lg flex flex-col w-[350px] h-[400px] p-4 relative shadow-lg">
+        <h1 className="text-lg text-center mb-4">Labels</h1>
         {!selectedLabel ? (
           <>
-            <div className="flex flex-col w-full p-6 pt-8 gap-2 flex-1 overflow-y-auto">
+            <div className="transparent-scrollbar-container h-[300px] w-full px-2 flex flex-col gap-y-2 overflow-scroll mb-4 ">
               {labels.map((label) => (
-                <div
-                  key={label.id}
-                  className={
-                    'flex items-center justify-start w-full h-[36px] rounded-full cursor-pointer border-2 px-4'
-                  }
-                  style={{ backgroundColor: label.color }}
-                  onClick={() => setSelectedLabel(label)}
-                  title={label.name}
-                >
-                  <span className="text-sm font-medium text-white">
-                    {label.name}
-                  </span>
+                <div className="flex flex-row gap-2 items-center">
+                  <div
+                    key={label.id}
+                    className={
+                      'flex items-center w-5/6 min-h-[36px] rounded-xl cursor-pointer px-4'
+                    }
+                    style={{ backgroundColor: label.color }}
+                    onClick={() => setSelectedLabel(label)}
+                    title={label.name}
+                  >
+                    <span className="text-sm font-medium">{label.name}</span>
+                  </div>
+                  <Edit
+                    onClick={() => setSelectedLabel(label)}
+                    sx={{
+                      '&:hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                  />
                 </div>
               ))}
             </div>
-            <div className="flex justify-center items-center w-full px-6 pb-4">
+            <div className="flex justify-center items-center w-full px-6">
               <Button
                 variant="contained"
                 color="inherit"

@@ -149,13 +149,17 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
   };
 
   return (
-    <div className="flex flex-row m-14 p-8 h-[600px] border border-black bg-[#f6f6f6] rounded-lg mt-[120px]">
+    <div className="flex flex-row m-14 p-8 h-[600px] border border-black bg-[#f0f0f0] rounded-lg mt-[120px] relative">
       <div className="w-1/2 flex flex-col pr-6">
         <h1 className="text-3xl font-medium mb-4">Title</h1>
         <TextField
           value={title}
           placeholder="Title of task"
           variant="outlined"
+          sx={{
+            backgroundColor: 'white',
+            marginBottom: '16px',
+          }}
           onChange={(e) => setTitle(e.target.value)}
         />
         <h1 className="text-3xl font-medium my-4">Description</h1>
@@ -165,9 +169,12 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
             taskId ? 'Add a description to your task' : 'Description of task'
           }
           variant="outlined"
+          sx={{
+            backgroundColor: 'white',
+          }}
           multiline
           onChange={(e) => setDescription(e.target.value)}
-          rows={15}
+          rows={12}
         />
       </div>
 
@@ -175,7 +182,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
         <div>
           <CategoryButton value={category} onChange={setCategory} />
 
-          <div className="flex flex-row mt-8 ml-4 gap-8">
+          <div className="flex flex-row mt-8 ml-4 gap-12">
             <LabelsView
               currentTask={task}
               taskId={taskId}
@@ -187,7 +194,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           </div>
         </div>
 
-        <div className="flex justify-end gap-4 mt-6">
+        <div className="absolute right-4 bottom-4 flex justify-end gap-4 mt-6">
           {isEditing && (
             <Button
               variant="contained"

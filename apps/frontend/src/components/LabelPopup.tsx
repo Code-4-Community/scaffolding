@@ -5,7 +5,7 @@ import apiClient from '@api/apiClient';
 
 interface LabelPopupProps {
   onCancel: () => void;
-  onLabelCreated: (newLabel: Label) => void;
+  onLabelCreated: (newLabel?: Label | undefined) => void;
 }
 
 export const toHex = (color: string): string => {
@@ -44,7 +44,7 @@ export const LabelPopup: React.FC<LabelPopupProps> = ({
 
       onLabelCreated(newLabel);
     } catch (err) {
-      console.error('Failed to create label', err);
+      onLabelCreated();
     }
   };
 

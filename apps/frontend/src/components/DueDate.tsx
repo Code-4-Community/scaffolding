@@ -19,7 +19,13 @@ export const DueDate: React.FC<DueDateProps> = ({ value, onChange }) => {
       {isOverdue && <p className="text-red-500 font-medium">*Overdue</p>}
       {/* MUI Date Picker */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker value={value} onChange={onChange} />
+        <DatePicker
+          value={value}
+          onChange={onChange}
+          sx={{
+            backgroundColor: 'white',
+          }}
+        />
       </LocalizationProvider>
     </div>
   );

@@ -5,12 +5,14 @@ interface TaskCardProps {
   colors: string[];
   title: string;
   dueDate?: Date;
+  category: string;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
   colors,
   title,
   dueDate,
+  category,
 }) => {
   return (
     <div className="flex flex-col w-[296px] min-h-[95px] bg-white p-3 rounded-lg relative">
@@ -23,11 +25,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               style={{ backgroundColor: color }}
             ></div>
           ))}
-          {dueDate && Date.now() >= dueDate.getTime() && (
-            <div className="ml-auto">
-              <WarningAmberOutlinedIcon color="warning" />
-            </div>
-          )}
+          <div className="ml-auto w-5 h-5 flex items-center justify-center">
+            {dueDate &&
+              Date.now() >= dueDate.getTime() &&
+              category !== 'Completed' && (
+                <WarningAmberOutlinedIcon color="warning" fontSize="small" />
+              )}
+          </div>
         </div>
         <p className="break-words">{title}</p>
       </div>
@@ -35,7 +39,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         <p
           className="text-xs self-end"
           style={
-            Date.now() >= dueDate.getTime()
+            Date.now() >= dueDate.getTime() && category !== 'Completed'
               ? { color: '#FF0004' }
               : { color: '#878787' }
           }

@@ -52,7 +52,7 @@ export const LabelCard: React.FC<LabelCardProps> = ({
             }
           />
         }
-        label={title.length >= 10 ? title.slice(0, 9) + '..' : title}
+        label={title.length >= 10 ? title.slice(0, 8) + '..' : title}
         labelPlacement="start"
         className="flex justify-between items-center w-full"
         sx={{

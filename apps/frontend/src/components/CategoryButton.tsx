@@ -33,7 +33,8 @@ export const CategoryButton: React.FC<CategoryButtonProps> = ({
             labelPlacement="start"
             sx={{
               '& .MuiFormControlLabel-label': {
-                fontSize: '1.625rem',
+                fontSize: '1.5rem',
+                fontWeight: 400,
               },
             }}
           />

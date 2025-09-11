@@ -87,6 +87,7 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
                   }
                   title={task.title}
                   dueDate={task.dueDate ? new Date(task.dueDate) : undefined}
+                  category={task.category}
                 />
               </div>
             ))

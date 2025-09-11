@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { LabelCard } from './LabelCard';
 import { Label, Task } from 'types/types';
 import apiClient from '@api/apiClient';
-import Button from '@mui/material/Button';
+import { Button, Snackbar } from '@mui/material';
 import { LabelPopup } from './LabelPopup';
 import EditDeleteLabelPopup from './EditDeleteLabelPopup';
 
@@ -25,6 +25,10 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
   const [showPopup, setShowPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [taskLabels, setTaskLabels] = useState<number[]>([]);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+  }>({ open: false, message: '' });
 
   const isNewTask = !currentTask?.id && !taskId;
   const currentLabelIds = selectedLabelIds || taskLabels;
@@ -87,10 +91,22 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
     }
   };
 
-  const handleLabelCreated = async () => {
-    await fetchData();
-    if (!isNewTask) {
-      await fetchTaskLabels();
+  const handleLabelCreated = async (newLabel?: Label | undefined) => {
+    if (newLabel) {
+      await fetchData();
+      if (!isNewTask) {
+        await fetchTaskLabels();
+      }
+      setShowPopup(false);
+      setSnackbar({
+        open: true,
+        message: 'Label created successfully!',
+      });
+    } else {
+      setSnackbar({
+        open: true,
+        message: 'Failed to create label. Please try again.',
+      });
     }
   };
 
@@ -104,8 +120,19 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   return (
     <div>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        message={snackbar.message}
+      />
       <div className="text-3xl font-semibold mb-2 flex items-center justify-between">
         <h2 className="text-3xl font-semibold mb-2">Labels</h2>
         <Button
@@ -118,10 +145,10 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
           }}
           onClick={() => setShowEditPopup(true)}
         >
-          Edit/Delete Labels
+          Edit Labels
         </Button>
       </div>
-      <div className="transparent-scrollbar-container bg-slate-100 w-[344px] h-[120px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
+      <div className="transparent-scrollbar-container bg-white w-[344px] h-[100px] rounded-lg p-3 pr-6 grid auto-cols-min auto-rows-min grid-cols-2 gap-x-4 gap-y-2 overflow-scroll">
         {labelData.map((label) => (
           <LabelCard
             key={label.id}
