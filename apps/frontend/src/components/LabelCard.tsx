@@ -43,7 +43,7 @@ export const LabelCard: React.FC<LabelCardProps> = ({
           <Checkbox
             checked={currentlyChecked}
             onChange={handleChange}
-            icon={<CircleIcon sx={{ fontSize: 24 }} className="text-white" />}
+            icon={<CircleIcon sx={{ fontSize: 20 }} className="text-white" />}
             checkedIcon={
               <CheckIcon
                 sx={{ fontSize: 20 }}
@@ -55,7 +55,10 @@ export const LabelCard: React.FC<LabelCardProps> = ({
         label={title.length >= 10 ? title.slice(0, 9) + '..' : title}
         labelPlacement="start"
         className="flex justify-between items-center w-full"
-        sx={{ m: 0, pl: 2 }}
+        sx={{
+          m: 0,
+          pl: 2,
+        }}
       />
     </div>
   );

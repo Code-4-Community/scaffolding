@@ -56,7 +56,6 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
           setDescription(task.description);
           setCategory(task.category);
           setDueDate(task.dueDate ? dayjs(task.dueDate) : null);
-          // Set selected label IDs for existing task
           setSelectedLabelIds(task.labels?.map((label) => label.id) || []);
         }
       } catch (err) {

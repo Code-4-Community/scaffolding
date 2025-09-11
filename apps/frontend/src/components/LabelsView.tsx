@@ -72,7 +72,6 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
 
     onLabelSelectionChange?.(newLabelIds);
 
-    // Then update the backend
     const currentTaskId = currentTask?.id || taskId;
     if (!currentTaskId) return;
 
