@@ -78,17 +78,6 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
 
     const currentTaskId = currentTask?.id || taskId;
     if (!currentTaskId) return;
-
-    try {
-      if (wasAlreadyChecked) {
-        await apiClient.removeTaskLabels(currentTaskId, [targetLabelId]);
-      } else {
-        await apiClient.addTaskLabels(currentTaskId, [targetLabelId]);
-      }
-    } catch (error) {
-      console.error('Error updating task labels:', error);
-      onLabelSelectionChange?.(selectedLabelIds);
-    }
   };
 
   const handleLabelCreated = async (newLabel?: Label | undefined) => {

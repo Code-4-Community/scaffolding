@@ -30,7 +30,7 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
     defaultCategory || TaskCategory.DRAFT,
   );
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
-  const [selectedLabelIds, setSelectedLabelIds] = useState<number[]>([]); // Add this
+  const [selectedLabelIds, setSelectedLabelIds] = useState<number[]>([]);
 
   const refreshSelectedLabels = async () => {
     if (!taskId) return;
