@@ -6,7 +6,7 @@ import {
   JoinTable,
   ManyToMany,
 } from 'typeorm';
-import { TaskCategory } from './category'; // Adjust path as needed
+import { TaskCategory } from './category';
 import { Label } from '../../label/types/label.entity';
 
 @Entity('tasks')

@@ -9,12 +9,14 @@ const mockCreateTaskDTO = {
   title: 'Task 1',
   description: 'Desc 1',
   dueDate: new Date('2025-08-13'),
+  category: TaskCategory.DRAFT,
 };
 
 const mockUpdateTaskDTO = {
   title: 'Updated Task 1',
   description: 'Updated Desc 1',
   dueDate: new Date('2026-04-01'),
+  category: TaskCategory.DRAFT,
 };
 
 export const mockTask = {

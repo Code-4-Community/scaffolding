@@ -2,14 +2,13 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface LabelCardProps {
   id: number;
   title: string;
   color: string;
   defaultChecked: boolean;
-
   changeCheckedState: (
     targetLabelId: number,
     wasAlreadyChecked: boolean,
@@ -24,6 +23,10 @@ export const LabelCard: React.FC<LabelCardProps> = ({
   changeCheckedState,
 }) => {
   const [currentlyChecked, setCurrentlyChecked] = useState(defaultChecked);
+
+  useEffect(() => {
+    setCurrentlyChecked(defaultChecked);
+  }, [defaultChecked]);
 
   const handleChange = () => {
     setCurrentlyChecked(!currentlyChecked);
@@ -40,7 +43,7 @@ export const LabelCard: React.FC<LabelCardProps> = ({
           <Checkbox
             checked={currentlyChecked}
             onChange={handleChange}
-            icon={<CircleIcon sx={{ fontSize: 24 }} className="text-white" />}
+            icon={<CircleIcon sx={{ fontSize: 20 }} className="text-white" />}
             checkedIcon={
               <CheckIcon
                 sx={{ fontSize: 20 }}
@@ -49,10 +52,13 @@ export const LabelCard: React.FC<LabelCardProps> = ({
             }
           />
         }
-        label={title.length >= 10 ? title.slice(0, 9) + '..' : title}
+        label={title.length >= 10 ? title.slice(0, 8) + '..' : title}
         labelPlacement="start"
         className="flex justify-between items-center w-full"
-        sx={{ m: 0, pl: 2 }}
+        sx={{
+          m: 0,
+          pl: 2,
+        }}
       />
     </div>
   );

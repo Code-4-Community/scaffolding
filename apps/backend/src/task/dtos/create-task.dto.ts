@@ -1,5 +1,6 @@
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsString, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { TaskCategory } from '../types/category';
 
 export class CreateTaskDTO {
   @IsString()
@@ -8,7 +9,11 @@ export class CreateTaskDTO {
   @IsString()
   description: string;
 
+  @IsOptional()
   @IsDate()
   @Transform(({ value }) => new Date(value))
-  dueDate: Date;
+  dueDate?: Date;
+
+  @IsEnum(TaskCategory)
+  category: TaskCategory;
 }

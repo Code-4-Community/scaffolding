@@ -1,6 +1,6 @@
 import apiClient from '@api/apiClient';
 import AddIcon from '@mui/icons-material/Add';
-import { Task } from 'types/types';
+import { Task, TaskCategory } from '../types/types';
 import { TaskCard } from './TaskCard';
 
 interface TaskBoxProps {
@@ -8,6 +8,7 @@ interface TaskBoxProps {
   tasks?: Task[];
   onTaskDrop?: () => void;
   handleClick: (taskId: number) => void;
+  onAddCard: (category: TaskCategory) => void;
 }
 
 export const TaskBox: React.FC<TaskBoxProps> = ({
@@ -15,6 +16,7 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
   tasks,
   onTaskDrop,
   handleClick,
+  onAddCard,
 }) => {
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
@@ -37,10 +39,25 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
     const taskID = parseInt(e.dataTransfer.getData('taskID'));
     const fromBoxCategory = e.dataTransfer.getData('fromBoxCategory');
 
-    if (!taskID || fromBoxCategory === toBoxCategory) return; // ignore invalid drops
+    if (!taskID || fromBoxCategory === toBoxCategory) return;
 
     await apiClient.updateTaskCategory(taskID, { categoryId: toBoxCategory });
     if (onTaskDrop) onTaskDrop();
+  };
+
+  const getCategoryFromTitle = (title: string): TaskCategory => {
+    switch (title) {
+      case 'Draft':
+        return TaskCategory.DRAFT;
+      case 'To Do':
+        return TaskCategory.TODO;
+      case 'In Progress':
+        return TaskCategory.IN_PROGRESS;
+      case 'Completed':
+        return TaskCategory.COMPLETED;
+      default:
+        return TaskCategory.DRAFT;
+    }
   };
 
   return (
@@ -63,9 +80,14 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
                 onClick={() => handleClick(task.id)}
               >
                 <TaskCard
-                  colors={[]}
+                  colors={
+                    task.labels && task.labels.length > 0
+                      ? task.labels.map((label) => label.color)
+                      : []
+                  }
                   title={task.title}
                   dueDate={task.dueDate ? new Date(task.dueDate) : undefined}
+                  category={task.category}
                 />
               </div>
             ))
@@ -75,7 +97,10 @@ export const TaskBox: React.FC<TaskBoxProps> = ({
         </div>
       </div>
 
-      <button className="flex items-center gap-1 mt-4 w-[40%]">
+      <button
+        className="flex items-center gap-1 mt-4 w-[40%]"
+        onClick={() => onAddCard(getCategoryFromTitle(title))}
+      >
         <AddIcon sx={{ color: '#4A4A51' }} />
         <span style={{ color: '#4A4A51' }}>Add Card</span>
       </button>

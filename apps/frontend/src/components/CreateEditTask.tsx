@@ -2,40 +2,47 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import apiClient from '@api/apiClient';
+import { Task, TaskCategory } from '../types/types';
+import { CategoryButton } from './CategoryButton';
+import { LabelsView } from './LabelsView';
+import { DueDate } from './DueDate';
+import dayjs, { Dayjs } from 'dayjs';
 
-/*
-TODO: button functionality, add other components and states
-*/
 interface CreateEditTaskProps {
   taskId?: number;
+  defaultCategory?: TaskCategory;
   handleCancel: () => void;
+  onTaskSaved?: () => void;
+  isEditing?: boolean;
 }
-
-const textFieldStyles = {
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      border: 'none',
-    },
-    backgroundColor: 'white',
-    borderRadius: '10px',
-  },
-};
-
-const baseButtonStyles = {
-  textTransform: 'none',
-  borderRadius: '10px',
-  paddingX: '30px',
-  paddingY: '10px',
-  fontSize: '18px',
-  position: 'absolute',
-};
 
 export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
   taskId,
+  defaultCategory,
   handleCancel,
+  onTaskSaved,
+  isEditing = false,
 }) => {
+  const [task, setTask] = useState<Task>();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<TaskCategory>(
+    defaultCategory || TaskCategory.DRAFT,
+  );
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [selectedLabelIds, setSelectedLabelIds] = useState<number[]>([]);
+
+  const refreshSelectedLabels = async () => {
+    if (!taskId) return;
+    try {
+      const task = await apiClient.getTaskById(taskId);
+      if (task) {
+        setSelectedLabelIds(task.labels?.map((label) => label.id) || []);
+      }
+    } catch (err) {
+      console.error('Error refreshing selected labels:', err);
+    }
+  };
 
   useEffect(() => {
     if (!taskId) return;
@@ -44,73 +51,197 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
       try {
         const task = await apiClient.getTaskById(taskId);
         if (task) {
+          setTask(task);
           setTitle(task.title);
           setDescription(task.description);
+          setCategory(task.category);
+          setDueDate(task.dueDate ? dayjs(task.dueDate) : null);
+          setSelectedLabelIds(task.labels?.map((label) => label.id) || []);
         }
       } catch (err) {
-        return;
+        console.error(err);
       }
     };
     fetchTaskData();
   }, [taskId]);
 
+  const handleDelete = async () => {
+    if (!taskId) return;
+
+    try {
+      await apiClient.deleteTask(taskId);
+      if (onTaskSaved) {
+        onTaskSaved();
+      }
+      console.log('Successfully deleted task with id:', taskId);
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const taskData: {
+        title: string;
+        description: string;
+        category: TaskCategory;
+        dueDate?: string;
+      } = {
+        title,
+        description,
+        category,
+      };
+
+      if (dueDate) {
+        taskData.dueDate = dueDate.toISOString();
+      }
+
+      if (taskId) {
+        // Update existing task
+        const savedTask = await apiClient.updateTask(taskId, taskData);
+
+        if (category !== savedTask.category) {
+          await apiClient.updateTaskCategory(taskId, { categoryId: category });
+        }
+
+        // Update task labels if they have changed
+        const currentTaskLabels = task?.labels?.map((label) => label.id) || [];
+        const labelsChanged =
+          JSON.stringify(currentTaskLabels.sort()) !==
+          JSON.stringify(selectedLabelIds.sort());
+
+        if (labelsChanged) {
+          try {
+            // Remove all current labels
+            if (currentTaskLabels.length > 0) {
+              await apiClient.removeTaskLabels(taskId, currentTaskLabels);
+            }
+            // Add selected labels
+            if (selectedLabelIds.length > 0) {
+              await apiClient.addTaskLabels(taskId, selectedLabelIds);
+            }
+            console.log('Updated task labels:', selectedLabelIds);
+          } catch (error) {
+            console.error('Error updating task labels:', error);
+          }
+        }
+      } else {
+        // Create new task
+        const savedTask = await apiClient.createTask(taskData);
+        console.log('Created new task:', savedTask);
+
+        if (selectedLabelIds.length > 0) {
+          try {
+            await apiClient.addTaskLabels(savedTask.id, selectedLabelIds);
+            console.log('Applied labels to new task:', selectedLabelIds);
+          } catch (error) {
+            console.error('Error applying labels to new task:', error);
+          }
+        }
+      }
+
+      if (onTaskSaved) {
+        onTaskSaved();
+      }
+    } catch (error) {
+      console.error('Error saving task:', error);
+    }
+  };
+
   return (
-    <div className="flex flex-row m-14 p-8 border border-black bg-[#f6f6f6] rounded-lg relative">
-      <div className="w-1/2 flex flex-col">
+    <div className="flex flex-row m-14 p-8 h-[600px] border border-black bg-[#f0f0f0] rounded-lg mt-[120px] relative">
+      <div className="w-1/2 flex flex-col pr-6">
         <h1 className="text-3xl font-medium mb-4">Title</h1>
         <TextField
-          value={taskId && title}
+          value={title}
           placeholder="Title of task"
           variant="outlined"
+          sx={{
+            backgroundColor: 'white',
+            marginBottom: '16px',
+          }}
           onChange={(e) => setTitle(e.target.value)}
-          sx={textFieldStyles}
         />
         <h1 className="text-3xl font-medium my-4">Description</h1>
         <TextField
-          value={taskId && description}
+          value={description}
           placeholder={
             taskId ? 'Add a description to your task' : 'Description of task'
           }
           variant="outlined"
+          sx={{
+            backgroundColor: 'white',
+          }}
           multiline
           onChange={(e) => setDescription(e.target.value)}
-          rows={18}
-          sx={textFieldStyles}
+          rows={12}
         />
       </div>
-      <div className="w-1/2">
-        <Button
-          variant="contained"
-          sx={{
-            ...baseButtonStyles,
-            backgroundColor: '#d9d9d9',
-            '&:hover': {
-              backgroundColor: '#cacacaff',
-            },
-            bottom: '30px',
-            right: '160px',
-            color: 'black',
-          }}
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            ...baseButtonStyles,
-            backgroundColor: '#868686',
-            fontWeight: 'bold',
-            position: 'absolute',
-            bottom: '30px',
-            right: '30px',
-            '&:hover': {
-              backgroundColor: '#7d7d7dff',
-            },
-          }}
-        >
-          {taskId ? 'Save' : 'Create'}
-        </Button>
+
+      <div className="w-1/2 flex flex-col justify-between pl-6">
+        <div>
+          <CategoryButton value={category} onChange={setCategory} />
+
+          <div className="flex flex-row mt-8 ml-4 gap-12">
+            <LabelsView
+              currentTask={task}
+              taskId={taskId}
+              selectedLabelIds={selectedLabelIds}
+              onLabelSelectionChange={setSelectedLabelIds}
+              onLabelsChanged={refreshSelectedLabels}
+            />
+            <DueDate value={dueDate} onChange={setDueDate} />
+          </div>
+        </div>
+
+        <div className="absolute right-4 bottom-4 flex justify-end gap-4 mt-6">
+          {isEditing && (
+            <Button
+              variant="contained"
+              sx={{
+                position: 'static',
+                backgroundColor: 'red',
+                color: 'black',
+                paddingX: '20px',
+                paddingY: '8px',
+                fontSize: '16px',
+              }}
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          )}
+          <Button
+            variant="contained"
+            sx={{
+              position: 'static',
+              backgroundColor: '#d9d9d9',
+              '&:hover': { backgroundColor: '#cacacaff' },
+              color: 'black',
+              paddingX: '20px',
+              paddingY: '8px',
+              fontSize: '16px',
+            }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              position: 'static',
+              backgroundColor: '#868686',
+              '&:hover': { backgroundColor: '#7d7d7dff' },
+              fontWeight: 'bold',
+              paddingX: '20px',
+              paddingY: '8px',
+              fontSize: '16px',
+            }}
+            onClick={handleSave}
+          >
+            {taskId ? 'Save' : 'Create'}
+          </Button>
+        </div>
       </div>
     </div>
   );

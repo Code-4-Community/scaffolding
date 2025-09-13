@@ -1,5 +1,6 @@
 import { TaskBoard } from '../components/TaskBoard';
 import Header from '../components/Header';
+import { EditDeleteLabel } from '../components/EditDeleteLabel';
 
 const Root: React.FC = () => {
   return (

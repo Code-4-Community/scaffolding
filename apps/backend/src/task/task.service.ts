@@ -49,7 +49,7 @@ export class TasksService {
 
   /** Retrieves all tasks. */
   async getAllTasks() {
-    return this.taskRepository.find();
+    return this.taskRepository.find({ relations: ['labels'] });
   }
 
   /** Deletes a task by its ID. */
@@ -58,7 +58,7 @@ export class TasksService {
     if (!task) {
       throw new BadRequestException(`Task with id ${id} does not exist`);
     }
-    return this.taskRepository.delete(task);
+    return this.taskRepository.delete(id);
   }
 
   /** Move task category by its ID. */
@@ -156,7 +156,10 @@ export class TasksService {
 
   /** Gets a task by its ID. */
   async getTaskById(id: number): Promise<Task> {
-    const task = await this.taskRepository.findOneBy({ id });
+    const task = await this.taskRepository.findOne({
+      where: { id },
+      relations: ['labels'],
+    });
     if (!task) {
       throw new BadRequestException(`No task exists with id ${id}`);
     }

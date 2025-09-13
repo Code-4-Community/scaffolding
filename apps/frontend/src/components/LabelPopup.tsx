@@ -1,21 +1,57 @@
 import React, { useState } from 'react';
 import { MuiColorInput } from 'mui-color-input';
+import { Label } from 'types/types';
+import apiClient from '@api/apiClient';
 
-export const LabelPopup: React.FC = () => {
+interface LabelPopupProps {
+  onCancel: () => void;
+  onLabelCreated: (newLabel?: Label | undefined) => void;
+}
+
+export const toHex = (color: string): string => {
+  if (color.startsWith('#')) {
+    return color;
+  }
+
+  if (color.startsWith('rgb')) {
+    const rgbMatch = color.match(/\d+/g);
+    if (rgbMatch && rgbMatch.length >= 3) {
+      const r = parseInt(rgbMatch[0]);
+      const g = parseInt(rgbMatch[1]);
+      const b = parseInt(rgbMatch[2]);
+      return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    }
+  }
+
+  return color;
+};
+
+export const LabelPopup: React.FC<LabelPopupProps> = ({
+  onCancel,
+  onLabelCreated,
+}) => {
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
   const [colorValue, setColorValue] = useState('#ffffff');
 
-  // TODO: button functionality
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ name, description, colorValue });
+
+    try {
+      const newLabel: Label = await apiClient.createLabel({
+        name,
+        color: toHex(colorValue),
+      });
+
+      onLabelCreated(newLabel);
+    } catch (err) {
+      onLabelCreated();
+    }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-[278px] px-4 py-1 border-2 rounded-xl bg-gray-100 space-y-2 text-[18px] text-[#424242]"
+      className="w-[278px] px-4 py-1 border-2 rounded-xl bg-[#D9D9D9] space-y-2 text-[18px] text-[#424242]"
     >
       <div className="flex flex-col gap-1">
         <label className="font-medium">Name</label>
@@ -29,19 +65,6 @@ export const LabelPopup: React.FC = () => {
         />
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="font-medium">
-          Description <span className="text-xs">(optional)</span>
-        </label>
-        <input
-          type="text"
-          placeholder="Description.."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-[211px] px-3 text-[14px]"
-        />
-      </div>
-
       <div className="flex flex-col gap-2">
         <label className="font-medium">Color</label>
         <MuiColorInput
@@ -52,10 +75,17 @@ export const LabelPopup: React.FC = () => {
       </div>
 
       <div className="flex justify-end space-x-2 py-2">
-        <button className="w-[60px] bg-gray-200 px-3 py-1 text-[12px]">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="w-[60px] bg-gray-200 px-3 py-1 text-[12px]"
+        >
           Cancel
         </button>
-        <button className="w-[60px] bg-gray-500 text-white px-3 py-1 text-[12px]">
+        <button
+          type="submit"
+          className="w-[60px] bg-gray-500 text-white px-3 py-1 text-[12px]"
+        >
           Create
         </button>
       </div>

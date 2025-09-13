@@ -6,13 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
-  Put,
   BadRequestException,
-  ParseIntPipe,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { TasksService } from './task.service';
 import { Task } from './types/task.entity';
 import { CreateTaskDTO } from './dtos/create-task.dto';
@@ -44,7 +41,7 @@ export class TasksController {
    * @throws BadRequestException if the task with the given ID does not exist.
    * @throws BadRequestException if none of the title, description, or due date is provided in the given DTO.
    */
-  @Put('/:taskId/edit')
+  @Patch('/:taskId/edit')
   async updateTask(
     @Param('taskId') id: number,
     @Body() updateTaskDto: UpdateTaskDTO,
