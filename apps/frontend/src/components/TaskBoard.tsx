@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TaskBox } from './TaskBox';
+import { TaskCategoryBox } from './TaskCategoryBox';
 import { Task, TaskCategory } from '../types/types';
 import apiClient from '@api/apiClient';
 import { CreateEditTask } from './CreateEditTask';
@@ -91,7 +91,7 @@ export const TaskBoard: React.FC = () => {
         </div>
       ) : (
         sortedTasks.map((taskCategory, index) => (
-          <TaskBox
+          <TaskCategoryBox
             key={index}
             title={taskCategory.title}
             tasks={taskCategory.tasks}

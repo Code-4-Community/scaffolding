@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Task, TaskCategory } from '../types/types';
 import { TaskCard } from './TaskCard';
 
-interface TaskBoxProps {
+interface TaskCategoryBoxProps {
   title: string;
   tasks?: Task[];
   onTaskDrop?: () => void;
@@ -11,7 +11,7 @@ interface TaskBoxProps {
   onAddCard: (category: TaskCategory) => void;
 }
 
-export const TaskBox: React.FC<TaskBoxProps> = ({
+export const TaskCategoryBox: React.FC<TaskCategoryBoxProps> = ({
   title,
   tasks,
   onTaskDrop,

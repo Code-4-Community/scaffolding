@@ -5,7 +5,7 @@ import { MuiColorInput } from 'mui-color-input';
 import { Button, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Edit from '@mui/icons-material/Edit';
-import { toHex } from './LabelPopup';
+import { toHex } from './AddLabelPopup';
 
 interface EditDeleteLabelPopupProps {
   onClose: () => void;
@@ -66,7 +66,7 @@ const EditDeleteLabelPopup: React.FC<EditDeleteLabelPopupProps> = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-200 bg-opacity-95">
       <div className="bg-white rounded-lg flex flex-col w-[350px] h-[400px] p-4 relative shadow-lg">
-        <h1 className="text-lg text-center mb-4">Labels</h1>
+        <h1 className="text-lg text-center font-semibold mb-4">Labels</h1>
         {!selectedLabel ? (
           <>
             <div className="transparent-scrollbar-container h-[300px] w-full px-2 flex flex-col gap-y-2 overflow-scroll mb-4 ">
@@ -117,7 +117,7 @@ const EditDeleteLabelPopup: React.FC<EditDeleteLabelPopupProps> = ({
               <IconButton onClick={() => setSelectedLabel(null)}>
                 <ArrowBackIcon />
               </IconButton>
-              <span className="ml-2 text-lg font-semibold">Edit Label</span>
+              <p className="ml-2 text-lg font-medium">Edit Labels</p>
             </div>
             <form
               className="flex flex-col gap-3 w-full px-6 pt-2 flex-1"

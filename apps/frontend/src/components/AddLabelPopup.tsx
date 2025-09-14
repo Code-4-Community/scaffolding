@@ -3,7 +3,7 @@ import { MuiColorInput } from 'mui-color-input';
 import { Label } from 'types/types';
 import apiClient from '@api/apiClient';
 
-interface LabelPopupProps {
+interface AddLabelPopupProps {
   onCancel: () => void;
   onLabelCreated: (newLabel?: Label | undefined) => void;
 }
@@ -26,7 +26,7 @@ export const toHex = (color: string): string => {
   return color;
 };
 
-export const LabelPopup: React.FC<LabelPopupProps> = ({
+export const AddLabelPopup: React.FC<AddLabelPopupProps> = ({
   onCancel,
   onLabelCreated,
 }) => {

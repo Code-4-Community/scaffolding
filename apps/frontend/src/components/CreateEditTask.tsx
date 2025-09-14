@@ -3,8 +3,8 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import apiClient from '@api/apiClient';
 import { Task, TaskCategory } from '../types/types';
-import { CategoryButton } from './CategoryButton';
-import { LabelsView } from './LabelsView';
+import { Category } from './Category';
+import { Labels } from './Labels';
 import { DueDate } from './DueDate';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -180,10 +180,10 @@ export const CreateEditTask: React.FC<CreateEditTaskProps> = ({
 
       <div className="w-1/2 flex flex-col justify-between pl-6">
         <div>
-          <CategoryButton value={category} onChange={setCategory} />
+          <Category value={category} onChange={setCategory} />
 
           <div className="flex flex-row mt-8 ml-4 gap-12">
-            <LabelsView
+            <Labels
               currentTask={task}
               taskId={taskId}
               selectedLabelIds={selectedLabelIds}

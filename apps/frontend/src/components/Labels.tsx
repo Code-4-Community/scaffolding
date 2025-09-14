@@ -3,10 +3,10 @@ import { LabelCard } from './LabelCard';
 import { Label, Task } from 'types/types';
 import apiClient from '@api/apiClient';
 import { Button, Snackbar } from '@mui/material';
-import { LabelPopup } from './LabelPopup';
+import { AddLabelPopup } from './AddLabelPopup';
 import EditDeleteLabelPopup from './EditDeleteLabelPopup';
 
-interface LabelsViewProps {
+interface LabelsProps {
   currentTask?: Task;
   taskId?: number;
   selectedLabelIds?: number[];
@@ -14,7 +14,7 @@ interface LabelsViewProps {
   onLabelsChanged?: () => void;
 }
 
-export const LabelsView: React.FC<LabelsViewProps> = ({
+export const Labels: React.FC<LabelsProps> = ({
   currentTask,
   taskId,
   selectedLabelIds = [],
@@ -22,7 +22,7 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
   onLabelsChanged,
 }) => {
   const [labelData, setLabelData] = useState<Label[]>([]);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showAddPopup, setShowAddPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [taskLabels, setTaskLabels] = useState<number[]>([]);
   const [snackbar, setSnackbar] = useState<{
@@ -86,7 +86,7 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
       if (!isNewTask) {
         await fetchTaskLabels();
       }
-      setShowPopup(false);
+      setShowAddPopup(false);
       setSnackbar({
         open: true,
         message: 'Label created successfully!',
@@ -157,13 +157,13 @@ export const LabelsView: React.FC<LabelsViewProps> = ({
           fontSize: '16px',
           mt: 1,
         }}
-        onClick={() => setShowPopup(true)}
+        onClick={() => setShowAddPopup(true)}
       >
         + Add Label
       </Button>
-      {showPopup && (
-        <LabelPopup
-          onCancel={() => setShowPopup(false)}
+      {showAddPopup && (
+        <AddLabelPopup
+          onCancel={() => setShowAddPopup(false)}
           onLabelCreated={handleLabelCreated}
         />
       )}

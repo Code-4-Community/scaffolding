@@ -6,15 +6,12 @@ import {
 } from '@mui/material';
 import { TaskCategory } from '../types/types';
 
-interface CategoryButtonProps {
+interface CategoryProps {
   value: TaskCategory;
   onChange: (newCategory: TaskCategory) => void;
 }
 
-export const CategoryButton: React.FC<CategoryButtonProps> = ({
-  value,
-  onChange,
-}) => {
+export const Category: React.FC<CategoryProps> = ({ value, onChange }) => {
   return (
     <FormControl className="flex flex-col">
       <h1 className="text-3xl font-medium mb-4 ml-4">Category</h1>
