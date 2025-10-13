@@ -1,7 +1,4 @@
-import {
-  DonationType,
-  NormalizedInterval,
-} from '../../util/donations/donations.util';
+import { donationType, recurringInterval } from '../donation.entity';
 
 export class CreateDonationDTO {
   firstName: string;
@@ -14,9 +11,9 @@ export class CreateDonationDTO {
 
   isAnonymous: boolean = false;
 
-  donationType: DonationType;
+  donationType: donationType;
 
-  recurringInterval?: NormalizedInterval | null;
+  recurringInterval?: recurringInterval | null;
 
   dedicationMessage?: string | null;
 

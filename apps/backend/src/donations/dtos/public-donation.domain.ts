@@ -1,11 +1,11 @@
-import { DonationType } from '../../util/donations/donations.util';
+import { donationType } from '../donation.entity';
 
 export class PublicDonationDTO {
   id: number;
 
   amount: number;
 
-  donationType: DonationType;
+  donationType: donationType;
 
   dedicationMessage?: string | null;
 

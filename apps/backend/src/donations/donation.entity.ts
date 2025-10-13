@@ -1,16 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum donationType {
-  'one_time',
-  'recurring',
+  OneTime = 'one_time',
+  Recurring = 'recurring',
 }
 
 export enum recurringInterval {
-  'weekly',
-  'monthly',
-  'bimonthly',
-  'quarterly',
-  'annually',
+  Weekly = 'weekly',
+  Monthly = 'monthly',
+  BiMonthly = 'bimonthly',
+  Quarterly = 'quarterly',
+  Annually = 'annually',
 }
 
 @Entity()
