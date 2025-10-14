@@ -5,7 +5,6 @@ import { LearnersService } from './learners.service';
 import { Learner } from './learner.entity';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
-import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { learnerFactory } from '../testing/factories/learner.factory';
 
 const mockLearnersService: Partial<LearnersService> = {
@@ -47,14 +46,6 @@ describe('LearnersController', () => {
         {
           provide: UsersService,
           useValue: mockUsersService,
-        },
-        {
-          provide: CurrentUserInterceptor,
-          useValue: {
-            intercept: jest
-              .fn()
-              .mockImplementation((context, handler) => handler.handle()),
-          },
         },
       ],
     }).compile();
