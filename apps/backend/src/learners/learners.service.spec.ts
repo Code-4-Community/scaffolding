@@ -171,4 +171,32 @@ describe('LearnersService', () => {
       );
     });
   });
+
+  describe('delete', () => {
+    it('should delete a learner successfully', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(learner1);
+      jest.spyOn(mockLearnersRepository, 'remove').mockResolvedValue(learner1);
+
+      const result = await service.delete(1);
+
+      // returns the deleted learner
+      expect(result).toEqual(learner1);
+      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(mockLearnersRepository.remove).toHaveBeenCalledWith(learner1);
+    });
+
+    it('should throw NotFoundException if learner is not found', async () => {
+      jest.spyOn(mockLearnersRepository, 'findOneBy').mockResolvedValue(null);
+
+      await expect(service.delete(999)).rejects.toThrow(
+        new NotFoundException('Learner with ID 999 not found'),
+      );
+      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({
+        id: 999,
+      });
+      expect(mockLearnersRepository.remove).not.toHaveBeenCalled();
+    });
+  });
 });

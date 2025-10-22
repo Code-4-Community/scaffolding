@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Param,
   ParseIntPipe,
@@ -48,5 +49,10 @@ export class LearnersController {
     @Param('appId', ParseIntPipe) appId: number,
   ): Promise<Learner> {
     return this.learnersService.findOne(appId);
+  }
+
+  @Delete('/:id')
+  async deleteLearner(@Param('id', ParseIntPipe) id: number): Promise<Learner> {
+    return this.learnersService.delete(id);
   }
 }

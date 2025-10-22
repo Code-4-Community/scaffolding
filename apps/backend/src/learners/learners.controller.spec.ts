@@ -12,6 +12,7 @@ const mockLearnersService: Partial<LearnersService> = {
   findOne: jest.fn(),
   findAll: jest.fn(),
   findByAppId: jest.fn(),
+  delete: jest.fn(),
 };
 
 const mockAuthService = {
@@ -142,6 +143,29 @@ describe('LearnersController', () => {
         .mockRejectedValue(new Error(errorMessage));
 
       await expect(controller.getLearner(999)).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('deleteLearner', () => {
+    it('should delete a learner successfully', async () => {
+      jest
+        .spyOn(mockLearnersService, 'delete')
+        .mockResolvedValue(defaultLearner);
+
+      const result = await controller.deleteLearner(1);
+
+      // returns the deleted learner
+      expect(result).toEqual(defaultLearner);
+      expect(mockLearnersService.delete).toHaveBeenCalledWith(1);
+    });
+
+    it('should throw an error if learner is not found', async () => {
+      const errorMessage = 'Learner with ID 999 not found';
+      jest
+        .spyOn(mockLearnersService, 'delete')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.deleteLearner(999)).rejects.toThrow(errorMessage);
     });
   });
 });

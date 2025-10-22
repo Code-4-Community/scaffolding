@@ -73,4 +73,12 @@ export class LearnersService {
 
     return learners;
   }
+
+  async delete(id: number) {
+    const learner = await this.findOne(id);
+    if (!learner) {
+      throw new NotFoundException(`Learner with ID ${id} not found`);
+    }
+    return this.repo.remove(learner);
+  }
 }
