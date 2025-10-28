@@ -171,4 +171,106 @@ describe('LearnersService', () => {
       );
     });
   });
+
+  describe('updateStartDate', () => {
+    const updatedStartDate = new Date('2024-02-01');
+    const updatedLearner = { ...learner1, startDate: updatedStartDate };
+
+    it('should update learner start date', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(learner1);
+      jest
+        .spyOn(mockLearnersRepository, 'save')
+        .mockResolvedValue(updatedLearner);
+
+      const result = await service.updateStartDate(1, updatedStartDate);
+
+      expect(result).toEqual(updatedLearner);
+      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(mockLearnersRepository.save).toHaveBeenCalledWith({
+        ...learner1,
+        startDate: updatedStartDate,
+      });
+    });
+
+    it('should throw error if learner is not found', async () => {
+      jest.spyOn(mockLearnersRepository, 'findOneBy').mockResolvedValue(null);
+
+      await expect(
+        service.updateStartDate(999, updatedStartDate),
+      ).rejects.toThrow('Learner with ID 999 not found');
+    });
+
+    it('should throw error if start date is after end date', async () => {
+      const existingLearner = {
+        ...learner1,
+        endDate: new Date('2024-01-15'),
+      };
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(existingLearner);
+
+      await expect(
+        service.updateStartDate(1, updatedStartDate),
+      ).rejects.toThrow('Start date must be before end date');
+    });
+
+    it('should throw error if no start date provided', async () => {
+      await expect(service.updateStartDate(1, null)).rejects.toThrow(
+        'Start date is required',
+      );
+    });
+  });
+
+  describe('updateEndDate', () => {
+    const updatedEndDate = new Date('2024-07-31');
+    const updatedLearner = { ...learner1, endDate: updatedEndDate };
+
+    it('should update learner end date', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(learner1);
+      jest
+        .spyOn(mockLearnersRepository, 'save')
+        .mockResolvedValue(updatedLearner);
+
+      const result = await service.updateEndDate(1, updatedEndDate);
+
+      expect(result).toEqual(updatedLearner);
+      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(mockLearnersRepository.save).toHaveBeenCalledWith({
+        ...learner1,
+        endDate: updatedEndDate,
+      });
+    });
+
+    it('should throw error if learner is not found', async () => {
+      jest.spyOn(mockLearnersRepository, 'findOneBy').mockResolvedValue(null);
+
+      await expect(service.updateEndDate(999, updatedEndDate)).rejects.toThrow(
+        'Learner with ID 999 not found',
+      );
+    });
+
+    it('should throw error if end date is before start date', async () => {
+      const existingLearner = {
+        ...learner1,
+        startDate: new Date('2024-08-15'),
+      };
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(existingLearner);
+
+      await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
+        'End date must be after start date',
+      );
+    });
+
+    it('should throw error if no end date provided', async () => {
+      await expect(service.updateEndDate(1, null)).rejects.toThrow(
+        'End date is required',
+      );
+    });
+  });
 });
