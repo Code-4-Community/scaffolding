@@ -1,5 +1,5 @@
 import PendingReviewCard from '@components/PendingReviewCard';
-import { TimeIcon } from '@chakra-ui/icons';
+import { FaClock } from 'react-icons/fa';
 
 const Root: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const Root: React.FC = () => {
         title="Total Applications"
         value={298}
         description="All time submissions"
-        icon={TimeIcon}
+        icon={<FaClock />}
       />
     </>
   );
