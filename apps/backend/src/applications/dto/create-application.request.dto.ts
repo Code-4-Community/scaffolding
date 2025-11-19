@@ -5,12 +5,24 @@ import {
   IsString,
   IsArray,
   IsOptional,
+  IsEmail,
 } from 'class-validator';
 import { AppStatus, ExperienceType, InterestArea, School } from '../types';
 
 export class CreateApplicationDto {
+  @IsString()
+  name: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsNumber()
+  @IsOptional()
+  disciplineId?: number;
+
   @IsEnum(AppStatus)
-  appStatus: AppStatus;
+  @IsOptional()
+  appStatus?: AppStatus;
 
   @IsString()
   daysAvailable: string;

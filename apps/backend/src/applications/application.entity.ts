@@ -1,11 +1,31 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 import { AppStatus, ExperienceType, InterestArea, School } from './types';
+import { Discipline } from '../disciplines/disciplines.entity';
 
 @Entity('application')
 export class Application {
   @PrimaryGeneratedColumn()
   appId!: number;
+
+  @Column({ type: 'varchar' })
+  name!: string;
+
+  @Column({ type: 'varchar' })
+  email!: string;
+
+  @Column({ type: 'int', nullable: true })
+  disciplineId?: number;
+
+  @ManyToOne(() => Discipline, { nullable: true })
+  @JoinColumn({ name: 'disciplineId' })
+  discipline?: Discipline;
 
   @Column({ type: 'enum', enum: AppStatus, default: AppStatus.APP_SUBMITTED })
   appStatus!: AppStatus;

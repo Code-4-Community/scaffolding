@@ -1,0 +1,110 @@
+{
+  "event": "document_completed",
+  "data": {
+    "id": "abc123-pandadoc-document-id",
+    "name": "BHCHP Volunteer Application - John Doe",
+    "status": "document.completed",
+    "recipients": [
+      {
+        "email": "john.doe@example.com",
+        "first_name": "John",
+        "last_name": "Doe"
+      }
+    ],
+    "fields": [
+      {
+        "uuid": "field-1",
+        "name": "name",
+        "title": "Full Name",
+        "value": "John Doe"
+      },
+      {
+        "uuid": "field-2",
+        "name": "email",
+        "title": "Email",
+        "value": "john.doe@example.com"
+      },
+      {
+        "uuid": "field-3",
+        "name": "phone",
+        "title": "Phone",
+        "value": "617-555-1234"
+      },
+      {
+        "uuid": "field-4",
+        "name": "discipline",
+        "title": "Discipline",
+        "value": ""
+      },
+      {
+        "uuid": "field-5",
+        "name": "school",
+        "title": "School",
+        "value": "Harvard Medical School"
+      },
+      {
+        "uuid": "field-6",
+        "name": "experience_type",
+        "title": "Experience Type",
+        "value": "MD"
+      },
+      {
+        "uuid": "field-7",
+        "name": "interest",
+        "title": "Interest Area",
+        "value": "Nursing"
+      },
+      {
+        "uuid": "field-8",
+        "name": "days_available",
+        "title": "Days Available",
+        "value": "Monday, Wednesday, Friday"
+      },
+      {
+        "uuid": "field-9",
+        "name": "weekly_hours",
+        "title": "Weekly Hours",
+        "value": "10"
+      },
+      {
+        "uuid": "field-10",
+        "name": "license",
+        "title": "License",
+        "value": "MD-12345"
+      },
+      {
+        "uuid": "field-11",
+        "name": "is_international",
+        "title": "International",
+        "value": "false"
+      },
+      {
+        "uuid": "field-12",
+        "name": "is_learner",
+        "title": "Learner",
+        "value": "true"
+      },
+      {
+        "uuid": "field-13",
+        "name": "referred",
+        "title": "Referred",
+        "value": "true"
+      },
+      {
+        "uuid": "field-14",
+        "name": "referred_email",
+        "title": "Referred Email",
+        "value": "referrer@example.com"
+      },
+      {
+        "uuid": "field-15",
+        "name": "file_uploads",
+        "title": "File Uploads",
+        "value": "[\"https://example.com/resume.pdf\", \"https://example.com/cv.pdf\"]"
+      }
+    ],
+    "metadata": {
+      "source": "volunteer_application_form"
+    }
+  }
+}
