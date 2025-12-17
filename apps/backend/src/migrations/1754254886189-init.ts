@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
+import { Site } from '../users/types';
 
 export class Init1754254886189 implements MigrationInterface {
   name = 'Init1754254886189';
@@ -13,7 +14,7 @@ export class Init1754254886189 implements MigrationInterface {
     );
 
     await queryRunner.query(
-      `CREATE TYPE "public"."app_status_enum" AS ENUM('App submitted', 'in review', 'forms sent', 'accepted', 'rejected')`,
+      `CREATE TYPE "public"."app_status_enum" AS ENUM('App submitted', 'In review', 'Forms sent', 'Accepted', 'Rejected')`,
     );
 
     await queryRunner.query(
@@ -28,6 +29,14 @@ export class Init1754254886189 implements MigrationInterface {
       `CREATE TYPE "public"."interest_area_enum" AS ENUM('Nursing', 'HarmReduction', 'WomensHealth')`,
     );
 
+    // Use Site enum values dynamically
+    const siteValues = Object.values(Site)
+      .map((site) => `'${site}'`)
+      .join(', ');
+    await queryRunner.query(
+      `CREATE TYPE "public"."admins_site_enum" AS ENUM(${siteValues})`,
+    );
+
     await queryRunner.query(
       `CREATE TABLE "admin" (
                 "id" SERIAL NOT NULL, 
@@ -35,6 +44,18 @@ export class Init1754254886189 implements MigrationInterface {
                 "email" character varying NOT NULL UNIQUE, 
                 CONSTRAINT "PK_admin_id" PRIMARY KEY ("id")
             )`,
+    );
+
+    await queryRunner.query(
+      `CREATE TABLE "admins" (
+            "id" SERIAL NOT NULL, 
+            "name" character varying NOT NULL, 
+            "email" character varying NOT NULL UNIQUE,
+            "site" "public"."admins_site_enum" NOT NULL,
+            "createdAt" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            CONSTRAINT "PK_admins_id" PRIMARY KEY ("id")
+        )`,
     );
 
     await queryRunner.query(
@@ -55,12 +76,13 @@ export class Init1754254886189 implements MigrationInterface {
                 "weeklyHours" integer NOT NULL, 
                 "experienceType" "public"."experience_type_enum" NOT NULL, 
                 "interest" "public"."interest_area_enum" NOT NULL, 
-                "license" character varying, 
+                "license" character varying NOT NULL, 
                 "appStatus" "public"."app_status_enum" NOT NULL DEFAULT 'App submitted', 
                 "isInternational" boolean NOT NULL DEFAULT false, 
                 "isLearner" boolean NOT NULL DEFAULT false, 
                 "referredEmail" character varying, 
-                "referred" boolean NOT NULL DEFAULT false, 
+                "referred" boolean DEFAULT false, 
+                "fileUploads" text[] NOT NULL DEFAULT '{}', 
                 CONSTRAINT "PK_application_appId" PRIMARY KEY ("appId")
             )`,
     );
@@ -77,16 +99,19 @@ export class Init1754254886189 implements MigrationInterface {
             )`,
     );
   }
+
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE "learner"`);
     await queryRunner.query(`DROP TABLE "application"`);
     await queryRunner.query(`DROP TABLE "discipline"`);
+    await queryRunner.query(`DROP TABLE "admins"`);
     await queryRunner.query(`DROP TABLE "admin"`);
     await queryRunner.query(`DROP TYPE "public"."interest_area_enum"`);
     await queryRunner.query(`DROP TYPE "public"."experience_type_enum"`);
     await queryRunner.query(`DROP TYPE "public"."school_enum"`);
     await queryRunner.query(`DROP TYPE "public"."app_status_enum"`);
     await queryRunner.query(`DROP TYPE "public"."site_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."admins_site_enum"`);
     await queryRunner.query(`DROP TYPE "public"."commit_length_enum"`);
   }
 }
