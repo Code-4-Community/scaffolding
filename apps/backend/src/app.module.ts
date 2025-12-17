@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AWSS3Module } from './aws-s3/aws-s3.module';
 import AppDataSource from './data-source';
+import { UtilModule } from './util/util.module';
 import { ApplicationsController } from './applications/applications.controller';
 import { ApplicationsService } from './applications/applications.service';
 import { Application } from './applications/application.entity';
@@ -22,6 +23,7 @@ import { ConfigModule } from '@nestjs/config';
       ...AppDataSource.options,
       entities: [Admin],
     }),
+    UtilModule,
     AdminsModule,
     AWSS3Module,
     TypeOrmModule.forFeature([Application]),
