@@ -4,11 +4,12 @@ import { AdminsService } from './admins.service';
 import { AdminsController } from './admins.controller';
 import { Admin } from './admin.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Admin])],
+  imports: [AuthModule, TypeOrmModule.forFeature([Admin])],
   controllers: [AdminsController],
-  providers: [AdminsService, CurrentUserInterceptor],
+  providers: [AdminsService],
   exports: [AdminsService],
 })
 export class AdminsModule {}
