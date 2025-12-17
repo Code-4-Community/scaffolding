@@ -58,6 +58,50 @@ export class LearnersService {
     return this.repo.find();
   }
 
+  async updateStartDate(id: number, startDate: Date) {
+    if (!id) {
+      throw new BadRequestException('Learner ID is required');
+    }
+
+    if (!startDate) {
+      throw new BadRequestException('Start date is required');
+    }
+
+    const learner = await this.repo.findOneBy({ id });
+    if (!learner) {
+      throw new NotFoundException(`Learner with ID ${id} not found`);
+    }
+
+    if (learner.endDate && startDate >= learner.endDate) {
+      throw new BadRequestException('Start date must be before end date');
+    }
+
+    learner.startDate = startDate;
+    return this.repo.save(learner);
+  }
+
+  async updateEndDate(id: number, endDate: Date) {
+    if (!id) {
+      throw new BadRequestException('Learner ID is required');
+    }
+
+    if (!endDate) {
+      throw new BadRequestException('End date is required');
+    }
+
+    const learner = await this.repo.findOneBy({ id });
+    if (!learner) {
+      throw new NotFoundException(`Learner with ID ${id} not found`);
+    }
+
+    if (learner.startDate && learner.startDate >= endDate) {
+      throw new BadRequestException('End date must be after start date');
+    }
+
+    learner.endDate = endDate;
+    return this.repo.save(learner);
+  }
+
   async findByAppId(appId: number) {
     if (!appId || appId <= 0) {
       throw new BadRequestException('Valid app ID is required');

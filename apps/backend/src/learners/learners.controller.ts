@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Param,
   ParseIntPipe,
@@ -48,5 +49,21 @@ export class LearnersController {
     @Param('appId', ParseIntPipe) appId: number,
   ): Promise<Learner> {
     return this.learnersService.findOne(appId);
+  }
+
+  @Patch('/:id/start-date')
+  async updateStartDate(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('startDate') startDate: string,
+  ): Promise<Learner> {
+    return this.learnersService.updateStartDate(id, new Date(startDate));
+  }
+
+  @Patch('/:id/end-date')
+  async updateEndDate(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('endDate') endDate: string,
+  ): Promise<Learner> {
+    return this.learnersService.updateEndDate(id, new Date(endDate));
   }
 }
