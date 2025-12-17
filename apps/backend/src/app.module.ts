@@ -5,6 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AWSS3Module } from './aws-s3/aws-s3.module';
 import AppDataSource from './data-source';
+import { ApplicationsController } from './applications/applications.controller';
+import { ApplicationsService } from './applications/applications.service';
+import { Application } from './applications/application.entity';
 import { AdminsModule } from './users/admins.module';
 import { Admin } from './users/admin.entity';
 import { ConfigModule } from '@nestjs/config';
@@ -21,8 +24,9 @@ import { ConfigModule } from '@nestjs/config';
     }),
     AdminsModule,
     AWSS3Module,
+    TypeOrmModule.forFeature([Application]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ApplicationsController],
+  providers: [AppService, ApplicationsService],
 })
 export class AppModule {}
