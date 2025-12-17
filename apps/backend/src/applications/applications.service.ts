@@ -33,4 +33,24 @@ export class ApplicationsService {
     const application = this.applicationRepository.create(createApplicationDto);
     return await this.applicationRepository.save(application);
   }
+
+  async update(
+    appId: number,
+    updateData: Partial<CreateApplicationDto>,
+  ): Promise<Application> {
+    const application = await this.findById(appId);
+    if (!application) {
+      throw new NotFoundException(`Application with ID ${appId} not found`);
+    }
+    Object.assign(application, updateData);
+    return await this.applicationRepository.save(application);
+  }
+
+  async delete(appId: number): Promise<void> {
+    const application = await this.findById(appId);
+    if (!application) {
+      throw new NotFoundException(`Application with ID ${appId} not found`);
+    }
+    await this.applicationRepository.remove(application);
+  }
 }
