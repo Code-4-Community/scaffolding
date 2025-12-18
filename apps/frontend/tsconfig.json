@@ -6,6 +6,9 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "types": ["vite/client", "vitest"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
     "baseUrl": "src",
     "paths": {
       "@api/*": ["api/*"],
@@ -13,7 +16,8 @@
       "@containers/*": ["containers/*"],
       "@public/*": ["../public/*"],
       "@shared/*": ["../../../shared/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@/*": ["./src/*"]
     }
   },
   "files": [],
