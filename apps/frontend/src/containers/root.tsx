@@ -1,17 +1,45 @@
-import PendingReviewCard from '@components/PendingReviewCard';
-import { FaClock } from 'react-icons/fa';
+import DashboardCard from '@components/DashboardCard';
+
+import usersIcon from '../assets/icons/users.svg';
+import clockIcon from '../assets/icons/clock.svg';
+import crossIcon from '../assets/icons/cross.svg';
+import checkmarkIcon from '../assets/icons/checkmark.svg';
 
 const Root: React.FC = () => {
   return (
-    <>
-      Welcome to scaffolding!
-      <PendingReviewCard
+    <div className="flex flex-row gap-6 pl-4 pt-4">
+      <DashboardCard
+        className="basis-1/4"
         title="Total Applications"
         value={298}
         description="All time submissions"
-        icon={<FaClock />}
+        icon={usersIcon}
       />
-    </>
+
+      <DashboardCard
+        className="basis-1/4"
+        title="Pending Review"
+        value={52}
+        description="Awaiting decision"
+        icon={clockIcon}
+      />
+
+      <DashboardCard
+        className="basis-1/4"
+        title="Rejected"
+        value={12}
+        description="Not matched"
+        icon={crossIcon}
+      />
+
+      <DashboardCard
+        className="basis-1/4"
+        title="Approved"
+        value={102}
+        description="Active volunteers "
+        icon={checkmarkIcon}
+      />
+    </div>
   );
 };
 
