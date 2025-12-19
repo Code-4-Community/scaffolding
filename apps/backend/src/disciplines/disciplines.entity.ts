@@ -9,7 +9,6 @@ export class Discipline {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // enforce discipline names to be one of the predefined values
   @Column({
     type: 'enum',
     enum: DISCIPLINE_VALUES,
