@@ -1,6 +1,6 @@
 import dataSource from '../data-source';
 import { Discipline } from '../disciplines/disciplines.entity';
-import { DISCIPLINE_VALUES } from '../disciplines/discplines.constants';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 async function seed() {
   try {
