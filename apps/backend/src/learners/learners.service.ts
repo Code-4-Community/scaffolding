@@ -109,6 +109,11 @@ export class LearnersService {
 
     const learners = await this.repo.find({ where: { appId } });
 
+    // If we want to error out instead of returning an empty array:
+    // if (learners.length === 0) {
+    //   throw new NotFoundException(`No learners found for app ID ${appId}`);
+    // }
+
     return learners;
   }
 }
