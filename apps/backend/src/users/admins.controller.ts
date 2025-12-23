@@ -19,6 +19,10 @@ import { Admin } from './admin.entity';
 import { Site } from './types';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 
+/**
+ * Controller to expose callable HTTP endpoints to interface
+ * extract, and change information about the app's admins
+ */
 @Controller('admins')
 @UseInterceptors(CurrentUserInterceptor) // Apply authentication to all routes
 export class AdminsController {

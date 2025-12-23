@@ -23,6 +23,9 @@ import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 
+/**
+ * Controller to expose callable HTTP endpoints to handle user authentication, including signup and login
+ */
 @ApiTags('Auth')
 @Controller('auth')
 @UseInterceptors(CurrentUserInterceptor)

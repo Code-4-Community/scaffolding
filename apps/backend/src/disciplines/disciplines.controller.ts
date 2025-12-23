@@ -3,6 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { DisciplinesService } from './disciplines.service';
 
+/**
+ * Controller to expose callable HTTP endpoints to interface, extract, and change information about the app's disciplines
+ */
 @Controller('disciplines')
 @UseInterceptors(CurrentUserInterceptor)
 @UseGuards(AuthGuard('jwt'))

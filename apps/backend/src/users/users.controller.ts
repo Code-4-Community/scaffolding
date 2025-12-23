@@ -13,6 +13,10 @@ import { User } from './user.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+/**
+ * Controller to expose callable HTTP endpoints to
+ * extract information about the app's users or delete them
+ */
 @ApiTags('Users')
 @ApiBearerAuth()
 @Controller('users')

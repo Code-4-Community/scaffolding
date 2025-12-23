@@ -14,6 +14,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { Learner } from './learner.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 
+/**
+ * Controller to expose callable HTTP endpoints to interface, extract, and change information about the app's learners, including start and end date
+ */
 @Controller('learners')
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(CurrentUserInterceptor)
