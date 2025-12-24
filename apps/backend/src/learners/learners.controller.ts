@@ -15,8 +15,8 @@ import { Learner } from './learner.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 
 /**
- * Controller to expose callable HTTP endpoints to interface
- * extract, and change information about the app's learners, including start and end date
+ * Controller exposing HTTP endpoints to get, create, and change information
+ * about the app's learners, including start and end dates.
  */
 @Controller('learners')
 @UseGuards(AuthGuard('jwt'))
@@ -25,12 +25,12 @@ export class LearnersController {
   constructor(private learnersService: LearnersService) {}
 
   /**
-   * Exposes an endpoint to create a learner
-   * @param createLearnerDto object with all of the necessary
-   *                         starting data for the learner corresponding with their application
-   * @returns the new learner
-   * @throws anything the repository throws.
-   *         BadRequestException if any fields are invalid
+   * Exposes an endpoint to create a learner.
+   * @param createLearnerDto Object with the necessary starting data for the
+   *                         learner corresponding to their application.
+   * @returns The new learner.
+   * @throws {Error} If the repository throws an error.
+   * @throws {BadRequestException} if any fields are invalid.
    */
   @Post()
   async createLearner(
@@ -52,9 +52,9 @@ export class LearnersController {
   }
 
   /**
-   * Exposes an endpoint to return all learners in the system
-   * @returns an array of learner objects
-   * @throws anything that the repository throws
+   * Exposes an endpoint to return all learners in the system.
+   * @returns An array of learner objects.
+   * @throws {Error} If the repository throws an error.
    */
   @Get()
   async getAllLearners(): Promise<Learner[]> {
@@ -62,16 +62,16 @@ export class LearnersController {
   }
 
   /**
-   * Exposes an endpoint to return a specific learner by appId
-   * @param appId the appId of the desired learner to return
-   * @returns the learner with the desired appId
-   * @throws anything that the repository throws.
-   *         BadRequestException if the id field is invalid, e.g. null or undefined
-   *         NotFoundException with message 'Learner with ID <id> not found' if
-   *         the learner with specified appId is found not to exist in the system
+   * Exposes an endpoint to return a specific learner by appId.
+   * @param appId The appId of the desired learner to return.
+   * @returns The learner with the desired appId.
+   * @throws {Error} If the repository throws an error.
+   * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Learner with ID <id> not found'
+   *                             if the learner with the specified appId does not exist.
    *
    * TODO: Resolve logical issue: appId is not the same as learner id but the
-   *       service searches by learner id despite this accepting appId
+   *       service searches by learner id despite this accepting appId.
    */
   @Get('/:appId')
   async getLearner(
@@ -81,14 +81,13 @@ export class LearnersController {
   }
 
   /**
-   * Exposes an endpoint to update a learner's commitment starting date
-   * @param id the id (not appId) of the learner to update
-   * @param startDate the new starting date for the learner's commitment
-   * @returns the new learner object
-   * @throws anything that the repository throws.
-   *         BadRequestException if any fields are invalid.
-   *         NotFoundException with message 'Learner with ID <id> not found'
-   *         if the desired learner to update doesn't exist in the system
+   * Exposes an endpoint to update a learner's commitment starting date.
+   * @param id The id (not appId) of the learner to update.
+   * @param startDate The new starting date for the learner's commitment.
+   * @throws {Error} If the repository throws an error.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Learner with ID <id> not found'
+   *                             if the learner with the specified appId does not exist.
    */
   @Patch('/:id/start-date')
   async updateStartDate(
@@ -99,14 +98,14 @@ export class LearnersController {
   }
 
   /**
-   * Exposes an endpoint to update a learner's commitment ending date
-   * @param id the appId of the learner to update
-   * @param startDate the new ending date for the learner's commitment
-   * @returns the new learner object
-   * @throws anything that the repository throws.
-   *         BadRequestException if any fields are invalid.
-   *         NotFoundException with message 'Learner with ID <id> not found'
-   *         if the desired learner to update doesn't exist in the system
+   * Exposes an endpoint to update a learner's commitment ending date.
+   * @param id The id of the learner to update.
+   * @param endDate The new ending date for the learner's commitment.
+   * @returns The updated learner object.
+   * @throws {Error} If the repository throws an error.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Learner with ID <id> not found'
+   *                             if the learner with the specified appId does not exist.
    */
   @Patch('/:id/end-date')
   async updateEndDate(

@@ -1,5 +1,5 @@
 /**
- * Status or level of the user (currently admin or standard)
+ * Status or level of the user (currently admin or standard).
  */
 export enum Status {
   ADMIN = 'ADMIN',
@@ -7,7 +7,7 @@ export enum Status {
 }
 
 /**
- * Sites the user belongs to (and for admins, sites they administrate)
+ * Sites the user belongs to (and for admins, sites they administrate).
  */
 export enum Site {
   FENWAY = 'fenway',

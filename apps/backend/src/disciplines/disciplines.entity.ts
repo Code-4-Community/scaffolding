@@ -4,10 +4,10 @@ import { DISCIPLINE_VALUES } from '../disciplines/discplines.constants';
 /**
  * Represents the desired columns for the database table
  * in the repository for the system's medical disciplines
- * (BHCHP medical discipline) and their admin ids
+ * (BHCHP medical discipline) and their admin Ids.
  *
  * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
- * Research, Social work, Psychiatry, Pharmacy, IT
+ * Research, Social work, Psychiatry, Pharmacy, IT.
  */
 @Entity('discipline')
 export class Discipline {
@@ -15,10 +15,10 @@ export class Discipline {
   id: number;
 
   /**
-   * Predifined discipline values present in the table
+   * Predifined discipline values present in the table.
    *
    * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
-   * Research, Social work, Psychiatry, Pharmacy, IT
+   * Research, Social work, Psychiatry, Pharmacy, IT.
    */
   @Column({
     type: 'enum',

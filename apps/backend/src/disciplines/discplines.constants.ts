@@ -1,5 +1,5 @@
 /**
- * The applicant's discipline of expertise
+ * The applicant's discipline of expertise.
  */
 export enum DISCIPLINE_VALUES {
   Volunteers = 'Volunteers',

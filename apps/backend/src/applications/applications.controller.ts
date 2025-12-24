@@ -15,9 +15,10 @@ import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationInterestDto } from './dto/update-application-interest.request.dto';
+import { NotFoundException } from '@nestjs/common';
 
 /**
- * Controller to expose callable HTTP endpoints to interface, extract, and change information about the app's applications
+ * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
  */
 @ApiTags('Applications')
 @Controller('applications')
@@ -25,10 +26,10 @@ export class ApplicationsController {
   constructor(private applicationsService: ApplicationsService) {}
 
   /**
-   * Exposes an endpoint to return all applications
-   * @param req the request object from the caller (frontend), currently not used.
-   * @returns a promise of the list of all available applications
-   * @throws anything the repository throws.
+   * Exposes an endpoint to return all applications.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns A promise of the list of all available applications.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   @Get()
   async getAllApplications(@Request() req): Promise<Application[]> {
@@ -36,13 +37,13 @@ export class ApplicationsController {
   }
 
   /**
-   * Exposes an endpoint to return an application by Id
-   * @param appId The desired application Id to search for
-   * @param req the request object from the caller (frontend), currently not used.
-   * @returns a promise of the application with that id
-   * @throws NotFoundException with message 'Application with ID <id> not found'
-   *         if an application of that Id does not exist. Will also throw anything
-   *         that the repository throws.
+   * Exposes an endpoint to return an application by id.
+   * @param appId The desired application id to search for.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns A promise of the application with that id.
+   * @throws {NotFoundException} with message 'Application with ID <id> not found'
+   *         if an application with that id does not exist.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   @Get('/:appId')
   async getApplicationById(
@@ -53,11 +54,11 @@ export class ApplicationsController {
   }
 
   /**
-   * Exposes an endpoint to create an application
-   * @param createApplicationDto the expected data required to create an application (applicant's info)
-   * @param req the request object from the caller (frontend), currently not used.
-   * @returns the newly created application
-   * @throws anything the repository throws.
+   * Exposes an endpoint to create an application.
+   * @param createApplicationDto The expected data required to create an application (applicant's info).
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns The newly created application.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   @Post()
   async createApplication(
@@ -68,14 +69,14 @@ export class ApplicationsController {
   }
 
   /**
-   * Exposes an endpoint to update the status of the application
-   * @param appId the Id of the application to update
-   * @param updateStatusDto object containing the desired new application status
-   * @param req the request object from the caller (frontend), currently not used.
-   * @returns the new application object after changes have been made
-   * @throws NotFoundException with message 'Application with ID <id> not found'
-   *         if an application of that Id does not exist. Will also throw anything
-   *         that the repository throws.
+   * Exposes an endpoint to update the status of the application.
+   * @param appId The id of the application to update.
+   * @param updateStatusDto Object containing the desired new application status.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns The updated application object.
+   * @throws {NotFoundException} with message 'Application with ID <id> not found'
+   *         if the application does not exist.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   @Patch('/:appId/status')
   async updateApplicationStatus(
@@ -89,13 +90,13 @@ export class ApplicationsController {
   }
 
   /**
-   * Exposes an endpoint to update the applicant's interest in their application
-   * @param appId the Id of the application to make changes to
-   * @param updateInterestDtoobject containing the desired new interest
-   * @returns the new application object after changes have been made
-   * @throws NotFoundException with message 'Application with ID <id> not found'
-   *         if an application of that Id does not exist. Will also throw anything
-   *         that the repository throws.
+   * Exposes an endpoint to update the applicant's interest in their application.
+   * @param appId The id of the application to modify.
+   * @param updateInterestDto Object containing the desired new interest.
+   * @returns The updated application object.
+   * @throws {NotFoundException} with message 'Application with ID <id> not found'
+   *         if the application does not exist.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   @Patch('/:appId/interest')
   async updateApplicationInterest(
@@ -109,13 +110,12 @@ export class ApplicationsController {
   }
 
   /**
-   * Exposes an endpoint to delete an application from the system
-   * @param appId the Id of the application to delete
-   * @param req the request object from the caller (frontend), currently not used.
-   * @returns nothing
-   * @throws NotFoundException with message 'Application with ID <id> not found'
-   *         if an application of that Id does not exist. Will also throw anything
-   *         that the repository throws.
+   * Exposes an endpoint to delete an application from the system.
+   * @param appId The id of the application to delete.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @throws {NotFoundException} with message 'Application with ID <id> not found'
+   *         if the application does not exist.
+   * @throws {Error} which is unchanged from what repository throws.
    *
    * Does not return a value.
    */

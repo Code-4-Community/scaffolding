@@ -24,7 +24,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 
 /**
- * Controller to expose callable HTTP endpoints to handle user authentication, including signup and login
+ * Controller to expose HTTP endpoints to handle user authentication, including signup and login.
  */
 @ApiTags('Auth')
 @Controller('auth')
@@ -36,11 +36,11 @@ export class AuthController {
   ) {}
 
   /**
-   * Exposes an endpoint to create a user
-   * @param signUpDto object containing the necessary fields to create a new user
-   * @returns object of the newly created user
-   * @throws BadRequestException if signup fails in the external auth client (in this case, AWS Cognito)
-   *         Also will throw if the repository throws upon user creation.
+   * Exposes an endpoint to create a user.
+   * @param signUpDto Object containing the necessary fields to create a new user.
+   * @returns The newly created user.
+   * @throws {BadRequestException} if signup fails in the external auth client (AWS Cognito).
+   * @throws {Error} which is unchanged from what repository throws.
    */
   @Post('/signup')
   async createUser(@Body() signUpDto: SignUpDto): Promise<User> {
@@ -61,9 +61,9 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoint to verify the user in the external auth service (in this case, AWS Cognito)
-   * @param body object containing the necessary fields to verify a user
-   * @throws BadRequestException with message thrown from external auth service
+   * Exposes an endpoint to verify the user in the external auth service (AWS Cognito).
+   * @param body Object containing the necessary fields to verify a user.
+   * @throws {BadRequestException} with message thrown from the external auth service.
    *
    * Does not return a value.
    */
@@ -78,10 +78,10 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoint to sign an already existing user into the application
-   * @param signInDto object containing the necessary fields to sign in a user
-   * @returns SignInResponseDto with session tokens for the user
-   * @throws anything that the external auth provider throws
+   * Exposes an endpoint to sign an existing user into the application.
+   * @param signInDto Object containing the necessary fields to sign in a user.
+   * @returns SignInResponseDto with session tokens for the user.
+   * @throws {Error} If the external auth provider throws an error.
    */
   @Post('/signin')
   signin(@Body() signInDto: SignInDto): Promise<SignInResponseDto> {
@@ -89,10 +89,10 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoint to refresh a user's session token with the external auth provider
-   * @param refreshDto object containing the necessary fields to refresh the token
-   * @returns SignInResponseDto with the new (refreshed) session tokens for the user
-   * @throws anything that the external auth provider throws
+   * Exposes an endpoint to refresh a user's session token with the external auth provider.
+   * @param refreshDto Object containing the necessary fields to refresh the token.
+   * @returns SignInResponseDto with the new (refreshed) session tokens for the user.
+   * @throws {Error} If the external auth provider throws an error.
    */
   @Post('/refresh')
   refresh(@Body() refreshDto: RefreshTokenDto): Promise<SignInResponseDto> {
@@ -100,10 +100,10 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoint to initiate the process with the external
-   * auth provider when the user forgets their password
-   * @param body object containing the necessary fields to know which user forgot their password
-   * @throws anything that the external auth provider throws
+   * Exposes an endpoint to initiate the process with the external auth provider
+   * when the user forgets their password.
+   * @param body Object containing the necessary fields to identify which user forgot their password.
+   * @throws {Error} If the external auth provider throws an error.
    *
    * Does not return a value.
    */
@@ -113,10 +113,10 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoint to initiate the process with the external
-   * auth provider when the user wants to confirm their forgotten password with the system
-   * @param body object containing the necessary fields, such as the new password and email, to confirm
-   * @throws anything that the external auth provider throws
+   * Exposes an endpoint to confirm a forgotten password with the external auth provider.
+   * @param body Object containing the necessary fields
+   * (email, confirmation code, new password) to confirm.
+   * @throws {Error} If the external auth provider throws an error.
    *
    * Does not return a value.
    */
@@ -126,10 +126,10 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoint to delete a user by id
-   * @param body object containing the necessary fields to delete a user, including id
-   * @throws anything that the repository throws.
-   *         BadRequestException with a message from the external auth provider.
+   * Exposes an endpoint to delete a user by id.
+   * @param body Object containing the necessary fields to delete a user, including id.
+   * @throws {Error} If the repository or external auth provider throws an error.
+   * @throws {BadRequestException} with a message from the external auth provider.
    *
    * Does not return a value.
    */

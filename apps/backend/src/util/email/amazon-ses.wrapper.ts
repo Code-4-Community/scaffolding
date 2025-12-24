@@ -7,24 +7,24 @@ import Mail from 'nodemailer/lib/mailer';
 dotenv.config();
 
 /**
- * Defines an email attachment
+ * Defines an email attachment.
  */
 export interface EmailAttachment {
   /**
-   * Name of the file
+   * Name of the file.
    *
    * TODO: Clarify whether this includes the file extension
    */
   filename: string;
 
   /**
-   * Buffer or in-memory data representation of the file
+   * Buffer or in-memory data representation of the file.
    */
   content: Buffer;
 }
 
 /**
- * Interfaces with Amazon SES to manage email sending
+ * Interfaces with Amazon SES to manage email sending.
  */
 @Injectable()
 export class AmazonSESWrapper {
@@ -40,12 +40,12 @@ export class AmazonSESWrapper {
   /**
    * Sends an email via Amazon SES.
    *
-   * @param recipientEmails the email addresses of the recipients
-   * @param subject the subject of the email
-   * @param bodyHtml the HTML body of the email
-   * @param attachments any base64 encoded attachments to inlude in the email
-   * @resolves if the email was sent successfully
-   * @rejects if the email was not sent successfully
+   * @param recipientEmails the email addresses of the recipients.
+   * @param subject the subject of the email.
+   * @param bodyHtml the HTML body of the email.
+   * @param attachments any base64 encoded attachments to inlude in the email.
+   * @resolves if the email was sent successfully.
+   * @rejects if the email was not sent successfully.
    */
   async sendEmails(
     recipientEmails: string[],

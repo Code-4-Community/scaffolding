@@ -6,20 +6,20 @@ import { User } from './user.entity';
 import { Status } from './types';
 
 /**
- * Service to interface with the user repository
+ * Service to interface with the user repository.
  */
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   /**
-   * A method to create a user in the repository
-   * @param email email of the user to create
-   * @param firstName first name of the user to create
-   * @param lastName last name of the user to create
-   * @param status status or position of the user to create, e.g. standard or admin
-   * @returns the created user
-   * @throws whatever the repository may throw
+   * Creates a user in the repository.
+   * @param email Email of the user to create.
+   * @param firstName First name of the user to create.
+   * @param lastName Last name of the user to create.
+   * @param status Status or position of the user to create (e.g. standard or admin).
+   * @returns The created user.
+   * @throws {Error} If the repository throws an error.
    */
   async create(
     email: string,
@@ -40,10 +40,10 @@ export class UsersService {
   }
 
   /**
-   * A method to return the data of a user from the repository by id
-   * @param id the id of the user to find
-   * @returns the desired user if they exist
-   * @throws anything that the repository throws
+   * Returns the data of a user from the repository by id.
+   * @param id The id of the user to find.
+   * @returns The desired user if they exist.
+   * @throws {Error} If the repository throws an error.
    */
   findOne(id: number) {
     if (!id) {
@@ -54,22 +54,22 @@ export class UsersService {
   }
 
   /**
-   * A method to return the data of a user from the repository by email
-   * @param email the email of the user to find
-   * @returns the desired user if they exist
-   * @throws anything that the repository throws
+   * Returns the data of a user from the repository by email.
+   * @param email The email of the user to find.
+   * @returns The desired user if they exist.
+   * @throws {Error} If the repository throws an error.
    */
   find(email: string) {
     return this.repo.find({ where: { email } });
   }
 
   /**
-   * A method to update a user by id with any desired new field values
-   * @param id the id of the user to update
-   * @param attrs any desired new fields values to replace
-   * @returns the newly modified user
-   * @throws NotFoundException if a user of the specified id doesn't exist in the repository.
-   *         Anything that the repository throws
+   * Updates a user by id with any desired new field values.
+   * @param id The id of the user to update.
+   * @param attrs Any desired new field values to apply.
+   * @returns The updated user.
+   * @throws {NotFoundException} if a user of the specified id doesn't exist in the repository.
+   * @throws {Error} Also throws any error the repository throws.
    */
   async update(id: number, attrs: Partial<User>) {
     const user = await this.findOne(id);
@@ -84,10 +84,10 @@ export class UsersService {
   }
 
   /**
-   * A method to remove a user by id
-   * @param id the id of the user to delete
-   * @throws NotFoundException if a user of specified id doesn't exist in the repository.
-   *         Anything that the repository throws.
+   * Removes a user by id.
+   * @param id The id of the user to delete.
+   * @throws {NotFoundException} if a user of the specified id doesn't exist in the repository.
+   * @throws {Erorr} Also throws any error the repository throws.
    *
    * Does not return a value.
    */

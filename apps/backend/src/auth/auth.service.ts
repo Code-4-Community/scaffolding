@@ -21,7 +21,7 @@ import { Status } from '../users/types';
 import { ConfirmPasswordDto } from './dtos/confirm-password.dto';
 
 /**
- * Service to interface with the external auth provider (AWS Cognito)
+ * Service to interface with the external auth provider (AWS Cognito).
  */
 @Injectable()
 export class AuthService {
@@ -41,12 +41,12 @@ export class AuthService {
   }
 
   /**
-   * Computes secret hash to authenticate this backend to Cognito
-   * Hash key is the Cognito client secret, message is username + client ID
-   * @param username value which depends on the command
-   *                 (see https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash)
-   * @returns the HMAC digest of the corresponding username
-   * @throws if the HMAC handling interface throws
+   * Computes the secret hash to authenticate this backend to Cognito.
+   * The hash key is the Cognito client secret; the message is username + client ID.
+   * @param username Value which depends on the command.
+   *                 See: https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash
+   * @returns The HMAC digest for the given username.
+   * @throws {Error} If the HMAC handling interface throws an error.
    */
   calculateHash(username: string): string {
     const hmac = createHmac('sha256', this.clientSecret);
@@ -66,10 +66,10 @@ export class AuthService {
   }
 
   /**
-   * A method to create a userin the external auth provider (AWS Cognito)
-   * @param signUpDto object containing the necessary fields to create a new user
-   * @returns whether or not the user was confirmed as created in the external auth provider
-   * @throws whatever the external auth client throws
+   * Creates a user in the external auth provider (AWS Cognito).
+   * @param signUpDto Object containing the necessary fields to create a new user.
+   * @returns Whether the user was confirmed as created in the external auth provider.
+   * @throws {Error} If the external auth client throws an error.
    */
   async signup(
     { firstName, lastName, email, password }: SignUpDto,
@@ -100,11 +100,10 @@ export class AuthService {
   }
 
   /**
-   * A method to verify a user by email and verificationCode with
-   * the external auth provider (AWS Cognito)
-   * @param email the email of the user to verify
-   * @param verificationCode the code required to verify the user with the external auth provider
-   * @throws anything that the external auth provider throws
+   * Verifies a user by email and verification code with the external auth provider (AWS Cognito).
+   * @param email The email of the user to verify.
+   * @param verificationCode The code required to verify the user with the external auth provider.
+   * @throws {Error} If the external auth provider throws an error.
    */
   async verifyUser(email: string, verificationCode: string): Promise<void> {
     const confirmCommand = new ConfirmSignUpCommand({
@@ -118,10 +117,10 @@ export class AuthService {
   }
 
   /**
-   * Method to sign an already existing user into the application with the external auth provider
-   * @param signInDto object containing the necessary fields to sign in a user
-   * @returns SignInResponseDto with session tokens for the user
-   * @throws anything that the external auth provider throws
+   * Signs an existing user into the application using the external auth provider.
+   * @param signInDto Object containing the necessary fields to sign in a user.
+   * @returns SignInResponseDto with session tokens for the user.
+   * @throws {Error} If the external auth provider throws an error.
    */
   async signin({ email, password }: SignInDto): Promise<SignInResponseDto> {
     const signInCommand = new AdminInitiateAuthCommand({
@@ -145,13 +144,12 @@ export class AuthService {
   }
 
   /**
-   * Method to refresh a user's session token with the external auth provider
-   * @param refreshDto object containing the necessary fields to refresh the token
-   * @returns SignInResponseDto with the new (refreshed) session tokens for the user
-   * @throws anything that the external auth provider throws
+   * Refreshes a user's session token with the external auth provider.
+   * @param refreshDto Object containing the necessary fields to refresh the token.
+   * @returns SignInResponseDto with the new (refreshed) session tokens for the user.
+   * @throws {Error} If the external auth provider throws an error.
    *
-   * Note: Refresh token hash uses a user's sub (unique ID),
-   * not their username (typically their email)
+   * Note: Refresh token hash uses a user's sub (unique ID), not their username (typically their email).
    */
   async refreshToken({
     refreshToken,
@@ -177,10 +175,9 @@ export class AuthService {
   }
 
   /**
-   * A method to initiate the process with the external
-   * auth provider when the user forgets their password
-   * @param body object containing the necessary fields to know which user forgot their password
-   * @throws anything that the external auth provider throws
+   * Initiates the forgot-password flow with the external auth provider.
+   * @param body The email address of the user who forgot their password.
+   * @throws {Error} If the external auth provider throws an error.
    *
    * Does not return a value.
    */
@@ -195,10 +192,9 @@ export class AuthService {
   }
 
   /**
-   * Method to initiate the process with the external
-   * auth provider when the user wants to confirm their forgotten password with the system
-   * @param body object containing the necessary fields, such as the new password and email, to confirm
-   * @throws anything that the external auth provider throws
+   * Confirms a forgotten password with the external auth provider.
+   * @param body Object containing the necessary fields (email, confirmation code, new password) to confirm.
+   * @throws {Error} If the external auth provider throws an error.
    *
    * Does not return a value.
    */
@@ -219,10 +215,9 @@ export class AuthService {
   }
 
   /**
-   * Method to delete a user by id
-   * @param body object containing the necessary fields to delete a user, including id
-   * @throws anything that the repository throws.
-   *         BadRequestException with a message from the external auth provider.
+   * Deletes a user by email in the external auth provider.
+   * @param body The email address of the user to delete.
+   * @throws {Error} If the repository or external auth provider throws an error.
    *
    * Does not return a value.
    */

@@ -19,7 +19,7 @@ import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
 
 /**
  * Controller to expose callable HTTP endpoints to interface
- * extract, and change information about the app's admins
+ * extract, and change information about the app's admins.
  */
 @Controller('admins')
 @UseInterceptors(CurrentUserInterceptor) // Apply authentication to all routes
@@ -27,10 +27,10 @@ export class AdminsController {
   constructor(private readonly adminsService: AdminsService) {}
 
   /**
-   * Exposes an endpoint to create an admin in the system
-   * @param createAdminDto object containing all of the necessary fields to create an admin
-   * @returns the new admin object
-   * @throws anything that the repository throws
+   * Exposes an endpoint to create an admin in the system.
+   * @param createAdminDto object containing all of the necessary fields to create an admin.
+   * @returns the new admin object.
+   * @throws {Erorr} anything that the repository throws.
    */
   @Post()
   async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
@@ -38,10 +38,10 @@ export class AdminsController {
   }
 
   /**
-   * Exposes an endpoint to return all admins, optionally only for a specific site
-   * @param site the desired site assigned to admins for which you want to see a list of
-   * @returns a list of admin objects
-   * @throws anything that the repository throws
+   * Exposes an endpoint to return all admins, optionally only for a specific site.
+   * @param site the desired site assigned to admins for which you want to see a list of.
+   * @returns a list of admin objects.
+   * @throws {Error} anything that the repository throws.
    */
   @Get()
   async findAll(@Query('site') site?: Site): Promise<Admin[]> {
@@ -52,12 +52,12 @@ export class AdminsController {
   }
 
   /**
-   * Exposes an endpoint to return an admin's information by their id
-   * @param id the id of the desired admin
-   * @returns the admin with the desired id
-   * @throws anything that the repository throws.
-   *         NotFoundException if an admin with the
-   *         desired id does not exist in the system
+   * Exposes an endpoint to return an admin's information by their Id.
+   * @param id the id of the desired admin.
+   * @returns the admin with the desired Id.
+   * @throws {Error} anything that the repository throws.
+   * @throws {NotFoundException} if an admin with the
+   *         desired id does not exist in the system.
    */
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Admin> {
@@ -65,11 +65,11 @@ export class AdminsController {
   }
 
   /**
-   * Exposes an endpoint to return an admin's information by their email
-   * @param email the email of the desired admin
+   * Exposes an endpoint to return an admin's information by their email.
+   * @param email the email of the desired admin.
    * @returns the admin with the desired email,
-   *          or null if an admin with the specified email does not exist in the system
-   * @throws anything that the repository throws
+   *          or null if an admin with the specified email does not exist in the system.
+   * @throws {Error} anything that the repository throws.
    */
   @Get('email/:email')
   async findByEmail(@Param('email') email: string): Promise<Admin | null> {
@@ -77,11 +77,11 @@ export class AdminsController {
   }
 
   /**
-   * Exposes an endpoint to update an admin's email
-   * @param id the id fo the desired admin to update
-   * @param updateEmailDto object containing the new email to update to
-   * @returns the new admin object
-   * @throws anything that the repository throws
+   * Exposes an endpoint to update an admin's email.
+   * @param id the id fo the desired admin to update.
+   * @param updateEmailDto object containing the new email to update to.
+   * @returns the new admin object.
+   * @throws {Error} anything that the repository throws.
    */
   @Patch(':id/email')
   async updateEmail(
@@ -95,7 +95,7 @@ export class AdminsController {
    * Exposes an endpoint to delete an admin by id
    * @param id the id of the admin to be deleted
    * @returns object with a message containing 'Admin with ID <id> has been deleted'
-   * @throws anything that the repository throws
+   * @throws {Error} anything that the repository throws
    */
   @Delete(':id')
   async remove(

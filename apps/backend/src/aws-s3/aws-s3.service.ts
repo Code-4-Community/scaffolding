@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 /**
- * Service to interface with the external object storage service (AWS S3)
+ * Service to interface with the external object storage service (AWS S3).
  */
 @Injectable()
 export class AWSS3Service {
@@ -36,12 +36,12 @@ export class AWSS3Service {
   }
 
   /**
-   * Creates an URL within the s3 bucket corresponding to a person and a document type
-   * @param person the person that the s3 object relates to
-   * @param type the document type that the s3 object relates to
+   * Creates an URL within the S3 bucket corresponding to a person and a document type.
+   * @param person the person that the S3 object relates to.
+   * @param type the document type that the S3 object relates to.
    * @returns the expected URL of the object of specified person and type,
    *          with filename in the form of 'JohnDoe-Resume.pdf'
-   *          or 'janedoe-application.pdf' the file extension is always a pdf
+   *          or 'janedoe-application.pdf'; the file extension is always a pdf.
    *
    * Does not throw beyond TypeScript errors.
    *
@@ -53,17 +53,17 @@ export class AWSS3Service {
   }
 
   /**
-   * Method to upload a file to the s3 bucket specified in the environmental variable
-   * @param fileBuffer in-memory representation of the file's data
-   * @param fileName desired name of the file in the destination (AWS S3)
+   * Method to upload a file to the S3 bucket specified in the environmental variable.
+   * @param fileBuffer in-memory representation of the file's data.
+   * @param fileName desired name of the file in the destination (AWS S3).
    * @param mimeType the desired MIME type to store the file as in S3,
    *                 MIME type indicates how a file should be processed
-   *                 by a browser or email client (e.g., text/html, image/jpeg)
+   *                 by a browser or email client (e.g., text/html, image/jpeg).
    * @throws Error with message 'File upload to AWS failed: ' with
    *         any error message from the S3 client appended to the end.
    *
    * @returns the S3 URL of the new object
-   * @throws
+   * @throws {Error} containing the error message from the external object storage provider S3
    */
   async upload(
     fileBuffer: Buffer,

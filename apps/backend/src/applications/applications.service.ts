@@ -5,7 +5,7 @@ import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
 
 /**
- * Service for applications that interfaces with the application repository
+ * Service for applications that interfaces with the application repository.
  */
 @Injectable()
 export class ApplicationsService {
@@ -15,21 +15,21 @@ export class ApplicationsService {
   ) {}
 
   /**
-   * Method to return all applications in the repository
-   * @returns a promise for all applications in the repository
-   * @throws anything the repository throws
+   * Returns all applications in the repository.
+   * @returns A promise resolving to all applications in the repository.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   async findAll(): Promise<Application[]> {
     return await this.applicationRepository.find();
   }
 
   /**
-   * Method to return an application by Id from the repository
-   * @param appId The desired application Id to search for
-   * @returns a promise of the application with that id
-   * @throws NotFoundException with message 'Application with ID <id> not found'
-   *         if an application of that Id does not exist. Will also throw anything
-   *         that the repository throws.
+   * Returns an application by id from the repository.
+   * @param appId The desired application id to search for.
+   * @returns A promise resolving to the application with that id.
+   * @throws {NotFoundException} with message 'Application with ID <id> not found'
+   *         if an application with that id does not exist.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   async findById(appId: number): Promise<Application> {
     const application: Application = await this.applicationRepository.findOne({
@@ -44,10 +44,10 @@ export class ApplicationsService {
   }
 
   /**
-   * Method to create an application in the repository
-   * @param createApplicationDto the expected data required to create an application (applicant's info)
-   * @returns the newly created application
-   * @throws anything the repository throws.
+   * Creates an application in the repository.
+   * @param createApplicationDto The expected data required to create an application (applicant's info).
+   * @returns The newly created application.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   async create(
     createApplicationDto: CreateApplicationDto,
@@ -57,13 +57,13 @@ export class ApplicationsService {
   }
 
   /**
-   * Method to update the status of the application in the repository
-   * @param appId the Id of the application to update
-   * @param updateData object containing the desired new application status
-   * @returns the new application object after changes have been made
-   * @throws NotFoundException with message 'Application with ID <id> not found'
-   *         if an application of that Id does not exist. Will also throw anything
-   *         that the repository throws.
+   * Updates the status of the application in the repository.
+   * @param appId The id of the application to update.
+   * @param updateData Object containing the desired new application status.
+   * @returns The updated application object.
+   * @throws {NotFoundException} with message 'Application with ID <id> not found'
+   *         if the application does not exist.
+   * @throws {Error} which is unchanged from what repository throws.
    */
   async update(
     appId: number,
