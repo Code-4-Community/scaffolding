@@ -256,7 +256,7 @@ describe('AdminsService', () => {
 
     it('should handle email update with same email', async () => {
       const updateEmailDto: UpdateAdminEmailDto = {
-        email: 'john@example.com', // Same as current email
+        email: 'john@example.com',
       };
 
       mockRepository.findOne.mockResolvedValue(mockAdmin);
