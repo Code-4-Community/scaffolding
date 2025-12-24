@@ -6,18 +6,42 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
  */
 @Entity()
 export class Learner {
+  /**
+   * Auto generated id of the learner,
+   * not the same as their application id
+   */
   @PrimaryGeneratedColumn()
   id: number;
 
+  /**
+   * Corresponding application id of the learner
+   */
   @Column({ name: 'app_id' })
   appId: number;
 
+  /**
+   * The learner's name
+   *
+   * Exmaple: 'Jane Doe'
+   */
   @Column()
   name: string;
 
+  /**
+   * The expected start date for the learner's commitment
+   * stored in YYYY-MM-DD format
+   *
+   * Example: new Date('2024-06-30')
+   */
   @Column({ type: 'date' })
   startDate: Date;
 
+  /**
+   * The expected end date for the learner's commitment
+   * stored in YYYY-MM-DD format
+   *
+   * Example: new Date('2024-06-30')
+   */
   @Column({ type: 'date' })
   endDate: Date;
 }

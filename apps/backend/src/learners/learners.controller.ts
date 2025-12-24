@@ -69,6 +69,9 @@ export class LearnersController {
    *         BadRequestException if the id field is invalid, e.g. null or undefined
    *         NotFoundException with message 'Learner with ID <id> not found' if
    *         the learner with specified appId is found not to exist in the system
+   *
+   * TODO: Resolve logical issue: appId is not the same as learner id but the
+   *       service searches by learner id despite this accepting appId
    */
   @Get('/:appId')
   async getLearner(
@@ -79,7 +82,7 @@ export class LearnersController {
 
   /**
    * Exposes an endpoint to update a learner's commitment starting date
-   * @param id the appId of the learner to update
+   * @param id the id (not appId) of the learner to update
    * @param startDate the new starting date for the learner's commitment
    * @returns the new learner object
    * @throws anything that the repository throws.

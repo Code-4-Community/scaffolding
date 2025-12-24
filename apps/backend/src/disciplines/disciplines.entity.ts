@@ -14,7 +14,12 @@ export class Discipline {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // enforce discipline names to be one of the predefined values
+  /**
+   * Predifined discipline values present in the table
+   *
+   * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
+   * Research, Social work, Psychiatry, Pharmacy, IT
+   */
   @Column({
     type: 'enum',
     enum: DISCIPLINE_VALUES,
@@ -22,6 +27,7 @@ export class Discipline {
   })
   name: DISCIPLINE_VALUES;
 
+  // TODO: Clarify what this is
   @Column({ type: 'int', array: true, default: () => "'{}'" })
   admin_ids: number[];
 }

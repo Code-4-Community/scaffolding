@@ -114,7 +114,7 @@ export class AuthController {
 
   /**
    * Exposes an endpoint to initiate the process with the external
-   * auth provider when the user wants to confirm their password with the system
+   * auth provider when the user wants to confirm their forgotten password with the system
    * @param body object containing the necessary fields, such as the new password and email, to confirm
    * @throws anything that the external auth provider throws
    *
@@ -126,7 +126,7 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoing to delete a user by id
+   * Exposes an endpoint to delete a user by id
    * @param body object containing the necessary fields to delete a user, including id
    * @throws anything that the repository throws.
    *         BadRequestException with a message from the external auth provider.

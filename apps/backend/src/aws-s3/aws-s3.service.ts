@@ -32,12 +32,36 @@ export class AWSS3Service {
     });
   }
 
-  // In the form of "JohnDoe-Resume.pdf"
+  /**
+   * Creates an URL within the s3 bucket corresponding to a person and a document type
+   * @param person the person that the s3 object relates to
+   * @param type the document type that the s3 object relates to
+   * @returns the expected URL of the object of specified person and type,
+   *          with filename in the form of 'JohnDoe-Resume.pdf'
+   *          or 'janedoe-application.pdf' the file extension is always a pdf
+   *
+   * Does not throw beyond TypeScript errors.
+   *
+   * TODO: Remove hard-coded region in the url
+   */
   createLink(person: string, type: string): string {
     const fileName = `${person}-${type}.pdf`;
     return `https://${this.bucketName}.s3.us-east-2.amazonaws.com/${fileName}`;
   }
 
+  /**
+   * Method to upload a file to the s3 bucket specified in the environmental variable
+   * @param fileBuffer in-memory representation of the file's data
+   * @param fileName desired name of the file in the destination (AWS S3)
+   * @param mimeType the desired MIME type to store the file as in S3,
+   *                 MIME type indicates how a file should be processed
+   *                 by a browser or email client (e.g., text/html, image/jpeg)
+   * @throws Error with message 'File upload to AWS failed: ' with
+   *         any error message from the S3 client appended to the end.
+   *
+   * @returns the S3 URL of the new object
+   * @throws
+   */
   async upload(
     fileBuffer: Buffer,
     fileName: string,

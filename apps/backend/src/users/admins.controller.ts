@@ -79,7 +79,7 @@ export class AdminsController {
   }
 
   /**
-   * Exposes an endpoint to update am admin's email
+   * Exposes an endpoint to update an admin's email
    * @param id the id fo the desired admin to update
    * @param updateEmailDto object containing the new email to update to
    * @returns the new admin object

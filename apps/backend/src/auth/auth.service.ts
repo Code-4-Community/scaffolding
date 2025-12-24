@@ -37,10 +37,14 @@ export class AuthService {
     this.clientSecret = process.env.COGNITO_CLIENT_SECRET;
   }
 
-  // Computes secret hash to authenticate this backend to Cognito
-  // Hash key is the Cognito client secret, message is username + client ID
-  // Username value depends on the command
-  // (see https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash)
+  /**
+   * Computes secret hash to authenticate this backend to Cognito
+   * Hash key is the Cognito client secret, message is username + client ID
+   * @param username value which depends on the command
+   *                 (see https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash)
+   * @returns the HMAC digest of the corresponding username
+   * @throws if the HMAC handling interface throws
+   */
   calculateHash(username: string): string {
     const hmac = createHmac('sha256', this.clientSecret);
     hmac.update(username + CognitoAuthConfig.clientId);
@@ -58,6 +62,12 @@ export class AuthService {
     return Users[0].Attributes;
   }
 
+  /**
+   * A method to create a userin the external auth provider (AWS Cognito)
+   * @param signUpDto object containing the necessary fields to create a new user
+   * @returns whether or not the user was confirmed as created in the external auth provider
+   * @throws whatever the external auth client throws
+   */
   async signup(
     { firstName, lastName, email, password }: SignUpDto,
     status: Status = Status.STANDARD,
@@ -86,6 +96,13 @@ export class AuthService {
     return response.UserConfirmed;
   }
 
+  /**
+   * A method to verify a user by email and verificationCode with
+   * the external auth provider (AWS Cognito)
+   * @param email the email of the user to verify
+   * @param verificationCode the code required to verify the user with the external auth provider
+   * @throws anything that the external auth provider throws
+   */
   async verifyUser(email: string, verificationCode: string): Promise<void> {
     const confirmCommand = new ConfirmSignUpCommand({
       ClientId: CognitoAuthConfig.clientId,
@@ -97,6 +114,12 @@ export class AuthService {
     await this.providerClient.send(confirmCommand);
   }
 
+  /**
+   * Method to sign an already existing user into the application with the external auth provider
+   * @param signInDto object containing the necessary fields to sign in a user
+   * @returns SignInResponseDto with session tokens for the user
+   * @throws anything that the external auth provider throws
+   */
   async signin({ email, password }: SignInDto): Promise<SignInResponseDto> {
     const signInCommand = new AdminInitiateAuthCommand({
       AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
@@ -118,7 +141,15 @@ export class AuthService {
     };
   }
 
-  // Refresh token hash uses a user's sub (unique ID), not their username (typically their email)
+  /**
+   * Method to refresh a user's session token with the external auth provider
+   * @param refreshDto object containing the necessary fields to refresh the token
+   * @returns SignInResponseDto with the new (refreshed) session tokens for the user
+   * @throws anything that the external auth provider throws
+   *
+   * Note: Refresh token hash uses a user's sub (unique ID),
+   * not their username (typically their email)
+   */
   async refreshToken({
     refreshToken,
     userSub,
@@ -142,6 +173,14 @@ export class AuthService {
     };
   }
 
+  /**
+   * A method to initiate the process with the external
+   * auth provider when the user forgets their password
+   * @param body object containing the necessary fields to know which user forgot their password
+   * @throws anything that the external auth provider throws
+   *
+   * Does not return a value.
+   */
   async forgotPassword(email: string) {
     const forgotCommand = new ForgotPasswordCommand({
       ClientId: CognitoAuthConfig.clientId,
@@ -152,6 +191,14 @@ export class AuthService {
     await this.providerClient.send(forgotCommand);
   }
 
+  /**
+   * Method to initiate the process with the external
+   * auth provider when the user wants to confirm their forgotten password with the system
+   * @param body object containing the necessary fields, such as the new password and email, to confirm
+   * @throws anything that the external auth provider throws
+   *
+   * Does not return a value.
+   */
   async confirmForgotPassword({
     email,
     confirmationCode,
@@ -168,6 +215,14 @@ export class AuthService {
     await this.providerClient.send(confirmComamnd);
   }
 
+  /**
+   * Method to delete a user by id
+   * @param body object containing the necessary fields to delete a user, including id
+   * @throws anything that the repository throws.
+   *         BadRequestException with a message from the external auth provider.
+   *
+   * Does not return a value.
+   */
   async deleteUser(email: string): Promise<void> {
     const adminDeleteUserCommand = new AdminDeleteUserCommand({
       Username: email,

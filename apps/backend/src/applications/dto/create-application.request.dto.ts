@@ -15,7 +15,7 @@ import { AppStatus, ExperienceType, InterestArea, School } from '../types';
  */
 export class CreateApplicationDto {
   /**
-   * Status of the application
+   * Status of the application in the review process
    *
    * Example: AppStatus.APP_SUBMITTED
    */
@@ -23,7 +23,7 @@ export class CreateApplicationDto {
   appStatus: AppStatus;
 
   /**
-   * Availability of the applicant
+   * Availability of the applicant in terms of days of the week
    *
    * Example: 'Monday, Tuesday'
    */
@@ -31,29 +31,34 @@ export class CreateApplicationDto {
   daysAvailable: string;
 
   /**
-   * Experience type/ level of the applicant
+   * Experience type/ level of the applicant, generally in terms of medical experience/ degree
    *
-   * ExperienceType.BS
+   * Example: ExperienceType.BS
    */
   @IsEnum(ExperienceType)
   experienceType: ExperienceType;
 
+  // TODO: clarify what format these strings are in and an example of what type of file
   @IsArray()
   @IsString({ each: true })
   fileUploads: string[];
 
   /**
-   * Applicant's area of interest
+   * Applicant's area of interest for the commitment
    *
    * Example: InterestArea.NURSING
    */
   @IsEnum(InterestArea)
   interest: InterestArea;
 
+  // TODO: clarify what format this string is in, and why it's not an array
+  // if people can hold multiple licenses in real life
   @IsString()
   license: string;
 
   /**
+   * TODO: clarify what international means exactly in business context
+   *
    * Whether or not the applicant is international
    *
    * Example: true
@@ -70,7 +75,7 @@ export class CreateApplicationDto {
   isLearner: boolean;
 
   /**
-   * Phone number of the applicant
+   * Phone number of the applicant in ###-###-#### format
    *
    * Example: "123-456-7890'
    */
