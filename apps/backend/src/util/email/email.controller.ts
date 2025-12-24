@@ -18,6 +18,8 @@ export class EmailController {
    * @throws BadRequestException if the desired email for testing is not specified
    *         Anything that the external email management client, in this case AWS SES, throws.
    *
+   * TODO: Clarify why this implementation doesn't use any of the body data
+   *
    */
   @Post('test')
   async sendTestEmail(

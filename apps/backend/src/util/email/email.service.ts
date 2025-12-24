@@ -1,13 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AmazonSESWrapper } from './amazon-ses.wrapper';
 
+/**
+ * Interfaces with a service that interfaces with Amazon SES to manage email sending
+ */
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   constructor(private amazonSESWrapper: AmazonSESWrapper) {}
 
   /**
-   * Queues the email to be sent.
+   * Queues the email to be sent using the external email management service (AWS SES)
    *
    * @param recipientEmail the email address of the recipient
    * @param subject the subject of the email
@@ -31,7 +34,7 @@ export class EmailService {
   }
 
   /**
-   * Sends an email.
+   * Sends an email using the external email management service (AWS SES)
    *
    * @param recipientEmail the email address of the recipients
    * @param subject the subject of the email

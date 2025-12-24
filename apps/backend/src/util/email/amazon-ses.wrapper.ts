@@ -6,11 +6,26 @@ import * as dotenv from 'dotenv';
 import Mail from 'nodemailer/lib/mailer';
 dotenv.config();
 
+/**
+ * Defines an email attachment
+ */
 export interface EmailAttachment {
+  /**
+   * Name of the file
+   *
+   * TODO: Clarify whether this includes the file extension
+   */
   filename: string;
+
+  /**
+   * Buffer or in-memory data representation of the file
+   */
   content: Buffer;
 }
 
+/**
+ * Interfaces with Amazon SES to manage email sending
+ */
 @Injectable()
 export class AmazonSESWrapper {
   private client: AmazonSESClient;

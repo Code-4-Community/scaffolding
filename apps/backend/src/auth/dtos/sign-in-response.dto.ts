@@ -1,3 +1,10 @@
+// TODO: Add validators from 'class-validators' package or find out why there aren't validators here?
+
+/**
+ * Defines the expected shape of data to be passed into API requests
+ *
+ * DTO - data transfer object (defines and validates the structure of data sent over the network)
+ */
 export class SignInResponseDto {
   /**
    * The JWT access token to be passed in API requests

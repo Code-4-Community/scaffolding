@@ -10,14 +10,12 @@ import {
   ParseIntPipe,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  AdminsService,
-  CreateAdminDto,
-  UpdateAdminEmailDto,
-} from './admins.service';
+import { AdminsService } from './admins.service';
 import { Admin } from './admin.entity';
 import { Site } from './types';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { CreateAdminDto } from './dtos/create-admin.dto';
+import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
 
 /**
  * Controller to expose callable HTTP endpoints to interface

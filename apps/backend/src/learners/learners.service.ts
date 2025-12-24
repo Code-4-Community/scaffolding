@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Learner } from './learner.entity';
 
+/**
+ * Service to interface with the learner repository
+ */
 @Injectable()
 export class LearnersService {
   constructor(

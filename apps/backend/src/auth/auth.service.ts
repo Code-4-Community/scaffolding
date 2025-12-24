@@ -20,6 +20,9 @@ import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { Status } from '../users/types';
 import { ConfirmPasswordDto } from './dtos/confirm-password.dto';
 
+/**
+ * Service to interface with the external auth provider (AWS Cognito)
+ */
 @Injectable()
 export class AuthService {
   private readonly providerClient: CognitoIdentityProviderClient;

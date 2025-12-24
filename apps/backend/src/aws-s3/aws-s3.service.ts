@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
+/**
+ * Service to interface with the external object storage service (AWS S3)
+ */
 @Injectable()
 export class AWSS3Service {
   private client: S3Client;
