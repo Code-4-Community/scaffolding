@@ -2,6 +2,10 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 import { AppStatus, ExperienceType, InterestArea, School } from './types';
 
+/**
+ * Represents the desired columns for the database table
+ * in the repository for the system's applications
+ */
 @Entity('application')
 export class Application {
   @PrimaryGeneratedColumn()

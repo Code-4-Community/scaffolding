@@ -1,9 +1,14 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { DISCIPLINE_VALUES } from '../disciplines/discplines.constants';
 
-// describes a BHCHP medical discipline
-// Current list of disciplines: Volunteers, Nursing, Public Health, MD, PA, NP,
-// Research, Social work, Psychiatry, Pharmacy, IT
+/**
+ * Represents the desired columns for the database table
+ * in the repository for the system's medical disciplines
+ * (BHCHP medical discipline) and their admin ids
+ *
+ * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
+ * Research, Social work, Psychiatry, Pharmacy, IT
+ */
 @Entity('discipline')
 export class Discipline {
   @PrimaryGeneratedColumn()
