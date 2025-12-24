@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { DISCIPLINE_VALUES } from '../disciplines/discplines.constants';
+import { DISCIPLINE_VALUES } from './disciplines.constants';
 
 /**
  * Represents the desired columns for the database table
