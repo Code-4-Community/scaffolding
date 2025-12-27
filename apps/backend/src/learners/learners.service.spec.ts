@@ -94,6 +94,52 @@ describe('LearnersService', () => {
         ),
       ).rejects.toThrow('Start date must be before end date');
     });
+
+    it('should error out without information loss if the repository throws an error during create', async () => {
+      const createData = {
+        appId: 1,
+        name: 'John Doe',
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
+      };
+
+      jest
+        .spyOn(mockLearnersRepository, 'create')
+        .mockImplementationOnce(() => {
+          throw new Error('There was a problem retrieving the info');
+        });
+
+      await expect(
+        service.create(
+          createData.appId,
+          createData.name,
+          createData.startDate,
+          createData.endDate,
+        ),
+      ).rejects.toThrow(`There was a problem retrieving the info`);
+    });
+
+    it('should error out without information loss if the repository throws an error during save', async () => {
+      const createData = {
+        appId: 1,
+        name: 'John Doe',
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
+      };
+
+      jest.spyOn(mockLearnersRepository, 'save').mockImplementationOnce(() => {
+        throw new Error('There was a problem saving the info');
+      });
+
+      await expect(
+        service.create(
+          createData.appId,
+          createData.name,
+          createData.startDate,
+          createData.endDate,
+        ),
+      ).rejects.toThrow(`There was a problem saving the info`);
+    });
   });
 
   describe('findOne', () => {
@@ -122,6 +168,18 @@ describe('LearnersService', () => {
         'Learner with ID 999 not found',
       );
     });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(service.findOne(1)).rejects.toThrow(
+        'There was a problem retrieving the info',
+      );
+    });
   });
 
   describe('findAll', () => {
@@ -141,6 +199,18 @@ describe('LearnersService', () => {
       const result = await service.findAll();
 
       expect(result).toEqual([]);
+    });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'find')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(service.findAll()).rejects.toThrow(
+        'There was a problem retrieving the info',
+      );
     });
   });
 
@@ -168,6 +238,18 @@ describe('LearnersService', () => {
     it('should throw error if appId is invalid', async () => {
       await expect(service.findByAppId(0)).rejects.toThrow(
         'Valid app ID is required',
+      );
+    });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'find')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(service.findByAppId(8)).rejects.toThrow(
+        'There was a problem retrieving the info',
       );
     });
   });
@@ -221,6 +303,33 @@ describe('LearnersService', () => {
         'Start date is required',
       );
     });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(
+        service.updateStartDate(999, updatedStartDate),
+      ).rejects.toThrow('There was a problem retrieving the info');
+    });
+
+    it('should error out without information loss if the repository throws an error during save', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(learner1);
+      jest
+        .spyOn(mockLearnersRepository, 'save')
+        .mockRejectedValueOnce(
+          new Error('There was a problem saving the info'),
+        );
+
+      await expect(
+        service.updateStartDate(1, updatedStartDate),
+      ).rejects.toThrow('There was a problem saving the info');
+    });
   });
 
   describe('updateEndDate', () => {
@@ -270,6 +379,33 @@ describe('LearnersService', () => {
     it('should throw error if no end date provided', async () => {
       await expect(service.updateEndDate(1, null)).rejects.toThrow(
         'End date is required',
+      );
+    });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(service.updateEndDate(999, updatedEndDate)).rejects.toThrow(
+        'There was a problem retrieving the info',
+      );
+    });
+
+    it('should error out without information loss if the repository throws an error during save', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(learner1);
+      jest
+        .spyOn(mockLearnersRepository, 'save')
+        .mockRejectedValueOnce(
+          new Error('There was a problem saving the info'),
+        );
+
+      await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
+        'There was a problem saving the info',
       );
     });
   });
