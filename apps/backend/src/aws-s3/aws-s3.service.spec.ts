@@ -116,7 +116,8 @@ describe('AWSS3Service', () => {
               ' is successfully no longer in the bucket. No manual steps required',
           );
         } else {
-          console.log(
+          // eslint-disable-next-line no-unsafe-finally
+          throw new Error(
             'There was an error trying to check if the object is no longer in the bucket. Please check the bucket manually to ensure proper cleanup.',
           );
         }
@@ -127,7 +128,8 @@ describe('AWSS3Service', () => {
   // MAKE SURE TO CLEAN UP THE FILES FROM OUR S3 BUCKET AFTER RUNNING THE INTEGRATION TEST
 });
 
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: Apache-2.0
+// For the following code to the end of the file, which has been modified:
 /**
  * Delete multiple objects from an S3 bucket.
  * @param {{ bucketName: string, keys: string[] }}
@@ -178,7 +180,6 @@ const deleteObjects = async ({ bucketName, keys }) => {
   }
 };
 
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 /**
  * Get a single object from a specified S3 bucket.
  * @param {{ bucketName: string, key: string }}
