@@ -99,7 +99,7 @@ export class LearnersController {
 
   /**
    * Exposes an endpoint to update a learner's commitment ending date.
-   * @param id The id of the learner to update.
+   * @param id The id (not appId) of the learner to update.
    * @param endDate The new ending date for the learner's commitment.
    * @returns The updated learner object.
    * @throws {Error} If the repository throws an error.

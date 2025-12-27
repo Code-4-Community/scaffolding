@@ -87,7 +87,7 @@ export class UsersService {
    * Removes a user by id.
    * @param id The id of the user to delete.
    * @throws {NotFoundException} if a user of the specified id doesn't exist in the repository.
-   * @throws {Erorr} Also throws any error the repository throws.
+   * @throws {Error} Also throws any error the repository throws.
    *
    * Does not return a value.
    */

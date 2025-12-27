@@ -30,7 +30,7 @@ export class AdminsController {
    * Exposes an endpoint to create an admin in the system.
    * @param createAdminDto object containing all of the necessary fields to create an admin.
    * @returns the new admin object.
-   * @throws {Erorr} anything that the repository throws.
+   * @throws {Error} anything that the repository throws.
    */
   @Post()
   async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {

@@ -15,7 +15,7 @@ export class Discipline {
   id: number;
 
   /**
-   * Predifined discipline values present in the table.
+   * Predefined discipline values present in the table.
    *
    * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
    * Research, Social work, Psychiatry, Pharmacy, IT.
