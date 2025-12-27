@@ -73,6 +73,51 @@ describe('ApplicationsService', () => {
       expect(repository.find).toHaveBeenCalled();
       expect(result).toEqual(mockApplications);
     });
+
+    it('should return an empty array if the repo returns one', async () => {
+      mockRepository.find.mockResolvedValue([]);
+
+      const result = await service.findAll();
+
+      expect(repository.find).toHaveBeenCalled();
+      expect(result).toEqual([]);
+    });
+
+    it('should handle returning an application with no changes when optional fields are ommitted', async () => {
+      const mockApplications: Application[] = [
+        {
+          appId: 1,
+          appStatus: AppStatus.APP_SUBMITTED,
+          daysAvailable: 'Monday, Tuesday',
+          experienceType: ExperienceType.BS,
+          fileUploads: [],
+          interest: InterestArea.NURSING,
+          license: null,
+          isInternational: false,
+          isLearner: false,
+          phone: '123-456-7890',
+          school: School.HARVARD_MEDICAL_SCHOOL,
+          weeklyHours: 20,
+        },
+      ];
+
+      mockRepository.find.mockResolvedValue(mockApplications);
+
+      const result = await service.findAll();
+
+      expect(repository.find).toHaveBeenCalled();
+      expect(result).toEqual(mockApplications);
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.find.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(service.findAll()).rejects.toThrow(
+        `There was a problem retrieving the info`,
+      );
+    });
   });
 
   describe('findById', () => {
@@ -115,6 +160,66 @@ describe('ApplicationsService', () => {
         where: { appId: nonExistentId },
       });
     });
+
+    it('should not return an application from the repo if the id is not the same as asked for', async () => {
+      const mockApplication: Application = {
+        appId: 1,
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 20,
+      };
+
+      mockRepository.findOne.mockResolvedValue(mockApplication);
+
+      const result = await service.findById(10);
+
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 10 } });
+      expect(repository.findOne).toThrow();
+    });
+
+    it('should handle returning an application with no changes when optional fields are ommitted', async () => {
+      const mockApplication: Application = {
+        appId: 1,
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        weeklyHours: 20,
+      };
+
+      mockRepository.findOne.mockResolvedValue(mockApplication);
+
+      const result = await service.findById(1);
+
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
+      expect(result).toEqual(mockApplication);
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.findOne.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(service.findById(1)).rejects.toThrow(
+        new Error(`There was a problem retrieving the info`),
+      );
+    });
   });
 
   describe('create', () => {
@@ -146,6 +251,209 @@ describe('ApplicationsService', () => {
 
       expect(repository.save).toHaveBeenCalled();
       expect(result).toEqual(savedApplication);
+    });
+
+    it('should save with no changes when optional fields are ommitted', async () => {
+      const mockApplication: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        weeklyHours: 20,
+      };
+
+      const savedApplication: Application = {
+        appId: 1,
+        ...mockApplication,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+
+      const result = await service.create(mockApplication);
+
+      expect(repository.save).toHaveBeenCalled();
+      expect(result).toEqual(savedApplication);
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.save.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+      const mockApplication: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        weeklyHours: 20,
+      };
+
+      await expect(service.create(mockApplication)).rejects.toThrow(
+        new Error(`There was a problem retrieving the info`),
+      );
+    });
+
+    it('should not accept an invalid daysAvailable that is not in days of the week', async () => {
+      const createApplicationDto: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Christmas, Thanksgiving',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 20,
+      };
+
+      const savedApplication: Application = {
+        appId: 1,
+        ...createApplicationDto,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+      await expect(service.create(createApplicationDto)).rejects.toThrow();
+    });
+
+    it('should not accept a phone number that is too long', async () => {
+      const createApplicationDto: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-78901231',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 20,
+      };
+
+      const savedApplication: Application = {
+        appId: 1,
+        ...createApplicationDto,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+      await expect(service.create(createApplicationDto)).rejects.toThrow();
+    });
+    it('should not accept a phone number that is too short', async () => {
+      const createApplicationDto: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-4562',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 20,
+      };
+
+      const savedApplication: Application = {
+        appId: 1,
+        ...createApplicationDto,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+      await expect(service.create(createApplicationDto)).rejects.toThrow();
+    });
+    it('should not accept a phone number that is the right length but not in ###-###-#### format', async () => {
+      const createApplicationDto: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-8-90',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 20,
+      };
+
+      const savedApplication: Application = {
+        appId: 1,
+        ...createApplicationDto,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+      await expect(service.create(createApplicationDto)).rejects.toThrow();
+    });
+    it('should not accept 0 weekly hours', async () => {
+      const createApplicationDto: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 0,
+      };
+
+      const savedApplication: Application = {
+        appId: 1,
+        ...createApplicationDto,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+      await expect(service.create(createApplicationDto)).rejects.toThrow();
+    });
+    it('should not accept negative weekly hours', async () => {
+      const createApplicationDto: CreateApplicationDto = {
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-78901231',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: -5,
+      };
+
+      const savedApplication: Application = {
+        appId: 1,
+        ...createApplicationDto,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+      await expect(service.create(createApplicationDto)).rejects.toThrow();
     });
   });
 
@@ -241,6 +549,82 @@ describe('ApplicationsService', () => {
         where: { appId: nonExistentId },
       });
       expect(repository.save).not.toHaveBeenCalled();
+    });
+
+    it('should pass along any repo errors from retrieval without information loss when saving a new interest', async () => {
+      mockRepository.findOne.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(
+        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+      ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
+    });
+
+    it('should pass along any repo errors from retrieval without information loss when saving a new application status', async () => {
+      mockRepository.findOne.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(
+        service.update(1, { appStatus: AppStatus.IN_REVIEW }),
+      ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
+    });
+
+    it('should pass along any repo errors from saving the new info without information loss when saving a new interest', async () => {
+      const mockApplication: Application = {
+        appId: 1,
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 20,
+      };
+
+      mockRepository.findOne.mockResolvedValue(mockApplication);
+      mockRepository.save.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(
+        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+      ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
+    });
+
+    it('should pass along any repo errors from saving the new info without information loss when saving a new application status', async () => {
+      const mockApplication: Application = {
+        appId: 1,
+        appStatus: AppStatus.APP_SUBMITTED,
+        daysAvailable: 'Monday, Tuesday',
+        experienceType: ExperienceType.BS,
+        fileUploads: [],
+        interest: InterestArea.NURSING,
+        license: null,
+        isInternational: false,
+        isLearner: false,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        referred: false,
+        referredEmail: null,
+        weeklyHours: 20,
+      };
+
+      mockRepository.findOne.mockResolvedValue(mockApplication);
+      mockRepository.save.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(
+        service.update(1, { appStatus: AppStatus.IN_REVIEW }),
+      ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
   });
 
