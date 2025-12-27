@@ -90,7 +90,7 @@ describe('AdminsService', () => {
       };
 
       mockRepository.create.mockImplementationOnce(() => {
-        return new Error('There was a problem creating the entry');
+        throw new Error('There was a problem creating the entry');
       });
 
       await expect(service.create(createAdminDto)).rejects.toThrow(
@@ -139,7 +139,7 @@ describe('AdminsService', () => {
     });
 
     it('should pass along any repo errors without information loss during retrieval', async () => {
-      mockRepository.find.mockResolvedValueOnce(
+      mockRepository.find.mockRejectedValueOnce(
         new Error('There was a problem retrieving the entries'),
       );
 
@@ -168,7 +168,7 @@ describe('AdminsService', () => {
     });
 
     it('should pass along any repo errors without information loss during retrieval', async () => {
-      mockRepository.findOne.mockResolvedValueOnce(
+      mockRepository.findOne.mockRejectedValueOnce(
         new Error('There was a problem retrieving the entry'),
       );
 
@@ -199,9 +199,9 @@ describe('AdminsService', () => {
     });
 
     it('should pass along any repo errors without information loss during retrieval', async () => {
-      mockRepository.findOne.mockResolvedValueOnce(
-        new Error('There was a problem retrieving the entries'),
-      );
+      mockRepository.findOne.mockImplementationOnce(() => {
+        throw new Error('There was a problem retrieving the entries');
+      });
 
       await expect(service.findByEmail('n')).rejects.toThrow(
         'There was a problem retrieving the entries',
@@ -228,6 +228,16 @@ describe('AdminsService', () => {
       const result = await service.findBySite(Site.SITE_A);
 
       expect(result).toEqual([]);
+    });
+
+    it('should pass along error information from repo with no loss', async () => {
+      mockRepository.find.mockRejectedValueOnce(
+        new Error('error during retrieval'),
+      );
+
+      await expect(service.findBySite(Site.SITE_A)).rejects.toThrow(
+        'error during retrieval',
+      );
     });
   });
 
@@ -285,7 +295,7 @@ describe('AdminsService', () => {
         email: 'valid@example.com',
       };
 
-      mockRepository.findOne.mockResolvedValueOnce(
+      mockRepository.findOne.mockRejectedValueOnce(
         new Error('There was a problem retrieving the entry'),
       );
 
@@ -299,7 +309,7 @@ describe('AdminsService', () => {
         email: 'valid@example.com',
       };
       mockRepository.findOne.mockResolvedValue(mockAdmin);
-      mockRepository.save.mockResolvedValueOnce(
+      mockRepository.save.mockRejectedValueOnce(
         new Error('There was a problem saving the entry'),
       );
       await expect(service.updateEmail(1, updateEmailDto)).rejects.toThrow(
@@ -328,7 +338,7 @@ describe('AdminsService', () => {
     });
 
     it('should pass along any repo errors without information loss during retrieval', async () => {
-      mockRepository.findOne.mockResolvedValueOnce(
+      mockRepository.findOne.mockRejectedValueOnce(
         new Error('There was a problem retrieving the entry'),
       );
 
@@ -339,7 +349,7 @@ describe('AdminsService', () => {
 
     it('should pass along any repo errors without information loss during saving', async () => {
       mockRepository.findOne.mockResolvedValue(mockAdmin);
-      mockRepository.remove.mockResolvedValueOnce(
+      mockRepository.remove.mockRejectedValueOnce(
         new Error('There was a problem saving the entry'),
       );
       await expect(service.remove(1)).rejects.toThrow(
