@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Discipline } from './disciplines.entity';
 
+/**
+ * Service to interface with the disciplines repository.
+ */
 @Injectable()
 export class DisciplinesService {
   constructor(

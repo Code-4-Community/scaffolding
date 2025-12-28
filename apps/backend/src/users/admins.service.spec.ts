@@ -2,11 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
-import {
-  AdminsService,
-  CreateAdminDto,
-  UpdateAdminEmailDto,
-} from './admins.service';
+import { AdminsService } from './admins.service';
+import { CreateAdminDto } from './dtos/create-admin.dto';
+import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
 import { Admin } from './admin.entity';
 import { Site } from './types';
 

@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.join(__dirname, '../../../.env') });
+dotenv.config({ path: path.join(__dirname, '../../../../.env') });
 
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { AWSS3Service } from './aws-s3.service';

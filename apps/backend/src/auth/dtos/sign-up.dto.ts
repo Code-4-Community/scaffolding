@@ -1,15 +1,40 @@
 import { IsEmail, IsString } from 'class-validator';
 
+/**
+ * Defines the expected shape of data when a user desires to sign up to the system.
+ *
+ * DTO - data transfer object (defines and validates the structure of data sent over the network).
+ */
 export class SignUpDto {
+  /**
+   * The first name of the user.
+   *
+   * Example: 'Jane'.
+   */
   @IsString()
   firstName: string;
 
+  /**
+   * The last name of the user.
+   *
+   * Example: 'Doe'.
+   */
   @IsString()
   lastName: string;
 
+  /**
+   * The email of the user.
+   *
+   * Example: 'Jane.doe@northeastern.edu'.
+   */
   @IsEmail()
   email: string;
 
+  /**
+   * The password of the user.
+   *
+   * TODO: Clarify whether this is in plain text or in an encrypted format.
+   */
   @IsString()
   password: string;
 }
