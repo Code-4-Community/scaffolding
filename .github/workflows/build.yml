@@ -1,0 +1,39 @@
+Build: Build run
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build:
+    
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x, 24.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+
+    - name: Create .env file
+      run: |
+
+        echo "AWS_BUCKET_NAME=dummy" >> .env
+        echo "AWS_SECRET_ACCESS_KEY=dummy" >> .env
+        echo "AWS_ACCESS_KEY_ID=dummy" >> .env
+        echo "AWS_REGION=us-east-2" >> .env
+
+    - name: Install Dependencies
+      run: yarn install
+
+    - name: Run Jest tests 
+      run: npx nx run-many -t serve -p frontend backend
