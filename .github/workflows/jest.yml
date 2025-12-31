@@ -36,4 +36,4 @@ jobs:
       run: yarn install
 
     - name: Run Jest tests 
-      run: yarn testNX_DB_HOST=localhost
+      run: yarn test
