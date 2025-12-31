@@ -35,7 +35,7 @@ describe('EmailService', () => {
     expect(mockAmazonSESWrapper.sendEmails).toHaveBeenCalled();
   });
 
-  it('should throw an erorr and pass on information with no loss if the SESWrapper throws', async () => {
+  it('should throw an error and pass on information with no loss if the SESWrapper throws', async () => {
     mockAmazonSESWrapper.sendEmails.mockRejectedValueOnce(
       new Error('Error in sending email.'),
     );

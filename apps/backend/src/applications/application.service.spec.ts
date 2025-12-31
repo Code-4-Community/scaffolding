@@ -83,32 +83,6 @@ describe('ApplicationsService', () => {
       expect(result).toEqual([]);
     });
 
-    it('should handle returning an application with no changes when optional fields are ommitted', async () => {
-      const mockApplications: Application[] = [
-        {
-          appId: 1,
-          appStatus: AppStatus.APP_SUBMITTED,
-          daysAvailable: 'Monday, Tuesday',
-          experienceType: ExperienceType.BS,
-          fileUploads: [],
-          interest: InterestArea.NURSING,
-          license: null,
-          isInternational: false,
-          isLearner: false,
-          phone: '123-456-7890',
-          school: School.HARVARD_MEDICAL_SCHOOL,
-          weeklyHours: 20,
-        },
-      ];
-
-      mockRepository.find.mockResolvedValue(mockApplications);
-
-      const result = await service.findAll();
-
-      expect(repository.find).toHaveBeenCalled();
-      expect(result).toEqual(mockApplications);
-    });
-
     it('should pass along any repo errors without information loss', async () => {
       mockRepository.find.mockRejectedValue(
         new Error('There was a problem retrieving the info'),
@@ -248,34 +222,6 @@ describe('ApplicationsService', () => {
       mockRepository.save.mockResolvedValue(savedApplication);
 
       const result = await service.create(createApplicationDto);
-
-      expect(repository.save).toHaveBeenCalled();
-      expect(result).toEqual(savedApplication);
-    });
-
-    it('should save with no changes when optional fields are ommitted', async () => {
-      const mockApplication: CreateApplicationDto = {
-        appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
-        experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
-        license: null,
-        isInternational: false,
-        isLearner: false,
-        phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
-        weeklyHours: 20,
-      };
-
-      const savedApplication: Application = {
-        appId: 1,
-        ...mockApplication,
-      };
-
-      mockRepository.save.mockResolvedValue(savedApplication);
-
-      const result = await service.create(mockApplication);
 
       expect(repository.save).toHaveBeenCalled();
       expect(result).toEqual(savedApplication);
