@@ -2,7 +2,7 @@ name: Jest run
 
 on:
   push:
-    branches: ['main', '97-github-actions---automatic-lint-and-test-check']
+    branches: ['main']
   pull_request:
     branches: ['main']
 
