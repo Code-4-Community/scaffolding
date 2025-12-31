@@ -28,7 +28,6 @@ jobs:
       run: |
         echo "NX_DB_PORT=5432" >> .env
         echo "NX_DB_USERNAME=postgres >> .env"
-        echo "NX_DB_PASSWORD="
         echo "NX_DB_DATABASE="bhchp" >> .env
         echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
         echo "AWS_REGION=us-east-2" >> .env
