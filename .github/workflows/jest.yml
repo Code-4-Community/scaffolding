@@ -24,8 +24,17 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
 
+    - name: Create .env file
+      run: |
+        echo "NX_DB_PORT=5432" >> .env
+        echo "NX_DB_USERNAME=postgres >> .env"
+        echo "NX_DB_PASSWORD="
+        echo "NX_DB_DATABASE="bhchp" >> .env
+        echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
+        echo "AWS_REGION=us-east-2" >> .env
+
     - name: Install Dependencies
       run: yarn install
 
     - name: Run Jest tests 
-      run: yarn test
+      run: yarn testNX_DB_HOST=localhost
