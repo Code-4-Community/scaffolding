@@ -30,6 +30,8 @@ jobs:
         echo "NX_DB_USERNAME=postgres" >> .env"
         echo "NX_DB_DATABASE="bhchp" >> .env
         echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
+        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
         echo "AWS_REGION=us-east-2" >> .env
 
     - name: Install Dependencies
