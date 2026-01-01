@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 /**
  * Defines the expected shape of data when verifying a user.
@@ -12,6 +12,7 @@ export class VerifyUserDto {
    * Example: 'Jane.doe@northeastern.edu'.
    */
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   /**
@@ -20,5 +21,6 @@ export class VerifyUserDto {
    * TODO: Clarify how this code is obtained and if there is a standard format.
    */
   @IsString()
+  @IsNotEmpty()
   verificationCode: string;
 }

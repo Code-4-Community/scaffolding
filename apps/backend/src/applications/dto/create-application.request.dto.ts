@@ -5,6 +5,11 @@ import {
   IsString,
   IsArray,
   IsOptional,
+  IsNotEmpty,
+  IsDefined,
+  Matches,
+  Min,
+  Max,
 } from 'class-validator';
 import { AppStatus, ExperienceType, InterestArea, School } from '../types';
 
@@ -20,6 +25,7 @@ export class CreateApplicationDto {
    * Example: AppStatus.APP_SUBMITTED.
    */
   @IsEnum(AppStatus)
+  @IsDefined()
   appStatus: AppStatus;
 
   /**
@@ -28,6 +34,7 @@ export class CreateApplicationDto {
    * Example: 'Monday, Tuesday'.
    */
   @IsString()
+  @IsNotEmpty()
   daysAvailable: string;
 
   /**
@@ -36,11 +43,14 @@ export class CreateApplicationDto {
    * Example: ExperienceType.BS.
    */
   @IsEnum(ExperienceType)
+  @IsDefined()
   experienceType: ExperienceType;
 
-  // TODO: clarify what format these strings are in and an example of what type of file.
+  // TODO: clarsify what format these strings are in and an example of what type of file.
   @IsArray()
   @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  @IsDefined()
   fileUploads: string[];
 
   /**
@@ -49,11 +59,13 @@ export class CreateApplicationDto {
    * Example: InterestArea.NURSING.
    */
   @IsEnum(InterestArea)
+  @IsDefined()
   interest: InterestArea;
 
   // TODO: clarify what format this string is in, and why it's not an array
   // if people can hold multiple licenses in real life.
   @IsString()
+  @IsNotEmpty()
   license: string;
 
   /**
@@ -64,6 +76,7 @@ export class CreateApplicationDto {
    * Example: true.
    */
   @IsBoolean()
+  @IsDefined()
   isInternational: boolean;
 
   /**
@@ -72,6 +85,7 @@ export class CreateApplicationDto {
    * Example: true.
    */
   @IsBoolean()
+  @IsDefined()
   isLearner: boolean;
 
   /**
@@ -80,6 +94,10 @@ export class CreateApplicationDto {
    * Example: "123-456-7890".
    */
   @IsString()
+  @IsDefined()
+  @Matches(/^\d{3}-\d{3}-\d{4}$/, {
+    message: 'Phone number must be in ###-###-#### format',
+  })
   phone: string;
 
   /**
@@ -88,6 +106,7 @@ export class CreateApplicationDto {
    * Example: School.STANFORD_MEDICINE.
    */
   @IsEnum(School)
+  @IsDefined()
   school: School;
 
   /**
@@ -114,5 +133,8 @@ export class CreateApplicationDto {
    * Example: 20.
    */
   @IsNumber()
+  @IsDefined()
+  @Min(1)
+  @Max(168) // 168 hours in a week, can change later if there's a business limit
   weeklyHours: number;
 }

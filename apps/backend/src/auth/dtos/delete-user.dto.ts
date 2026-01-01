@@ -1,4 +1,4 @@
-import { IsPositive } from 'class-validator';
+import { IsNumber, IsPositive } from 'class-validator';
 
 /**
  * Defines the expected shape of data for deleting a user.
@@ -10,5 +10,6 @@ export class DeleteUserDto {
    * The id of the user within the repository to delete.
    */
   @IsPositive()
+  @IsNumber({ maxDecimalPlaces: 0 })
   userId: number;
 }

@@ -1,4 +1,4 @@
-import { IsEnum } from 'class-validator';
+import { IsDefined, IsEnum } from 'class-validator';
 import { InterestArea } from '../types';
 
 /**
@@ -17,5 +17,6 @@ export class UpdateApplicationInterestDto {
       ', ',
     )}`,
   })
+  @IsDefined()
   interest: InterestArea;
 }
