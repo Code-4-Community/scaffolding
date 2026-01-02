@@ -74,10 +74,42 @@ describe('AdminsService', () => {
       };
 
       mockRepository.create.mockReturnValue(mockAdmin);
-      mockRepository.save.mockRejectedValue(new Error('Database error'));
+      mockRepository.save.mockRejectedValueOnce(new Error('Database error'));
 
       await expect(service.create(createAdminDto)).rejects.toThrow(
         'Database error',
+      );
+    });
+    it('should pass along any repo errors without information loss during create', async () => {
+      const createAdminDto: CreateAdminDto = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        site: Site.FENWAY,
+      };
+
+      mockRepository.create.mockImplementationOnce(() => {
+        throw new Error('There was a problem creating the entry');
+      });
+
+      await expect(service.create(createAdminDto)).rejects.toThrow(
+        'There was a problem creating the entry',
+      );
+    });
+
+    it('should pass along any repo errors without information loss during save', async () => {
+      const createAdminDto: CreateAdminDto = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        site: Site.FENWAY,
+      };
+
+      mockRepository.create.mockReturnValue(mockAdmin);
+      mockRepository.save.mockRejectedValueOnce(
+        new Error('There was a problem saving the entry'),
+      );
+
+      await expect(service.create(createAdminDto)).rejects.toThrow(
+        'There was a problem saving the entry',
       );
     });
   });
@@ -88,7 +120,7 @@ describe('AdminsService', () => {
         mockAdmin,
         { ...mockAdmin, id: 2, email: 'jane@example.com' },
       ];
-      mockRepository.find.mockResolvedValue(mockAdmins);
+      mockRepository.find.mockResolvedValueOnce(mockAdmins);
 
       const result = await service.findAll();
 
@@ -97,11 +129,21 @@ describe('AdminsService', () => {
     });
 
     it('should return empty array when no admins exist', async () => {
-      mockRepository.find.mockResolvedValue([]);
+      mockRepository.find.mockResolvedValueOnce([]);
 
       const result = await service.findAll();
 
       expect(result).toEqual([]);
+    });
+
+    it('should pass along any repo errors without information loss during retrieval', async () => {
+      mockRepository.find.mockRejectedValueOnce(
+        new Error('There was a problem retrieving the entries'),
+      );
+
+      await expect(service.findAll()).rejects.toThrow(
+        'There was a problem retrieving the entries',
+      );
     });
   });
 
@@ -120,6 +162,16 @@ describe('AdminsService', () => {
 
       await expect(service.findOne(999)).rejects.toThrow(
         new NotFoundException('Admin with ID 999 not found'),
+      );
+    });
+
+    it('should pass along any repo errors without information loss during retrieval', async () => {
+      mockRepository.findOne.mockRejectedValueOnce(
+        new Error('There was a problem retrieving the entry'),
+      );
+
+      await expect(service.findOne(1)).rejects.toThrow(
+        'There was a problem retrieving the entry',
       );
     });
   });
@@ -143,6 +195,16 @@ describe('AdminsService', () => {
 
       expect(result).toBeNull();
     });
+
+    it('should pass along any repo errors without information loss during retrieval', async () => {
+      mockRepository.findOne.mockImplementationOnce(() => {
+        throw new Error('There was a problem retrieving the entries');
+      });
+
+      await expect(service.findByEmail('n')).rejects.toThrow(
+        'There was a problem retrieving the entries',
+      );
+    });
   });
 
   describe('findBySite', () => {
@@ -164,6 +226,16 @@ describe('AdminsService', () => {
       const result = await service.findBySite(Site.SITE_A);
 
       expect(result).toEqual([]);
+    });
+
+    it('should pass along error information from repo with no loss', async () => {
+      mockRepository.find.mockRejectedValueOnce(
+        new Error('error during retrieval'),
+      );
+
+      await expect(service.findBySite(Site.SITE_A)).rejects.toThrow(
+        'error during retrieval',
+      );
     });
   });
 
@@ -215,6 +287,33 @@ describe('AdminsService', () => {
 
       expect(result.email).toBe('valid@example.com');
     });
+
+    it('should pass along any repo errors without information loss during retrieval', async () => {
+      const updateEmailDto: UpdateAdminEmailDto = {
+        email: 'valid@example.com',
+      };
+
+      mockRepository.findOne.mockRejectedValueOnce(
+        new Error('There was a problem retrieving the entry'),
+      );
+
+      await expect(service.updateEmail(1, updateEmailDto)).rejects.toThrow(
+        'There was a problem retrieving the entry',
+      );
+    });
+
+    it('should pass along any repo errors without information loss during saving', async () => {
+      const updateEmailDto: UpdateAdminEmailDto = {
+        email: 'valid@example.com',
+      };
+      mockRepository.findOne.mockResolvedValue(mockAdmin);
+      mockRepository.save.mockRejectedValueOnce(
+        new Error('There was a problem saving the entry'),
+      );
+      await expect(service.updateEmail(1, updateEmailDto)).rejects.toThrow(
+        'There was a problem saving the entry',
+      );
+    });
   });
 
   describe('remove', () => {
@@ -233,6 +332,26 @@ describe('AdminsService', () => {
 
       await expect(service.remove(999)).rejects.toThrow(
         new NotFoundException('Admin with ID 999 not found'),
+      );
+    });
+
+    it('should pass along any repo errors without information loss during retrieval', async () => {
+      mockRepository.findOne.mockRejectedValueOnce(
+        new Error('There was a problem retrieving the entry'),
+      );
+
+      await expect(service.remove(1)).rejects.toThrow(
+        'There was a problem retrieving the entry',
+      );
+    });
+
+    it('should pass along any repo errors without information loss during saving', async () => {
+      mockRepository.findOne.mockResolvedValue(mockAdmin);
+      mockRepository.remove.mockRejectedValueOnce(
+        new Error('There was a problem saving the entry'),
+      );
+      await expect(service.remove(1)).rejects.toThrow(
+        'There was a problem saving the entry',
       );
     });
   });
