@@ -123,6 +123,18 @@ describe('LearnersController', () => {
 
       expect(result).toEqual([]);
     });
+
+    it('should error out without information loss if the service throws an error', async () => {
+      jest
+        .spyOn(mockLearnersService, 'findAll')
+        .mockRejectedValue(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(controller.getAllLearners()).rejects.toThrow(
+        `There was a problem retrieving the info`,
+      );
+    });
   });
 
   describe('getLearner', () => {
