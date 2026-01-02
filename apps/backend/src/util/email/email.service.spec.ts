@@ -34,4 +34,13 @@ describe('EmailService', () => {
     await service.queueEmail('recipient@email.com', 'Subject', '<h1>body</h1>');
     expect(mockAmazonSESWrapper.sendEmails).toHaveBeenCalled();
   });
+
+  it('should throw an error and pass on information with no loss if the SESWrapper throws', async () => {
+    mockAmazonSESWrapper.sendEmails.mockRejectedValueOnce(
+      new Error('Error in sending email.'),
+    );
+    await expect(
+      service.queueEmail('recipient@email.com', 'Subject', '<h1>body</h1>'),
+    ).rejects.toThrow('Error in sending email.');
+  });
 });
