@@ -46,7 +46,7 @@ export class CreateApplicationDto {
   @IsDefined()
   experienceType: ExperienceType;
 
-  // TODO: clarsify what format these strings are in and an example of what type of file.
+  // TODO: clarify what format these strings are in and an example of what type of file.
   @IsArray()
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
