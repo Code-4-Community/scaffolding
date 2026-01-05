@@ -8,7 +8,8 @@ on:
 
 jobs:
   build:
-    
+    timeout-minutes: 3
+
     runs-on: ubuntu-latest
 
     steps:
@@ -33,3 +34,13 @@ jobs:
 
     - name: Build Frontend
       run: npx nx serve frontend
+
+    - name: Start frontend
+      run: |
+        npx nx serve frontend &
+
+    - name: Wait for server
+      run: npx wait-on http://localhost:4200
+
+    - name: Check Frontend returns content
+      run: curl -fsS 'http://localhost:4200/' || (echo "No response" && exit 1)
