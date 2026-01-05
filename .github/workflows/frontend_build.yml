@@ -30,7 +30,7 @@ jobs:
         echo "AWS_REGION=us-east-2" >> .env
 
     - name: Install Dependencies
-      run: yarn install
+      run: yarn install & yarn add wait-on
 
     - name: Start frontend
       run: |
