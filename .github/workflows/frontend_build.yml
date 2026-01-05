@@ -30,14 +30,11 @@ jobs:
         echo "AWS_REGION=us-east-2" >> .env
 
     - name: Install Dependencies
-      run: yarn install & yarn add wait-on
+      run: yarn install
 
     - name: Start frontend
       run: |
-        npx nx serve frontend &
-
-    - name: Wait for server
-      run: npx wait-on http://localhost:4200
+        npx nx serve frontend & sleep 1m
 
     - name: Check Frontend returns content
       run: curl -fsS 'http://localhost:4200/' || (echo "No response" && exit 1)
