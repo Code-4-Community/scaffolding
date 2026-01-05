@@ -9,7 +9,7 @@ import NotFound from '@containers/404';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Root />,
+    element: <Roor />,
     errorElement: <NotFound />,
   },
 ]);
