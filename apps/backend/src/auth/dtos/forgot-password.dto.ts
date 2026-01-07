@@ -1,4 +1,4 @@
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 /**
  * Defines the expected shape of data for initiating a process for when the user
@@ -13,5 +13,6 @@ export class ForgotPasswordDto {
    * Example: 'Jane.Doe@northeastern.edu'.
    */
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 }
