@@ -1,4 +1,4 @@
-name: Frontend build
+name: Backend build
 
 on:
   push:
@@ -30,5 +30,5 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Build frontend
-      run: npx nx build frontend
+    - name: Build backend
+      run: npx nx build backend
