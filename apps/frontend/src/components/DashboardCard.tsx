@@ -7,7 +7,6 @@ export type DashboardCardProps = {
   icon: string;
   title: string;
   value: number;
-  TODO: Remove, I am adding this to break frontend for GitHub Actions
 };
 
 export default function DashboardCard({
