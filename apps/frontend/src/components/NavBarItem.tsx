@@ -1,13 +1,13 @@
 import React from 'react';
 import { Flex, Text, Box, Link } from '@chakra-ui/react';
 
-interface NavbarItemProps {
+export type NavbarItemProps = {
   href: string;
   label: string;
   icon: React.ReactNode;
-}
+};
 
-const NavbarItem: React.FC<NavbarItemProps> = ({ href, label, icon }) => {
+export default function NavBarItem({ href, label, icon }: NavbarItemProps) {
   return (
     <Link
       href={href}
@@ -35,6 +35,4 @@ const NavbarItem: React.FC<NavbarItemProps> = ({ href, label, icon }) => {
       </Flex>
     </Link>
   );
-};
-
-export default NavbarItem;
+}

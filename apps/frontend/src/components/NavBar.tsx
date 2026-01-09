@@ -7,11 +7,11 @@ import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import { CgProfile } from 'react-icons/cg';
 
-interface NavBarProps {
+export type NavBarProps = {
   logo: React.ReactNode;
-}
+};
 
-const NavBar: React.FC<NavBarProps> = ({ logo }) => {
+export default function NavBar({ logo }: NavBarProps) {
   return (
     <Box
       display="flex"
@@ -89,6 +89,4 @@ const NavBar: React.FC<NavBarProps> = ({ logo }) => {
       </Link>
     </Box>
   );
-};
-
-export default NavBar;
+}
