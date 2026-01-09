@@ -1,15 +1,25 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { DISCIPLINE_VALUES } from '../disciplines/discplines.constants';
+import { DISCIPLINE_VALUES } from './disciplines.constants';
 
-// describes a BHCHP medical discipline
-// Current list of disciplines: Volunteers, Nursing, Public Health, MD, PA, NP,
-// Research, Social work, Psychiatry, Pharmacy, IT
+/**
+ * Represents the desired columns for the database table
+ * in the repository for the system's medical disciplines
+ * (BHCHP medical discipline) and their admin Ids.
+ *
+ * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
+ * Research, Social work, Psychiatry, Pharmacy, IT.
+ */
 @Entity('discipline')
 export class Discipline {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // enforce discipline names to be one of the predefined values
+  /**
+   * Predefined discipline values present in the table.
+   *
+   * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
+   * Research, Social work, Psychiatry, Pharmacy, IT.
+   */
   @Column({
     type: 'enum',
     enum: DISCIPLINE_VALUES,
@@ -17,6 +27,7 @@ export class Discipline {
   })
   name: DISCIPLINE_VALUES;
 
+  // TODO: Clarify what this is
   @Column({ type: 'int', array: true, default: () => "'{}'" })
   admin_ids: number[];
 }
