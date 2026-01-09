@@ -8,40 +8,42 @@ import checkmarkIcon from '../assets/icons/checkmark.svg';
 
 const Root: React.FC = () => {
   return (
-    <div>
+    <div className="flex flex-row">
       <NavBar logo={'BHCHP'} />
-      <div className="flex flex-row gap-6 pl-4 pt-4">
-        <DashboardCard
-          className="basis-1/4"
-          title="Total Applications"
-          value={298}
-          description="All time submissions"
-          icon={usersIcon}
-        />
+      <div id="main-content">
+        <div className="flex flex-row gap-6 pl-4 pt-4">
+          <DashboardCard
+            className="basis-1/4"
+            title="Total Applications"
+            value={298}
+            description="All time submissions"
+            icon={usersIcon}
+          />
 
-        <DashboardCard
-          className="basis-1/4"
-          title="Pending Review"
-          value={52}
-          description="Awaiting decision"
-          icon={clockIcon}
-        />
+          <DashboardCard
+            className="basis-1/4"
+            title="Pending Review"
+            value={52}
+            description="Awaiting decision"
+            icon={clockIcon}
+          />
 
-        <DashboardCard
-          className="basis-1/4"
-          title="Rejected"
-          value={12}
-          description="Not matched"
-          icon={crossIcon}
-        />
+          <DashboardCard
+            className="basis-1/4"
+            title="Rejected"
+            value={12}
+            description="Not matched"
+            icon={crossIcon}
+          />
 
-        <DashboardCard
-          className="basis-1/4"
-          title="Approved"
-          value={102}
-          description="Active volunteers "
-          icon={checkmarkIcon}
-        />
+          <DashboardCard
+            className="basis-1/4"
+            title="Approved"
+            value={102}
+            description="Active volunteers "
+            icon={checkmarkIcon}
+          />
+        </div>
       </div>
     </div>
   );
