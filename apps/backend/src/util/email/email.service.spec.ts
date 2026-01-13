@@ -29,7 +29,7 @@ describe('EmailService', () => {
   it('should send an email by calling SES', async () => {
     mockAmazonSESWrapper.sendEmails.mockResolvedValue({
       MessageId: 'test',
-      $response: null,
+      $metadata: {},
     });
     await service.queueEmail('recipient@email.com', 'Subject', '<h1>body</h1>');
     expect(mockAmazonSESWrapper.sendEmails).toHaveBeenCalled();
