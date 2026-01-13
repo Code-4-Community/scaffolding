@@ -41,12 +41,12 @@ export default function NavBar({ logo }: NavBarProps) {
           <NavbarItem href="#dashboard" label="Dashboard" icon={<FaHouse />} />
           <NavbarItem
             href="#notification"
-            label="Notification"
+            label="Notifications"
             icon={<FaBell />}
           />
           <NavbarItem
             href="#setting"
-            label="Setting"
+            label="Settings"
             icon={<IoIosSettings />}
           />
         </Flex>
