@@ -18,16 +18,16 @@ export default function DashboardCard({
 }: DashboardCardProps) {
   return (
     <Card.Root
-      borderRadius="32px"
-      borderWidth="3px"
+      borderRadius="18px"
+      borderWidth="2px"
       borderColor="black"
       bg="white"
-      pl={8}
-      pr={8}
+      pl={3}
+      pr={3}
       className={className}
     >
       <Card.Body>
-        <Flex justify="space-between" align="flex-start" mb={8}>
+        <Flex justify="space-between" align="flex-start" mb={4}>
           <Text fontSize="l" fontWeight="normal" lineHeight="1.3" maxW="70%">
             {title}
           </Text>
@@ -35,13 +35,13 @@ export default function DashboardCard({
             <Image
               src={icon}
               alt={`${title} icon`}
-              width="25px"
-              height="25px"
+              width="22px"
+              height="22px"
             />
           </Box>
         </Flex>
 
-        <Text fontSize="2xl" fontWeight="bold" mb={8}>
+        <Text fontSize="xl" fontWeight="bold" mb={4}>
           {value}
         </Text>
 

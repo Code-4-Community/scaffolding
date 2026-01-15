@@ -25,27 +25,21 @@ export default function NavBar({ logo }: NavBarProps) {
       bg="#013594"
     >
       <Box width="100%">
-        <Flex justifyContent="space-between" alignItems="center" mb="12px">
-          <Heading
-            as="h3"
-            size="md"
-            fontWeight="600"
-            color="white"
-            fontSize="20px"
-          >
+        <Flex justifyContent="space-between" alignItems="center">
+          <Heading size="2xl" fontWeight="600" color="white" mb="24px">
             {logo}
           </Heading>
         </Flex>
         <SearchBar />
-        <Flex direction="column" width="100%">
+        <Flex direction="column" width="100%" paddingTop="16px">
           <NavbarItem href="#dashboard" label="Dashboard" icon={<FaHouse />} />
           <NavbarItem
-            href="#notification"
+            href="#notifications"
             label="Notifications"
             icon={<FaBell />}
           />
           <NavbarItem
-            href="#setting"
+            href="#settings"
             label="Settings"
             icon={<IoIosSettings />}
           />

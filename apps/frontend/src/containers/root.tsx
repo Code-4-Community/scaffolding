@@ -11,7 +11,7 @@ const Root: React.FC = () => {
   return (
     <div className="flex flex-row">
       <NavBar logo={'BHCHP'} />
-      <Box id="main-content" p="10">
+      <Box id="main-content" p="10" flex="1">
         <Box className="flex flex-row gap-6 pl-4 pt-4">
           <DashboardCard
             className="basis-1/4"

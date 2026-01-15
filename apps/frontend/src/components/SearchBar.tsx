@@ -14,7 +14,7 @@ export default function SearchBar({
   onChange,
 }: SearchBarProps) {
   return (
-    <Flex align="center" bg="#204AA0" width="100%" borderRadius="4px" px="8px">
+    <Flex align="center" bg="#204AA0" width="100%" borderRadius="4px" px="12px">
       <IoSearch color="white" size="16px" />
       <Input
         placeholder={placeholder}

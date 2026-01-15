@@ -18,7 +18,7 @@ export default function NavBarItem({ href, label, icon }: NavbarItemProps) {
       <Flex
         align="center"
         gap="12px"
-        padding="12px 16px"
+        padding="12px 4px 12px"
         borderRadius="md"
         cursor="pointer"
         as="h3"
