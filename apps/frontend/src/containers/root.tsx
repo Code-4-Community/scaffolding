@@ -5,13 +5,14 @@ import usersIcon from '../assets/icons/users.svg';
 import clockIcon from '../assets/icons/clock.svg';
 import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
+import { Box } from '@chakra-ui/react';
 
 const Root: React.FC = () => {
   return (
     <div className="flex flex-row">
       <NavBar logo={'BHCHP'} />
-      <div id="main-content">
-        <div className="flex flex-row gap-6 pl-4 pt-4">
+      <Box id="main-content" p="10">
+        <Box className="flex flex-row gap-6 pl-4 pt-4">
           <DashboardCard
             className="basis-1/4"
             title="Total Applications"
@@ -43,8 +44,8 @@ const Root: React.FC = () => {
             description="Active volunteers "
             icon={checkmarkIcon}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
     </div>
   );
 };
