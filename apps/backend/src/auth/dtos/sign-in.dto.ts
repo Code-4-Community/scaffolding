@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 /**
  * Defines the expected shape of data when a user desires to sign in.
@@ -12,6 +12,7 @@ export class SignInDto {
    * Example: 'jane.doe@northeastern.edu'.
    */
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   /**
@@ -20,5 +21,6 @@ export class SignInDto {
    * TODO: find out if this is in plain text or encrypted.
    */
   @IsString()
+  @IsNotEmpty()
   password: string;
 }

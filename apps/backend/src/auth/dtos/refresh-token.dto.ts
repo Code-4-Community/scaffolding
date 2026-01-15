@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 /**
  * Defines the expected shape of data for initiating a process for when the user
@@ -9,9 +9,11 @@ import { IsString } from 'class-validator';
 export class RefreshTokenDto {
   // TODO: Clarify what this is.
   @IsString()
+  @IsNotEmpty()
   refreshToken: string;
 
   // TODO: Clarify what this is
   @IsString()
+  @IsNotEmpty()
   userSub: string;
 }

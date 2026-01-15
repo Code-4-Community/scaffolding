@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
 /**
  * Defines the expected shape of data for confirming a user's new password
@@ -18,9 +18,11 @@ export class ConfirmPasswordDto {
    * TODO: clarify whether this password is encrypted or in plain format
    */
   @IsString()
+  @IsNotEmpty()
   newPassword: string;
 
   // TODO: clarify where this code comes from
   @IsString()
+  @IsNotEmpty()
   confirmationCode: string;
 }

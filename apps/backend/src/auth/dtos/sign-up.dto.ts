@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 /**
  * Defines the expected shape of data when a user desires to sign up to the system.
@@ -12,6 +12,7 @@ export class SignUpDto {
    * Example: 'Jane'.
    */
   @IsString()
+  @IsNotEmpty()
   firstName: string;
 
   /**
@@ -20,6 +21,7 @@ export class SignUpDto {
    * Example: 'Doe'.
    */
   @IsString()
+  @IsNotEmpty()
   lastName: string;
 
   /**
@@ -28,6 +30,7 @@ export class SignUpDto {
    * Example: 'Jane.doe@northeastern.edu'.
    */
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   /**
@@ -36,5 +39,6 @@ export class SignUpDto {
    * TODO: Clarify whether this is in plain text or in an encrypted format.
    */
   @IsString()
+  @IsNotEmpty()
   password: string;
 }
