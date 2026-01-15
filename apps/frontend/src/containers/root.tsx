@@ -1,5 +1,5 @@
 import DashboardCard from '@components/DashboardCard';
-import NavBar from '@components/NavBar';
+import NavBar from '@components/NavBar/NavBar';
 
 import usersIcon from '../assets/icons/users.svg';
 import clockIcon from '../assets/icons/clock.svg';

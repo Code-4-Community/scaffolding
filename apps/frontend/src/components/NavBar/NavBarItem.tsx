@@ -17,19 +17,18 @@ export default function NavBarItem({ href, label, icon }: NavbarItemProps) {
     >
       <Flex
         align="center"
-        gap="12px"
-        padding="12px 4px 12px"
+        gap="18px"
+        padding="16px 4px"
         borderRadius="md"
         cursor="pointer"
-        as="h3"
         fontWeight="400"
         color="white"
         _focus={{ outline: 'none', boxShadow: 'none' }}
         _focusVisible={{ outline: 'none', boxShadow: 'none' }}
       >
-        <Box fontSize="20px">{icon}</Box>
+        <Box fontSize="18px">{icon}</Box>
 
-        <Text fontSize="16px" fontWeight="500">
+        <Text fontSize="14px" fontWeight="500">
           {label}
         </Text>
       </Flex>
