@@ -16,6 +16,11 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
   async intercept(context: ExecutionContext, handler: CallHandler) {
     const request = context.switchToHttp().getRequest();
+
+    if (!request.user || !request.user.idUser) {
+      return handler.handle();
+    }
+
     const cognitoUserAttributes = await this.authService.getUser(
       request.user.idUser,
     );

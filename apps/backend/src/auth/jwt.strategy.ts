@@ -5,6 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import CognitoAuthConfig from './aws-exports';
 
+// TODO: Clarify what this is
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {

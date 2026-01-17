@@ -12,7 +12,8 @@ const mockLearnersService: Partial<LearnersService> = {
   findOne: jest.fn(),
   findAll: jest.fn(),
   findByAppId: jest.fn(),
-  delete: jest.fn(),
+  updateStartDate: jest.fn(),
+  updateEndDate: jest.fn(),
 };
 
 const mockAuthService = {
@@ -122,6 +123,18 @@ describe('LearnersController', () => {
 
       expect(result).toEqual([]);
     });
+
+    it('should error out without information loss if the service throws an error', async () => {
+      jest
+        .spyOn(mockLearnersService, 'findAll')
+        .mockRejectedValue(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(controller.getAllLearners()).rejects.toThrow(
+        `There was a problem retrieving the info`,
+      );
+    });
   });
 
   describe('getLearner', () => {
@@ -146,26 +159,69 @@ describe('LearnersController', () => {
     });
   });
 
-  describe('deleteLearner', () => {
-    it('should delete a learner successfully', async () => {
+  describe('updateStartDate', () => {
+    const updatedStartDate = '2024-02-01';
+    const updatedLearner = {
+      ...defaultLearner,
+      startDate: new Date(updatedStartDate),
+    };
+
+    it('should update the start date of a learner', async () => {
       jest
-        .spyOn(mockLearnersService, 'delete')
-        .mockResolvedValue(defaultLearner);
+        .spyOn(mockLearnersService, 'updateStartDate')
+        .mockResolvedValue(updatedLearner);
 
-      const result = await controller.deleteLearner(1);
+      const result = await controller.updateStartDate(1, updatedStartDate);
 
-      // returns the deleted learner
-      expect(result).toEqual(defaultLearner);
-      expect(mockLearnersService.delete).toHaveBeenCalledWith(1);
+      expect(result).toEqual(updatedLearner);
+      expect(mockLearnersService.updateStartDate).toHaveBeenCalledWith(
+        1,
+        new Date(updatedStartDate),
+      );
     });
 
-    it('should throw an error if learner is not found', async () => {
-      const errorMessage = 'Learner with ID 999 not found';
+    it('should handle service errors when updating start date', async () => {
+      const errorMessage = 'Start date must be before end date';
       jest
-        .spyOn(mockLearnersService, 'delete')
+        .spyOn(mockLearnersService, 'updateStartDate')
         .mockRejectedValue(new Error(errorMessage));
 
-      await expect(controller.deleteLearner(999)).rejects.toThrow(errorMessage);
+      await expect(
+        controller.updateStartDate(1, updatedStartDate),
+      ).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('updateEndDate', () => {
+    const updatedEndDate = '2024-07-31';
+    const updatedLearner = {
+      ...defaultLearner,
+      endDate: new Date(updatedEndDate),
+    };
+
+    it('should update the end date of a learner', async () => {
+      jest
+        .spyOn(mockLearnersService, 'updateEndDate')
+        .mockResolvedValue(updatedLearner);
+
+      const result = await controller.updateEndDate(1, updatedEndDate);
+
+      expect(result).toEqual(updatedLearner);
+      expect(mockLearnersService.updateEndDate).toHaveBeenCalledWith(
+        1,
+        new Date(updatedEndDate),
+      );
+    });
+
+    it('should handle service errors when updating end date', async () => {
+      const errorMessage = 'End date must be after start date';
+      jest
+        .spyOn(mockLearnersService, 'updateEndDate')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.updateEndDate(1, updatedEndDate)).rejects.toThrow(
+        errorMessage,
+      );
     });
   });
 });
