@@ -81,6 +81,14 @@ export class LearnersController {
     return this.learnersService.findOne(appId);
   }
 
+  /**
+   * Exposes an endpoint to delete a learner by id.
+   * @param id The id of the learner to delete.
+   * @returns The deleted learner object.
+   * @throws {Error} If the repository throws an error.
+   * @throws {NotFoundException} with message 'Learner with ID <id> not found'
+   *                             if the learner with the specified id does not exist.
+   */
   @Delete('/:id')
   async deleteLearner(@Param('id', ParseIntPipe) id: number): Promise<Learner> {
     return this.learnersService.delete(id);

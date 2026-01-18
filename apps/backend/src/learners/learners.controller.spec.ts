@@ -14,6 +14,7 @@ const mockLearnersService: Partial<LearnersService> = {
   findByAppId: jest.fn(),
   updateStartDate: jest.fn(),
   updateEndDate: jest.fn(),
+  delete: jest.fn(),
 };
 
 const mockAuthService = {
@@ -222,6 +223,62 @@ describe('LearnersController', () => {
       await expect(controller.updateEndDate(1, updatedEndDate)).rejects.toThrow(
         errorMessage,
       );
+    });
+  });
+
+  describe('deleteLearner', () => {
+    it('should delete a learner successfully and return the deleted learner', async () => {
+      jest
+        .spyOn(mockLearnersService, 'delete')
+        .mockResolvedValue(defaultLearner);
+
+      const result = await controller.deleteLearner(1);
+
+      expect(result).toEqual(defaultLearner);
+      expect(mockLearnersService.delete).toHaveBeenCalledWith(1);
+    });
+
+    it('should verify learner cannot be retrieved after deletion', async () => {
+      const learnerId = 1;
+
+      // Mock that learner exists before deletion
+      jest
+        .spyOn(mockLearnersService, 'findOne')
+        .mockResolvedValueOnce(defaultLearner);
+
+      // Verify learner exists before deletion
+      const learnerBeforeDeletion = await controller.getLearner(learnerId);
+      expect(learnerBeforeDeletion).toEqual(defaultLearner);
+
+      // Mock successful deletion - returns the deleted learner
+      jest
+        .spyOn(mockLearnersService, 'delete')
+        .mockResolvedValue(defaultLearner);
+
+      // Delete the learner and verify it returns the deleted learner
+      const deletedLearner = await controller.deleteLearner(learnerId);
+      expect(deletedLearner).toEqual(defaultLearner);
+
+      // After deletion, mock that findOne throws NotFoundException
+      jest
+        .spyOn(mockLearnersService, 'findOne')
+        .mockRejectedValue(new Error(`Learner with ID ${learnerId} not found`));
+
+      // Attempt to retrieve the deleted learner should fail
+      await expect(controller.getLearner(learnerId)).rejects.toThrow(
+        `Learner with ID ${learnerId} not found`,
+      );
+
+      expect(mockLearnersService.delete).toHaveBeenCalledWith(learnerId);
+    });
+
+    it('should throw an error if learner is not found', async () => {
+      const errorMessage = 'Learner with ID 999 not found';
+      jest
+        .spyOn(mockLearnersService, 'delete')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.deleteLearner(999)).rejects.toThrow(errorMessage);
     });
   });
 });
