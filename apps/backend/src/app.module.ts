@@ -12,6 +12,7 @@ import { Application } from './applications/application.entity';
 import { AdminsModule } from './users/admins.module';
 import { Admin } from './users/admin.entity';
 import { ConfigModule } from '@nestjs/config';
+import { DisciplinesModule } from './disciplines/disciplines.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConfigModule } from '@nestjs/config';
     AdminsModule,
     AWSS3Module,
     TypeOrmModule.forFeature([Application]),
+    DisciplinesModule,
   ],
   controllers: [AppController, ApplicationsController],
   providers: [AppService, ApplicationsService],

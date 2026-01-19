@@ -27,7 +27,6 @@ export class Discipline {
   })
   name: DISCIPLINE_VALUES;
 
-  // TODO: Clarify what this is
   @Column({ type: 'int', array: true, default: () => "'{}'" })
-  admin_ids: number[];
+  admin_ids?: number[];
 }

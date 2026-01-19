@@ -13,5 +13,18 @@ export class DisciplinesService {
     private disciplinesRepository: Repository<Discipline>,
   ) {}
 
-  // TODO: fill out with actual methods
+  async findAll(): Promise<Discipline[]> {
+    return this.disciplinesRepository.find();
+  }
+
+  async findOne(id: number): Promise<Discipline | null> {
+    return this.disciplinesRepository.findOneBy({ id });
+  }
+
+  async create(
+    createDto: import('./dto/create-discipline.request.dto').CreateDisciplineRequestDto,
+  ): Promise<Discipline> {
+    const discipline = this.disciplinesRepository.create(createDto);
+    return this.disciplinesRepository.save(discipline);
+  }
 }
