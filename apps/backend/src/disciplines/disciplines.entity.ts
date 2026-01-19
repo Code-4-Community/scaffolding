@@ -28,5 +28,5 @@ export class Discipline {
   name: DISCIPLINE_VALUES;
 
   @Column({ type: 'int', array: true, default: () => "'{}'" })
-  admin_ids?: number[];
+  admin_ids: number[];
 }

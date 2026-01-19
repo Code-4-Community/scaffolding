@@ -19,7 +19,7 @@ import { Discipline } from './disciplines.entity';
  */
 @Controller('disciplines')
 @UseInterceptors(CurrentUserInterceptor)
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 export class DisciplinesController {
   constructor(private disciplinesService: DisciplinesService) {}
 

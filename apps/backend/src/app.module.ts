@@ -22,7 +22,6 @@ import { DisciplinesModule } from './disciplines/disciplines.module';
     }),
     TypeOrmModule.forRoot({
       ...AppDataSource.options,
-      entities: [Admin],
     }),
     UtilModule,
     AdminsModule,
