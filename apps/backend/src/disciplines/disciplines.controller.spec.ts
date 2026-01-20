@@ -12,6 +12,9 @@ const mockDisciplinesService: Partial<DisciplinesService> = {
   findAll: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
+  remove: jest.fn(),
+  addAdmin: jest.fn(),
+  removeAdmin: jest.fn(),
 };
 
 const mockAuthService = {
@@ -230,6 +233,138 @@ describe('DisciplinesController', () => {
       expect(mockDisciplinesService.create).toHaveBeenCalledWith(
         createDisciplineDto,
       );
+    });
+  });
+
+  describe('remove', () => {
+    it('should delete and return a discipline', async () => {
+      jest
+        .spyOn(mockDisciplinesService, 'remove')
+        .mockResolvedValue(defaultDiscipline);
+
+      const result = await controller.remove(1);
+
+      expect(result).toEqual(defaultDiscipline);
+      expect(mockDisciplinesService.remove).toHaveBeenCalledWith(1);
+    });
+
+    it('should throw NotFoundException when discipline does not exist', async () => {
+      jest
+        .spyOn(mockDisciplinesService, 'remove')
+        .mockRejectedValue(new Error('Discipline with ID 999 not found'));
+
+      await expect(controller.remove(999)).rejects.toThrow(
+        'Discipline with ID 999 not found',
+      );
+    });
+
+    it('should handle service errors when deleting discipline', async () => {
+      const errorMessage = 'Failed to delete discipline';
+      jest
+        .spyOn(mockDisciplinesService, 'remove')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.remove(1)).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('addAdmin', () => {
+    it('should add an admin to a discipline', async () => {
+      const updatedDiscipline: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1, 2, 3],
+      };
+
+      jest
+        .spyOn(mockDisciplinesService, 'addAdmin')
+        .mockResolvedValue(updatedDiscipline);
+
+      const result = await controller.addAdmin(1, 3);
+
+      expect(result).toEqual(updatedDiscipline);
+      expect(mockDisciplinesService.addAdmin).toHaveBeenCalledWith(1, 3);
+    });
+
+    it('should throw NotFoundException when discipline does not exist', async () => {
+      jest
+        .spyOn(mockDisciplinesService, 'addAdmin')
+        .mockRejectedValue(new Error('Discipline with ID 999 not found'));
+
+      await expect(controller.addAdmin(999, 1)).rejects.toThrow(
+        'Discipline with ID 999 not found',
+      );
+    });
+
+    it('should handle service errors when adding admin', async () => {
+      const errorMessage = 'Failed to add admin';
+      jest
+        .spyOn(mockDisciplinesService, 'addAdmin')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.addAdmin(1, 5)).rejects.toThrow(errorMessage);
+    });
+
+    it('should handle adding duplicate admin gracefully', async () => {
+      // Service doesn't throw for duplicates, just returns unchanged
+      jest
+        .spyOn(mockDisciplinesService, 'addAdmin')
+        .mockResolvedValue(defaultDiscipline);
+
+      const result = await controller.addAdmin(1, 2); // 2 already in defaultDiscipline
+
+      expect(result).toEqual(defaultDiscipline);
+      expect(mockDisciplinesService.addAdmin).toHaveBeenCalledWith(1, 2);
+    });
+  });
+
+  describe('removeAdmin', () => {
+    it('should remove an admin from a discipline', async () => {
+      const updatedDiscipline: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1], // 2 was removed
+      };
+
+      jest
+        .spyOn(mockDisciplinesService, 'removeAdmin')
+        .mockResolvedValue(updatedDiscipline);
+
+      const result = await controller.removeAdmin(1, 2);
+
+      expect(result).toEqual(updatedDiscipline);
+      expect(mockDisciplinesService.removeAdmin).toHaveBeenCalledWith(1, 2);
+    });
+
+    it('should throw NotFoundException when discipline does not exist', async () => {
+      jest
+        .spyOn(mockDisciplinesService, 'removeAdmin')
+        .mockRejectedValue(new Error('Discipline with ID 999 not found'));
+
+      await expect(controller.removeAdmin(999, 1)).rejects.toThrow(
+        'Discipline with ID 999 not found',
+      );
+    });
+
+    it('should handle service errors when removing admin', async () => {
+      const errorMessage = 'Failed to remove admin';
+      jest
+        .spyOn(mockDisciplinesService, 'removeAdmin')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.removeAdmin(1, 1)).rejects.toThrow(errorMessage);
+    });
+
+    it('should handle removing non-existent admin gracefully', async () => {
+      // Service doesn't throw, just returns unchanged array
+      jest
+        .spyOn(mockDisciplinesService, 'removeAdmin')
+        .mockResolvedValue(defaultDiscipline);
+
+      const result = await controller.removeAdmin(1, 999);
+
+      expect(result).toEqual(defaultDiscipline);
+      expect(mockDisciplinesService.removeAdmin).toHaveBeenCalledWith(1, 999);
     });
   });
 });
