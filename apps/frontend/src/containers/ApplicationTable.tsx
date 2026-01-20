@@ -7,7 +7,7 @@ const COLUMNS = [
   'Discipline',
   'Discipline Admin Name',
   'Status',
-] as const;
+];
 
 const APPLICATIONS = [
   {
