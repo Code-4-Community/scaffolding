@@ -43,3 +43,22 @@ export enum School {
   MAYO_CLINIC = 'Mayo Clinic',
   OTHER = 'Other',
 }
+
+/**
+ * Valid days of the week for daysAvailable field validation
+ */
+export const VALID_DAYS_OF_WEEK = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+
+/**
+ * Phone number regex pattern for ###-###-#### format validation
+ * found this online: https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
+ */
+export const PHONE_REGEX = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
