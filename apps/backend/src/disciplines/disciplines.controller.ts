@@ -20,6 +20,7 @@ import { Discipline } from './disciplines.entity';
  */
 @Controller('disciplines')
 @UseInterceptors(CurrentUserInterceptor)
+// TODO: Uncomment after JWT authentication is setup with Cognito
 // @UseGuards(AuthGuard('jwt'))
 export class DisciplinesController {
   constructor(private disciplinesService: DisciplinesService) {}
