@@ -3,11 +3,33 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AWSS3Module } from './aws-s3/aws-s3.module';
 import AppDataSource from './data-source';
+import { UtilModule } from './util/util.module';
+import { ApplicationsController } from './applications/applications.controller';
+import { ApplicationsService } from './applications/applications.service';
+import { Application } from './applications/application.entity';
+import { AdminsModule } from './users/admins.module';
+import { Admin } from './users/admin.entity';
+import { ConfigModule } from '@nestjs/config';
+import { DisciplinesModule } from './disciplines/disciplines.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(AppDataSource.options)],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '../../.env',
+    }),
+    TypeOrmModule.forRoot({
+      ...AppDataSource.options,
+    }),
+    UtilModule,
+    AdminsModule,
+    AWSS3Module,
+    TypeOrmModule.forFeature([Application]),
+    DisciplinesModule,
+  ],
+  controllers: [AppController, ApplicationsController],
+  providers: [AppService, ApplicationsService],
 })
 export class AppModule {}
