@@ -15,6 +15,7 @@ describe('DisciplinesService', () => {
     findOneBy: jest.fn(),
     create: jest.fn(),
     save: jest.fn(),
+    remove: jest.fn(),
   };
 
   const mockDiscipline1: Discipline = {
@@ -152,6 +153,198 @@ describe('DisciplinesService', () => {
       expect(repository.create).toHaveBeenCalledWith(createDisciplineDto);
       expect(repository.save).toHaveBeenCalledWith(disciplineWithEmptyAdmins);
       expect(result).toEqual(disciplineWithEmptyAdmins);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove and return the discipline', async () => {
+      mockRepository.findOneBy.mockResolvedValue(mockDiscipline1);
+      mockRepository.remove.mockResolvedValue(mockDiscipline1);
+
+      const result = await service.remove(1);
+
+      expect(repository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(repository.remove).toHaveBeenCalledWith(mockDiscipline1);
+      expect(result).toEqual(mockDiscipline1);
+    });
+
+    it('should throw NotFoundException when discipline does not exist', async () => {
+      mockRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.remove(999)).rejects.toThrow(
+        'Discipline with ID 999 not found',
+      );
+      expect(repository.remove).not.toHaveBeenCalled();
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.findOneBy.mockResolvedValue(mockDiscipline1);
+      mockRepository.remove.mockRejectedValue(
+        new Error('Database connection failed'),
+      );
+
+      await expect(service.remove(1)).rejects.toThrow(
+        'Database connection failed',
+      );
+    });
+  });
+
+  describe('addAdmin', () => {
+    it('should add an admin id to the discipline', async () => {
+      const disciplineBeforeAdd: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1, 2],
+      };
+      const disciplineAfterAdd: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1, 2, 3],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue({ ...disciplineBeforeAdd });
+      mockRepository.save.mockResolvedValue(disciplineAfterAdd);
+
+      const result = await service.addAdmin(1, 3);
+
+      expect(repository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ admin_ids: [1, 2, 3] }),
+      );
+      expect(result).toEqual(disciplineAfterAdd);
+    });
+
+    it('should not add duplicate admin id', async () => {
+      const discipline: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1, 2],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue({ ...discipline });
+      mockRepository.save.mockResolvedValue(discipline);
+
+      const result = await service.addAdmin(1, 2); // 2 already exists
+
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ admin_ids: [1, 2] }),
+      );
+      expect(result.admin_ids).toEqual([1, 2]);
+    });
+
+    it('should add admin to discipline with empty admin_ids', async () => {
+      const disciplineEmpty: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [],
+      };
+      const disciplineAfterAdd: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [5],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue({ ...disciplineEmpty });
+      mockRepository.save.mockResolvedValue(disciplineAfterAdd);
+
+      const result = await service.addAdmin(1, 5);
+
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ admin_ids: [5] }),
+      );
+      expect(result).toEqual(disciplineAfterAdd);
+    });
+
+    it('should throw NotFoundException when discipline does not exist', async () => {
+      mockRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.addAdmin(999, 1)).rejects.toThrow(
+        'Discipline with ID 999 not found',
+      );
+      expect(repository.save).not.toHaveBeenCalled();
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.findOneBy.mockResolvedValue(mockDiscipline1);
+      mockRepository.save.mockRejectedValue(new Error('Save failed'));
+
+      await expect(service.addAdmin(1, 5)).rejects.toThrow('Save failed');
+    });
+  });
+
+  describe('removeAdmin', () => {
+    it('should remove an admin id from the discipline', async () => {
+      const disciplineBeforeRemove: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1, 2, 3],
+      };
+      const disciplineAfterRemove: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1, 3],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue({ ...disciplineBeforeRemove });
+      mockRepository.save.mockResolvedValue(disciplineAfterRemove);
+
+      const result = await service.removeAdmin(1, 2);
+
+      expect(repository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ admin_ids: [1, 3] }),
+      );
+      expect(result).toEqual(disciplineAfterRemove);
+    });
+
+    it('should handle removing non-existent admin id gracefully', async () => {
+      const discipline: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [1, 2],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue({ ...discipline });
+      mockRepository.save.mockResolvedValue(discipline);
+
+      const result = await service.removeAdmin(1, 999); // 999 doesn't exist
+
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ admin_ids: [1, 2] }),
+      );
+    });
+
+    it('should handle removing from empty admin_ids array', async () => {
+      const disciplineEmpty: Discipline = {
+        id: 1,
+        name: DISCIPLINE_VALUES.Nursing,
+        admin_ids: [],
+      };
+
+      mockRepository.findOneBy.mockResolvedValue({ ...disciplineEmpty });
+      mockRepository.save.mockResolvedValue(disciplineEmpty);
+
+      const result = await service.removeAdmin(1, 5);
+
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ admin_ids: [] }),
+      );
+    });
+
+    it('should throw NotFoundException when discipline does not exist', async () => {
+      mockRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.removeAdmin(999, 1)).rejects.toThrow(
+        'Discipline with ID 999 not found',
+      );
+      expect(repository.save).not.toHaveBeenCalled();
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.findOneBy.mockResolvedValue(mockDiscipline1);
+      mockRepository.save.mockRejectedValue(new Error('Save failed'));
+
+      await expect(service.removeAdmin(1, 1)).rejects.toThrow('Save failed');
     });
   });
 });

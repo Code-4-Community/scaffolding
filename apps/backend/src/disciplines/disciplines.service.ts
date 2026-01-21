@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Discipline } from './disciplines.entity';
@@ -38,6 +38,62 @@ export class DisciplinesService {
    */
   async create(createDto: CreateDisciplineRequestDto): Promise<Discipline> {
     const discipline = this.disciplinesRepository.create(createDto);
+    return this.disciplinesRepository.save(discipline);
+  }
+
+  /**
+   * Deletes a discipline by id
+   * @param id the id of the discipline to delete
+   * @returns the deleted discipline
+   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {Error} if the repository throws an error.
+   */
+  async remove(id: number): Promise<Discipline> {
+    const discipline = await this.findOne(id);
+    if (!discipline) {
+      throw new NotFoundException(`Discipline with ID ${id} not found`);
+    }
+    return this.disciplinesRepository.remove(discipline);
+  }
+  /**
+   * Adds an admin ID to a discipline's admin_ids array
+   * @param id the discipline id
+   * @param adminId the admin id to add
+   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {Error} if the repository throws an error.
+   * @returns the updated discipline
+   */
+  async addAdmin(id: number, adminId: number): Promise<Discipline> {
+    const discipline = await this.findOne(id);
+    if (!discipline) {
+      throw new NotFoundException(`Discipline with ID ${id} not found`);
+    }
+
+    if (!discipline.admin_ids.includes(adminId)) {
+      discipline.admin_ids = [...discipline.admin_ids, adminId];
+    }
+
+    return this.disciplinesRepository.save(discipline);
+  }
+
+  /**
+   * Removes an admin ID from a discipline's admin_ids array
+   * @param id the discipline id
+   * @param adminId the admin id to remove
+   * @returns the updated discipline
+   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {Error} if the repository throws an error.
+   */
+  async removeAdmin(id: number, adminId: number): Promise<Discipline> {
+    const discipline = await this.findOne(id);
+    if (!discipline) {
+      throw new NotFoundException(`Discipline with ID ${id} not found`);
+    }
+
+    discipline.admin_ids = discipline.admin_ids.filter(
+      (aid) => aid !== adminId,
+    );
+
     return this.disciplinesRepository.save(discipline);
   }
 }
