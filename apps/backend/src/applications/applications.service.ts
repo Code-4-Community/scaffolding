@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
+import { VALID_DAYS_OF_WEEK, PHONE_REGEX } from './types';
 
 /**
  * Service for applications that interfaces with the application repository.
@@ -13,6 +18,37 @@ export class ApplicationsService {
     @InjectRepository(Application)
     private applicationRepository: Repository<Application>,
   ) {}
+
+  /**
+   * Validates the fields of a CreateApplicationDto.
+   * @param dto The DTO to validate.
+   * @throws {BadRequestException} if any field fails validation.
+   */
+  private validateApplicationDto(dto: CreateApplicationDto): void {
+    // Validate phone number format
+    if (!PHONE_REGEX.test(dto.phone)) {
+      throw new BadRequestException(
+        'Phone number must be in ###-###-#### format',
+      );
+    }
+
+    // Validate weeklyHours is positive
+    if (dto.weeklyHours <= 0 || dto.weeklyHours > 7 * 24) {
+      throw new BadRequestException(
+        'Weekly hours must be greater than 0 and less than 7 * 24 hours',
+      );
+    }
+
+    // Validate daysAvailable contains only valid days of the week
+    const days = dto.daysAvailable.split(',').map((day) => day.trim());
+    for (const day of days) {
+      if (!VALID_DAYS_OF_WEEK.includes(day)) {
+        throw new BadRequestException(
+          `Invalid day: ${day}. Days must be valid days of the week.`,
+        );
+      }
+    }
+  }
 
   /**
    * Returns all applications in the repository.
@@ -47,11 +83,13 @@ export class ApplicationsService {
    * Creates an application in the repository.
    * @param createApplicationDto The expected data required to create an application (applicant's info).
    * @returns The newly created application.
+   * @throws {BadRequestException} if validation fails.
    * @throws {Error} which is unchanged from what repository throws.
    */
   async create(
     createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
+    this.validateApplicationDto(createApplicationDto);
     const application = this.applicationRepository.create(createApplicationDto);
     return await this.applicationRepository.save(application);
   }
