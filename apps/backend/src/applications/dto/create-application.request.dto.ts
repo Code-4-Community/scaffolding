@@ -11,7 +11,14 @@ import {
   Min,
   Max,
 } from 'class-validator';
-import { AppStatus, ExperienceType, InterestArea, School } from '../types';
+import {
+  AppStatus,
+  ExperienceType,
+  InterestArea,
+  School,
+  DaysOfTheWeek,
+  ApplicantType,
+} from '../types';
 
 /**
  * Defines the expected shape of data for creating an application.
@@ -33,9 +40,18 @@ export class CreateApplicationDto {
    *
    * Example: 'Monday, Tuesday'.
    */
-  @IsString()
+  @IsEnum(DaysOfTheWeek)
   @IsNotEmpty()
-  daysAvailable: string;
+  daysAvailable: DaysOfTheWeek[];
+
+  /**
+   * Type of applicant, currently either a learner or a volunteer.
+   *
+   * Example: ApplicantType.LEARNER.
+   */
+  @IsEnum(ApplicantType)
+  @IsDefined()
+  applicantType: ApplicantType;
 
   /**
    * Experience type/ level of the applicant, generally in terms of medical experience/ degree.
@@ -78,15 +94,6 @@ export class CreateApplicationDto {
   @IsBoolean()
   @IsDefined()
   isInternational: boolean;
-
-  /**
-   * Whether or not the applicant is a learner, e.g. a student.
-   *
-   * Example: true.
-   */
-  @IsBoolean()
-  @IsDefined()
-  isLearner: boolean;
 
   /**
    * Phone number of the applicant in ###-###-#### format.

@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
-import { VALID_DAYS_OF_WEEK, PHONE_REGEX } from './types';
+import { PHONE_REGEX } from './types';
 
 /**
  * Service for applications that interfaces with the application repository.
@@ -37,16 +37,6 @@ export class ApplicationsService {
       throw new BadRequestException(
         'Weekly hours must be greater than 0 and less than 7 * 24 hours',
       );
-    }
-
-    // Validate daysAvailable contains only valid days of the week
-    const days = dto.daysAvailable.split(',').map((day) => day.trim());
-    for (const day of days) {
-      if (!VALID_DAYS_OF_WEEK.includes(day)) {
-        throw new BadRequestException(
-          `Invalid day: ${day}. Days must be valid days of the week.`,
-        );
-      }
     }
   }
 

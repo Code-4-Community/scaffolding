@@ -44,18 +44,20 @@ export enum School {
   OTHER = 'Other',
 }
 
-/**
- * Valid days of the week for daysAvailable field validation
- */
-export const VALID_DAYS_OF_WEEK = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
-];
+export enum DaysOfTheWeek {
+  MONDAY = 'Monday',
+  TUESDAY = 'Tuesday',
+  WEDNESDAY = 'Wednesday',
+  THURSDAY = 'Thursday',
+  FRIDAY = 'Friday',
+  SATURDAY = 'Saturday',
+  SUNDAY = 'Sunday',
+}
+
+export enum ApplicantType {
+  LEARNER = 'Learner',
+  VOLUNTEER = 'Volunteer',
+}
 
 /**
  * Phone number regex pattern for ###-###-#### format validation

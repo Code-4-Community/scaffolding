@@ -1,6 +1,13 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-import { AppStatus, ExperienceType, InterestArea, School } from './types';
+import {
+  AppStatus,
+  ExperienceType,
+  InterestArea,
+  School,
+  DaysOfTheWeek,
+  ApplicantType,
+} from './types';
 
 /**
  * Represents the desired columns for the database table in the repository for the system's applications.
@@ -27,7 +34,7 @@ export class Application {
    * Example: 'Monday, Tuesday'.
    */
   @Column({ type: 'varchar' })
-  daysAvailable!: string;
+  daysAvailable!: DaysOfTheWeek[];
 
   /**
    * Experience type/ level of the applicant, generally in terms of medical experience or degree.
@@ -65,20 +72,15 @@ export class Application {
   isInternational!: boolean;
 
   /**
-   * Whether or not the applicant is a learner (e.g. a student).
-   *
-   * Example: true.
-   */
-  @Column({ type: 'boolean', default: false })
-  isLearner!: boolean;
-
-  /**
    * Phone number of the applicant in ###-###-#### format.
    *
    * Example: "123-456-7890".
    */
   @Column({ type: 'varchar' })
   phone!: string;
+
+  @Column({ type: 'enum', enum: ApplicantType })
+  applicantType!: ApplicantType;
 
   /**
    * School of the applicant; includes well-known medical schools or an 'other' option.
