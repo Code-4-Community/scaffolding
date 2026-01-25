@@ -5,7 +5,14 @@ import { NotFoundException } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
-import { AppStatus, ExperienceType, InterestArea, School } from './types';
+import {
+  AppStatus,
+  ExperienceType,
+  InterestArea,
+  School,
+  DaysOfTheWeek,
+  ApplicantType,
+} from './types';
 
 describe('ApplicationsService', () => {
   let service: ApplicationsService;
@@ -51,13 +58,13 @@ describe('ApplicationsService', () => {
         {
           appId: 1,
           appStatus: AppStatus.APP_SUBMITTED,
-          daysAvailable: 'Monday, Tuesday',
+          daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
           experienceType: ExperienceType.BS,
           fileUploads: [],
           interest: InterestArea.NURSING,
           license: null,
           isInternational: false,
-          isLearner: false,
+          applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
           school: School.HARVARD_MEDICAL_SCHOOL,
           referred: false,
@@ -99,13 +106,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -141,13 +148,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -167,13 +174,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         weeklyHours: 20,
@@ -202,13 +209,13 @@ describe('ApplicationsService', () => {
     it('should create and save a new application', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -235,13 +242,13 @@ describe('ApplicationsService', () => {
       );
       const mockApplication: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         weeklyHours: 20,
@@ -252,42 +259,16 @@ describe('ApplicationsService', () => {
       );
     });
 
-    it('should not accept an invalid daysAvailable that is not in days of the week', async () => {
-      const createApplicationDto: CreateApplicationDto = {
-        appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Christmas, Thanksgiving',
-        experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
-        license: null,
-        isInternational: false,
-        isLearner: false,
-        phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
-        referred: false,
-        referredEmail: null,
-        weeklyHours: 20,
-      };
-
-      const savedApplication: Application = {
-        appId: 1,
-        ...createApplicationDto,
-      };
-
-      mockRepository.save.mockResolvedValue(savedApplication);
-      await expect(service.create(createApplicationDto)).rejects.toThrow();
-    });
-
     it('should not accept a phone number that is too long', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -307,13 +288,13 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is too short', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-4562',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -333,13 +314,13 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is the right length but not in ###-###-#### format', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-8-90',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -359,13 +340,13 @@ describe('ApplicationsService', () => {
     it('should not accept 0 weekly hours', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -385,13 +366,13 @@ describe('ApplicationsService', () => {
     it('should not accept negative weekly hours', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -414,13 +395,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -452,13 +433,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -527,13 +508,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -555,13 +536,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
@@ -585,13 +566,13 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: 'Monday, Tuesday',
+        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
         license: null,
         isInternational: false,
-        isLearner: false,
+        applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         referred: false,
