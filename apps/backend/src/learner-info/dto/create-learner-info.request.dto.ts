@@ -1,12 +1,12 @@
 import { IsBoolean, IsEnum, IsNumber, IsDefined, Min } from 'class-validator';
-import { ExperienceType, InterestArea, School } from '.././types';
+import { ExperienceType, InterestArea, School } from '../types';
 
 /**
  * Defines the expected shape of data for creating a learner info
  *
  * DTO - data transfer object (defines and validates the structure of data sent over the network).
  */
-export class CreateApplicationDto {
+export class CreateLearnerInfoDto {
   /**
    * The id corresponding to the application this information belongs to
    */
