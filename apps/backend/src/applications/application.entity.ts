@@ -79,6 +79,11 @@ export class Application {
   @Column({ type: 'varchar' })
   phone!: string;
 
+  /**
+   * Type of applicant, currently either a learner or a volunteer.
+   *
+   * Example: ApplicantType.LEARNER.
+   */
   @Column({ type: 'enum', enum: ApplicantType })
   applicantType!: ApplicantType;
 
