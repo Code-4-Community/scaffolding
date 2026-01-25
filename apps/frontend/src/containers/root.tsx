@@ -13,7 +13,7 @@ const Root: React.FC = () => {
     <div className="flex flex-row">
       <NavBar logo={'BHCHP'} />
       <Box id="main-content" p="10" flex="1">
-        <Box className="flex flex-row gap-6 pl-4 pt-4">
+        <Box className="flex flex-row gap-6 pl-4 pt-4" marginBottom="5">
           <DashboardCard
             className="basis-1/4"
             title="Total Applications"
