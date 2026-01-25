@@ -6,6 +6,7 @@ import clockIcon from '../assets/icons/clock.svg';
 import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
 import { Box } from '@chakra-ui/react';
+import ApplicationTable from '@components/ApplicationTable';
 
 const Root: React.FC = () => {
   return (
@@ -45,6 +46,7 @@ const Root: React.FC = () => {
             icon={checkmarkIcon}
           />
         </Box>
+        <ApplicationTable />
       </Box>
     </div>
   );
