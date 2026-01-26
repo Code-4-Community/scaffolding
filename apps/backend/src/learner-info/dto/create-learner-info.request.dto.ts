@@ -23,22 +23,4 @@ export class CreateLearnerInfoDto {
   @IsEnum(School)
   @IsDefined()
   school!: School;
-
-  /**
-   * Applicant's area of interest for the commitment.
-   *
-   * Example: InterestArea.NURSING.
-   */
-  @IsEnum(InterestArea)
-  @IsDefined()
-  interest!: InterestArea;
-
-  /**
-   * Experience type/ level of the applicant, generally in terms of medical experience or degree.
-   *
-   * Example: ExperienceType.BS.
-   */
-  @IsEnum(ExperienceType)
-  @IsDefined()
-  experienceType!: ExperienceType;
 }

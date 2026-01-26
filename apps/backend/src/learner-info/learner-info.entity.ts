@@ -19,20 +19,4 @@ export class LearnerInfo {
    */
   @Column({ type: 'enum', enum: School })
   school!: School;
-
-  /**
-   * Applicant's area of interest for the commitment.
-   *
-   * Example: InterestArea.NURSING.
-   */
-  @Column({ type: 'enum', enum: InterestArea })
-  interest!: InterestArea;
-
-  /**
-   * Experience type/ level of the applicant, generally in terms of medical experience or degree.
-   *
-   * Example: ExperienceType.BS.
-   */
-  @Column({ type: 'enum', enum: ExperienceType })
-  experienceType!: ExperienceType;
 }
