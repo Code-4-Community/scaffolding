@@ -115,6 +115,7 @@ export class LearnersController {
    * @param id The id (not appId) of the learner to update.
    * @param endDate The new ending date for the learner's commitment.
    * @returns The updated learner object.
+   * Errors thrown by service:
    * @throws {Error} If the repository throws an error.
    * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
    * @throws {NotFoundException} with message 'Learner with ID <id> not found'

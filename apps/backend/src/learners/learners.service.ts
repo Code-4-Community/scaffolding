@@ -164,6 +164,15 @@ export class LearnersService {
     return learners;
   }
 
+  /**
+   * Deletes a learner by id.
+   * @param id The id of the learner to delete.
+   * @returns The deleted learner.
+   * @throws {Error} If the repository throws an error.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Learner with ID <id> not found'
+   *                             if the learner with the specified appId does not exist.
+   */
   async delete(id: number) {
     const learner = await this.findOne(id);
     if (!learner) {
