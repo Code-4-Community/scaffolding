@@ -48,7 +48,6 @@ describe('LearnerInfoController', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockLearnerInfoService.create.mockResolvedValue(
@@ -74,7 +73,6 @@ describe('LearnerInfoController', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       await expect(
@@ -88,7 +86,6 @@ describe('LearnerInfoController', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockLearnerInfoService.create.mockRejectedValue(
@@ -108,7 +105,6 @@ describe('LearnerInfoController', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockLearnerInfoService.update.mockResolvedValue(
@@ -129,7 +125,6 @@ describe('LearnerInfoController', () => {
 
     it('should throw NotFoundException with no information loss when updating non-existent application', async () => {
       const nonExistentId = 999;
-
       mockLearnerInfoService.update.mockRejectedValue(
         new BadRequestException(
           `Application with ID ${nonExistentId} not found`,

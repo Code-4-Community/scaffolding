@@ -51,7 +51,6 @@ describe('LearnerInfoService', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockRepository.save.mockResolvedValue(LearnerInfo);
@@ -71,7 +70,6 @@ describe('LearnerInfoService', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       await expect(service.create(LearnerInfo)).rejects.toThrow(
@@ -85,7 +83,6 @@ describe('LearnerInfoService', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockRepository.save.mockResolvedValue(LearnerInfo);
@@ -100,7 +97,6 @@ describe('LearnerInfoService', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockRepository.findOne.mockResolvedValue(LearnerInfo);
@@ -145,7 +141,6 @@ describe('LearnerInfoService', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       const updatedApplication: LearnerInfo = {
@@ -203,7 +198,6 @@ describe('LearnerInfoService', () => {
         school: School.HARVARD_MEDICAL_SCHOOL,
         interest: InterestArea.NURSING,
         experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockRepository.findOne.mockResolvedValue(learnerInfo);

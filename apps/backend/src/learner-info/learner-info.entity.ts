@@ -35,12 +35,4 @@ export class LearnerInfo {
    */
   @Column({ type: 'enum', enum: ExperienceType })
   experienceType!: ExperienceType;
-
-  /**
-   * Whether or not the applicant is an international student.
-   *
-   * Example: true.
-   */
-  @Column({ type: 'boolean', default: false })
-  isInternational!: boolean;
 }

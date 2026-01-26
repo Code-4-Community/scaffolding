@@ -41,13 +41,4 @@ export class CreateLearnerInfoDto {
   @IsEnum(ExperienceType)
   @IsDefined()
   experienceType!: ExperienceType;
-
-  /**
-   * Whether or not the applicant is an international student.
-   *
-   * Example: true.
-   */
-  @IsBoolean()
-  @IsDefined()
-  isInternational!: boolean;
 }
