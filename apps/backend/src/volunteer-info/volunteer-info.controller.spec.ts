@@ -46,13 +46,15 @@ describe('volunteerInfoController', () => {
         license: 'example',
       };
 
-      mockVolunteerInfoService.create.mockResolvedValue(createVolunteerInfo);
+      mockVolunteerInfoService.create.mockResolvedValue(
+        createVolunteerInfo as VolunteerInfo,
+      );
 
       // Call controller method
       const result = await controller.createVolunteerInfo(createVolunteerInfo);
 
       // Verify results
-      expect(result).toEqual(createVolunteerInfo);
+      expect(result).toEqual(createVolunteerInfo as VolunteerInfo);
       expect(mockVolunteerInfoService.create).toHaveBeenCalledWith(
         createVolunteerInfo,
       );

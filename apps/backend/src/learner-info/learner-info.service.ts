@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LearnerInfo } from './learner-info.entity';
 import { CreateLearnerInfoDto } from './dto/create-learner-info.request.dto';
-import { InterestArea } from './types';
 
 /**
  * Service for applications that interfaces with the application repository.

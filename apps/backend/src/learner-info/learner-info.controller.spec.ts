@@ -51,13 +51,15 @@ describe('LearnerInfoController', () => {
         isInternational: false,
       };
 
-      mockLearnerInfoService.create.mockResolvedValue(createLearnerInfo);
+      mockLearnerInfoService.create.mockResolvedValue(
+        createLearnerInfo as LearnerInfo,
+      );
 
       // Call controller method
       const result = await controller.createLearnerInfo(createLearnerInfo);
 
       // Verify results
-      expect(result).toEqual(createLearnerInfo);
+      expect(result).toEqual(createLearnerInfo as LearnerInfo);
       expect(mockLearnerInfoService.create).toHaveBeenCalledWith(
         createLearnerInfo,
       );
@@ -119,7 +121,7 @@ describe('LearnerInfoController', () => {
       });
 
       // Verify results
-      expect(result).toEqual(createLearnerInfo);
+      expect(result).toEqual(createLearnerInfo as LearnerInfo);
       expect(mockLearnerInfoService.update).toHaveBeenCalledWith(1, {
         interest: InterestArea.HARM_REDUCTION,
       });
