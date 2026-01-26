@@ -18,12 +18,20 @@ export class Learner {
   appId: number;
 
   /**
-   * The learner's name.
+   * The learner's first name.
    *
-   * Example: 'Jane Doe'.
+   * Example: 'Jane'.
    */
   @Column()
-  name: string;
+  firstName: string;
+
+  /**
+   * The learner's last name.
+   *
+   * Example: 'Doe'.
+   */
+  @Column()
+  lastName: string;
 
   /**
    * The expected start date for the learner's commitment, stored in YYYY-MM-DD format.

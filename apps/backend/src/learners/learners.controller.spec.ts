@@ -24,7 +24,11 @@ const mockUsersService = {
   find: jest.fn(),
 };
 
-const defaultLearner: Learner = learnerFactory({ id: 1, name: 'John Doe' });
+const defaultLearner: Learner = learnerFactory({
+  id: 1,
+  firstName: 'John',
+  lastName: 'Doe',
+});
 
 describe('LearnersController', () => {
   let controller: LearnersController;
@@ -63,7 +67,8 @@ describe('LearnersController', () => {
     it('should create a new learner', async () => {
       const createLearnerDto = {
         appId: 1,
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         startDate: '2024-01-01',
         endDate: '2024-06-30',
       };
@@ -77,7 +82,8 @@ describe('LearnersController', () => {
       expect(result).toEqual(defaultLearner);
       expect(mockLearnersService.create).toHaveBeenCalledWith(
         1,
-        'John Doe',
+        'John',
+        'Doe',
         new Date('2024-01-01'),
         new Date('2024-06-30'),
       );
@@ -86,7 +92,8 @@ describe('LearnersController', () => {
     it('should handle service errors when creating learner', async () => {
       const createLearnerDto = {
         appId: 1,
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         startDate: '2024-01-01',
         endDate: '2024-06-30',
       };
@@ -106,7 +113,7 @@ describe('LearnersController', () => {
     it('should return all learners', async () => {
       const learners = [
         defaultLearner,
-        learnerFactory({ id: 2, name: 'Jane Doe' }),
+        learnerFactory({ id: 2, firstName: 'Jane', lastName: 'Doe' }),
       ];
       jest.spyOn(mockLearnersService, 'findAll').mockResolvedValue(learners);
 
