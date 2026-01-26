@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { ExperienceType, InterestArea, School } from './types';
 
 /**
- * Represents the desired columns for the database table in the repository for the system's applications.
+ * Represents the desired columns for the database table in the repository for the system's learner info.
  */
 @Entity('learner_info')
 export class LearnerInfo {
