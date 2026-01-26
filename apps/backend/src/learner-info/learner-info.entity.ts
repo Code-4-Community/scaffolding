@@ -1,0 +1,46 @@
+import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { ExperienceType, InterestArea, School } from './types';
+
+/**
+ * Represents the desired columns for the database table in the repository for the system's learner info.
+ */
+@Entity('learner_info')
+export class LearnerInfo {
+  /**
+   * The id corresponding to the application this information belongs to
+   */
+  @PrimaryColumn()
+  appId!: number;
+
+  /**
+   * School of the applicant; includes well-known medical schools or an 'other' option.
+   *
+   * Example: School.STANFORD_MEDICINE.
+   */
+  @Column({ type: 'enum', enum: School })
+  school!: School;
+
+  /**
+   * Applicant's area of interest for the commitment.
+   *
+   * Example: InterestArea.NURSING.
+   */
+  @Column({ type: 'enum', enum: InterestArea })
+  interest!: InterestArea;
+
+  /**
+   * Experience type/ level of the applicant, generally in terms of medical experience or degree.
+   *
+   * Example: ExperienceType.BS.
+   */
+  @Column({ type: 'enum', enum: ExperienceType })
+  experienceType!: ExperienceType;
+
+  /**
+   * Whether or not the applicant is an international student.
+   *
+   * Example: true.
+   */
+  @Column({ type: 'boolean', default: false })
+  isInternational!: boolean;
+}

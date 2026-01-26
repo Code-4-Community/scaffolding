@@ -13,6 +13,7 @@ import { LearnersService } from './learners.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Learner } from './learner.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { CreateLearnerDto } from './dto/learner.dto';
 
 /**
  * Controller exposing HTTP endpoints to get, create, and change information
@@ -34,18 +35,13 @@ export class LearnersController {
    */
   @Post()
   async createLearner(
-    //TODO: Replace with established DTO later
     @Body()
-    createLearnerDto: {
-      appId: number;
-      name: string;
-      startDate: string;
-      endDate: string;
-    },
+    createLearnerDto: CreateLearnerDto,
   ): Promise<Learner> {
     return this.learnersService.create(
       createLearnerDto.appId,
-      createLearnerDto.name,
+      createLearnerDto.firstName,
+      createLearnerDto.lastName,
       new Date(createLearnerDto.startDate),
       new Date(createLearnerDto.endDate),
     );
