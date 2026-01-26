@@ -12,6 +12,7 @@ describe('LearnerInfoController', () => {
 
   const mockLearnerInfoService = {
     create: jest.fn(),
+    update: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -95,6 +96,52 @@ describe('LearnerInfoController', () => {
       await expect(
         controller.createLearnerInfo(createLearnerInfoDto),
       ).rejects.toThrow(new BadRequestException(`appId must not be negative`));
+    });
+  });
+
+  describe('PATCH /:appId/interest', () => {
+    it('should update learner info interest', async () => {
+      const createLearnerInfo: CreateLearnerInfoDto = {
+        appId: 1,
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        interest: InterestArea.NURSING,
+        experienceType: ExperienceType.BS,
+        isInternational: false,
+      };
+
+      mockLearnerInfoService.update.mockResolvedValue(
+        createLearnerInfo as LearnerInfo,
+      );
+
+      // Call controller method
+      const result = await controller.updateApplicationInterest(1, {
+        interest: InterestArea.HARM_REDUCTION,
+      });
+
+      // Verify results
+      expect(result).toEqual(createLearnerInfo);
+      expect(mockLearnerInfoService.update).toHaveBeenCalledWith(1, {
+        interest: InterestArea.HARM_REDUCTION,
+      });
+    });
+
+    it('should throw NotFoundException with no information loss when updating non-existent application', async () => {
+      const nonExistentId = 999;
+
+      mockLearnerInfoService.update.mockRejectedValue(
+        new BadRequestException(
+          `Application with ID ${nonExistentId} not found`,
+        ),
+      );
+      await expect(
+        controller.updateApplicationInterest(999, {
+          interest: InterestArea.HARM_REDUCTION,
+        }),
+      ).rejects.toThrow(
+        new BadRequestException(
+          `Application with ID ${nonExistentId} not found`,
+        ),
+      );
     });
   });
 });
