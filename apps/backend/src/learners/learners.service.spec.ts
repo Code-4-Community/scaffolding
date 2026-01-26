@@ -15,8 +15,16 @@ const mockLearnersRepository: Partial<Repository<Learner>> = {
   remove: jest.fn(),
 };
 
-const learner1: Learner = learnerFactory({ id: 1, name: 'John Doe' });
-const learner2: Learner = learnerFactory({ id: 2, name: 'Jane Doe' });
+const learner1: Learner = learnerFactory({
+  id: 1,
+  firstName: 'John',
+  lastName: 'Doe',
+});
+const learner2: Learner = learnerFactory({
+  id: 2,
+  firstName: 'Jane',
+  lastName: 'Doe',
+});
 
 describe('LearnersService', () => {
   let service: LearnersService;
@@ -47,7 +55,8 @@ describe('LearnersService', () => {
     it('should create a new learner', async () => {
       const createData = {
         appId: 1,
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         startDate: new Date('2024-01-01'),
         endDate: new Date('2024-06-30'),
       };
@@ -57,7 +66,8 @@ describe('LearnersService', () => {
 
       const result = await service.create(
         createData.appId,
-        createData.name,
+        createData.firstName,
+        createData.lastName,
         createData.startDate,
         createData.endDate,
       );
@@ -71,24 +81,44 @@ describe('LearnersService', () => {
       await expect(
         service.create(
           0,
-          'John Doe',
+          'John',
+          'Doe',
           new Date('2024-01-01'),
           new Date('2024-06-30'),
         ),
       ).rejects.toThrow('Valid app ID is required');
     });
 
-    it('should throw error if name is empty', async () => {
+    it('should throw error if first name is empty', async () => {
       await expect(
-        service.create(1, '', new Date('2024-01-01'), new Date('2024-06-30')),
-      ).rejects.toThrow('Learner name is required');
+        service.create(
+          1,
+          '',
+          'Doe',
+          new Date('2024-01-01'),
+          new Date('2024-06-30'),
+        ),
+      ).rejects.toThrow('Learner first name is required');
+    });
+
+    it('should throw error if last name is empty', async () => {
+      await expect(
+        service.create(
+          1,
+          'Jane',
+          '',
+          new Date('2024-01-01'),
+          new Date('2024-06-30'),
+        ),
+      ).rejects.toThrow('Learner last name is required');
     });
 
     it('should throw error if start date is after end date', async () => {
       await expect(
         service.create(
           1,
-          'John Doe',
+          'John',
+          'Doe',
           new Date('2024-06-30'),
           new Date('2024-01-01'),
         ),
@@ -98,7 +128,8 @@ describe('LearnersService', () => {
     it('should error out without information loss if the repository throws an error during create', async () => {
       const createData = {
         appId: 1,
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         startDate: new Date('2024-01-01'),
         endDate: new Date('2024-06-30'),
       };
@@ -112,7 +143,8 @@ describe('LearnersService', () => {
       await expect(
         service.create(
           createData.appId,
-          createData.name,
+          createData.firstName,
+          createData.lastName,
           createData.startDate,
           createData.endDate,
         ),
@@ -122,7 +154,8 @@ describe('LearnersService', () => {
     it('should error out without information loss if the repository throws an error during save', async () => {
       const createData = {
         appId: 1,
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         startDate: new Date('2024-01-01'),
         endDate: new Date('2024-06-30'),
       };
@@ -134,7 +167,8 @@ describe('LearnersService', () => {
       await expect(
         service.create(
           createData.appId,
-          createData.name,
+          createData.firstName,
+          createData.lastName,
           createData.startDate,
           createData.endDate,
         ),

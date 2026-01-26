@@ -27,13 +27,23 @@ export class LearnersService {
    * @throws {BadRequestException} if any of the fields are invalid.
    * @throws {Error} If the repository throws an error.
    */
-  async create(appId: number, name: string, startDate: Date, endDate: Date) {
+  async create(
+    appId: number,
+    firstName: string,
+    lastName: string,
+    startDate: Date,
+    endDate: Date,
+  ) {
     if (!appId || appId <= 0) {
       throw new BadRequestException('Valid app ID is required');
     }
 
-    if (!name || name.trim().length === 0) {
-      throw new BadRequestException('Learner name is required');
+    if (!firstName || firstName.trim().length === 0) {
+      throw new BadRequestException('Learner first name is required');
+    }
+
+    if (!lastName || lastName.trim().length === 0) {
+      throw new BadRequestException('Learner last name is required');
     }
 
     if (!startDate || !endDate) {
@@ -46,7 +56,8 @@ export class LearnersService {
 
     const learner: Learner = this.repo.create({
       appId,
-      name,
+      firstName,
+      lastName,
       startDate,
       endDate,
     });
