@@ -62,16 +62,6 @@ export class Application {
   license!: string;
 
   /**
-   * TODO: clarify what international means exactly in business context.
-   *
-   * Whether or not the applicant is international.
-   *
-   * Example: true.
-   */
-  @Column({ type: 'boolean', default: false })
-  isInternational!: boolean;
-
-  /**
    * Phone number of the applicant in ###-###-#### format.
    *
    * Example: "123-456-7890".
