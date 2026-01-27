@@ -4,7 +4,7 @@ import { LearnerInfoController } from './learner-info.controller';
 import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
 import { CreateLearnerInfoDto } from './dto/create-learner-info.request.dto';
-import { ExperienceType, InterestArea, School } from './types';
+import { School } from './types';
 import { BadRequestException } from '@nestjs/common';
 
 describe('LearnerInfoController', () => {
@@ -46,9 +46,6 @@ describe('LearnerInfoController', () => {
       const createLearnerInfo: CreateLearnerInfoDto = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockLearnerInfoService.create.mockResolvedValue(
@@ -72,9 +69,6 @@ describe('LearnerInfoController', () => {
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       await expect(
@@ -86,9 +80,6 @@ describe('LearnerInfoController', () => {
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: -1,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockLearnerInfoService.create.mockRejectedValue(
@@ -98,52 +89,6 @@ describe('LearnerInfoController', () => {
       await expect(
         controller.createLearnerInfo(createLearnerInfoDto),
       ).rejects.toThrow(new BadRequestException(`appId must not be negative`));
-    });
-  });
-
-  describe('PATCH /:appId/interest', () => {
-    it('should update learner info interest', async () => {
-      const createLearnerInfo: CreateLearnerInfoDto = {
-        appId: 1,
-        school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
-      };
-
-      mockLearnerInfoService.update.mockResolvedValue(
-        createLearnerInfo as LearnerInfo,
-      );
-
-      // Call controller method
-      const result = await controller.updateApplicationInterest(1, {
-        interest: InterestArea.HARM_REDUCTION,
-      });
-
-      // Verify results
-      expect(result).toEqual(createLearnerInfo as LearnerInfo);
-      expect(mockLearnerInfoService.update).toHaveBeenCalledWith(1, {
-        interest: InterestArea.HARM_REDUCTION,
-      });
-    });
-
-    it('should throw NotFoundException with no information loss when updating non-existent application', async () => {
-      const nonExistentId = 999;
-
-      mockLearnerInfoService.update.mockRejectedValue(
-        new BadRequestException(
-          `Application with ID ${nonExistentId} not found`,
-        ),
-      );
-      await expect(
-        controller.updateApplicationInterest(999, {
-          interest: InterestArea.HARM_REDUCTION,
-        }),
-      ).rejects.toThrow(
-        new BadRequestException(
-          `Application with ID ${nonExistentId} not found`,
-        ),
-      );
     });
   });
 });

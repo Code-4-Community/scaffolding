@@ -54,25 +54,4 @@ export class LearnerInfoService {
     const learnerInfo = this.learnerInfoRepository.create(createLearnerInfoDto);
     return await this.learnerInfoRepository.save(learnerInfo);
   }
-
-  /**
-   * Updates the fields of a learner info in the repository.
-   * @param appId The id of the application to update.
-   * @param updateData Object containing the desired new learner info fields.
-   * @returns The updated application object.
-   * @throws {NotFoundException} with message 'Learner Info with AppId <id> not found'
-   *         if the application does not exist.
-   * @throws {Error} which is unchanged from what repository throws.
-   */
-  async update(
-    appId: number,
-    updateData: Partial<CreateLearnerInfoDto>,
-  ): Promise<LearnerInfo> {
-    const application = await this.findById(appId);
-    if (!application) {
-      throw new NotFoundException(`Application with ID ${appId} not found`);
-    }
-    Object.assign(application, updateData);
-    return await this.learnerInfoRepository.save(application);
-  }
 }

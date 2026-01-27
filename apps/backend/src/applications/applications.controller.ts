@@ -15,7 +15,6 @@ import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationInterestDto } from './dto/update-application-interest.request.dto';
-import { NotFoundException } from '@nestjs/common';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.

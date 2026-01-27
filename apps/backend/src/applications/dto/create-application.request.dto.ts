@@ -85,17 +85,6 @@ export class CreateApplicationDto {
   license: string;
 
   /**
-   * TODO: clarify what international means exactly in business context.
-   *
-   * Whether or not the applicant is international.
-   *
-   * Example: true.
-   */
-  @IsBoolean()
-  @IsDefined()
-  isInternational: boolean;
-
-  /**
    * Phone number of the applicant in ###-###-#### format.
    *
    * Example: "123-456-7890".
