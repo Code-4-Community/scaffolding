@@ -2,11 +2,11 @@ import { IsString, IsNotEmpty, IsDefined, Matches } from 'class-validator';
 import { PrimaryColumn } from 'typeorm';
 
 /**
- * Defines the expected shape of data for creating a learner.
+ * Defines the expected shape of data for creating a applicant.
  *
  * DTO - data transfer object (defines and validates the structure of data sent over the network).
  */
-export class CreateLearnerDto {
+export class CreateApplicantDto {
   /**
    * Corresponding application id number.
    */
@@ -14,7 +14,7 @@ export class CreateLearnerDto {
   appId: number;
 
   /**
-   * The learner's first name.
+   * The applicant's first name.
    *
    * Example: 'Jane'.
    */
@@ -23,7 +23,7 @@ export class CreateLearnerDto {
   firstName: string;
 
   /**
-   * The learner's last name.
+   * The applicant's last name.
    *
    * Example: 'Jane'.
    */
@@ -32,7 +32,7 @@ export class CreateLearnerDto {
   lastName: string;
 
   /**
-   * The expected start date for the learner's commitment, stored in YYYY-MM-DD format.
+   * The expected start date for the applicant's commitment, stored in YYYY-MM-DD format.
    *
    * Example: '2024-06-30'.
    */
@@ -44,7 +44,7 @@ export class CreateLearnerDto {
   startDate: string;
 
   /**
-   * The expected end date for the learner's commitment, stored in YYYY-MM-DD format.
+   * The expected end date for the applicant's commitment, stored in YYYY-MM-DD format.
    *
    * Example: '2024-06-30'.
    */

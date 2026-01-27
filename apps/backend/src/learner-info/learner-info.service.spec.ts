@@ -49,9 +49,6 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockRepository.save.mockResolvedValue(LearnerInfo);
@@ -69,9 +66,6 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       await expect(service.create(LearnerInfo)).rejects.toThrow(
@@ -83,9 +77,6 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: -1,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockRepository.save.mockResolvedValue(LearnerInfo);
@@ -98,9 +89,6 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: 1,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
       };
 
       mockRepository.findOne.mockResolvedValue(LearnerInfo);
@@ -135,85 +123,6 @@ describe('LearnerInfoService', () => {
       await expect(service.findById(1)).rejects.toThrow(
         new Error(`There was a problem retrieving the info`),
       );
-    });
-  });
-
-  describe('update', () => {
-    it('should update learner info interest', async () => {
-      const learnerInfo: LearnerInfo = {
-        appId: 1,
-        school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
-      };
-
-      const updatedApplication: LearnerInfo = {
-        ...learnerInfo,
-        interest: InterestArea.HARM_REDUCTION,
-      };
-
-      mockRepository.findOne.mockResolvedValue(learnerInfo);
-      mockRepository.save.mockResolvedValue(updatedApplication);
-
-      const result = await service.update(1, {
-        interest: InterestArea.HARM_REDUCTION,
-      });
-
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
-      expect(repository.save).toHaveBeenCalledWith({
-        ...learnerInfo,
-        interest: InterestArea.HARM_REDUCTION,
-      });
-      expect(result).toEqual(updatedApplication);
-    });
-
-    it('should throw NotFoundException when updating non-existent application', async () => {
-      const nonExistentId = 999;
-
-      mockRepository.findOne.mockResolvedValue(null);
-
-      await expect(
-        service.update(999, { interest: InterestArea.HARM_REDUCTION }),
-      ).rejects.toThrow(
-        new NotFoundException(
-          `Learner Info with AppId ${nonExistentId} not found`,
-        ),
-      );
-
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { appId: nonExistentId },
-      });
-      expect(repository.save).not.toHaveBeenCalled();
-    });
-
-    it('should pass along any repo errors from retrieval without information loss when saving a new interest', async () => {
-      mockRepository.findOne.mockRejectedValue(
-        new Error('There was a problem retrieving the info'),
-      );
-
-      await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
-      ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
-    });
-
-    it('should pass along any repo errors from saving the new info without information loss when saving a new interest', async () => {
-      const learnerInfo: LearnerInfo = {
-        appId: 1,
-        school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
-      };
-
-      mockRepository.findOne.mockResolvedValue(learnerInfo);
-      mockRepository.save.mockRejectedValue(
-        new Error('There was a problem retrieving the info'),
-      );
-
-      await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
-      ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
   });
 });

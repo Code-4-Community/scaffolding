@@ -21,6 +21,22 @@ export class Application {
   appId!: number;
 
   /**
+   * Email of the applicant.
+   *
+   * Example: "bob.ross@example.com"
+   */
+  @Column({ type: 'varchar' })
+  email!: string;
+
+  /**
+   * Discipline associated with the applicant.
+   *
+   * Example: "Nursing"
+   */
+  @Column({ type: 'varchar' })
+  discipline!: string;
+
+  /**
    * Status of the application in the review process.
    *
    * Example: AppStatus.APP_SUBMITTED.
@@ -60,16 +76,6 @@ export class Application {
   // if people can hold multiple licenses in real life
   @Column({ type: 'varchar' })
   license!: string;
-
-  /**
-   * TODO: clarify what international means exactly in business context.
-   *
-   * Whether or not the applicant is international.
-   *
-   * Example: true.
-   */
-  @Column({ type: 'boolean', default: false })
-  isInternational!: boolean;
 
   /**
    * Phone number of the applicant in ###-###-#### format.
