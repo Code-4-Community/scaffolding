@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LearnersController } from './learners.controller';
-import { LearnersService } from './learners.service';
-import { Learner } from './learner.entity';
+import { ApplicantsController } from './applicants.controller';
+import { ApplicantsService } from './applicants.service';
+import { Applicant } from './applicant.entity';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { AuthService } from '../auth/auth.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Learner])],
-  controllers: [LearnersController],
+  imports: [TypeOrmModule.forFeature([Applicant])],
+  controllers: [ApplicantsController],
   providers: [
-    LearnersService,
+    ApplicantsService,
     AuthService,
     JwtStrategy,
     CurrentUserInterceptor,
   ],
-  exports: [LearnersService],
+  exports: [ApplicantsService],
 })
-export class LearnersModule {}
+export class ApplicantsModule {}

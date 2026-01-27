@@ -21,6 +21,22 @@ export class Application {
   appId!: number;
 
   /**
+   * Email of the applicant.
+   *
+   * Example: "bob.ross@example.com"
+   */
+  @Column({ type: 'varchar' })
+  email!: string;
+
+  /**
+   * Discipline associated with the applicant.
+   *
+   * Example: "Nursing"
+   */
+  @Column({ type: 'varchar' })
+  discipline!: string;
+
+  /**
    * Status of the application in the review process.
    *
    * Example: AppStatus.APP_SUBMITTED.

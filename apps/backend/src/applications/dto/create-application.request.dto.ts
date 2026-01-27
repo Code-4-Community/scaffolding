@@ -10,6 +10,7 @@ import {
   Matches,
   Min,
   Max,
+  IsEmail,
 } from 'class-validator';
 import {
   AppStatus,
@@ -104,6 +105,24 @@ export class CreateApplicationDto {
   @IsEnum(School)
   @IsDefined()
   school: School;
+
+  /**
+   * Email of the applicant.
+   *
+   * Example: bob.ross@example.com
+   */
+  @IsEmail()
+  @IsDefined()
+  email: string;
+
+  /**
+   * Discipline of the applicant.
+   *
+   * Example: "Nursing"
+   */
+  @IsString()
+  @IsDefined()
+  discipline: string;
 
   /**
    * Whether or not the applicant was referred by someone else.
