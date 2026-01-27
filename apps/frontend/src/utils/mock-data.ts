@@ -46,8 +46,7 @@ export const STATIC_ARCHIVED: Anthology[] = [
       "Discover a world where wisdom and whimsy collide in this captivating anthology from 826 Boston. Each story offers a unique piece of advice, from reimagined Greek myths to thought-provoking advice columns. Get ready to be challenged, moved, and inspired by these young voices' raw creativity and fearless storytelling!",
     published_year: 2024,
     status: 'archived',
-    authors: ['826 Boston Students'],
-    photo_url: '/src/assets/images/covers/Whatiftheworld_2024.jpg',
+    authors: ['Maria Santos', 'James Chen', 'Aisha Johnson', 'David Kim', 'Sofia Rodriguez'],    photo_url: '/src/assets/images/covers/Whatiftheworld_2024.jpg',
     foreword_author: 'Meredith Goldstein',
     praise_quotes:
       "\"I will cherish this collection by 826 Boston students who have crafted a range of work, from poetry to narratives to essays. Every piece is wisdom. Every short story, diary, comedy, and drama is embedded with advice, even if it's not obvious. Now, when I think, 'What should I do next?' I have a new place to turn.\" - Meredith Goldstein, author, longtime advice columnist, and associate editor at The Boston Globe",
@@ -98,9 +97,7 @@ export const STATIC_ARCHIVED: Anthology[] = [
       "Boston's 2021 mayoral election was a competitive race with more ethnically and racially diverse candidates than ever before. In I Was Meant for This students of all ages give their own inaugural addresses as Boston's mayor-elect. These speeches—simultaneously playful, imaginative, and keenly observed—speak to an evolving city, as told through the eyes of tomorrow's leaders.",
     published_year: 2022,
     status: 'archived',
-    authors: ['826 Boston Students'],
-    photo_url: '/src/assets/images/covers/IwasMeantforthis_2022.jpg',
-    foreword_author: 'Adrian Walker',
+    authors: ['Zachary Abusheleih', 'Pablo Arduini', 'Marwa Bacare', 'Emma-Rose Bernard', 'Naveen Bhatt', 'Rohan Bhatt', 'Inari Braxton', 'Kamila Burgos Cruz', 'Edwin Chen', 'Alice Chung'],    foreword_author: 'Adrian Walker',
     praise_quotes:
       '"These are the speeches—and the voices—of young people who know that they matter, and that their thoughts and dreams matter. We should want that for all young people in every neighborhood of our city. I hope you enjoy their writing, and their thinking, as much as I did. We need their voices more than ever. And to our young mayoral candidates and essayists I say: Please keep writing. And please keep dreaming." - Adrian Walker, Columnist/Associate Editor, The Boston Globe',
     age_category:
@@ -231,3 +228,31 @@ export const RECENTLY_EDITED: Anthology[] = [
 ];
 
 export const MOCK_LAST_MODIFIED = 'October 15, 2025';
+
+export interface Story {
+  id: number;
+  title: string;
+  author: string;
+  anthology_id: number;
+}
+
+export const MOCK_STORIES: Story[] = [
+  // stories for anthology id: 1 (What if the World Needs You?)
+  { id: 1, title: 'The Wise Oracle', author: 'Maria Santos', anthology_id: 1 },
+  { id: 2, title: 'Letters to Tomorrow', author: 'James Chen', anthology_id: 1 },
+  { id: 3, title: 'Advice from a Cloud', author: 'Aisha Johnson', anthology_id: 1 },
+  { id: 4, title: 'My Grandmother Told Me', author: 'David Kim', anthology_id: 1 },
+  { id: 5, title: 'If I Were Mayor', author: 'Sofia Rodriguez', anthology_id: 1 },
+
+  // stories for anthology id: 2 (I Was Meant For This)
+  { id: 6, title: 'My First Day as Mayor', author: 'Zachary Abusheleih', anthology_id: 2 },
+  { id: 7, title: 'A New Boston', author: 'Pablo Arduini', anthology_id: 2 },
+  { id: 8, title: 'The Speech I Would Give', author: 'Marwa Bacare', anthology_id: 2 },
+  { id: 9, title: 'Leading with Heart', author: 'Emma-Rose Bernard', anthology_id: 2 },
+  { id: 10, title: 'My Vision for Our City', author: 'Naveen Bhatt', anthology_id: 2 },
+  { id: 11, title: 'Tomorrow Starts Today', author: 'Rohan Bhatt', anthology_id: 2 },
+  { id: 12, title: 'Dreams for Boston', author: 'Inari Braxton', anthology_id: 2 },
+  { id: 13, title: 'A City United', author: 'Kamila Burgos Cruz', anthology_id: 2 },
+  { id: 14, title: 'The Change We Need', author: 'Edwin Chen', anthology_id: 2 },
+  { id: 15, title: 'Hope on the Horizon', author: 'Alice Chung', anthology_id: 2 },
+];
