@@ -65,9 +65,6 @@ export class ApplicantsController {
    * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined).
    * @throws {NotFoundException} with message 'Applicant with ID <id> not found'
    *                             if the applicant with the specified appId does not exist.
-   *
-   * TODO: Resolve logical issue: appId is not the same as applicant id but the
-   *       service searches by applicant id despite this accepting appId.
    */
   @Get('/:appId')
   async getApplicant(
