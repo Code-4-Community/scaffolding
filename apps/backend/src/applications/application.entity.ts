@@ -8,6 +8,7 @@ import {
   DaysOfTheWeek,
   ApplicantType,
 } from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
  * Represents the desired columns for the database table in the repository for the system's applications.
@@ -19,6 +20,22 @@ export class Application {
    */
   @PrimaryGeneratedColumn()
   appId!: number;
+
+  /**
+   * Email of the applicant.
+   *
+   * Example: "bob.ross@example.com"
+   */
+  @Column({ type: 'varchar' })
+  email!: string;
+
+  /**
+   * Discipline associated with the applicant.
+   *
+   * Example: "Nursing"
+   */
+  @Column({ type: 'enum', enum: DISCIPLINE_VALUES })
+  discipline!: DISCIPLINE_VALUES;
 
   /**
    * Status of the application in the review process.

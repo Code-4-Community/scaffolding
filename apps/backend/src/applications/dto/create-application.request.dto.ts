@@ -10,6 +10,7 @@ import {
   Matches,
   Min,
   Max,
+  IsEmail,
 } from 'class-validator';
 import {
   AppStatus,
@@ -19,6 +20,7 @@ import {
   DaysOfTheWeek,
   ApplicantType,
 } from '../types';
+import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 
 /**
  * Defines the expected shape of data for creating an application.
@@ -104,6 +106,24 @@ export class CreateApplicationDto {
   @IsEnum(School)
   @IsDefined()
   school: School;
+
+  /**
+   * Email of the applicant.
+   *
+   * Example: bob.ross@example.com
+   */
+  @IsEmail()
+  @IsDefined()
+  email: string;
+
+  /**
+   * Discipline of the applicant.
+   *
+   * Example: "Nursing"
+   */
+  @IsEnum(DISCIPLINE_VALUES)
+  @IsDefined()
+  discipline: DISCIPLINE_VALUES;
 
   /**
    * Whether or not the applicant was referred by someone else.
