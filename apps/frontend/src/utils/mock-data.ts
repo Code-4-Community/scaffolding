@@ -237,22 +237,40 @@ export interface Story {
 }
 
 export const MOCK_STORIES: Story[] = [
-  // stories for anthology id: 1 (What if the World Needs You?)
-  { id: 1, title: 'The Wise Oracle', author: 'Maria Santos', anthology_id: 1 },
-  { id: 2, title: 'Letters to Tomorrow', author: 'James Chen', anthology_id: 1 },
-  { id: 3, title: 'Advice from a Cloud', author: 'Aisha Johnson', anthology_id: 1 },
-  { id: 4, title: 'My Grandmother Told Me', author: 'David Kim', anthology_id: 1 },
-  { id: 5, title: 'If I Were Mayor', author: 'Sofia Rodriguez', anthology_id: 1 },
+  { id: 1, title: 'Story 1', author: 'Maria Santos', anthology_id: 1 },
+  { id: 2, title: 'Story 2', author: 'James Chen', anthology_id: 1 },
+  { id: 3, title: 'Story 3', author: 'Aisha Johnson', anthology_id: 1 },
+  { id: 4, title: 'Story 4', author: 'David Kim', anthology_id: 1 },
+  { id: 5, title: 'Story 5', author: 'Sofia Rodriguez', anthology_id: 1 },
 
-  // stories for anthology id: 2 (I Was Meant For This)
-  { id: 6, title: 'My First Day as Mayor', author: 'Zachary Abusheleih', anthology_id: 2 },
-  { id: 7, title: 'A New Boston', author: 'Pablo Arduini', anthology_id: 2 },
-  { id: 8, title: 'The Speech I Would Give', author: 'Marwa Bacare', anthology_id: 2 },
-  { id: 9, title: 'Leading with Heart', author: 'Emma-Rose Bernard', anthology_id: 2 },
-  { id: 10, title: 'My Vision for Our City', author: 'Naveen Bhatt', anthology_id: 2 },
-  { id: 11, title: 'Tomorrow Starts Today', author: 'Rohan Bhatt', anthology_id: 2 },
-  { id: 12, title: 'Dreams for Boston', author: 'Inari Braxton', anthology_id: 2 },
-  { id: 13, title: 'A City United', author: 'Kamila Burgos Cruz', anthology_id: 2 },
-  { id: 14, title: 'The Change We Need', author: 'Edwin Chen', anthology_id: 2 },
-  { id: 15, title: 'Hope on the Horizon', author: 'Alice Chung', anthology_id: 2 },
+  { id: 6, title: 'Story 1', author: 'Zachary Abusheleih', anthology_id: 2 },
+  { id: 7, title: 'Story 2', author: 'Pablo Arduini', anthology_id: 2 },
+  { id: 8, title: 'Story 3', author: 'Marwa Bacare', anthology_id: 2 },
+  { id: 9, title: 'Story 4', author: 'Emma-Rose Bernard', anthology_id: 2 },
+  { id: 10, title: 'Story 5', author: 'Naveen Bhatt', anthology_id: 2 },
+  { id: 11, title: 'Story 6', author: 'Rohan Bhatt', anthology_id: 2 },
+  { id: 12, title: 'Story 7', author: 'Inari Braxton', anthology_id: 2 },
+  { id: 13, title: 'Story 8', author: 'Kamila Burgos Cruz', anthology_id: 2 },
+  { id: 14, title: 'Story 9', author: 'Edwin Chen', anthology_id: 2 },
+  { id: 15, title: 'Story 10', author: 'Alice Chung', anthology_id: 2 },
+
+  { id: 16, title: 'Story 1', author: 'A. Lee', anthology_id: 3 },
+  { id: 17, title: 'Story 2', author: 'M. Torres', anthology_id: 3 },
+
+  { id: 18, title: 'Story 1', author: 'Jamal Wright', anthology_id: 4 },
+
+  { id: 19, title: 'Story 1', author: 'A. Lee', anthology_id: 5 },
+
+  { id: 20, title: 'Story 1', author: 'Student Contributors', anthology_id: 6 },
+
+  { id: 21, title: 'Story 1', author: 'K. Chen', anthology_id: 7 },
+  { id: 22, title: 'Story 2', author: 'R. Patel', anthology_id: 7 },
+  { id: 23, title: 'Story 3', author: 'S. Johnson', anthology_id: 7 },
+
+  { id: 24, title: 'Story 1', author: 'Community Writers', anthology_id: 8 },
+
+  { id: 25, title: 'Story 1', author: 'M. Williams', anthology_id: 9 },
+  { id: 26, title: 'Story 2', author: 'D. Brown', anthology_id: 9 },
+
+  { id: 27, title: 'Story 1', author: '826 Boston Students', anthology_id: 10 },
 ];
