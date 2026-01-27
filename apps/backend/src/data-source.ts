@@ -17,7 +17,7 @@ const AppDataSource = new DataSource({
   password: process.env.NX_DB_PASSWORD,
   database: process.env.NX_DB_DATABASE,
   entities: [Anthology, Author, Inventory, InventoryHolding, Story],
-  migrations: ['apps/backend/src/migrations/*.js'],
+  migrations: ['apps/backend/src/migrations/*.ts'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
   synchronize: false,
   namingStrategy: new PluralNamingStrategy(),
