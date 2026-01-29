@@ -1,9 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 import { AnthologyStatus, AnthologyPubLevel } from './types';
-import { Story } from '../story/story.entity';
-import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
-
 @Entity()
 export class Anthology {
   @PrimaryGeneratedColumn()
@@ -41,10 +38,4 @@ export class Anthology {
 
   @Column({ nullable: true })
   shopify_url: string;
-
-  @OneToMany(() => Story, (story) => story.anthology)
-  stories: Story[];
-
-  @OneToMany(() => InventoryHolding, (ih) => ih.anthology)
-  holdings: InventoryHolding[];
 }

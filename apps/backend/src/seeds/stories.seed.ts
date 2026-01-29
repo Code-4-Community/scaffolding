@@ -1,5 +1,5 @@
-import { DeepPartial } from "typeorm";
-import { Story } from "../story/story.entity";
+import { DeepPartial } from 'typeorm';
+import { Story } from '../story/story.entity';
 
 export const StoriesSeed: DeepPartial<Story>[] = [
   {
@@ -9,7 +9,7 @@ export const StoriesSeed: DeepPartial<Story>[] = [
     studentBio: 'Bio',
     genre: 'Genre',
     theme: 'Theme',
-    anthology: null,
-    author: null,
+    anthology_id: 1,
+    author_id: 1,
   },
 ];

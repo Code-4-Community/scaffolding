@@ -20,7 +20,7 @@ const AppDataSource = new DataSource({
   entities: [Anthology, Author, Inventory, InventoryHolding, Story],
   migrations: ['apps/backend/src/migrations/*.ts'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
-  synchronize: false,
+  synchronize: process.env.NODE_ENV !== 'production',
   namingStrategy: new PluralNamingStrategy(),
 });
 
