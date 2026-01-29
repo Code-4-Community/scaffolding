@@ -1,14 +1,6 @@
-import {
-  Entity,
-  Column,
-  IntegerType,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { AnthologyStatus, AnthologyPubLevel } from './types';
-
 import { Story } from '../story/story.entity';
 import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
 
@@ -26,13 +18,19 @@ export class Anthology {
   @Column({ type: 'int' })
   published_year: number;
 
-  @Column('text', { nullable: true })
+  @Column('simple-array', { nullable: true })
   programs?: string[];
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: AnthologyStatus,
+  })
   status: AnthologyStatus;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: AnthologyPubLevel,
+  })
   pub_level: AnthologyPubLevel;
 
   @Column({ nullable: true })

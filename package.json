@@ -40,11 +40,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.0",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.28"
   },
   "devDependencies": {
     "@nestjs/schematics": "^10.0.2",
@@ -59,7 +57,7 @@
     "@nx/webpack": "^16.8.1",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.4.0",
-    "@types/node": "^18.14.2",
+    "@types/node": "^18.19.130",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "6.9.1",
@@ -82,6 +80,9 @@
     "nx-cloud": "^16.4.0",
     "prettier": "^2.6.2",
     "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0",
     "typescript": "5.1.6",
     "vite": "^4.3.9",
     "vitest": "^0.32.0"

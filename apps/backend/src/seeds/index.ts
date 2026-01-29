@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { seedStories } from './seed-stories';
 import dataSource from '../data-source'; // Your TypeORM config
 
