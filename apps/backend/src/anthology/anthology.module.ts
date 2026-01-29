@@ -8,6 +8,7 @@ import { JwtStrategy } from '../auth/jwt.strategy';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { StoryModule } from '../story/story.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Anthology]), AuthModule, UsersModule],

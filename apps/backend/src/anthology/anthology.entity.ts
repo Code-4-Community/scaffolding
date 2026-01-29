@@ -35,13 +35,13 @@ export class Anthology {
   @Column()
   pub_level: AnthologyPubLevel;
 
-  @Column({ nullable: true })
+  @Column()
   photo_url: string;
 
-  @Column({ nullable: true })
+  @Column()
   isbn: string;
 
-  @Column({ nullable: true })
+  @Column()
   shopify_url: string;
 
   @OneToMany(() => Story, (story) => story.anthology)

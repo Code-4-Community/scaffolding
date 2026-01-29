@@ -1,14 +1,7 @@
-import {
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsEnum,
-  IsArray,
-} from 'class-validator';
+import { IsString, IsInt, IsOptional, IsEnum, IsArray } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AnthologyStatus, AnthologyPubLevel } from '../types';
 
-//TODO: outdated DTO needs to match the schema
 export class CreateAnthologyDto {
   @ApiProperty({ description: 'Title of the anthology' })
   @IsString()
@@ -19,7 +12,7 @@ export class CreateAnthologyDto {
   description: string;
 
   @ApiProperty({ description: 'Year the anthology was published' })
-  @IsNumber()
+  @IsInt()
   published_year: number;
 
   @ApiProperty({
@@ -47,33 +40,15 @@ export class CreateAnthologyDto {
   @IsString({ each: true })
   programs?: string[];
 
-  @ApiPropertyOptional({ description: 'Inventory count' })
-  @IsOptional()
-  @IsNumber()
-  inventory?: number;
-
-  @ApiPropertyOptional({ description: 'URL to anthology photo' })
-  @IsOptional()
+  @ApiProperty({ description: 'URL to anthology photo' })
   @IsString()
-  photo_url?: string;
+  photo_url: string;
 
-  @ApiPropertyOptional({ description: 'Genre of the anthology' })
-  @IsOptional()
+  @ApiProperty({ description: 'ISBN of the anthology' })
   @IsString()
-  genre?: string;
+  isbn: string;
 
-  @ApiPropertyOptional({ description: 'Theme of the anthology' })
-  @IsOptional()
+  @ApiProperty({ description: 'Shopify URL for purchasing' })
   @IsString()
-  theme?: string;
-
-  @ApiPropertyOptional({ description: 'ISBN of the anthology' })
-  @IsOptional()
-  @IsString()
-  isbn?: string;
-
-  @ApiPropertyOptional({ description: 'Shopify URL for purchasing' })
-  @IsOptional()
-  @IsString()
-  shopify_url?: string;
+  shopify_url: string;
 }
