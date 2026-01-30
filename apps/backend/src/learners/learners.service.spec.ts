@@ -436,5 +436,35 @@ describe('LearnersService', () => {
       });
       expect(mockLearnersRepository.remove).not.toHaveBeenCalled();
     });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(service.delete(1)).rejects.toThrow(
+        'There was a problem retrieving the info',
+      );
+      expect(mockLearnersRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('should error out without information loss if the repository throws an error during removal', async () => {
+      jest
+        .spyOn(mockLearnersRepository, 'findOneBy')
+        .mockResolvedValue(learner1);
+      jest
+        .spyOn(mockLearnersRepository, 'remove')
+        .mockRejectedValueOnce(
+          new Error('There was a problem removing the info'),
+        );
+
+      await expect(service.delete(1)).rejects.toThrow(
+        'There was a problem removing the info',
+      );
+      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(mockLearnersRepository.remove).toHaveBeenCalledWith(learner1);
+    });
   });
 });
