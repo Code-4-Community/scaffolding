@@ -474,7 +474,7 @@ describe('ApplicantsService', () => {
       // returns the deleted applicant
       expect(result).toEqual(applicant1);
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        id: 1,
+        appId: 1,
       });
       expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
     });
@@ -486,7 +486,7 @@ describe('ApplicantsService', () => {
         new NotFoundException('Applicant with ID 999 not found'),
       );
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        id: 999,
+        appId: 999,
       });
       expect(mockApplicantsRepository.remove).not.toHaveBeenCalled();
     });
@@ -518,7 +518,7 @@ describe('ApplicantsService', () => {
         'There was a problem removing the info',
       );
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        id: 1,
+        appId: 1,
       });
       expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
     });

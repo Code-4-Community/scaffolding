@@ -14,6 +14,7 @@ const mockApplicantsService: Partial<ApplicantsService> = {
   findByAppId: jest.fn(),
   updateStartDate: jest.fn(),
   updateEndDate: jest.fn(),
+  delete: jest.fn(),
 };
 
 const mockAuthService = {
@@ -241,6 +242,9 @@ describe('ApplicantsController', () => {
         .mockResolvedValue(defaultApplicant);
 
       const result = await controller.deleteApplicant(1);
+
+      expect(result).toEqual(defaultApplicant);
+      expect(mockApplicantsService.delete).toHaveBeenCalledWith(1);
     });
 
     it('should handle service errors when deleting applicant', async () => {
