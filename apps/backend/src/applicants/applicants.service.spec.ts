@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
@@ -462,33 +463,37 @@ describe('ApplicantsService', () => {
   describe('delete', () => {
     it('should delete a learner successfully', async () => {
       jest
-        .spyOn(mockLearnersRepository, 'findOneBy')
-        .mockResolvedValue(learner1);
-      jest.spyOn(mockLearnersRepository, 'remove').mockResolvedValue(learner1);
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
+      jest
+        .spyOn(mockApplicantsRepository, 'remove')
+        .mockResolvedValue(applicant1);
 
       const result = await service.delete(1);
 
-      // returns the deleted learner
-      expect(result).toEqual(learner1);
-      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
-      expect(mockLearnersRepository.remove).toHaveBeenCalledWith(learner1);
+      // returns the deleted applicant
+      expect(result).toEqual(applicant1);
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
+        id: 1,
+      });
+      expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
     });
 
     it('should throw NotFoundException if learner is not found', async () => {
-      jest.spyOn(mockLearnersRepository, 'findOneBy').mockResolvedValue(null);
+      jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
 
       await expect(service.delete(999)).rejects.toThrow(
-        new NotFoundException('Learner with ID 999 not found'),
+        new NotFoundException('Applicant with ID 999 not found'),
       );
-      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
         id: 999,
       });
-      expect(mockLearnersRepository.remove).not.toHaveBeenCalled();
+      expect(mockApplicantsRepository.remove).not.toHaveBeenCalled();
     });
 
     it('should error out without information loss if the repository throws an error during retrieval', async () => {
       jest
-        .spyOn(mockLearnersRepository, 'findOneBy')
+        .spyOn(mockApplicantsRepository, 'findOneBy')
         .mockRejectedValueOnce(
           new Error('There was a problem retrieving the info'),
         );
@@ -496,15 +501,15 @@ describe('ApplicantsService', () => {
       await expect(service.delete(1)).rejects.toThrow(
         'There was a problem retrieving the info',
       );
-      expect(mockLearnersRepository.remove).not.toHaveBeenCalled();
+      expect(mockApplicantsRepository.remove).not.toHaveBeenCalled();
     });
 
     it('should error out without information loss if the repository throws an error during removal', async () => {
       jest
-        .spyOn(mockLearnersRepository, 'findOneBy')
-        .mockResolvedValue(learner1);
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
       jest
-        .spyOn(mockLearnersRepository, 'remove')
+        .spyOn(mockApplicantsRepository, 'remove')
         .mockRejectedValueOnce(
           new Error('There was a problem removing the info'),
         );
@@ -512,8 +517,10 @@ describe('ApplicantsService', () => {
       await expect(service.delete(1)).rejects.toThrow(
         'There was a problem removing the info',
       );
-      expect(mockLearnersRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
-      expect(mockLearnersRepository.remove).toHaveBeenCalledWith(learner1);
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
+        id: 1,
+      });
+      expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
     });
   });
 });

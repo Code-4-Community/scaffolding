@@ -174,4 +174,21 @@ export class ApplicantsService {
 
     return applicants;
   }
+
+  /**
+   * Deletes a applicant by id.
+   * @param id The id of the applicant to delete.
+   * @returns The deleted applicant.
+   * @throws {Error} If the repository throws an error.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Applicant with ID <id> not found'
+   *                             if the applicant with the specified appId does not exist.
+   */
+  async delete(id: number) {
+    const applicant = await this.findOne(id);
+    if (!applicant) {
+      throw new NotFoundException(`Applicant with ID ${id} not found`);
+    }
+    return this.repo.remove(applicant);
+  }
 }

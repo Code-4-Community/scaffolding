@@ -233,4 +233,28 @@ describe('ApplicantsController', () => {
       );
     });
   });
+
+  describe('deleteApplicant', () => {
+    it('should delete a applicant', async () => {
+      jest
+        .spyOn(mockApplicantsService, 'delete')
+        .mockResolvedValue(defaultApplicant);
+
+      const result = await controller.deleteApplicant(1);
+    });
+
+    it('should handle service errors when deleting applicant', async () => {
+      const errorMessage = 'Failed to delete applicant';
+      jest
+        .spyOn(mockApplicantsService, 'delete')
+        .mockRejectedValue(new Error(errorMessage));
+    });
+
+    it('should throw an error if applicant is not found', async () => {
+      const errorMessage = 'Applicant with ID 999 not found';
+      jest
+        .spyOn(mockApplicantsService, 'delete')
+        .mockRejectedValue(new Error(errorMessage));
+    });
+  });
 });
