@@ -5,10 +5,11 @@ import { DisciplinesService } from './disciplines.service';
 import { Discipline } from './disciplines.entity';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Discipline])],
+  imports: [TypeOrmModule.forFeature([Discipline]), AuthModule],
   controllers: [DisciplinesController],
   providers: [DisciplinesService, JwtStrategy, CurrentUserInterceptor],
 })
-export class DiscplinesModule {}
+export class DisciplinesModule {}

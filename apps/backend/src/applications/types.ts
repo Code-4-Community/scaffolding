@@ -43,3 +43,24 @@ export enum School {
   MAYO_CLINIC = 'Mayo Clinic',
   OTHER = 'Other',
 }
+
+export enum DaysOfTheWeek {
+  MONDAY = 'Monday',
+  TUESDAY = 'Tuesday',
+  WEDNESDAY = 'Wednesday',
+  THURSDAY = 'Thursday',
+  FRIDAY = 'Friday',
+  SATURDAY = 'Saturday',
+  SUNDAY = 'Sunday',
+}
+
+export enum ApplicantType {
+  LEARNER = 'Learner',
+  VOLUNTEER = 'Volunteer',
+}
+
+/**
+ * Phone number regex pattern for ###-###-#### format validation
+ * found this online: https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
+ */
+export const PHONE_REGEX = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;

@@ -1,6 +1,14 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-import { AppStatus, ExperienceType, InterestArea, School } from './types';
+import {
+  AppStatus,
+  ExperienceType,
+  InterestArea,
+  School,
+  DaysOfTheWeek,
+  ApplicantType,
+} from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
  * Represents the desired columns for the database table in the repository for the system's applications.
@@ -12,6 +20,22 @@ export class Application {
    */
   @PrimaryGeneratedColumn()
   appId!: number;
+
+  /**
+   * Email of the applicant.
+   *
+   * Example: "bob.ross@example.com"
+   */
+  @Column({ type: 'varchar' })
+  email!: string;
+
+  /**
+   * Discipline associated with the applicant.
+   *
+   * Example: "Nursing"
+   */
+  @Column({ type: 'enum', enum: DISCIPLINE_VALUES })
+  discipline!: DISCIPLINE_VALUES;
 
   /**
    * Status of the application in the review process.
@@ -27,7 +51,7 @@ export class Application {
    * Example: 'Monday, Tuesday'.
    */
   @Column({ type: 'varchar' })
-  daysAvailable!: string;
+  daysAvailable!: DaysOfTheWeek[];
 
   /**
    * Experience type/ level of the applicant, generally in terms of medical experience or degree.
@@ -55,30 +79,20 @@ export class Application {
   license!: string;
 
   /**
-   * TODO: clarify what international means exactly in business context.
-   *
-   * Whether or not the applicant is international.
-   *
-   * Example: true.
-   */
-  @Column({ type: 'boolean', default: false })
-  isInternational!: boolean;
-
-  /**
-   * Whether or not the applicant is a learner (e.g. a student).
-   *
-   * Example: true.
-   */
-  @Column({ type: 'boolean', default: false })
-  isLearner!: boolean;
-
-  /**
    * Phone number of the applicant in ###-###-#### format.
    *
    * Example: "123-456-7890".
    */
   @Column({ type: 'varchar' })
   phone!: string;
+
+  /**
+   * Type of applicant, currently either a learner or a volunteer.
+   *
+   * Example: ApplicantType.LEARNER.
+   */
+  @Column({ type: 'enum', enum: ApplicantType })
+  applicantType!: ApplicantType;
 
   /**
    * School of the applicant; includes well-known medical schools or an 'other' option.

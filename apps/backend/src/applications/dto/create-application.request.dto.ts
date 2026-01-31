@@ -10,8 +10,17 @@ import {
   Matches,
   Min,
   Max,
+  IsEmail,
 } from 'class-validator';
-import { AppStatus, ExperienceType, InterestArea, School } from '../types';
+import {
+  AppStatus,
+  ExperienceType,
+  InterestArea,
+  School,
+  DaysOfTheWeek,
+  ApplicantType,
+} from '../types';
+import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 
 /**
  * Defines the expected shape of data for creating an application.
@@ -33,9 +42,18 @@ export class CreateApplicationDto {
    *
    * Example: 'Monday, Tuesday'.
    */
-  @IsString()
+  @IsEnum(DaysOfTheWeek)
   @IsNotEmpty()
-  daysAvailable: string;
+  daysAvailable: DaysOfTheWeek[];
+
+  /**
+   * Type of applicant, currently either a learner or a volunteer.
+   *
+   * Example: ApplicantType.LEARNER.
+   */
+  @IsEnum(ApplicantType)
+  @IsDefined()
+  applicantType: ApplicantType;
 
   /**
    * Experience type/ level of the applicant, generally in terms of medical experience/ degree.
@@ -69,26 +87,6 @@ export class CreateApplicationDto {
   license: string;
 
   /**
-   * TODO: clarify what international means exactly in business context.
-   *
-   * Whether or not the applicant is international.
-   *
-   * Example: true.
-   */
-  @IsBoolean()
-  @IsDefined()
-  isInternational: boolean;
-
-  /**
-   * Whether or not the applicant is a learner, e.g. a student.
-   *
-   * Example: true.
-   */
-  @IsBoolean()
-  @IsDefined()
-  isLearner: boolean;
-
-  /**
    * Phone number of the applicant in ###-###-#### format.
    *
    * Example: "123-456-7890".
@@ -108,6 +106,24 @@ export class CreateApplicationDto {
   @IsEnum(School)
   @IsDefined()
   school: School;
+
+  /**
+   * Email of the applicant.
+   *
+   * Example: bob.ross@example.com
+   */
+  @IsEmail()
+  @IsDefined()
+  email: string;
+
+  /**
+   * Discipline of the applicant.
+   *
+   * Example: "Nursing"
+   */
+  @IsEnum(DISCIPLINE_VALUES)
+  @IsDefined()
+  discipline: DISCIPLINE_VALUES;
 
   /**
    * Whether or not the applicant was referred by someone else.
