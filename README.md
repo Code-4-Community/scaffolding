@@ -2,13 +2,13 @@
 
 ### Setting up the database
 Windows
-- Download [PostgreSQL](https://www.postgresql.org/download/)
+- Download [PostgreSQL](https://www.postgresql.org/download/windows/)
 - Say yes/ or check the box when it asks if you want to install PgAdmin with it
   - Alternatively install [PgAdmin 4](https://www.pgadmin.org/download/) separately
 - Make username postgres, password can be anything you will remember
 
 MacOS
-- You can use brew to install
+- You can use brew to install. You may need to install pgadmin separately, [link](https://www.postgresql.org/download/macosx/)
 ```
 brew install postrgesql
 ```
