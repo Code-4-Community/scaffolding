@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
@@ -456,6 +457,70 @@ describe('ApplicantsService', () => {
       await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
         'There was a problem saving the info',
       );
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete a learner successfully', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
+      jest
+        .spyOn(mockApplicantsRepository, 'remove')
+        .mockResolvedValue(applicant1);
+
+      const result = await service.delete(1);
+
+      // returns the deleted applicant
+      expect(result).toEqual(applicant1);
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
+        appId: 1,
+      });
+      expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
+    });
+
+    it('should throw NotFoundException if learner is not found', async () => {
+      jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
+
+      await expect(service.delete(999)).rejects.toThrow(
+        new NotFoundException('Applicant with ID 999 not found'),
+      );
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
+        appId: 999,
+      });
+      expect(mockApplicantsRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(service.delete(1)).rejects.toThrow(
+        'There was a problem retrieving the info',
+      );
+      expect(mockApplicantsRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('should error out without information loss if the repository throws an error during removal', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
+      jest
+        .spyOn(mockApplicantsRepository, 'remove')
+        .mockRejectedValueOnce(
+          new Error('There was a problem removing the info'),
+        );
+
+      await expect(service.delete(1)).rejects.toThrow(
+        'There was a problem removing the info',
+      );
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
+        appId: 1,
+      });
+      expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
     });
   });
 });

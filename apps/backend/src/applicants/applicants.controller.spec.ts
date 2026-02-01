@@ -14,6 +14,7 @@ const mockApplicantsService: Partial<ApplicantsService> = {
   findByAppId: jest.fn(),
   updateStartDate: jest.fn(),
   updateEndDate: jest.fn(),
+  delete: jest.fn(),
 };
 
 const mockAuthService = {
@@ -230,6 +231,41 @@ describe('ApplicantsController', () => {
 
       await expect(controller.updateEndDate(1, updatedEndDate)).rejects.toThrow(
         errorMessage,
+      );
+    });
+  });
+
+  describe('deleteApplicant', () => {
+    it('should delete a applicant', async () => {
+      jest
+        .spyOn(mockApplicantsService, 'delete')
+        .mockResolvedValue(defaultApplicant);
+
+      const result = await controller.deleteApplicant(1);
+
+      expect(result).toEqual(defaultApplicant);
+      expect(mockApplicantsService.delete).toHaveBeenCalledWith(1);
+    });
+
+    it('should handle service errors when deleting applicant', async () => {
+      const errorMessage = 'Failed to delete applicant';
+      jest
+        .spyOn(mockApplicantsService, 'delete')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.deleteApplicant(1)).rejects.toThrow(
+        'Failed to delete applicant',
+      );
+    });
+
+    it('should throw an error if applicant is not found', async () => {
+      const errorMessage = 'Applicant with ID 999 not found';
+      jest
+        .spyOn(mockApplicantsService, 'delete')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.deleteApplicant(999)).rejects.toThrow(
+        'Applicant with ID 999 not found',
       );
     });
   });
