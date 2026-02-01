@@ -252,6 +252,10 @@ describe('ApplicantsController', () => {
       jest
         .spyOn(mockApplicantsService, 'delete')
         .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.deleteApplicant(1)).rejects.toThrow(
+        'Failed to delete applicant',
+      );
     });
 
     it('should throw an error if applicant is not found', async () => {
@@ -259,6 +263,10 @@ describe('ApplicantsController', () => {
       jest
         .spyOn(mockApplicantsService, 'delete')
         .mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.deleteApplicant(999)).rejects.toThrow(
+        'Applicant with ID 999 not found',
+      );
     });
   });
 });
