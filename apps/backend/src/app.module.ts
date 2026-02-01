@@ -8,6 +8,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { InventoryHoldingModule } from './inventory-holding/inventory-holding.module';
 import AppDataSource from './data-source';
 import { StoryModule } from './story/story.module';
+import { ProductionInfoModule } from './production-info/production-info.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { StoryModule } from './story/story.module';
     InventoryModule,
     InventoryHoldingModule,
     StoryModule,
+    ProductionInfoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
