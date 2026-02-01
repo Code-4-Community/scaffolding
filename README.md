@@ -1,6 +1,27 @@
-## BHCHP Application and Admin Portal
+## BHCHP Application and Admin Portal - Setup for local development
 
-### Setting up the repo
+### Setting up the database
+Windows
+- Download [PostgreSQL](https://www.postgresql.org/download/)
+- Say yes/ or check the box when it asks if you want to install PgAdmin with it
+  - Alternatively install [PgAdmin 4](https://www.pgadmin.org/download/) separately
+- Make username postgres, password can be anything you will remember
+
+MacOS
+- You can use brew to install
+```
+brew install postrgesql
+```
+- Also you need to start postgres
+```
+brew services start postgresql
+```
+- Make username postgres, password can be anything you will remember 
+
+To set up the database, open PgAdmin. Once you have set up your postgres credentials, right click on the Databases dropdown. You may need to create a Server first. You will need the default password for postgres to do this, which is root. Select “Create/-> “Database…”. Name the database exactly bhchp. 
+
+
+### Setting up the dependencies
 - Clone this repo
 - Run `yarn` at the root (in vscode) to install this project's dependencies.
 - You can optionally install nx globally with:
@@ -28,6 +49,7 @@ nx run-many -t serve -p frontend backend
 ```
 
 ## Testing with Postman
+- Download [Postman](https://www.postman.com/)
 - Open postman
 - Set the parameter to GET
 - Enter `http://localhost:3000/api`
