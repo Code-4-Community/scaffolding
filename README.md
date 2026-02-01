@@ -3,7 +3,11 @@
 ### Setting up the repo
 - Clone this repo
 - Run `yarn` at the root (in vscode) to install this project's dependencies.
-- You can optionally install nx globally with `npm install -g nx` - if you don't, you'll just need to prefix the commands below with `npx` (e.g. `npx nx serve frontend`).
+- You can optionally install nx globally with:
+```
+npm install -g nx
+```
+- if you don't, you'll just need to prefix the commands below with `npx` (e.g. `npx nx serve frontend`).
 
 ## Setting up your environment
 - Make a copy of `example.env` (in `/apps/example.env`)
