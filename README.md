@@ -1,4 +1,4 @@
-## BHCHP Application and admin portal
+## BHCHP Application and Admin Portal
 
 ### Setting up the repo
 - Clone this repo
