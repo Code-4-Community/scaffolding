@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Story } from '../story/story.entity';
+import { StoryDraft } from '../story-draft/story-draft.entity';
 
 @Entity()
 export class Author {
@@ -17,4 +18,7 @@ export class Author {
 
   @OneToMany(() => Story, (story) => story.author)
   stories: Story[];
+
+  @OneToMany(() => StoryDraft, (storyDraft) => storyDraft.authorId)
+  storyDrafts: StoryDraft[];
 }
