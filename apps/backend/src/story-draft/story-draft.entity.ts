@@ -12,7 +12,10 @@ export class StoryDraft {
   @Column()
   docLink: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: SubmissionRound,
+  })
   submissionRound: SubmissionRound;
 
   @Column()
@@ -21,7 +24,10 @@ export class StoryDraft {
   @Column()
   inManuscript: boolean;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: EditRound,
+  })
   editRound: EditRound;
 
   @Column()
