@@ -6,6 +6,7 @@ export class StoryDraft {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'int' })
   authorId: number;
 
   @Column()
