@@ -11,6 +11,8 @@ import { AnthologyStatus, AnthologyPubLevel } from './types';
 
 import { Story } from '../story/story.entity';
 import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
+import { ProductionInfo } from '../production-info/production-info.entity';
+import { OneToOne } from 'typeorm';
 
 @Entity()
 export class Anthology {
@@ -49,4 +51,7 @@ export class Anthology {
 
   @OneToMany(() => InventoryHolding, (ih) => ih.anthology)
   holdings: InventoryHolding[];
+
+  @OneToOne(() => ProductionInfo, (productionInfo) => productionInfo.anthology)
+  productionInfo: ProductionInfo;
 }
