@@ -5,7 +5,7 @@ import {
   RECENTLY_EDITED,
   MOCK_LAST_MODIFIED,
   Anthology,
-} from '@utils/mock-data';
+} from '../../utils/mock-data';
 
 // Import SVG icons
 import DocumentIcon from '../../assets/icons/document.svg';

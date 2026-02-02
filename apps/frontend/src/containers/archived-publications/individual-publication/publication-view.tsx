@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
-import { STATIC_ARCHIVED } from '@utils/mock-data';
+import { STATIC_ARCHIVED } from '../../../utils/mock-data';
 import { Anthology, AnthologyStatus, AnthologyPubLevel } from '../../../types';
 import './publication-view.css';
 
