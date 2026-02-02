@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
 import * as dotenv from 'dotenv';
@@ -17,9 +18,9 @@ const AppDataSource = new DataSource({
   password: process.env.NX_DB_PASSWORD,
   database: process.env.NX_DB_DATABASE,
   entities: [Anthology, Author, Inventory, InventoryHolding, Story],
-  migrations: ['apps/backend/src/migrations/*.js'],
+  migrations: ['apps/backend/src/migrations/*.ts'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
-  synchronize: false,
+  synchronize: process.env.NODE_ENV !== 'production',
   namingStrategy: new PluralNamingStrategy(),
 });
 
