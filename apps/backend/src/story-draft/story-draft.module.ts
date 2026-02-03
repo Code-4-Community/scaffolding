@@ -1,0 +1,23 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { StoryDraftController } from './story-draft.controller';
+import { StoryDraftService } from './story-draft.service';
+import { StoryDraft } from './story-draft.entity';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthModule } from '../auth/auth.module';
+import { UsersModule } from '../users/users.module';
+import { AuthorModule } from '../author/author.module';
+import { Author } from '../author/author.entity';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([StoryDraft, Author]),
+    AuthModule,
+    UsersModule,
+    AuthorModule,
+  ],
+  controllers: [StoryDraftController],
+  providers: [StoryDraftService, CurrentUserInterceptor],
+  exports: [StoryDraftService],
+})
+export class StoryDraftModule {}

@@ -1,17 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Anthology } from '../anthology/anthology.entity';
-import { Inventory } from '../inventory/inventory.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class InventoryHolding {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Anthology, (anthology) => anthology.holdings)
-  anthology: Anthology;
+  anthology_id: number;
 
-  @ManyToOne(() => Inventory, (inventory) => inventory.holdings)
-  inventory: Inventory;
+  inventory_id: number;
 
   @Column()
   num_copies: number;
