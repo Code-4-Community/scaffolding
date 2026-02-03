@@ -17,7 +17,7 @@ export class EmailController {
    * @returns object containing message 'Email queued'
    */
   @Post('send')
-  async sendTestEmail(@Body() sendEmailDTO: SendEmailDto) {
+  async sendEmail(@Body() sendEmailDTO: SendEmailDto) {
     const { to, subject, body, attachments } = sendEmailDTO;
     await this.emailService.queueEmail(to, subject, body, attachments);
     return { message: 'Email queued' };
