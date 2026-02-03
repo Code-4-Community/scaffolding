@@ -20,6 +20,12 @@ brew services start postgresql
 
 To set up the database, open PgAdmin. Once you have set up your postgres credentials, right click on the Databases dropdown. You may need to create a Server first. You will need the default password for postgres to do this, which is root. Select “Create/-> “Database…”. Name the database exactly bhchp. 
 
+### Adding tables and dummy data
+You will need to run the migrations which adds the tables from the repo to your database
+```
+npm run migration:run 
+```
+
 
 ### Setting up the dependencies
 - Clone this repo
@@ -30,11 +36,11 @@ npm install -g nx
 ```
 - if you don't, you'll just need to prefix the commands below with `npx` (e.g. `npx nx serve frontend`).
 
-## Setting up your environment
+### Setting up your environment
 - Make a copy of `example.env` (in `/apps/example.env`)
 - Rename the copy to EXACTLY `.env` - If you name it anything else you risk leaking security credentials!
 
-## Running the application
+### Running the application
 - To run just the frontend (port 4200):
 ```
 nx serve frontend
@@ -48,7 +54,7 @@ nx serve backend
 nx run-many -t serve -p frontend backend
 ```
 
-## Testing with Postman
+### Testing with Postman
 - Download [Postman](https://www.postman.com/)
 - Open postman
 - Set the parameter to GET
