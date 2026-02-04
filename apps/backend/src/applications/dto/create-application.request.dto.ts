@@ -20,6 +20,7 @@ import {
   DaysOfTheWeek,
   ApplicantType,
 } from '../types';
+import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 
 /**
  * Defines the expected shape of data for creating an application.
@@ -120,9 +121,9 @@ export class CreateApplicationDto {
    *
    * Example: "Nursing"
    */
-  @IsString()
+  @IsEnum(DISCIPLINE_VALUES)
   @IsDefined()
-  discipline: string;
+  discipline: DISCIPLINE_VALUES;
 
   /**
    * Whether or not the applicant was referred by someone else.

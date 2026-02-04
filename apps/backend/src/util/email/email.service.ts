@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AmazonSESWrapper } from './amazon-ses.wrapper';
+import { AmazonSESWrapper, EmailAttachment } from './amazon-ses.wrapper';
 
 /**
  * Interfaces with a service that interfaces with Amazon SES to manage email sending.
@@ -15,14 +15,16 @@ export class EmailService {
    * @param recipientEmail the email address of the recipient.
    * @param subject the subject of the email.
    * @param bodyHTML the HTML body of the email.
+   * @param attachments optional attachments for the email.
    */
   public async queueEmail(
     recipientEmail: string,
     subject: string,
     bodyHTML: string,
+    attachments?: EmailAttachment[],
   ): Promise<void> {
     try {
-      await this.sendEmail(recipientEmail, subject, bodyHTML);
+      await this.sendEmail(recipientEmail, subject, bodyHTML, attachments);
     } catch (error) {
       const err = error as Error;
       this.logger.error(
@@ -39,17 +41,20 @@ export class EmailService {
    * @param recipientEmail the email address of the recipients.
    * @param subject the subject of the email.
    * @param bodyHtml the HTML body of the email.
+   * @param attachments optional attachments for the email.
    */
   private async sendEmail(
     recipientEmail: string,
     subject: string,
     bodyHTML: string,
+    attachments?: EmailAttachment[],
   ): Promise<unknown> {
     try {
       return await this.amazonSESWrapper.sendEmails(
         [recipientEmail],
         subject,
         bodyHTML,
+        attachments,
       );
     } catch (error) {
       const err = error as Error;

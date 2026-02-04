@@ -8,6 +8,7 @@ import {
   DaysOfTheWeek,
   ApplicantType,
 } from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
  * Represents the desired columns for the database table in the repository for the system's applications.
@@ -33,8 +34,8 @@ export class Application {
    *
    * Example: "Nursing"
    */
-  @Column({ type: 'varchar' })
-  discipline!: string;
+  @Column({ type: 'enum', enum: DISCIPLINE_VALUES })
+  discipline!: DISCIPLINE_VALUES;
 
   /**
    * Status of the application in the review process.

@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   UseGuards,
   UseInterceptors,
+  Delete,
 } from '@nestjs/common';
 import { ApplicantsService } from './applicants.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -65,9 +66,6 @@ export class ApplicantsController {
    * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined).
    * @throws {NotFoundException} with message 'Applicant with ID <id> not found'
    *                             if the applicant with the specified appId does not exist.
-   *
-   * TODO: Resolve logical issue: appId is not the same as applicant id but the
-   *       service searches by applicant id despite this accepting appId.
    */
   @Get('/:appId')
   async getApplicant(
@@ -109,5 +107,20 @@ export class ApplicantsController {
     @Body('endDate') endDate: string,
   ): Promise<Applicant> {
     return this.applicantsService.updateEndDate(appId, new Date(endDate));
+  }
+
+  /**
+   * Exposes an endpoint to delete a applicant by id.
+   * @param id The id of the applicant to delete.
+   * @returns The deleted applicant object.
+   * @throws {Error} If the repository throws an error.
+   * @throws {NotFoundException} with message 'Applicant with ID <id> not found'
+   *                             if the applicant with the specified id does not exist.
+   */
+  @Delete('/:id')
+  async deleteApplicant(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Applicant> {
+    return this.applicantsService.delete(id);
   }
 }
