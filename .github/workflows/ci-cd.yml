@@ -1,3 +1,8 @@
+# Note:
+# This CICD requires AWS Amplify to be setup which tends to not be the case until the app is close to being deployed
+# Therefore this is not useful for a the beginning chunk of development where everything is tested locally
+# Therefore other pipelines have been made to test things locally, but once AWS Amplify is setup this can be used.
+
 # name: Legacy CI/CD
 
 # # First runs linter and tests all affected projects
