@@ -2,6 +2,7 @@
   "name": "@scaffolding/source",
   "version": "0.0.0",
   "license": "MIT",
+
   "scripts": {
     "format:check": "prettier --no-error-on-unmatched-pattern --check apps/{frontend,backend}/src/**/*.{js,ts,tsx}",
     "format": "prettier --no-error-on-unmatched-pattern --write apps/{frontend,backend}/src/**/*.{js,ts,tsx}",
