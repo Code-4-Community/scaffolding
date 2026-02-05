@@ -1,3 +1,4 @@
+import React from 'react';
 import { Table } from '@chakra-ui/react';
 
 const COLUMNS = [
@@ -57,7 +58,25 @@ const APPLICATIONS = [
   },
 ];
 
-export const ApplicationTable: React.FC = () => {
+interface ApplicationTableProps {
+  searchQuery?: string;
+}
+
+export const ApplicationTable: React.FC<ApplicationTableProps> = ({
+  searchQuery = '',
+}) => {
+  const filteredApplications = APPLICATIONS.filter((application) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      application.name.toLowerCase().includes(query) ||
+      application.discipline.toLowerCase().includes(query) ||
+      application.disciplineAdminName.toLowerCase().includes(query) ||
+      application.status.toLowerCase().includes(query) ||
+      application.experienceType.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <Table.Root striped stickyHeader>
       <Table.Header>
@@ -74,7 +93,7 @@ export const ApplicationTable: React.FC = () => {
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {APPLICATIONS.map((application) => (
+        {filteredApplications.map((application) => (
           <Table.Row key={application.id}>
             <Table.Cell>{application.name}</Table.Cell>
             <Table.Cell>{application.startDate}</Table.Cell>
