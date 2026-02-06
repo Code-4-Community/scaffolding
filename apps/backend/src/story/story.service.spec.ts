@@ -78,8 +78,8 @@ describe('StoryService - editStory', () => {
       description: 'Old Desc',
       genre: 'Old Genre',
       theme: 'Old Theme',
-      author: { id: 1 } as Author,
-      anthology: { id: 1 } as Anthology,
+      authorId: 1,
+      anthologyId: 1,
     } as Story;
 
     const newAuthor = { id: 2 } as Author;
@@ -111,7 +111,7 @@ describe('StoryService - editStory', () => {
     expect(result.description).toBe('New Desc');
     expect(result.genre).toBe('New Genre');
     expect(result.theme).toBe('New Theme');
-    expect(result.author).toBe(newAuthor);
-    expect(result.anthology).toBe(newAnthology);
+    expect(result.authorId).toBe(2);
+    expect(result.anthologyId).toBe(3);
   });
 });

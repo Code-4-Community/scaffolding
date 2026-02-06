@@ -16,11 +16,16 @@ describe('AnthologyService', () => {
     findOne: jest.fn(),
   };
 
+  const mockStoryRepo = {
+    find: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AnthologyService,
         { provide: getRepositoryToken(Anthology), useValue: mockRepo },
+        { provide: getRepositoryToken(Story), useValue: mockStoryRepo },
       ],
     }).compile();
 
@@ -73,21 +78,23 @@ describe('AnthologyService', () => {
       );
       expect(mockRepo.findOne).toHaveBeenCalledWith({
         where: { id: 42 },
-        relations: ['story'],
       });
     });
 
     it('returns stories when anthology exists', async () => {
       const stories = [{ id: 1 } as Story, { id: 2 } as Story];
-      mockRepo.findOne.mockResolvedValue({ id: 5, stories } as Anthology);
+      mockRepo.findOne.mockResolvedValue({ id: 5 } as Anthology);
+      mockStoryRepo.find.mockResolvedValue(stories);
 
       const result = await service.getStories(5);
 
       expect(mockRepo.findOne).toHaveBeenCalledWith({
         where: { id: 5 },
-        relations: ['story'],
       });
-      expect(result).toBe(stories);
+      expect(mockStoryRepo.find).toHaveBeenCalledWith({
+        where: { anthologyId: 5 },
+      });
+      expect(result).toEqual(stories);
     });
   });
 

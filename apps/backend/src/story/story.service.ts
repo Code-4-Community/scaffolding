@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Story } from './story.entity';
-import { AnthologyService } from '../anthology/anthology.service';
 import { Anthology } from '../anthology/anthology.entity';
 import { Author } from '../author/author.entity';
 
@@ -78,16 +77,14 @@ export class StoryService {
     if (!anthology || !author) {
       throw new NotFoundException('Anthology or author not found');
     }
-    const storyId = (await this.storyRepo.count()) + 1;
     const story = this.storyRepo.create({
-      id: storyId,
       title,
       studentBio,
       description,
       genre,
       theme,
-      author: { id: authorId },
-      anthology: { id: anthologyId },
+      authorId,
+      anthologyId,
     });
 
     await this.storyRepo.save(story);
@@ -117,7 +114,7 @@ export class StoryService {
         throw new NotFoundException(
           `Incoming author id ${authorId} does not exist`,
         );
-      story.author = newAuthor;
+      story.authorId = authorId;
     }
     if (anthologyId) {
       const newAnthology = await this.anthologyRepo.findOne({
@@ -127,7 +124,7 @@ export class StoryService {
         throw new NotFoundException(
           `Incoming anthology id ${anthologyId} does not exist`,
         );
-      story.anthology = newAnthology;
+      story.anthologyId = anthologyId;
     }
     if (title) story.title = title;
     if (studentBio) story.studentBio = studentBio;

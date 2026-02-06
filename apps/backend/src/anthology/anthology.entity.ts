@@ -1,17 +1,6 @@
-import {
-  Entity,
-  Column,
-  IntegerType,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 import { AnthologyStatus, AnthologyPubLevel } from './types';
-
-import { Story } from '../story/story.entity';
-import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
-
 @Entity()
 export class Anthology {
   @PrimaryGeneratedColumn()
@@ -26,27 +15,27 @@ export class Anthology {
   @Column({ type: 'int' })
   published_year: number;
 
-  @Column('text', { nullable: true })
+  @Column('simple-array', { nullable: true })
   programs?: string[];
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: AnthologyStatus,
+  })
   status: AnthologyStatus;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: AnthologyPubLevel,
+  })
   pub_level: AnthologyPubLevel;
 
-  @Column()
+  @Column({ nullable: true })
   photo_url: string;
 
-  @Column()
+  @Column({ nullable: true })
   isbn: string;
 
-  @Column()
+  @Column({ nullable: true })
   shopify_url: string;
-
-  @OneToMany(() => Story, (story) => story.anthology)
-  stories: Story[];
-
-  @OneToMany(() => InventoryHolding, (ih) => ih.anthology)
-  holdings: InventoryHolding[];
 }
