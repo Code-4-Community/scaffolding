@@ -73,6 +73,8 @@ describe('ApplicationsService', () => {
           weeklyHours: 20,
           pronouns: 'they/them',
           nonEnglishLangs: 'some french, native spanish speaker',
+          desiredExperience:
+            'I want to give back to the boston community and learn to talk better with patients',
         },
       ];
 
@@ -123,6 +125,8 @@ describe('ApplicationsService', () => {
         weeklyHours: 20,
         pronouns: 'she/her',
         nonEnglishLangs: 'spoken chinese only',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -164,6 +168,8 @@ describe('ApplicationsService', () => {
         weeklyHours: 20,
         pronouns: 'they/them',
         nonEnglishLangs: 'none',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -203,6 +209,8 @@ describe('ApplicationsService', () => {
         weeklyHours: 20,
         pronouns: 'they/them',
         nonEnglishLangs: 'some chinese',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const savedApplication: Application = {
@@ -236,6 +244,8 @@ describe('ApplicationsService', () => {
         discipline: DISCIPLINE_VALUES.Nursing,
         weeklyHours: 20,
         pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       await expect(service.create(mockApplication)).rejects.toThrow(
@@ -259,6 +269,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const savedApplication: Application = {
@@ -286,6 +298,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const savedApplication: Application = {
@@ -313,6 +327,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const savedApplication: Application = {
@@ -340,6 +356,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 0,
         pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const savedApplication: Application = {
@@ -367,6 +385,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: -5,
         pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const savedApplication: Application = {
@@ -397,6 +417,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const updatedApplication: Application = {
@@ -436,6 +458,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       const updatedApplication: Application = {
@@ -512,6 +536,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -541,6 +567,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -572,6 +600,8 @@ describe('ApplicationsService', () => {
         referred: false,
         weeklyHours: 20,
         pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);

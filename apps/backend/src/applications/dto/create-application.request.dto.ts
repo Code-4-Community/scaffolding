@@ -171,4 +171,13 @@ export class CreateApplicationDto {
   @IsString()
   @IsOptional()
   nonEnglishLangs?: string;
+
+  /**
+   * Description of the type of experience the applicant is looking for
+   *
+   * Example: I want to give back to the boston community and learn to talk better with patients
+   */
+  @IsString()
+  @IsDefined()
+  desiredExperience: string;
 }

@@ -141,4 +141,12 @@ export class Application {
    */
   @Column({ type: 'varchar', nullable: true })
   nonEnglishLangs?: string;
+
+  /**
+   * Description of the type of experience the applicant is looking for
+   *
+   * Example: I want to give back to the boston community and learn to talk better with patients
+   */
+  @Column({ type: 'varchar' })
+  desiredExperience: string;
 }
