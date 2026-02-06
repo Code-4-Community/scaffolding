@@ -65,11 +65,6 @@ export class CreateApplicationDto {
   experienceType: ExperienceType;
 
   // TODO: clarify what format these strings are in and an example of what type of file.
-  @IsArray()
-  @IsString({ each: true })
-  @IsNotEmpty({ each: true })
-  @IsDefined()
-  fileUploads: string[];
 
   /**
    * Applicant's area of interest for the commitment.

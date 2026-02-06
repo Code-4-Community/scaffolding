@@ -62,8 +62,6 @@ export class Application {
   experienceType!: ExperienceType;
 
   // TODO: clarify what format these strings are in and an example of what type of file
-  @Column('text', { array: true, default: [] })
-  fileUploads!: string[];
 
   /**
    * Applicant's area of interest for the commitment.
