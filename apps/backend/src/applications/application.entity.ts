@@ -125,4 +125,12 @@ export class Application {
    */
   @Column({ type: 'int' })
   weeklyHours!: number;
+
+  /**
+   * Application's pronouns
+   *
+   * Example: they/them
+   */
+  @Column({ type: 'varchar' })
+  pronouns: string;
 }

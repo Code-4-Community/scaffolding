@@ -63,15 +63,15 @@ describe('ApplicationsService', () => {
           experienceType: ExperienceType.BS,
           fileUploads: [],
           interest: InterestArea.NURSING,
-          license: null,
+          license: 'n/a',
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
           school: School.HARVARD_MEDICAL_SCHOOL,
           email: 'test@example.com',
           discipline: DISCIPLINE_VALUES.Nursing,
           referred: false,
-          referredEmail: null,
           weeklyHours: 20,
+          pronouns: 'they/them',
         },
       ];
 
@@ -112,15 +112,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -155,15 +155,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -182,13 +182,14 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -218,15 +219,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       const savedApplication: Application = {
@@ -252,13 +253,14 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       await expect(service.create(mockApplication)).rejects.toThrow(
@@ -273,15 +275,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       const savedApplication: Application = {
@@ -300,15 +302,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-4562',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       const savedApplication: Application = {
@@ -327,15 +329,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-8-90',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       const savedApplication: Application = {
@@ -354,15 +356,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 0,
+        pronouns: 'they/them',
       };
 
       const savedApplication: Application = {
@@ -381,15 +383,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: -5,
+        pronouns: 'they/them',
       };
 
       const savedApplication: Application = {
@@ -411,15 +413,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
       };
 
       const updatedApplication: Application = {
@@ -450,15 +452,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
       };
 
       const updatedApplication: Application = {
@@ -526,15 +528,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -555,15 +557,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -586,15 +588,15 @@ describe('ApplicationsService', () => {
         experienceType: ExperienceType.BS,
         fileUploads: [],
         interest: InterestArea.NURSING,
-        license: null,
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.Nursing,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);

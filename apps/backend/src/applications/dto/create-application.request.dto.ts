@@ -153,4 +153,13 @@ export class CreateApplicationDto {
   @Min(1)
   @Max(168) // 168 hours in a week, can change later if there's a business limit
   weeklyHours: number;
+
+  /**
+   * Applicant's pronouns
+   *
+   * Example: they/them
+   */
+  @IsString()
+  @IsDefined()
+  pronouns: string;
 }
