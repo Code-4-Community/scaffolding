@@ -162,4 +162,13 @@ export class CreateApplicationDto {
   @IsString()
   @IsDefined()
   pronouns: string;
+
+  /**
+   * Languages that the applicant speaks other than English
+   *
+   * Example: I speak some cantonese
+   */
+  @IsString()
+  @IsOptional()
+  nonEnglishLangs?: string;
 }

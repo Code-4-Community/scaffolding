@@ -133,4 +133,12 @@ export class Application {
    */
   @Column({ type: 'varchar' })
   pronouns: string;
+
+  /**
+   * Applicant's languages spoken other than English
+   *
+   * Example: some german
+   */
+  @Column({ type: 'varchar', nullable: true })
+  nonEnglishLangs?: string;
 }
