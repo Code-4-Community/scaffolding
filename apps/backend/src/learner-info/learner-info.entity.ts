@@ -19,4 +19,12 @@ export class LearnerInfo {
    */
   @Column({ type: 'enum', enum: School })
   school!: School;
+
+  /**
+   * Name of the department in the school studied in if relevent
+   *
+   * Example: Infectious Diseases
+   */
+  @Column({ type: 'varchar', nullable: true })
+  schoolDepartment?: string;
 }

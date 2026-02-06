@@ -1,4 +1,12 @@
-import { IsBoolean, IsEnum, IsNumber, IsDefined, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsDefined,
+  Min,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 import { ExperienceType, InterestArea, School } from '../types';
 
 /**
@@ -23,4 +31,13 @@ export class CreateLearnerInfoDto {
   @IsEnum(School)
   @IsDefined()
   school!: School;
+
+  /**
+   * Name of the department in the school studied in if relevent
+   *
+   * Example: Infectious Diseases
+   */
+  @IsString()
+  @IsOptional()
+  schoolDepartment?: string;
 }

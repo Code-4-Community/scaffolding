@@ -46,6 +46,7 @@ describe('LearnerInfoController', () => {
       const createLearnerInfo: CreateLearnerInfoDto = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        schoolDepartment: 'Infectious Diseases',
       };
 
       mockLearnerInfoService.create.mockResolvedValue(
