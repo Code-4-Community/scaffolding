@@ -387,6 +387,7 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        elaborateOtherDiscipline: 'text',
       };
 
       const savedApplication: Application = {
@@ -602,6 +603,7 @@ describe('ApplicationsService', () => {
         pronouns: 'she/her',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        elaborateOtherDiscipline: 'text',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);

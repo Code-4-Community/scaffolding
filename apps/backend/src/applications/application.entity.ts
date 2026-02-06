@@ -149,4 +149,12 @@ export class Application {
    */
   @Column({ type: 'varchar' })
   desiredExperience: string;
+
+  /**
+   * Field for someone to elaborate on their discipline if they chose other for discipline dropdown
+   *
+   * Example:
+   */
+  @Column({ type: 'varchar', nullable: true })
+  elaborateOtherDiscipline?: string;
 }

@@ -180,4 +180,13 @@ export class CreateApplicationDto {
   @IsString()
   @IsDefined()
   desiredExperience: string;
+
+  /**
+   * Field for someone to elaborate on their discipline if they chose other for discipline dropdown
+   *
+   * Example:
+   */
+  @IsString()
+  @IsOptional()
+  elaborateOtherDiscipline?: string;
 }
