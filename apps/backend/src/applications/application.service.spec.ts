@@ -65,7 +65,7 @@ describe('ApplicationsService', () => {
           fridayAvailability: 'Sometime between 4-6',
           saturdayAvailability: 'no availability',
           experienceType: ExperienceType.BS,
-          interest: InterestArea.NURSING,
+          interest: InterestArea.WOMENS_HEALTH,
           license: 'n/a',
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
@@ -126,7 +126,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.MEDICAL_RESPITE_INPATIENT,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -179,7 +179,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.STREET_MEDICINE,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -228,7 +228,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.ADDICTION_MEDICINE,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -274,7 +274,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -305,7 +305,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.BEHAVIORAL_HEALTH,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
@@ -343,7 +343,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.VETERANS_SERVICES,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-4562',
@@ -381,7 +381,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.FAMILY_AND_YOUTH_SERVICES,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-8-90',
@@ -419,7 +419,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.HEP_C_CARE,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -457,7 +457,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.HIV_SERVICES,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
@@ -499,7 +499,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.CASE_MANAGEMENT,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -551,7 +551,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.WOMENS_HEALTH,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -572,7 +572,7 @@ describe('ApplicationsService', () => {
 
       const updatedApplication: Application = {
         ...mockApplication,
-        interest: InterestArea.HARM_REDUCTION,
+        interest: InterestArea.DENTAL,
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
@@ -581,13 +581,13 @@ describe('ApplicationsService', () => {
       mockRepository.save.mockResolvedValue(updatedApplication);
 
       const result = await service.update(1, {
-        interest: InterestArea.HARM_REDUCTION,
+        interest: InterestArea.DENTAL,
       });
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
       expect(repository.save).toHaveBeenCalledWith({
         ...mockApplication,
-        interest: InterestArea.HARM_REDUCTION,
+        interest: InterestArea.DENTAL,
       });
       expect(result).toEqual(updatedApplication);
     });
@@ -615,7 +615,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+        service.update(1, { interest: InterestArea.DENTAL }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -640,7 +640,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.DENTAL,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -665,7 +665,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+        service.update(1, { interest: InterestArea.DENTAL }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -680,7 +680,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.DENTAL,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -722,7 +722,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.NURSING,
+        interest: InterestArea.DENTAL,
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',

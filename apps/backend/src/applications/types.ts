@@ -31,9 +31,18 @@ export enum ExperienceType {
  * Applicant's area of interest for the commitment
  */
 export enum InterestArea {
-  NURSING = 'Nursing',
-  HARM_REDUCTION = 'HarmReduction',
-  WOMENS_HEALTH = 'WomensHealth',
+  WOMENS_HEALTH = "Women's Health",
+  MEDICAL_RESPITE_INPATIENT = 'Medical Respite/Inpatient',
+  STREET_MEDICINE = 'Street Medicine',
+  ADDICTION_MEDICINE = 'Addiction Medicine',
+  PRIMARY_CARE = 'Primary Care',
+  BEHAVIORAL_HEALTH = 'Behavioral Health',
+  VETERANS_SERVICES = 'Veterans Services',
+  FAMILY_AND_YOUTH_SERVICES = 'Family and Youth Services',
+  HEP_C_CARE = 'Hep C Care',
+  HIV_SERVICES = 'HIV Services',
+  CASE_MANAGEMENT = 'Case Management',
+  DENTAL = 'Dental',
 }
 
 /**
