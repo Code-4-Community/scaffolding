@@ -64,8 +64,6 @@ export class CreateApplicationDto {
   @IsDefined()
   experienceType: ExperienceType;
 
-  // TODO: clarify what format these strings are in and an example of what type of file.
-
   /**
    * Applicant's area of interest for the commitment.
    *
@@ -75,8 +73,11 @@ export class CreateApplicationDto {
   @IsDefined()
   interest: InterestArea;
 
-  // TODO: clarify what format this string is in, and why it's not an array
-  // if people can hold multiple licenses in real life.
+  /**
+   * Any licenses that the applicant holds
+   *
+   * Example:  PHYSICIAN LICENSE
+   */
   @IsString()
   @IsNotEmpty()
   license: string;

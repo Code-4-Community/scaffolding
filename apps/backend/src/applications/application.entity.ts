@@ -71,8 +71,11 @@ export class Application {
   @Column({ type: 'enum', enum: InterestArea })
   interest!: InterestArea;
 
-  // TODO: clarify what format this string is in, and why it's not an array
-  // if people can hold multiple licenses in real life
+  /**
+   * Any licenses that the applicant holds
+   *
+   * Example:  PHYSICIAN LICENSE
+   */
   @Column({ type: 'varchar' })
   license!: string;
 
