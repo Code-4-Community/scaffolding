@@ -5,7 +5,6 @@ import {
   ExperienceType,
   InterestArea,
   School,
-  DaysOfTheWeek,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -46,12 +45,52 @@ export class Application {
   appStatus!: AppStatus;
 
   /**
-   * Availability of the applicant in terms of days of the week.
+   * Applicant's Monday availability as a free text string.
    *
-   * Example: 'Monday, Tuesday'.
+   * Example: 12pm and on every other week
    */
   @Column({ type: 'varchar' })
-  daysAvailable!: DaysOfTheWeek[];
+  mondayAvailability: string;
+
+  /**
+   * Applicant's Tuesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  tuesdayAvailability: string;
+
+  /**
+   * Applicant's Wednesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  wednesdayAvailability: string;
+
+  /**
+   * Applicant's Thursday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  thursdayAvailability: string;
+
+  /**
+   * Applicant's Friday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  fridayAvailability: string;
+
+  /**
+   * Applicant's Saturday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  saturdayAvailability: string;
 
   /**
    * Experience type/ level of the applicant, generally in terms of medical experience or degree.

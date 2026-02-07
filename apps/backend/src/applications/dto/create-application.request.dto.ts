@@ -3,7 +3,6 @@ import {
   IsEnum,
   IsNumber,
   IsString,
-  IsArray,
   IsOptional,
   IsNotEmpty,
   IsDefined,
@@ -17,7 +16,6 @@ import {
   ExperienceType,
   InterestArea,
   School,
-  DaysOfTheWeek,
   ApplicantType,
 } from '../types';
 import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
@@ -38,13 +36,52 @@ export class CreateApplicationDto {
   appStatus: AppStatus;
 
   /**
-   * Availability of the applicant in terms of days of the week.
+   * Applicant's Monday availability as a free text string.
    *
-   * Example: 'Monday, Tuesday'.
+   * Example: 12pm and on every other week
    */
-  @IsEnum(DaysOfTheWeek)
-  @IsNotEmpty()
-  daysAvailable: DaysOfTheWeek[];
+  @IsString()
+  mondayAvailability: string;
+
+  /**
+   * Applicant's Tuesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  tuesdayAvailability: string;
+
+  /**
+   * Applicant's Wednesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  wednesdayAvailability: string;
+
+  /**
+   * Applicant's Thursday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  thursdayAvailability: string;
+
+  /**
+   * Applicant's Friday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  fridayAvailability: string;
+
+  /**
+   * Applicant's Saturday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  saturdayAvailability: string;
 
   /**
    * Type of applicant, currently either a learner or a volunteer.
