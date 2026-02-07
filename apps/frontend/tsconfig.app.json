@@ -1,10 +1,7 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "rootDir": "./src",
-    "jsx": "react-jsx",
-    "module": "esnext",
     "types": [
       "node",
       "@nx/react/typings/cssmodule.d.ts",

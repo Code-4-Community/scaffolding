@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Story } from './story.entity';
+import { AnthologyService } from '../anthology/anthology.service';
+import { Anthology } from '../anthology/anthology.entity';
 
 @Injectable()
 export class StoryService {
@@ -64,14 +66,16 @@ export class StoryService {
     theme?: string,
   ): Promise<Story> {
     // TODO: security concern for not randomizing the primary key
+    const storyId = (await this.repo.count()) + 1;
     const story = this.repo.create({
+      id: storyId,
       title,
       studentBio,
       description,
       genre,
       theme,
-      anthology_id: anthologyId,
-      author_id: authorId,
+      author: { id: authorId },
+      anthology: { id: anthologyId },
     });
 
     await this.repo.save(story);
