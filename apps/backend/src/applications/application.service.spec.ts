@@ -74,6 +74,8 @@ describe('ApplicationsService', () => {
           nonEnglishLangs: 'some french, native spanish speaker',
           desiredExperience:
             'I want to give back to the boston community and learn to talk better with patients',
+          resume: 'janedoe_resume_2_6_2026.pdf',
+          coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         },
       ];
 
@@ -125,6 +127,8 @@ describe('ApplicationsService', () => {
         nonEnglishLangs: 'spoken chinese only',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -167,6 +171,8 @@ describe('ApplicationsService', () => {
         nonEnglishLangs: 'none',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -212,6 +218,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -270,6 +278,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -298,6 +308,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -326,6 +338,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -354,6 +368,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -383,6 +399,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -409,11 +427,15 @@ describe('ApplicationsService', () => {
         pronouns: 'she/her',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       const updatedApplication: Application = {
         ...mockApplication,
         appStatus: AppStatus.IN_REVIEW,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -449,11 +471,15 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       const updatedApplication: Application = {
         ...mockApplication,
         interest: InterestArea.HARM_REDUCTION,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -526,6 +552,8 @@ describe('ApplicationsService', () => {
         pronouns: 'she/her',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -556,6 +584,8 @@ describe('ApplicationsService', () => {
         pronouns: 'she/her',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -589,6 +619,8 @@ describe('ApplicationsService', () => {
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
         elaborateOtherDiscipline: 'text',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);

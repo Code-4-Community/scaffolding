@@ -61,8 +61,6 @@ export class Application {
   @Column({ type: 'enum', enum: ExperienceType })
   experienceType!: ExperienceType;
 
-  // TODO: clarify what format these strings are in and an example of what type of file
-
   /**
    * Applicant's area of interest for the commitment.
    *
@@ -158,4 +156,20 @@ export class Application {
    */
   @Column({ type: 'varchar', nullable: true })
   elaborateOtherDiscipline?: string;
+
+  /**
+   * Name of the resume file stored in S3
+   *
+   * Example:  janedoe_resume_2_6_2026.pdf
+   */
+  @Column({ type: 'varchar' })
+  resume: string;
+
+  /**
+   *  Name of the cover letter file stored in S3
+   *
+   * Example:  jane_doe_coverLetter_2_6_2026.pdf
+   */
+  @Column({ type: 'varchar' })
+  coverLetter: string;
 }
