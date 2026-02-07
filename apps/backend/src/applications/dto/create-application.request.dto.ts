@@ -185,4 +185,34 @@ export class CreateApplicationDto {
   @IsString()
   @IsOptional()
   elaborateOtherDiscipline?: string;
+
+  /**
+   * Name of the applicant's emergency contact
+   *
+   * Example: Jane Doe
+   */
+  @IsString()
+  @IsNotEmpty()
+  emergencyContactName: string;
+
+  /**
+   * Phone number of the applicant's emergency contact
+   *
+   * Example: Jane Doe
+   */
+  @IsString()
+  @IsDefined()
+  @Matches(/^\d{3}-\d{3}-\d{4}$/, {
+    message: 'Phone number must be in ###-###-#### format',
+  })
+  emergencyContactPhone: string;
+
+  /**
+   * Relationship between the applicant and their emergency contact
+   *
+   * Example: Mother
+   */
+  @IsString()
+  @IsNotEmpty()
+  emergencyContactRelationship: string;
 }

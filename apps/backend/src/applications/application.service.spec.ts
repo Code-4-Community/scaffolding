@@ -76,6 +76,9 @@ describe('ApplicationsService', () => {
             'I want to give back to the boston community and learn to talk better with patients',
           resume: 'janedoe_resume_2_6_2026.pdf',
           coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+          emergencyContactName: 'Jane Doe',
+          emergencyContactPhone: '111-111-1111',
+          emergencyContactRelationship: 'Mother',
         },
       ];
 
@@ -129,6 +132,9 @@ describe('ApplicationsService', () => {
           'I want to give back to the boston community and learn to talk better with patients',
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -173,6 +179,9 @@ describe('ApplicationsService', () => {
           'I want to give back to the boston community and learn to talk better with patients',
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -213,6 +222,9 @@ describe('ApplicationsService', () => {
         nonEnglishLangs: 'some chinese',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const savedApplication: Application = {
@@ -249,6 +261,9 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       await expect(service.create(mockApplication)).rejects.toThrow(
@@ -273,6 +288,9 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const savedApplication: Application = {
@@ -303,6 +321,9 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const savedApplication: Application = {
@@ -333,6 +354,9 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const savedApplication: Application = {
@@ -363,6 +387,9 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const savedApplication: Application = {
@@ -394,6 +421,9 @@ describe('ApplicationsService', () => {
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
         elaborateOtherDiscipline: 'text',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const savedApplication: Application = {
@@ -429,6 +459,9 @@ describe('ApplicationsService', () => {
           'I want to give back to the boston community and learn to talk better with patients',
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const updatedApplication: Application = {
@@ -473,6 +506,9 @@ describe('ApplicationsService', () => {
           'I want to give back to the boston community and learn to talk better with patients',
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       const updatedApplication: Application = {
@@ -554,6 +590,9 @@ describe('ApplicationsService', () => {
           'I want to give back to the boston community and learn to talk better with patients',
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -586,6 +625,9 @@ describe('ApplicationsService', () => {
           'I want to give back to the boston community and learn to talk better with patients',
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -621,6 +663,9 @@ describe('ApplicationsService', () => {
         elaborateOtherDiscipline: 'text',
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);

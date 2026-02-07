@@ -172,4 +172,28 @@ export class Application {
    */
   @Column({ type: 'varchar' })
   coverLetter: string;
+
+  /**
+   * Name of the applicant's emergency contact
+   *
+   * Example:  Jane Doe
+   */
+  @Column({ type: 'varchar' })
+  emergencyContactName!: string;
+
+  /**
+   * Phone number of the applicant's emergency contact
+   *
+   * Example: 111-111-1111
+   */
+  @Column({ type: 'varchar' })
+  emergencyContactPhone!: string;
+
+  /**
+   * Relationship between the applicant and their emergency contact
+   *
+   * Example: Mother
+   */
+  @Column({ type: 'varchar' })
+  emergencyContactRelationship!: string;
 }
