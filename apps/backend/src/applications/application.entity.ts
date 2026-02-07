@@ -158,7 +158,7 @@ export class Application {
   elaborateOtherDiscipline?: string;
 
   /**
-   * Name of the resume file stored in S3
+   * Name of the resume file stored in S3 with its extension
    *
    * Example:  janedoe_resume_2_6_2026.pdf
    */
@@ -166,7 +166,7 @@ export class Application {
   resume: string;
 
   /**
-   *  Name of the cover letter file stored in S3
+   * Name of the cover letter file stored in S3 with its extension
    *
    * Example:  jane_doe_coverLetter_2_6_2026.pdf
    */
