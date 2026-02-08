@@ -37,6 +37,12 @@ export class Application {
   discipline!: DISCIPLINE_VALUES;
 
   /**
+   * Discipline or area of interest description of applicant clicked other
+   */
+  @Column({ type: 'varchar', nullable: true })
+  otherDisciplineDescription?: string;
+
+  /**
    * Status of the application in the review process.
    *
    * Example: AppStatus.APP_SUBMITTED.

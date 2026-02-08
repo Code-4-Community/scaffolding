@@ -17,6 +17,7 @@ import {
   InterestArea,
   School,
   ApplicantType,
+  HeardAboutFrom,
 } from '../types';
 import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 
@@ -159,6 +160,13 @@ export class CreateApplicationDto {
   discipline: DISCIPLINE_VALUES;
 
   /**
+   * Discipline or area of interest description of applicant clicked other
+   */
+  @IsString()
+  @IsNotEmpty()
+  otherDisciplineDescription?: string;
+
+  /**
    * Whether or not the applicant was referred by someone else.
    *
    * Example: false.
@@ -252,4 +260,12 @@ export class CreateApplicationDto {
   @IsString()
   @IsNotEmpty()
   emergencyContactRelationship: string;
+
+  /**
+   * List of sources that the applicant heard about BHCHP from
+   *
+   * Example: HeardAboutFrom.OTHER, HeardAboutFrom.SCHOOL
+   */
+  @IsEnum(HeardAboutFrom)
+  heardAboutFrom: HeardAboutFrom[];
 }

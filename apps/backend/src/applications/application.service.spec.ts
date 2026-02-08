@@ -244,6 +244,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
@@ -288,6 +289,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       await expect(service.create(mockApplication)).rejects.toThrow(
@@ -320,6 +322,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
@@ -358,6 +361,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
@@ -396,6 +400,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
@@ -434,6 +439,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
@@ -473,6 +479,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
