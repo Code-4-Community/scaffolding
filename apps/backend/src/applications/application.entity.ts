@@ -147,6 +147,14 @@ export class Application {
   school!: School;
 
   /**
+   * Name of school if chose other
+   *
+   * Example: Northeastern University
+   */
+  @Column({ type: 'varchar', nullable: true })
+  otherSchool?: string;
+
+  /**
    * Whether or not the applicant was referred by someone else.
    *
    * Example: false.

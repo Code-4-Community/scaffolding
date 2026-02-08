@@ -142,6 +142,14 @@ export class CreateApplicationDto {
   school: School;
 
   /**
+   * Name of school if chose other
+   *
+   * Example: Northeastern University
+   */
+  @IsString()
+  otherSchool?: string;
+
+  /**
    * Email of the applicant.
    *
    * Example: bob.ross@example.com
@@ -163,7 +171,6 @@ export class CreateApplicationDto {
    * Discipline or area of interest description of applicant clicked other
    */
   @IsString()
-  @IsNotEmpty()
   otherDisciplineDescription?: string;
 
   /**
