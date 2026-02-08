@@ -135,7 +135,7 @@ export class AuthController {
    */
   @Post('/delete')
   async delete(@Body() body: DeleteUserDto): Promise<void> {
-    const user = await this.usersService.findOne(body.userId);
+    const user = await this.usersService.findOne(body.appId);
 
     try {
       await this.authService.deleteUser(user.email);

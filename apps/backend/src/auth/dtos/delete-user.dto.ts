@@ -11,5 +11,5 @@ export class DeleteUserDto {
    */
   @IsPositive()
   @IsNumber({ maxDecimalPlaces: 0 })
-  userId: number;
+  appId: number;
 }
