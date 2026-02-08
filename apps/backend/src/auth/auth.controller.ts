@@ -143,6 +143,6 @@ export class AuthController {
       throw new BadRequestException(e.message);
     }
 
-    this.usersService.remove(user.id);
+    this.usersService.remove(user.appId);
   }
 }
