@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Site } from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
  * Represents the desired columns for the database table
@@ -20,12 +20,16 @@ export class Admin {
   id: number;
 
   /**
-   * Name of the admin.
-   *
-   * Example: 'Jane Doe'.
+   * First name of the admin.
    */
   @Column()
-  name: string;
+  firstName: string;
+
+  /**
+   * Last name of the admin.
+   */
+  @Column()
+  lastName: string;
 
   /**
    * Email of the admin.
@@ -36,13 +40,10 @@ export class Admin {
   email: string;
 
   /**
-   * Site for which the person is an administrator of.
+   * Discipline of the admin.
    */
-  @Column({
-    type: 'enum',
-    enum: Site,
-  })
-  site: Site;
+  @Column({ type: 'enum', enum: DISCIPLINE_VALUES })
+  discipline: DISCIPLINE_VALUES;
 
   /**
    * When the admin was created stored in YYYY-MM-DD format.
