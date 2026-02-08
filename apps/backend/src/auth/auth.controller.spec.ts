@@ -58,7 +58,7 @@ describe('AuthController', () => {
       };
 
       const mockUser = {
-        id: 1,
+        appId: 1,
         email: 'c4c.neu@northestern.edu',
         firstName: 'c4c',
         lastName: 'neu',
@@ -253,11 +253,11 @@ describe('AuthController', () => {
   describe('POST /delete', () => {
     it('should delete user from Cognito and database', async () => {
       const deleteDto = {
-        userId: 1,
+        appId: 1,
       };
 
       const mockUser = {
-        id: 1,
+        appId: 1,
         email: 'test@northeastern.edu',
         firstName: 'Test',
         lastName: 'User',
@@ -279,11 +279,11 @@ describe('AuthController', () => {
 
     it('should throw BadRequestException if Cognito deletion fails', async () => {
       const deleteDto = {
-        userId: 1,
+        appId: 1,
       };
 
       const mockUser = {
-        id: 1,
+        appId: 1,
         email: 'test@northeastern.edu',
       };
 

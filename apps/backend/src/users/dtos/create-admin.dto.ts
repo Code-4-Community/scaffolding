@@ -5,7 +5,7 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
-import { Site } from '../types';
+import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 
 // TODO: Add class validators
 
@@ -14,13 +14,22 @@ import { Site } from '../types';
  */
 export class CreateAdminDto {
   /**
-   * The name of the admin to create.
+   * The first name of the admin to create.
    *
    * Example: 'Jane Doe'.
    */
   @IsString()
   @IsNotEmpty()
-  name: string;
+  firstName: string;
+
+  /**
+   * The last name of the admin to create.
+   *
+   * Example: 'Doe'.
+   */
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
 
   /**
    * The email of the admin to create.
@@ -32,9 +41,11 @@ export class CreateAdminDto {
   email: string;
 
   /**
-   * The site for which the person is to be an admin of.
+   * The discipline of the admin to create.
+   *
+   * Example: DISCIPLINE_VALUES.Nursing.
    */
-  @IsEnum(Site)
-  @IsDefined()
-  site: Site;
+  @IsEnum(DISCIPLINE_VALUES)
+  @IsNotEmpty()
+  discipline: DISCIPLINE_VALUES;
 }

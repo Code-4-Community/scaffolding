@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Admin } from './admin.entity';
-import { Site } from './types';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
 
@@ -61,16 +60,6 @@ export class AdminsService {
    */
   async findByEmail(email: string): Promise<Admin | null> {
     return await this.adminRepository.findOne({ where: { email } });
-  }
-
-  /**
-   * Returns all admins that correspond to the specified site.
-   * @param site the desired site assigned to admins for which you want to see a list of.
-   * @returns a list of admin objects.
-   * @throws {Error} anything that the repository throws
-   */
-  async findBySite(site: Site): Promise<Admin[]> {
-    return await this.adminRepository.find({ where: { site } });
   }
 
   /**
