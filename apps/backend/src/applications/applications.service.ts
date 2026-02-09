@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { PHONE_REGEX } from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
  * Service for applications that interfaces with the application repository.
@@ -67,6 +68,40 @@ export class ApplicationsService {
     }
 
     return application;
+  }
+
+  /**
+   * Validates that the provided discipline is a valid DISCIPLINE_VALUES enum value.
+   * @param discipline The discipline value to validate.
+   * @throws {BadRequestException} if the discipline is not a valid DISCIPLINE_VALUES enum value.
+   */
+  private validateDiscipline(discipline: string): void {
+    if (
+      !Object.values(DISCIPLINE_VALUES).includes(
+        discipline as DISCIPLINE_VALUES,
+      )
+    ) {
+      throw new BadRequestException(
+        `Invalid discipline: ${discipline}. Valid disciplines are: ${Object.values(
+          DISCIPLINE_VALUES,
+        ).join(', ')}`,
+      );
+    }
+  }
+
+  /**
+   * Returns all applications that have the specified discipline.
+   * @param discipline The discipline to filter applications by.
+   * @returns A promise resolving to an array of applications with the specified discipline.
+   *          Returns an empty array if no applications match the discipline.
+   * @throws {BadRequestException} if the discipline is not a valid DISCIPLINE_VALUES enum value.
+   * @throws {Error} which is unchanged from what repository throws.
+   */
+  async findByDiscipline(discipline: string): Promise<Application[]> {
+    this.validateDiscipline(discipline);
+    return await this.applicationRepository.find({
+      where: { discipline: discipline as DISCIPLINE_VALUES },
+    });
   }
 
   /**
