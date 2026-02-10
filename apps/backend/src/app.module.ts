@@ -9,6 +9,7 @@ import { InventoryHoldingModule } from './inventory-holding/inventory-holding.mo
 import AppDataSource from './data-source';
 import { ProductionInfoModule } from './production-info/production-info.module';
 import { StoryModule } from './story/story.module';
+//import {StoryDraftModule} from "./storydra"
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { StoryModule } from './story/story.module';
     InventoryModule,
     InventoryHoldingModule,
     StoryModule,
-    StoryDraftModule,
+    //StoryDraftModule,
     ProductionInfoModule,
   ],
   controllers: [AppController],

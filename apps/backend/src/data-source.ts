@@ -6,7 +6,7 @@ import { Author } from './author/author.entity';
 import { Inventory } from './inventory/inventory.entity';
 import { InventoryHolding } from './inventory-holding/inventory-holding.entity';
 import { Story } from './story/story.entity';
-import { StoryDraft } from './story-draft/story-draft.entity';
+//import { StoryDraft } from './story-draft/story-draft.entity';
 import { ProductionInfo } from './production-info/production-info.entity';
 
 dotenv.config();
@@ -24,7 +24,7 @@ const AppDataSource = new DataSource({
     Inventory,
     InventoryHolding,
     Story,
-    StoryDraft,
+    //StoryDraft,
     ProductionInfo,
   ],
   migrations: ['apps/backend/src/migrations/*.js'],

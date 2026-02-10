@@ -10,9 +10,8 @@ import {
 import { AnthologyStatus, AnthologyPubLevel } from './types';
 
 import { Story } from '../story/story.entity';
-import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
 import { ProductionInfo } from '../production-info/production-info.entity';
-import { OneToOne, OneToMany } from 'typeorm';
+import { OneToOne } from 'typeorm';
 
 @Entity()
 export class Anthology {
@@ -45,12 +44,6 @@ export class Anthology {
 
   @Column({ nullable: true })
   shopify_url: string;
-
-  @OneToMany(() => Story, (story) => story.anthology_id)
-  stories: Story[];
-
-  @OneToMany(() => InventoryHolding, (ih) => ih.anthology_id)
-  holdings: InventoryHolding[];
 
   @OneToOne(
     () => ProductionInfo,

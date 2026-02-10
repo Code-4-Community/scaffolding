@@ -22,9 +22,9 @@ export class Story {
   @Column()
   theme?: string;
 
-  @ManyToOne(() => Anthology, (anthology) => anthology.stories)
-  anthology: Anthology;
+  @Column()
+  anthologyId: number;
 
-  @ManyToOne(() => Author, (author) => author.stories)
-  author: Author;
+  @Column()
+  authorId: number;
 }
