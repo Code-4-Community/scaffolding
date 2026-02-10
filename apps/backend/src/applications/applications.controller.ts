@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Request,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
@@ -33,6 +34,23 @@ export class ApplicationsController {
   @Get()
   async getAllApplications(@Request() req): Promise<Application[]> {
     return await this.applicationsService.findAll();
+  }
+
+  /**
+   * Exposes an endpoint to return all applications filtered by discipline.
+   * @param discipline The discipline to filter applications by.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns A promise of the list of applications with the specified discipline.
+   *          Returns an empty array if no applications match the discipline.
+   * @throws {BadRequestException} if the discipline is not a valid DISCIPLINE_VALUES enum value.
+   * @throws {Error} which is unchanged from what repository throws.
+   */
+  @Get('by-discipline')
+  async getApplicationsByDiscipline(
+    @Query('discipline') discipline: string,
+    @Request() req,
+  ): Promise<Application[]> {
+    return await this.applicationsService.findByDiscipline(discipline);
   }
 
   /**

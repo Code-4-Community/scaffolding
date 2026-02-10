@@ -621,4 +621,119 @@ describe('ApplicationsService', () => {
       expect(repository.remove).not.toHaveBeenCalled();
     });
   });
+
+  describe('findByDiscipline', () => {
+    it('should return applications with the specified discipline', async () => {
+      const mockApplications: Application[] = [
+        {
+          appId: 1,
+          appStatus: AppStatus.APP_SUBMITTED,
+          daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+          experienceType: ExperienceType.BS,
+          fileUploads: [],
+          interest: InterestArea.NURSING,
+          license: null,
+          applicantType: ApplicantType.LEARNER,
+          phone: '123-456-7890',
+          school: School.HARVARD_MEDICAL_SCHOOL,
+          email: 'test@example.com',
+          discipline: DISCIPLINE_VALUES.Nursing,
+          referred: false,
+          referredEmail: null,
+          weeklyHours: 20,
+        },
+        {
+          appId: 2,
+          appStatus: AppStatus.IN_REVIEW,
+          daysAvailable: [DaysOfTheWeek.WEDNESDAY],
+          experienceType: ExperienceType.MS,
+          fileUploads: [],
+          interest: InterestArea.NURSING,
+          license: null,
+          applicantType: ApplicantType.LEARNER,
+          phone: '987-654-3210',
+          school: School.STANFORD_MEDICINE,
+          email: 'test2@example.com',
+          discipline: DISCIPLINE_VALUES.Nursing,
+          referred: false,
+          referredEmail: null,
+          weeklyHours: 15,
+        },
+      ];
+
+      mockRepository.find.mockResolvedValue(mockApplications);
+
+      const result = await service.findByDiscipline(DISCIPLINE_VALUES.Nursing);
+
+      expect(repository.find).toHaveBeenCalledWith({
+        where: { discipline: DISCIPLINE_VALUES.Nursing },
+      });
+      expect(result).toEqual(mockApplications);
+    });
+
+    it('should return an empty array when no applications match the discipline', async () => {
+      mockRepository.find.mockResolvedValue([]);
+
+      const result = await service.findByDiscipline(DISCIPLINE_VALUES.MD);
+
+      expect(repository.find).toHaveBeenCalledWith({
+        where: { discipline: DISCIPLINE_VALUES.MD },
+      });
+      expect(result).toEqual([]);
+    });
+
+    it('should throw BadRequestException for invalid discipline', async () => {
+      const invalidDiscipline = 'InvalidDiscipline';
+
+      await expect(service.findByDiscipline(invalidDiscipline)).rejects.toThrow(
+        expect.objectContaining({
+          message: expect.stringContaining(
+            `Invalid discipline: ${invalidDiscipline}`,
+          ),
+        }),
+      );
+
+      expect(repository.find).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException with list of valid disciplines', async () => {
+      const invalidDiscipline = 'InvalidDiscipline';
+
+      try {
+        await service.findByDiscipline(invalidDiscipline);
+        fail('Expected BadRequestException to be thrown');
+      } catch (error) {
+        expect(error.message).toContain('Invalid discipline');
+        expect(error.message).toContain('Valid disciplines are:');
+        expect(error.message).toContain('Nursing');
+        expect(error.message).toContain('MD');
+      }
+
+      expect(repository.find).not.toHaveBeenCalled();
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.find.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(
+        service.findByDiscipline(DISCIPLINE_VALUES.Nursing),
+      ).rejects.toThrow(`There was a problem retrieving the info`);
+    });
+
+    it('should work with all valid discipline values', async () => {
+      const allDisciplines = Object.values(DISCIPLINE_VALUES);
+
+      for (const discipline of allDisciplines) {
+        mockRepository.find.mockResolvedValue([]);
+
+        await service.findByDiscipline(discipline);
+
+        expect(repository.find).toHaveBeenCalledWith({
+          where: { discipline },
+        });
+      }
+    });
+  });
 });
