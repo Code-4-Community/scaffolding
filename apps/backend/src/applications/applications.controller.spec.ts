@@ -8,7 +8,6 @@ import {
   ExperienceType,
   InterestArea,
   School,
-  DaysOfTheWeek,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -25,19 +24,31 @@ const mockApplicationsService: Partial<ApplicationsService> = {
 const mockApplication: Application = {
   appId: 1,
   appStatus: AppStatus.APP_SUBMITTED,
-  daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+  mondayAvailability: '12pm and on every other week',
+  tuesdayAvailability: 'approximately 10am-3pm',
+  wednesdayAvailability: 'no availability',
+  thursdayAvailability: 'maybe before 10am',
+  fridayAvailability: 'Sometime between 4-6',
+  saturdayAvailability: 'no availability',
   experienceType: ExperienceType.BS,
-  fileUploads: [],
-  interest: InterestArea.NURSING,
-  license: null,
+  interest: InterestArea.WOMENS_HEALTH,
+  license: 'n/a',
   applicantType: ApplicantType.LEARNER,
   phone: '123-456-7890',
   school: School.HARVARD_MEDICAL_SCHOOL,
   email: 'test@example.com',
-  discipline: DISCIPLINE_VALUES.Nursing,
+  discipline: DISCIPLINE_VALUES.RN,
   referred: false,
-  referredEmail: null,
   weeklyHours: 20,
+  pronouns: 'they/them',
+  nonEnglishLangs: 'some french, native spanish speaker',
+  desiredExperience:
+    'I want to give back to the boston community and learn to talk better with patients',
+  resume: 'janedoe_resume_2_6_2026.pdf',
+  coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+  emergencyContactName: 'Jane Doe',
+  emergencyContactPhone: '111-111-1111',
+  emergencyContactRelationship: 'Mother',
 };
 
 describe('ApplicationsController', () => {
@@ -81,13 +92,13 @@ describe('ApplicationsController', () => {
         .mockResolvedValue(mockApplications);
 
       const result = await controller.getApplicationsByDiscipline(
-        DISCIPLINE_VALUES.Nursing,
+        DISCIPLINE_VALUES.RN,
         {},
       );
 
       expect(result).toEqual(mockApplications);
       expect(mockApplicationsService.findByDiscipline).toHaveBeenCalledWith(
-        DISCIPLINE_VALUES.Nursing,
+        DISCIPLINE_VALUES.RN,
       );
     });
 
@@ -97,13 +108,13 @@ describe('ApplicationsController', () => {
         .mockResolvedValue([]);
 
       const result = await controller.getApplicationsByDiscipline(
-        DISCIPLINE_VALUES.MD,
+        DISCIPLINE_VALUES.RN,
         {},
       );
 
       expect(result).toEqual([]);
       expect(mockApplicationsService.findByDiscipline).toHaveBeenCalledWith(
-        DISCIPLINE_VALUES.MD,
+        DISCIPLINE_VALUES.RN,
       );
     });
 
@@ -134,11 +145,11 @@ describe('ApplicationsController', () => {
         .mockRejectedValue(new Error(errorMessage));
 
       await expect(
-        controller.getApplicationsByDiscipline(DISCIPLINE_VALUES.Nursing, {}),
+        controller.getApplicationsByDiscipline(DISCIPLINE_VALUES.RN, {}),
       ).rejects.toThrow(errorMessage);
 
       expect(mockApplicationsService.findByDiscipline).toHaveBeenCalledWith(
-        DISCIPLINE_VALUES.Nursing,
+        DISCIPLINE_VALUES.RN,
       );
     });
 

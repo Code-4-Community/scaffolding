@@ -780,45 +780,69 @@ describe('ApplicationsService', () => {
         {
           appId: 1,
           appStatus: AppStatus.APP_SUBMITTED,
-          daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+          mondayAvailability: '12pm and on every other week',
+          tuesdayAvailability: 'approximately 10am-3pm',
+          wednesdayAvailability: 'no availability',
+          thursdayAvailability: 'maybe before 10am',
+          fridayAvailability: 'Sometime between 4-6',
+          saturdayAvailability: 'no availability',
           experienceType: ExperienceType.BS,
-          fileUploads: [],
-          interest: InterestArea.NURSING,
-          license: null,
+          interest: InterestArea.WOMENS_HEALTH,
+          license: 'n/a',
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
           school: School.HARVARD_MEDICAL_SCHOOL,
           email: 'test@example.com',
-          discipline: DISCIPLINE_VALUES.Nursing,
+          discipline: DISCIPLINE_VALUES.RN,
           referred: false,
-          referredEmail: null,
           weeklyHours: 20,
+          pronouns: 'they/them',
+          nonEnglishLangs: 'some french, native spanish speaker',
+          desiredExperience:
+            'I want to give back to the boston community and learn to talk better with patients',
+          resume: 'janedoe_resume_2_6_2026.pdf',
+          coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+          emergencyContactName: 'Jane Doe',
+          emergencyContactPhone: '111-111-1111',
+          emergencyContactRelationship: 'Mother',
         },
         {
-          appId: 2,
-          appStatus: AppStatus.IN_REVIEW,
-          daysAvailable: [DaysOfTheWeek.WEDNESDAY],
-          experienceType: ExperienceType.MS,
-          fileUploads: [],
-          interest: InterestArea.NURSING,
-          license: null,
+          appId: 1,
+          appStatus: AppStatus.APP_SUBMITTED,
+          mondayAvailability: '12pm and on every other week',
+          tuesdayAvailability: 'approximately 10am-3pm',
+          wednesdayAvailability: 'no availability',
+          thursdayAvailability: 'maybe before 10am',
+          fridayAvailability: 'Sometime between 4-6',
+          saturdayAvailability: 'no availability',
+          experienceType: ExperienceType.BS,
+          interest: InterestArea.WOMENS_HEALTH,
+          license: 'n/a',
           applicantType: ApplicantType.LEARNER,
-          phone: '987-654-3210',
-          school: School.STANFORD_MEDICINE,
-          email: 'test2@example.com',
-          discipline: DISCIPLINE_VALUES.Nursing,
+          phone: '123-456-7890',
+          school: School.HARVARD_MEDICAL_SCHOOL,
+          email: 'test@example.com',
+          discipline: DISCIPLINE_VALUES.RN,
           referred: false,
-          referredEmail: null,
-          weeklyHours: 15,
+          weeklyHours: 20,
+          pronouns: 'they/them',
+          nonEnglishLangs: 'some french, native spanish speaker',
+          desiredExperience:
+            'I want to give back to the boston community and learn to talk better with patients',
+          resume: 'janedoe_resume_2_6_2026.pdf',
+          coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+          emergencyContactName: 'Jane Doe',
+          emergencyContactPhone: '111-111-1111',
+          emergencyContactRelationship: 'Mother',
         },
       ];
 
       mockRepository.find.mockResolvedValue(mockApplications);
 
-      const result = await service.findByDiscipline(DISCIPLINE_VALUES.Nursing);
+      const result = await service.findByDiscipline(DISCIPLINE_VALUES.RN);
 
       expect(repository.find).toHaveBeenCalledWith({
-        where: { discipline: DISCIPLINE_VALUES.Nursing },
+        where: { discipline: DISCIPLINE_VALUES.RN },
       });
       expect(result).toEqual(mockApplications);
     });
@@ -826,10 +850,10 @@ describe('ApplicationsService', () => {
     it('should return an empty array when no applications match the discipline', async () => {
       mockRepository.find.mockResolvedValue([]);
 
-      const result = await service.findByDiscipline(DISCIPLINE_VALUES.MD);
+      const result = await service.findByDiscipline(DISCIPLINE_VALUES.RN);
 
       expect(repository.find).toHaveBeenCalledWith({
-        where: { discipline: DISCIPLINE_VALUES.MD },
+        where: { discipline: DISCIPLINE_VALUES.RN },
       });
       expect(result).toEqual([]);
     });
@@ -857,8 +881,13 @@ describe('ApplicationsService', () => {
       } catch (error) {
         expect(error.message).toContain('Invalid discipline');
         expect(error.message).toContain('Valid disciplines are:');
-        expect(error.message).toContain('Nursing');
-        expect(error.message).toContain('MD');
+        expect(error.message).toContain('MD/Medical Student/Pre-Med');
+        expect(error.message).toContain('Medical NP/PA');
+        expect(error.message).toContain('Psychiatry or Psychiatric NP/PA');
+        expect(error.message).toContain('Public Health');
+        expect(error.message).toContain('RN');
+        expect(error.message).toContain('Social Work');
+        expect(error.message).toContain('Other');
       }
 
       expect(repository.find).not.toHaveBeenCalled();
@@ -870,7 +899,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.findByDiscipline(DISCIPLINE_VALUES.Nursing),
+        service.findByDiscipline(DISCIPLINE_VALUES.RN),
       ).rejects.toThrow(`There was a problem retrieving the info`);
     });
 
