@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { Admin } from './admin.entity';
-import { Site } from './types';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
@@ -35,20 +34,6 @@ export class AdminsController {
   @Post()
   async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
     return await this.adminsService.create(createAdminDto);
-  }
-
-  /**
-   * Exposes an endpoint to return all admins, optionally only for a specific site.
-   * @param site the desired site assigned to admins for which you want to see a list of.
-   * @returns a list of admin objects.
-   * @throws {Error} anything that the repository throws.
-   */
-  @Get()
-  async findAll(@Query('site') site?: Site): Promise<Admin[]> {
-    if (site) {
-      return await this.adminsService.findBySite(site);
-    }
-    return await this.adminsService.findAll();
   }
 
   /**
