@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
 import * as dotenv from 'dotenv';
@@ -28,9 +27,9 @@ const AppDataSource = new DataSource({
     StoryDraft,
     ProductionInfo,
   ],
-  migrations: ['apps/backend/src/migrations/*.ts'],
+  migrations: ['apps/backend/src/migrations/*.js'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: false,
   namingStrategy: new PluralNamingStrategy(),
 });
 

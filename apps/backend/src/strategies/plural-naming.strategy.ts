@@ -8,7 +8,11 @@ export class PluralNamingStrategy
     return userSpecifiedName || targetName.toLowerCase() + 's'; // Pluralize the table name
   }
 
-  columnName(propertyName: string): string {
+  columnName(
+    propertyName: string,
+    customName: string,
+    embeddedPrefixes: string[],
+  ): string {
     return propertyName;
   }
 

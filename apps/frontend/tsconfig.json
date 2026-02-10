@@ -2,17 +2,18 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "allowJs": false,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "types": ["vite/client", "vitest"],
+    "baseUrl": "src",
     "paths": {
-      "@api/*": ["./src/api/*"],
-      "@components/*": ["./src/components/*"],
-      "@containers/*": ["./src/containers/*"],
-      "@public/*": ["./public/*"],
-      "@shared/*": ["../../shared/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@api/*": ["api/*"],
+      "@components/*": ["components/*"],
+      "@containers/*": ["containers/*"],
+      "@public/*": ["../public/*"],
+      "@shared/*": ["../../../shared/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "files": [],

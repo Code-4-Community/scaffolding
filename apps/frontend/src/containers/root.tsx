@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import './root.css';
 
 // Import SVG icons
@@ -16,19 +16,29 @@ import LogoutIcon from '../assets/icons/logout.svg';
 
 const Root: React.FC = () => {
   const [libraryExpanded, setLibraryExpanded] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
+  const isLibraryActive =
+    location.pathname.startsWith('/library') || location.pathname === '/';
 
   return (
     <div className="root-shell">
       {/* Left sidebar */}
-      <aside className="root-sidebar">
+      <aside className={`root-sidebar ${collapsed ? 'collapsed' : ''}`}>
         <div>
           {/* Logo */}
           <div className="sidebar-logo-section">
-            <img src={Logo} alt="826 Boston" className="sidebar-logo" />
+            {!collapsed && (
+              <img src={Logo} alt="826 Boston" className="sidebar-logo" />
+            )}
             <img
               src={CollapseArrowIcon}
               alt=""
-              className="sidebar-collapse-arrow"
+              className={`sidebar-collapse-arrow ${
+                collapsed ? 'collapsed' : ''
+              }`}
+              onClick={() => setCollapsed(!collapsed)}
             />
           </div>
 
@@ -39,7 +49,9 @@ const Root: React.FC = () => {
               <div className="sidebar-nav-item-content">
                 <div className="sidebar-nav-item-left">
                   <img src={HomeIcon} alt="" className="sidebar-nav-icon" />
-                  <span className="sidebar-nav-label">Home</span>
+                  {!collapsed && (
+                    <span className="sidebar-nav-label">Home</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -49,30 +61,36 @@ const Root: React.FC = () => {
               <button
                 type="button"
                 className="sidebar-library-header"
-                onClick={() => setLibraryExpanded(!libraryExpanded)}
+                onClick={() =>
+                  !collapsed && setLibraryExpanded(!libraryExpanded)
+                }
               >
                 <div className="sidebar-library-header-content">
                   <div className="sidebar-library-header-left">
                     <img
-                      src={libraryExpanded ? LibraryActiveIcon : LibraryIcon}
+                      src={isLibraryActive ? LibraryActiveIcon : LibraryIcon}
                       alt=""
                       className="sidebar-nav-icon"
                     />
-                    <span className="sidebar-nav-label sidebar-nav-label--bold">
-                      Library
-                    </span>
+                    {!collapsed && (
+                      <span className="sidebar-nav-label sidebar-nav-label--bold">
+                        Library
+                      </span>
+                    )}
                   </div>
-                  <img
-                    src={ChevronRightIcon}
-                    alt=""
-                    className={`sidebar-nav-arrow ${
-                      libraryExpanded ? 'sidebar-nav-arrow--expanded' : ''
-                    }`}
-                  />
+                  {!collapsed && (
+                    <img
+                      src={ChevronRightIcon}
+                      alt=""
+                      className={`sidebar-nav-arrow ${
+                        libraryExpanded ? 'sidebar-nav-arrow--expanded' : ''
+                      }`}
+                    />
+                  )}
                 </div>
               </button>
 
-              {libraryExpanded && (
+              {!collapsed && libraryExpanded && (
                 <ul className="sidebar-subnav">
                   <li>
                     <NavLink
@@ -116,7 +134,9 @@ const Root: React.FC = () => {
               <div className="sidebar-nav-item-content">
                 <div className="sidebar-nav-item-left">
                   <img src={ProjectsIcon} alt="" className="sidebar-nav-icon" />
-                  <span className="sidebar-nav-label">Projects</span>
+                  {!collapsed && (
+                    <span className="sidebar-nav-label">Projects</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -130,7 +150,9 @@ const Root: React.FC = () => {
                     alt=""
                     className="sidebar-nav-icon"
                   />
-                  <span className="sidebar-nav-label">Resources</span>
+                  {!collapsed && (
+                    <span className="sidebar-nav-label">Resources</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -140,13 +162,17 @@ const Root: React.FC = () => {
               <div className="sidebar-nav-item-content">
                 <div className="sidebar-nav-item-left">
                   <img src={PeopleIcon} alt="" className="sidebar-nav-icon" />
-                  <span className="sidebar-nav-label">People</span>
+                  {!collapsed && (
+                    <span className="sidebar-nav-label">People</span>
+                  )}
                 </div>
-                <img
-                  src={ChevronRightIcon}
-                  alt=""
-                  className="sidebar-nav-arrow"
-                />
+                {!collapsed && (
+                  <img
+                    src={ChevronRightIcon}
+                    alt=""
+                    className="sidebar-nav-arrow"
+                  />
+                )}
               </div>
             </div>
           </nav>
@@ -156,7 +182,7 @@ const Root: React.FC = () => {
         <div className="sidebar-logout-section">
           <button type="button" className="sidebar-logout">
             <img src={LogoutIcon} alt="" className="sidebar-logout-icon" />
-            <span>Log Out</span>
+            {!collapsed && <span>Log Out</span>}
           </button>
         </div>
       </aside>

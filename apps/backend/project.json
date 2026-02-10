@@ -31,12 +31,6 @@
         "production": {}
       }
     },
-    "seed": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "ts-node -r tsconfig-paths/register --project apps/backend/tsconfig.seed.json apps/backend/src/seeds/index.ts"
-      }
-    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
