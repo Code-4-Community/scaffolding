@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
-import { ExperienceType, InterestArea, School } from './types';
+import { School } from './types';
 import { NotFoundException } from '@nestjs/common';
 
 describe('LearnerInfoService', () => {

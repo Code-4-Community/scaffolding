@@ -214,6 +214,12 @@ export class Application {
    * Name of the resume file stored in S3 with its extension
    *
    * Example:  janedoe_resume_2_6_2026.pdf
+   *
+   * Note: In the code when accessing the files we would prepend the s3 address, e.g.
+   * a full link looks like this:
+   * https://shelter-link-shelters.s3.us-east-2.amazonaws.com/test_photo.webp
+   * But since "https://shelter-link-shelters.s3.us-east-2.amazonaws.com/" would look the same
+   * for every single file we can just store the file with its extension e.g. "test_photo.webp"
    */
   @Column({ type: 'varchar' })
   resume: string;
@@ -222,6 +228,12 @@ export class Application {
    * Name of the cover letter file stored in S3 with its extension
    *
    * Example:  jane_doe_coverLetter_2_6_2026.pdf
+   *
+   * Note: In the code when accessing the files we would prepend the s3 address, e.g.
+   * a full link looks like this:
+   * https://shelter-link-shelters.s3.us-east-2.amazonaws.com/test_photo.webp
+   * But since "https://shelter-link-shelters.s3.us-east-2.amazonaws.com/" would look the same
+   * for every single file we can just store the file with its extension e.g. "test_photo.webp"
    */
   @Column({ type: 'varchar' })
   coverLetter: string;
