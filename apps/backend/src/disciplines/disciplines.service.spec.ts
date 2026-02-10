@@ -20,13 +20,13 @@ describe('DisciplinesService', () => {
 
   const mockDiscipline1: Discipline = {
     id: 1,
-    name: DISCIPLINE_VALUES.Nursing,
+    name: DISCIPLINE_VALUES.RN,
     admin_ids: [1, 2],
   };
 
   const mockDiscipline2: Discipline = {
     id: 2,
-    name: DISCIPLINE_VALUES.MD,
+    name: DISCIPLINE_VALUES.MD_MedicalStudent_PreMed,
     admin_ids: [3],
   };
 
@@ -119,7 +119,7 @@ describe('DisciplinesService', () => {
   describe('create', () => {
     it('should create and save a new discipline', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2],
       };
 
@@ -135,13 +135,13 @@ describe('DisciplinesService', () => {
 
     it('should create a discipline with empty admin_ids array', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
-        name: DISCIPLINE_VALUES.IT,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [],
       };
 
       const disciplineWithEmptyAdmins: Discipline = {
         id: 3,
-        name: DISCIPLINE_VALUES.IT,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [],
       };
 
@@ -193,12 +193,12 @@ describe('DisciplinesService', () => {
     it('should add an admin id to the discipline', async () => {
       const disciplineBeforeAdd: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2],
       };
       const disciplineAfterAdd: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2, 3],
       };
 
@@ -217,7 +217,7 @@ describe('DisciplinesService', () => {
     it('should not add duplicate admin id', async () => {
       const discipline: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2],
       };
 
@@ -235,12 +235,12 @@ describe('DisciplinesService', () => {
     it('should add admin to discipline with empty admin_ids', async () => {
       const disciplineEmpty: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [],
       };
       const disciplineAfterAdd: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [5],
       };
 
@@ -276,12 +276,12 @@ describe('DisciplinesService', () => {
     it('should remove an admin id from the discipline', async () => {
       const disciplineBeforeRemove: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2, 3],
       };
       const disciplineAfterRemove: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 3],
       };
 
@@ -300,7 +300,7 @@ describe('DisciplinesService', () => {
     it('should handle removing non-existent admin id gracefully', async () => {
       const discipline: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2],
       };
 
@@ -317,7 +317,7 @@ describe('DisciplinesService', () => {
     it('should handle removing from empty admin_ids array', async () => {
       const disciplineEmpty: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [],
       };
 
