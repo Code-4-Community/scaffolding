@@ -68,10 +68,10 @@ export class Application {
   /**
    * Applicant's area of interest for the commitment.
    *
-   * Example: InterestArea.NURSING.
+   * Example: [InterestArea.NURSING, InterestArea.HARM_REDUCTION].
    */
-  @Column({ type: 'enum', enum: InterestArea })
-  interest!: InterestArea;
+  @Column({ type: 'enum', enum: InterestArea, array: true, default: [] })
+  interest!: InterestArea[];
 
   // TODO: clarify what format this string is in, and why it's not an array
   // if people can hold multiple licenses in real life

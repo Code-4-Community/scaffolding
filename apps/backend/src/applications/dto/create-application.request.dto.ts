@@ -72,13 +72,14 @@ export class CreateApplicationDto {
   fileUploads: string[];
 
   /**
-   * Applicant's area of interest for the commitment.
+   * Applicant's areas of interest for the commitment (multiple select).
    *
-   * Example: InterestArea.NURSING.
+   * Example: [InterestArea.NURSING, InterestArea.HARM_REDUCTION].
    */
-  @IsEnum(InterestArea)
+  @IsArray()
+  @IsEnum(InterestArea, { each: true })
   @IsDefined()
-  interest: InterestArea;
+  interest: InterestArea[];
 
   // TODO: clarify what format this string is in, and why it's not an array
   // if people can hold multiple licenses in real life.
