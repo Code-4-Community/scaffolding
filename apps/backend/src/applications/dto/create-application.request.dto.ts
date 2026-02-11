@@ -3,7 +3,6 @@ import {
   IsEnum,
   IsNumber,
   IsString,
-  IsArray,
   IsOptional,
   IsNotEmpty,
   IsDefined,
@@ -17,8 +16,8 @@ import {
   ExperienceType,
   InterestArea,
   School,
-  DaysOfTheWeek,
   ApplicantType,
+  HeardAboutFrom,
 } from '../types';
 import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 
@@ -38,13 +37,52 @@ export class CreateApplicationDto {
   appStatus: AppStatus;
 
   /**
-   * Availability of the applicant in terms of days of the week.
+   * Applicant's Monday availability as a free text string.
    *
-   * Example: 'Monday, Tuesday'.
+   * Example: 12pm and on every other week
    */
-  @IsEnum(DaysOfTheWeek)
-  @IsNotEmpty()
-  daysAvailable: DaysOfTheWeek[];
+  @IsString()
+  mondayAvailability: string;
+
+  /**
+   * Applicant's Tuesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  tuesdayAvailability: string;
+
+  /**
+   * Applicant's Wednesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  wednesdayAvailability: string;
+
+  /**
+   * Applicant's Thursday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  thursdayAvailability: string;
+
+  /**
+   * Applicant's Friday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  fridayAvailability: string;
+
+  /**
+   * Applicant's Saturday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @IsString()
+  saturdayAvailability: string;
 
   /**
    * Type of applicant, currently either a learner or a volunteer.
@@ -64,13 +102,6 @@ export class CreateApplicationDto {
   @IsDefined()
   experienceType: ExperienceType;
 
-  // TODO: clarify what format these strings are in and an example of what type of file.
-  @IsArray()
-  @IsString({ each: true })
-  @IsNotEmpty({ each: true })
-  @IsDefined()
-  fileUploads: string[];
-
   /**
    * Applicant's area of interest for the commitment.
    *
@@ -80,8 +111,11 @@ export class CreateApplicationDto {
   @IsDefined()
   interest: InterestArea;
 
-  // TODO: clarify what format this string is in, and why it's not an array
-  // if people can hold multiple licenses in real life.
+  /**
+   * Any licenses that the applicant holds
+   *
+   * Example:  PHYSICIAN LICENSE
+   */
   @IsString()
   @IsNotEmpty()
   license: string;
@@ -108,6 +142,14 @@ export class CreateApplicationDto {
   school: School;
 
   /**
+   * Name of school if chose other
+   *
+   * Example: Northeastern University
+   */
+  @IsString()
+  otherSchool?: string;
+
+  /**
    * Email of the applicant.
    *
    * Example: bob.ross@example.com
@@ -124,6 +166,12 @@ export class CreateApplicationDto {
   @IsEnum(DISCIPLINE_VALUES)
   @IsDefined()
   discipline: DISCIPLINE_VALUES;
+
+  /**
+   * Discipline or area of interest description of applicant clicked other
+   */
+  @IsString()
+  otherDisciplineDescription?: string;
 
   /**
    * Whether or not the applicant was referred by someone else.
@@ -153,4 +201,78 @@ export class CreateApplicationDto {
   @Min(1)
   @Max(168) // 168 hours in a week, can change later if there's a business limit
   weeklyHours: number;
+
+  /**
+   * Applicant's pronouns
+   *
+   * Example: they/them
+   */
+  @IsString()
+  @IsDefined()
+  pronouns: string;
+
+  /**
+   * Languages that the applicant speaks other than English
+   *
+   * Example: I speak some cantonese
+   */
+  @IsString()
+  @IsOptional()
+  nonEnglishLangs?: string;
+
+  /**
+   * Description of the type of experience the applicant is looking for
+   *
+   * Example: I want to give back to the boston community and learn to talk better with patients
+   */
+  @IsString()
+  @IsDefined()
+  desiredExperience: string;
+
+  /**
+   * Field for someone to elaborate on their discipline if they chose other for discipline dropdown
+   *
+   * Example:
+   */
+  @IsString()
+  @IsOptional()
+  elaborateOtherDiscipline?: string;
+
+  /**
+   * Name of the applicant's emergency contact
+   *
+   * Example: Jane Doe
+   */
+  @IsString()
+  @IsNotEmpty()
+  emergencyContactName: string;
+
+  /**
+   * Phone number of the applicant's emergency contact
+   *
+   * Example: Jane Doe
+   */
+  @IsString()
+  @IsDefined()
+  @Matches(/^\d{3}-\d{3}-\d{4}$/, {
+    message: 'Phone number must be in ###-###-#### format',
+  })
+  emergencyContactPhone: string;
+
+  /**
+   * Relationship between the applicant and their emergency contact
+   *
+   * Example: Mother
+   */
+  @IsString()
+  @IsNotEmpty()
+  emergencyContactRelationship: string;
+
+  /**
+   * List of sources that the applicant heard about BHCHP from
+   *
+   * Example: HeardAboutFrom.OTHER, HeardAboutFrom.SCHOOL
+   */
+  @IsEnum(HeardAboutFrom)
+  heardAboutFrom: HeardAboutFrom[];
 }

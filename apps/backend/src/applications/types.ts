@@ -6,7 +6,10 @@ export enum AppStatus {
   IN_REVIEW = 'In review',
   FORMS_SENT = 'Forms sent',
   ACCEPTED = 'Accepted',
-  REJECTED = 'Rejected',
+  NO_AVAILABILITY = 'No Availability',
+  DECLINED = 'Declined',
+  ACTIVE = 'Active',
+  INACTIVE = 'Inactive',
 }
 
 /**
@@ -53,16 +56,6 @@ export enum School {
   OTHER = 'Other',
 }
 
-export enum DaysOfTheWeek {
-  MONDAY = 'Monday',
-  TUESDAY = 'Tuesday',
-  WEDNESDAY = 'Wednesday',
-  THURSDAY = 'Thursday',
-  FRIDAY = 'Friday',
-  SATURDAY = 'Saturday',
-  SUNDAY = 'Sunday',
-}
-
 export enum ApplicantType {
   LEARNER = 'Learner',
   VOLUNTEER = 'Volunteer',
@@ -73,3 +66,16 @@ export enum ApplicantType {
  * @see https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
  */
 export const PHONE_REGEX = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
+
+/**
+ * How the applicant heard about BHCHP
+ */
+export enum HeardAboutFrom {
+  ONLINE_SEARCH = 'Online Search',
+  BHCHP_WEBSITE = 'BHCHP Website',
+  SCHOOL = 'School',
+  FROM_A_BHCHP_STAFF_MEMBER = 'From a BHCHP Staff Member',
+  OTHER = 'Other',
+  FRIEND_FAMILY = 'Friend/Family',
+  CURRENT_OR_FORMER_STAFF = 'I am a current/former BHCHP staff member',
+}
