@@ -28,9 +28,18 @@ export enum ExperienceType {
  * Applicant's area of interest for the commitment
  */
 export enum InterestArea {
-  NURSING = 'Nursing',
-  HARM_REDUCTION = 'HarmReduction',
-  WOMENS_HEALTH = 'WomensHealth',
+  WOMENS_HEALTH = "Women's Health",
+  MEDICAL_RESPITE_INPATIENT = 'Medical Respite/Inpatient',
+  STREET_MEDICINE = 'Street Medicine',
+  ADDICTION_MEDICINE = 'Addiction Medicine',
+  PRIMARY_CARE = 'Primary Care',
+  BEHAVIORAL_HEALTH = 'Behavioral Health',
+  VETERANS_SERVICES = 'Veterans Services',
+  FAMILY_AND_YOUTH_SERVICES = 'Family and Youth Services',
+  HEP_C_CARE = 'Hep C Care',
+  HIV_SERVICES = 'HIV Services',
+  CASE_MANAGEMENT = 'Case Management',
+  DENTAL = 'Dental',
 }
 
 /**
@@ -61,6 +70,6 @@ export enum ApplicantType {
 
 /**
  * Phone number regex pattern for ###-###-#### format validation
- * found this online: https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
+ * @see https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
  */
 export const PHONE_REGEX = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
