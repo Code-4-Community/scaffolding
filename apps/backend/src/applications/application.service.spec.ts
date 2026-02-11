@@ -62,7 +62,7 @@ describe('ApplicationsService', () => {
           daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
           experienceType: ExperienceType.BS,
           fileUploads: [],
-          interest: InterestArea.NURSING,
+          interest: InterestArea.PRIMARY_CARE,
           license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
@@ -111,7 +111,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -154,7 +154,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -181,7 +181,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -217,7 +217,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -251,7 +251,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -272,7 +272,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
@@ -299,7 +299,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-4562',
@@ -326,7 +326,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-8-90',
@@ -353,7 +353,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -380,7 +380,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
@@ -410,7 +410,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -449,7 +449,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -463,20 +463,20 @@ describe('ApplicationsService', () => {
 
       const updatedApplication: Application = {
         ...mockApplication,
-        interest: InterestArea.HARM_REDUCTION,
+        interest: InterestArea.ADDICTION_MEDICINE,
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
       mockRepository.save.mockResolvedValue(updatedApplication);
 
       const result = await service.update(1, {
-        interest: InterestArea.HARM_REDUCTION,
+        interest: InterestArea.ADDICTION_MEDICINE,
       });
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
       expect(repository.save).toHaveBeenCalledWith({
         ...mockApplication,
-        interest: InterestArea.HARM_REDUCTION,
+        interest: InterestArea.ADDICTION_MEDICINE,
       });
       expect(result).toEqual(updatedApplication);
     });
@@ -504,7 +504,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+        service.update(1, { interest: InterestArea.ADDICTION_MEDICINE }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -525,7 +525,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -543,7 +543,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+        service.update(1, { interest: InterestArea.ADDICTION_MEDICINE }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -554,7 +554,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
@@ -585,7 +585,7 @@ describe('ApplicationsService', () => {
         daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
         experienceType: ExperienceType.BS,
         fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: InterestArea.PRIMARY_CARE,
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
