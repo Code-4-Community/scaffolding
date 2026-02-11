@@ -207,7 +207,7 @@ describe('ApplicationsController', () => {
      * The returned application's discipline field must equal the discipline sent in the request (discipline is changeable).
      */
     it('should return an application whose discipline field equals the requested discipline', async () => {
-      const requestedDiscipline = DISCIPLINE_VALUES.Research;
+      const requestedDiscipline = DISCIPLINE_VALUES.RN;
       const updateDisciplineDto = { discipline: requestedDiscipline };
       const updatedApplication: Application = {
         ...mockApplication,
@@ -233,11 +233,11 @@ describe('ApplicationsController', () => {
      */
     it('should call the service with the correct appId and discipline', async () => {
       const appId = 42;
-      const updateDisciplineDto = { discipline: DISCIPLINE_VALUES.MD };
+      const updateDisciplineDto = { discipline: DISCIPLINE_VALUES.RN };
       const updatedApplication: Application = {
         ...mockApplication,
         appId,
-        discipline: DISCIPLINE_VALUES.MD,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       jest
@@ -251,7 +251,7 @@ describe('ApplicationsController', () => {
       );
 
       expect(mockApplicationsService.update).toHaveBeenCalledWith(appId, {
-        discipline: DISCIPLINE_VALUES.MD,
+        discipline: DISCIPLINE_VALUES.RN,
       });
     });
   });
