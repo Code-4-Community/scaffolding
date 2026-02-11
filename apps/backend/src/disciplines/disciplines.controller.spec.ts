@@ -27,7 +27,7 @@ const mockUsersService = {
 
 const defaultDiscipline: Discipline = {
   id: 1,
-  name: DISCIPLINE_VALUES.Nursing,
+  name: DISCIPLINE_VALUES.RN,
   admin_ids: [1, 2],
 };
 
@@ -74,7 +74,7 @@ describe('DisciplinesController', () => {
         defaultDiscipline,
         {
           id: 2,
-          name: DISCIPLINE_VALUES.MD,
+          name: DISCIPLINE_VALUES.RN,
           admin_ids: [3],
         },
       ];
@@ -155,7 +155,7 @@ describe('DisciplinesController', () => {
   describe('create', () => {
     it('should create a new discipline', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2],
       };
 
@@ -173,13 +173,13 @@ describe('DisciplinesController', () => {
 
     it('should create a discipline with empty admin_ids array', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
-        name: DISCIPLINE_VALUES.IT,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [],
       };
 
       const disciplineWithEmptyAdmins: Discipline = {
         id: 3,
-        name: DISCIPLINE_VALUES.IT,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [],
       };
 
@@ -197,7 +197,7 @@ describe('DisciplinesController', () => {
 
     it('should handle service errors when creating discipline', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2],
       };
 
@@ -213,23 +213,23 @@ describe('DisciplinesController', () => {
 
     it('should create discipline with different discipline values', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
-        name: DISCIPLINE_VALUES.MD,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [5],
       };
 
-      const mdDiscipline: Discipline = {
+      const RNDiscipline: Discipline = {
         id: 4,
-        name: DISCIPLINE_VALUES.MD,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [5],
       };
 
       jest
         .spyOn(mockDisciplinesService, 'create')
-        .mockResolvedValue(mdDiscipline);
+        .mockResolvedValue(RNDiscipline);
 
       const result = await controller.create(createDisciplineDto);
 
-      expect(result).toEqual(mdDiscipline);
+      expect(result).toEqual(RNDiscipline);
       expect(mockDisciplinesService.create).toHaveBeenCalledWith(
         createDisciplineDto,
       );
@@ -272,7 +272,7 @@ describe('DisciplinesController', () => {
     it('should add an admin to a discipline', async () => {
       const updatedDiscipline: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1, 2, 3],
       };
 
@@ -322,7 +322,7 @@ describe('DisciplinesController', () => {
     it('should remove an admin from a discipline', async () => {
       const updatedDiscipline: Discipline = {
         id: 1,
-        name: DISCIPLINE_VALUES.Nursing,
+        name: DISCIPLINE_VALUES.RN,
         admin_ids: [1], // 2 was removed
       };
 

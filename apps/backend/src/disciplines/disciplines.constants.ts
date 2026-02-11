@@ -2,15 +2,11 @@
  * The applicant's discipline of expertise.
  */
 export enum DISCIPLINE_VALUES {
-  Volunteers = 'Volunteers',
-  Nursing = 'Nursing',
+  MD_MedicalStudent_PreMed = 'MD/Medical Student/Pre-Med',
+  Medical_NP_PA = 'Medical NP/PA',
+  Psychiatry_or_Psychiatric_NP_PA = 'Psychiatry or Psychiatric NP/PA',
   PublicHealth = 'Public Health',
-  MD = 'MD',
-  PA = 'PA',
-  NP = 'NP',
-  Research = 'Research',
+  RN = 'RN',
   SocialWork = 'Social Work',
-  Psychiatry = 'Psychiatry',
-  Pharmacy = 'Pharmacy',
-  IT = 'IT',
+  Other = 'Other',
 }

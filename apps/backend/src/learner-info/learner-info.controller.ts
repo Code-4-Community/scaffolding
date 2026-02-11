@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { LearnerInfo } from './learner-info.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { LearnerInfoService } from './learner-info.service';
