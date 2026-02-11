@@ -4,13 +4,11 @@ import { Repository } from 'typeorm';
 
 import { Anthology } from './anthology.entity';
 import { AnthologyStatus, AnthologyPubLevel } from './types';
-import { Story } from '../story/story.entity';
 
 @Injectable()
 export class AnthologyService {
   constructor(
     @InjectRepository(Anthology) private repo: Repository<Anthology>,
-    @InjectRepository(Story) private storyRepo: Repository<Story>,
   ) {}
 
   async create(
@@ -19,12 +17,14 @@ export class AnthologyService {
     published_year: number,
     status: AnthologyStatus,
     pub_level: AnthologyPubLevel,
-    photo_url: string,
-    isbn: string,
-    shopify_url: string,
     programs?: string[],
+    photo_url?: string,
+    isbn?: string,
+    shopify_url?: string,
   ) {
+    const anthologyId = (await this.repo.count()) + 1;
     const anthology = this.repo.create({
+      id: anthologyId,
       title,
       description,
       published_year,
@@ -36,45 +36,7 @@ export class AnthologyService {
       shopify_url,
     });
 
-    return await this.repo.save(anthology);
-  }
-
-  async getStories(anthologyId: number) {
-    const anthology = await this.repo.findOne({
-      where: { id: anthologyId },
-    });
-    if (!anthology)
-      throw new NotFoundException(`Anthology id ${anthologyId} not found`);
-    return this.storyRepo.find({ where: { anthologyId } });
-  }
-
-  async edit(
-    anthologyId: number,
-    title?: string,
-    description?: string,
-    published_year?: number,
-    status?: AnthologyStatus,
-    pub_level?: AnthologyPubLevel,
-    photo_url?: string,
-    isbn?: string,
-    shopify_url?: string,
-    programs?: string[],
-  ) {
-    // verify anthology exists
-    const anthology = await this.repo.findOne({ where: { id: anthologyId } });
-    if (!anthology)
-      throw new NotFoundException(`Story id ${anthologyId} not found`);
-    if (title) anthology.title = title;
-    if (description) anthology.description = description;
-    if (published_year) anthology.published_year = published_year;
-    if (status) anthology.status = status;
-    if (pub_level) anthology.pub_level = pub_level;
-    if (photo_url) anthology.photo_url = photo_url;
-    if (isbn) anthology.isbn = isbn;
-    if (shopify_url) anthology.shopify_url = shopify_url;
-    if (programs) anthology.programs = programs;
-
-    return await this.repo.save(anthology);
+    return this.repo.save(anthology);
   }
 
   findOne(id: number) {

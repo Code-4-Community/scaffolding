@@ -10,7 +10,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { StoryService } from './story.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -22,8 +22,10 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
+import { AnthologyService } from '../anthology/anthology.service';
+import { AuthorService } from '../author/author.service';
 import { CreateStoryDto } from './dtos/create-story.dto';
-import { UpdateStoryDto } from './dtos/update-story.dto';
+import { create } from 'domain';
 
 @ApiTags('Story')
 @ApiBearerAuth()
@@ -31,9 +33,12 @@ import { UpdateStoryDto } from './dtos/update-story.dto';
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(CurrentUserInterceptor)
 export class StoryController {
-  constructor(private storyService: StoryService) {}
+  constructor(
+    private storyService: StoryService,
+    private anthologyService: AnthologyService,
+    private authorService: AuthorService,
+  ) {}
 
-  // TECH DEBT: why is anthologyId being passed in
   @Get('/library/anthology/:anthologyId/story/:storyId')
   async getStory(
     @Param('anthologyId', ParseIntPipe) anthologyId: number,
@@ -62,7 +67,14 @@ export class StoryController {
     description: 'Anthology not found',
   })
   async createStory(@Body() createStoryDto: CreateStoryDto): Promise<Story> {
-    return await this.storyService.createStory(
+    const anthology = await this.anthologyService.findOne(
+      createStoryDto.anthologyId,
+    );
+    const author = await this.authorService.findOne(createStoryDto.authorId);
+    if (!anthology || !author) {
+      throw new NotFoundException('Anthology or author not found');
+    }
+    return this.storyService.createStory(
       createStoryDto.title,
       createStoryDto.anthologyId,
       createStoryDto.authorId,
@@ -70,26 +82,6 @@ export class StoryController {
       createStoryDto.description,
       createStoryDto.genre,
       createStoryDto.theme,
-    );
-  }
-
-  @Post('/:storyId')
-  async editStory(
-    @Param('storyId', ParseIntPipe) storyId: number,
-    @Body() updateStoryDto: UpdateStoryDto,
-  ): Promise<Story> {
-    if (Object.keys(updateStoryDto).length == 0) {
-      throw new BadRequestException('Empty UpdateStoryDto payload');
-    }
-    return await this.storyService.editStory(
-      storyId,
-      updateStoryDto.title,
-      updateStoryDto.anthologyId,
-      updateStoryDto.authorId,
-      updateStoryDto.studentBio,
-      updateStoryDto.description,
-      updateStoryDto.genre,
-      updateStoryDto.theme,
     );
   }
 }
