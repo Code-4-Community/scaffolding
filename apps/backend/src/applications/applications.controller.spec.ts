@@ -169,4 +169,90 @@ describe('ApplicationsController', () => {
       }
     });
   });
+
+  /**
+   * Tests for PATCH /:appId/discipline (updateApplicationDiscipline).
+   * Verifies that the controller delegates to the service and returns or throws as documented.
+   */
+  describe('updateApplicationDiscipline', () => {
+    /**
+     * When the service returns an updated application, the controller should return that same application.
+     */
+    it('should return the updated application when discipline is updated successfully', async () => {
+      const updateDisciplineDto = {
+        discipline: DISCIPLINE_VALUES.PublicHealth,
+      };
+      const updatedApplication: Application = {
+        ...mockApplication,
+        discipline: DISCIPLINE_VALUES.PublicHealth,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'update')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationDiscipline(
+        1,
+        updateDisciplineDto,
+        {},
+      );
+
+      expect(result).toEqual(updatedApplication);
+      expect(mockApplicationsService.update).toHaveBeenCalledWith(1, {
+        discipline: DISCIPLINE_VALUES.PublicHealth,
+      });
+    });
+
+    /**
+     * The returned application's discipline field must equal the discipline sent in the request (discipline is changeable).
+     */
+    it('should return an application whose discipline field equals the requested discipline', async () => {
+      const requestedDiscipline = DISCIPLINE_VALUES.Research;
+      const updateDisciplineDto = { discipline: requestedDiscipline };
+      const updatedApplication: Application = {
+        ...mockApplication,
+        discipline: requestedDiscipline,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'update')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationDiscipline(
+        1,
+        updateDisciplineDto,
+        {},
+      );
+
+      expect(result.discipline).toBe(requestedDiscipline);
+      expect(result.discipline).not.toBe(mockApplication.discipline);
+    });
+
+    /**
+     * The controller should call the service with the application id and the discipline from the DTO.
+     */
+    it('should call the service with the correct appId and discipline', async () => {
+      const appId = 42;
+      const updateDisciplineDto = { discipline: DISCIPLINE_VALUES.MD };
+      const updatedApplication: Application = {
+        ...mockApplication,
+        appId,
+        discipline: DISCIPLINE_VALUES.MD,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'update')
+        .mockResolvedValue(updatedApplication);
+
+      await controller.updateApplicationDiscipline(
+        appId,
+        updateDisciplineDto,
+        {},
+      );
+
+      expect(mockApplicationsService.update).toHaveBeenCalledWith(appId, {
+        discipline: DISCIPLINE_VALUES.MD,
+      });
+    });
+  });
 });

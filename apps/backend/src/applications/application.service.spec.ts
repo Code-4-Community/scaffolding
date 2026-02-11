@@ -547,7 +547,7 @@ describe('ApplicationsService', () => {
       expect(result).toEqual(updatedApplication);
     });
 
-    it('should update application interest', async () => {
+    it('should update application discipline', async () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
@@ -579,22 +579,20 @@ describe('ApplicationsService', () => {
 
       const updatedApplication: Application = {
         ...mockApplication,
-        interest: InterestArea.DENTAL,
-        resume: 'janedoe_resume_2_6_2026.pdf',
-        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        interest: InterestArea.WOMENS_HEALTH,
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
       mockRepository.save.mockResolvedValue(updatedApplication);
 
       const result = await service.update(1, {
-        interest: InterestArea.DENTAL,
+        interest: InterestArea.WOMENS_HEALTH,
       });
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
       expect(repository.save).toHaveBeenCalledWith({
         ...mockApplication,
-        interest: InterestArea.DENTAL,
+        interest: InterestArea.WOMENS_HEALTH,
       });
       expect(result).toEqual(updatedApplication);
     });
@@ -616,13 +614,13 @@ describe('ApplicationsService', () => {
       expect(repository.save).not.toHaveBeenCalled();
     });
 
-    it('should pass along any repo errors from retrieval without information loss when saving a new interest', async () => {
+    it('should pass along any repo errors from retrieval without information loss when saving a new discipline', async () => {
       mockRepository.findOne.mockRejectedValue(
         new Error('There was a problem retrieving the info'),
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.DENTAL }),
+        service.update(1, { interest: InterestArea.WOMENS_HEALTH }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -636,7 +634,7 @@ describe('ApplicationsService', () => {
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
-    it('should pass along any repo errors from saving the new info without information loss when saving a new interest', async () => {
+    it('should pass along any repo errors from saving the new info without information loss when saving a new discipline', async () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
@@ -672,7 +670,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.DENTAL }),
+        service.update(1, { interest: InterestArea.WOMENS_HEALTH }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
