@@ -105,7 +105,7 @@ export class CreateApplicationDto {
   /**
    * Applicant's area of interest for the commitment.
    *
-   * Example: InterestArea.NURSING.
+   * Example: InterestArea.PRIMARY_CARE.
    */
   @IsEnum(InterestArea)
   @IsDefined()

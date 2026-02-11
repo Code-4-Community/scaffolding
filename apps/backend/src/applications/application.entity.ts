@@ -109,7 +109,7 @@ export class Application {
   /**
    * Applicant's area of interest for the commitment.
    *
-   * Example: InterestArea.NURSING.
+   * Example: InterestArea.PRIMARY_CARE.
    */
   @Column({ type: 'enum', enum: InterestArea })
   interest!: InterestArea;

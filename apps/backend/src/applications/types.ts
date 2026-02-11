@@ -63,7 +63,7 @@ export enum ApplicantType {
 
 /**
  * Phone number regex pattern for ###-###-#### format validation
- * found this online: https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
+ * @see https://stackoverflow.com/questions/16699007/regular-expression-to-match-standard-10-digit-phone-number
  */
 export const PHONE_REGEX = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
 
