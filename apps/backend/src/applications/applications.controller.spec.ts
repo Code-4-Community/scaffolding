@@ -207,7 +207,7 @@ describe('ApplicationsController', () => {
      * The returned application's discipline field must equal the discipline sent in the request (discipline is changeable).
      */
     it('should return an application whose discipline field equals the requested discipline', async () => {
-      const requestedDiscipline = DISCIPLINE_VALUES.RN;
+      const requestedDiscipline = DISCIPLINE_VALUES.PublicHealth;
       const updateDisciplineDto = { discipline: requestedDiscipline };
       const updatedApplication: Application = {
         ...mockApplication,
