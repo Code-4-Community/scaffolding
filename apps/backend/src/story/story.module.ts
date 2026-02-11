@@ -10,12 +10,10 @@ import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor
 import { UsersModule } from '../users/users.module';
 import { AuthModule } from '../auth/auth.module';
 import { AuthorModule } from '../author/author.module';
-import { Author } from '../author/author.entity';
-import { Anthology } from '../anthology/anthology.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Story, Author, Anthology]),
+    TypeOrmModule.forFeature([Story]),
     AnthologyModule,
     StoryModule,
     UsersModule,
