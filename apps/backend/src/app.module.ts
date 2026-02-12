@@ -8,6 +8,8 @@ import { InventoryModule } from './inventory/inventory.module';
 import { InventoryHoldingModule } from './inventory-holding/inventory-holding.module';
 import AppDataSource from './data-source';
 import { StoryModule } from './story/story.module';
+import { OmchaiModule } from './omchai/omchai.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { StoryModule } from './story/story.module';
     InventoryModule,
     InventoryHoldingModule,
     StoryModule,
+    OmchaiModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
