@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Body,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 import { OmchaiService } from './omchai.service';
 import { CreateOmchaiDto } from './dtos/create-omchai.dto';
 import { EditOmchaiDto } from './dtos/edit-omchai.dto';

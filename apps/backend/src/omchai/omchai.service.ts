@@ -1,22 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Omchai } from './omchai.entity';
 import { CreateOmchaiDto } from './dtos/create-omchai.dto';
 import { EditOmchaiDto } from './dtos/edit-omchai.dto';
 
 @Injectable()
 export class OmchaiService {
-  create(createOmchaiDto: CreateOmchaiDto) {
-    return 'This action adds a new omchai';
+  constructor(@InjectRepository(Omchai) private repo: Repository<Omchai>) {}
+
+  async create(createOmchaiDto: CreateOmchaiDto) {
+    const omchai = this.repo.create(createOmchaiDto);
+    return this.repo.save(omchai);
   }
 
   findAll() {
-    return 'This action returns all omchai';
+    return this.repo.find();
   }
 
   findByAnthologyId(anthologyId: number) {
-    return `This action returns all omchai for the anthology #${anthologyId}`;
+    return this.repo.find({ where: { anthology_id: anthologyId } });
   }
 
-  update(id: number, updateOmchaiDto: EditOmchaiDto) {
-    return `This action updates omchai #${id}`;
+  async update(id: number, updateOmchaiDto: EditOmchaiDto) {
+    const omchai = await this.repo.findOneBy({ id });
+
+    if (!omchai) {
+      throw new NotFoundException('Omchai not found');
+    }
+
+    Object.assign(omchai, updateOmchaiDto);
+    return this.repo.save(omchai);
   }
 }

@@ -46,7 +46,14 @@ export const STATIC_ARCHIVED: Anthology[] = [
       "Discover a world where wisdom and whimsy collide in this captivating anthology from 826 Boston. Each story offers a unique piece of advice, from reimagined Greek myths to thought-provoking advice columns. Get ready to be challenged, moved, and inspired by these young voices' raw creativity and fearless storytelling!",
     published_year: 2024,
     status: 'archived',
-    authors: ['Maria Santos', 'James Chen', 'Aisha Johnson', 'David Kim', 'Sofia Rodriguez'],    photo_url: '/src/assets/images/covers/Whatiftheworld_2024.jpg',
+    authors: [
+      'Maria Santos',
+      'James Chen',
+      'Aisha Johnson',
+      'David Kim',
+      'Sofia Rodriguez',
+    ],
+    photo_url: '/src/assets/images/covers/Whatiftheworld_2024.jpg',
     foreword_author: 'Meredith Goldstein',
     praise_quotes:
       "\"I will cherish this collection by 826 Boston students who have crafted a range of work, from poetry to narratives to essays. Every piece is wisdom. Every short story, diary, comedy, and drama is embedded with advice, even if it's not obvious. Now, when I think, 'What should I do next?' I have a new place to turn.\" - Meredith Goldstein, author, longtime advice columnist, and associate editor at The Boston Globe",
@@ -97,7 +104,19 @@ export const STATIC_ARCHIVED: Anthology[] = [
       "Boston's 2021 mayoral election was a competitive race with more ethnically and racially diverse candidates than ever before. In I Was Meant for This students of all ages give their own inaugural addresses as Boston's mayor-elect. These speeches—simultaneously playful, imaginative, and keenly observed—speak to an evolving city, as told through the eyes of tomorrow's leaders.",
     published_year: 2022,
     status: 'archived',
-    authors: ['Zachary Abusheleih', 'Pablo Arduini', 'Marwa Bacare', 'Emma-Rose Bernard', 'Naveen Bhatt', 'Rohan Bhatt', 'Inari Braxton', 'Kamila Burgos Cruz', 'Edwin Chen', 'Alice Chung'],    foreword_author: 'Adrian Walker',
+    authors: [
+      'Zachary Abusheleih',
+      'Pablo Arduini',
+      'Marwa Bacare',
+      'Emma-Rose Bernard',
+      'Naveen Bhatt',
+      'Rohan Bhatt',
+      'Inari Braxton',
+      'Kamila Burgos Cruz',
+      'Edwin Chen',
+      'Alice Chung',
+    ],
+    foreword_author: 'Adrian Walker',
     praise_quotes:
       '"These are the speeches—and the voices—of young people who know that they matter, and that their thoughts and dreams matter. We should want that for all young people in every neighborhood of our city. I hope you enjoy their writing, and their thinking, as much as I did. We need their voices more than ever. And to our young mayoral candidates and essayists I say: Please keep writing. And please keep dreaming." - Adrian Walker, Columnist/Associate Editor, The Boston Globe',
     age_category:
