@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { Status } from './types';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { AuthService } from '../auth/auth.service';
+import { AuthGuard } from '@nestjs/passport';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -45,7 +46,7 @@ describe('UsersController', () => {
     })
       .overrideInterceptor(CurrentUserInterceptor)
       .useValue({})
-      .overrideGuard(require('@nestjs/passport').AuthGuard('jwt'))
+      .overrideGuard(AuthGuard('jwt'))
       .useValue({ canActivate: () => true })
       .compile();
 
