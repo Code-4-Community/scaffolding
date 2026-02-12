@@ -29,6 +29,10 @@ export class UsersService {
     return this.repo.save(user);
   }
 
+  findAll() {
+    return this.repo.find();
+  }
+
   findOne(id: number) {
     if (!id) {
       return null;
