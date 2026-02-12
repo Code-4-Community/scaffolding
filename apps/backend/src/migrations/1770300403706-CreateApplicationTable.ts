@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateApplicationTable1770900403706 implements MigrationInterface {
-  name = 'CreateApplicationTable1770900403706';
+export class CreateApplicationTable1770300403706 implements MigrationInterface {
+  name = 'CreateApplicationTable1770300403706';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            CREATE TABLE IF NOT EXISTS "application" (
+            CREATE TABLE "application" (
              "appId" SERIAL NOT NULL,
              "email" character varying NOT NULL,
              "discipline" "public"."application_discipline_enum" NOT NULL,
@@ -36,7 +36,7 @@ export class CreateApplicationTable1770900403706 implements MigrationInterface {
              "emergencyContactName" character varying NOT NULL, 
              "emergencyContactPhone" character varying NOT NULL, 
              "emergencyContactRelationship" character varying NOT NULL, 
-             CONSTRAINT "PK_application_appId" PRIMARY KEY ("appId"),`);
+             CONSTRAINT "PK_application_appId" PRIMARY KEY ("appId"));`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
