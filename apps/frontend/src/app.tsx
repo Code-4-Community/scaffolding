@@ -8,6 +8,8 @@ import NotFound from '@containers/404';
 import Test from '@containers/test';
 import ArchivedPublications from '@containers/archived-publications';
 import PublicationView from '@containers/archived-publications/individual-publication/publication-view';
+import Login from '@containers/auth/login';
+import Register from '@containers/auth/register';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
         element: <PublicationView />,
       },
     ],
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
   {
     path: '/test',
