@@ -275,7 +275,7 @@
 .root-main {
   flex: 1;
   background-color: var(--neutral-100);
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   flex-direction: column;
 }
