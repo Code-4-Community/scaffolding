@@ -58,13 +58,13 @@
   display: flex;
   gap: 40px;
   align-items: flex-start;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 }
 
 .publication-image {
   width: 240px;
   height: 237px;
-  flex: 0 0 240px; 
+  flex: 0 0 240px;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -77,11 +77,11 @@
 }
 
 .publication-info {
-  flex: 1 1 320px; 
+  flex: 1 1 320px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-width: 0; 
+  min-width: 0;
 }
 
 .publication-title-section {
@@ -98,7 +98,7 @@
   color: #000;
   margin: 0;
   white-space: pre-wrap;
-  overflow-wrap: anywhere; 
+  overflow-wrap: anywhere;
 }
 
 .publication-author {
@@ -167,7 +167,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  min-width: 0; 
+  min-width: 0;
 }
 
 .metadata-row-single {
@@ -302,7 +302,7 @@
   line-height: normal;
   color: #938b88;
   margin: 0;
-  flex: 0 0 180px; 
+  flex: 0 0 180px;
   min-width: 0;
   min-height: 0;
 }
@@ -314,8 +314,8 @@
   line-height: normal;
   color: #3b3330;
   margin: 0;
-  flex: 1 1 auto;  
-  width: auto;     
+  flex: 1 1 auto;
+  width: auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -341,7 +341,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 }
 
 .filter-badge {
@@ -475,7 +475,7 @@
 
 .detail-row-special .sponsor-tags,
 .detail-row-special .status-badge-container {
-  width: auto;        
+  width: auto;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -555,7 +555,7 @@
   align-items: center;
   padding: 0;
   text-decoration: none;
-  width: auto;        /* ✅ remove fixed 755px */
+  width: auto; /* ✅ remove fixed 755px */
   flex: 1 1 auto;
   min-width: 0;
   background: none;
