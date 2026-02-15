@@ -5,13 +5,14 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  OneToOne,
 } from 'typeorm';
 
 import { AnthologyStatus, AnthologyPubLevel } from './types';
 
 import { Story } from '../story/story.entity';
+import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
 import { ProductionInfo } from '../production-info/production-info.entity';
-import { OneToOne } from 'typeorm';
 
 @Entity()
 export class Anthology {
@@ -45,9 +46,12 @@ export class Anthology {
   @Column({ nullable: true })
   shopify_url: string;
 
-  @OneToOne(
-    () => ProductionInfo,
-    (productionInfo) => productionInfo.anthologyId,
-  )
+  @OneToMany(() => Story, (story) => story.anthologyId)
+  stories: Story[];
+
+  @OneToMany(() => InventoryHolding, (ih) => ih.anthology_id)
+  holdings: InventoryHolding[];
+
+  @OneToOne(() => ProductionInfo, (productionInfo) => productionInfo.anthology)
   productionInfo: ProductionInfo;
 }

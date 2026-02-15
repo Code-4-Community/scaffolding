@@ -1,48 +1,33 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Put,
-  NotFoundException,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, ParseIntPipe } from '@nestjs/common';
 import { ProductionInfoService } from './production-info.service';
-import { CreateProductionInfoDTO } from './dtos/create-production-info.dto';
-import { UpdateProductionInfoDTO } from './dtos/update-production-info.dto';
+import { CreateProductionInfoDto } from './dtos/create-production-info.dto';
+import { UpdateProductionInfoDto } from './dtos/update-production-info.dto';
+import { ProductionInfo } from './production-info.entity';
 
 @Controller('production-info')
 export class ProductionInfoController {
-  constructor(private productionInfoService: ProductionInfoService) {}
+  constructor(private readonly productionInfoService: ProductionInfoService) {}
+
+  @Post()
+  create(@Body() createProductionInfoDto: CreateProductionInfoDto): Promise<ProductionInfo> {
+    return this.productionInfoService.create(createProductionInfoDto);
+  }
 
   @Get()
-  getAllProductionInfo() {
+  findAll(): Promise<ProductionInfo[]> {
     return this.productionInfoService.findAll();
   }
 
-  @Get('/anthology/:anthologyId')
-  async getProductionInfoByAnthologyId(
-    @Param('anthologyId') anthologyId: string,
-  ) {
-    const info = await this.productionInfoService.findByAnthologyId(
-      parseInt(anthologyId),
-    );
-    if (!info) {
-      throw new NotFoundException('Production info not found');
-    }
-    return info;
+  @Get(':anthologyId')
+  findOneByAnthologyId(@Param('anthologyId', ParseIntPipe) anthologyId: number): Promise<ProductionInfo> {
+    return this.productionInfoService.findOneByAnthologyId(anthologyId);
   }
 
-  @Post()
-  createProductionInfo(@Body() body: CreateProductionInfoDTO) {
-    return this.productionInfoService.create(body);
-  }
-
-  @Put('/anthology/:anthologyId')
-  updateProductionInfo(
-    @Param('anthologyId') anthologyId: string,
-    @Body() body: UpdateProductionInfoDTO,
-  ) {
-    return this.productionInfoService.update(parseInt(anthologyId), body);
+  @Put(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProductionInfoDto: UpdateProductionInfoDto,
+  ): Promise<ProductionInfo> {
+    return this.productionInfoService.update(id, updateProductionInfoDto);
   }
 }

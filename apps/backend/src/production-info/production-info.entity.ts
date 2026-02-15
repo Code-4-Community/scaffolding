@@ -1,18 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Anthology } from '../anthology/anthology.entity';
 
 @Entity()
 export class ProductionInfo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', unique: true })
-  anthologyId: number;
+  @OneToOne(() => Anthology, (anthology) => anthology.productionInfo)
+  @JoinColumn({ name: 'anthology_id' })
+  anthology: Anthology;
 
   @Column({ nullable: true })
   design_files_link: string;
 
   @Column({ nullable: true })
-  cover_image_file_link?: string;
+  cover_image_file_link: string;
 
   @Column({ nullable: true })
   binding_type: string;

@@ -2,40 +2,76 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductionInfo } from './production-info.entity';
-import { CreateProductionInfoDTO } from './dtos/create-production-info.dto';
-import { UpdateProductionInfoDTO } from './dtos/update-production-info.dto';
+import { CreateProductionInfoDto } from './dtos/create-production-info.dto';
+import { UpdateProductionInfoDto } from './dtos/update-production-info.dto';
+import { Anthology } from '../anthology/anthology.entity';
 
 @Injectable()
 export class ProductionInfoService {
   constructor(
     @InjectRepository(ProductionInfo)
-    private repo: Repository<ProductionInfo>,
+    private productionInfoRepository: Repository<ProductionInfo>,
+    @InjectRepository(Anthology)
+    private anthologyRepository: Repository<Anthology>,
   ) {}
 
-  async create(body: CreateProductionInfoDTO) {
-    const productionInfo = this.repo.create(body);
-    return this.repo.save(productionInfo);
-  }
+  async create(createProductionInfoDto: CreateProductionInfoDto): Promise<ProductionInfo> {
+    const anthology = await this.anthologyRepository.findOne({
+      where: { id: createProductionInfoDto.anthology_id },
+    });
 
-  async findAll() {
-    return this.repo.find();
-  }
-
-  async findByAnthologyId(anthologyId: number) {
-    // checking if the anthology has info attached
-    return this.repo.findOne({ where: { anthologyId } });
-  }
-
-  async update(anthologyId: number, body: UpdateProductionInfoDTO) {
-    // first we find the existing one to update
-    const productionInfo = await this.findByAnthologyId(anthologyId);
-    if (!productionInfo) {
-      // throw error if it doesnt exist
-      throw new NotFoundException(
-        'Production Info not found for this anthology',
-      );
+    if (!anthology) {
+      throw new NotFoundException(`Anthology with ID ${createProductionInfoDto.anthology_id} not found`);
     }
-    Object.assign(productionInfo, body);
-    return this.repo.save(productionInfo);
+
+    const productionInfo = this.productionInfoRepository.create({
+      ...createProductionInfoDto,
+      anthology,
+    });
+
+    return this.productionInfoRepository.save(productionInfo);
+  }
+
+  async findAll(): Promise<ProductionInfo[]> {
+    return this.productionInfoRepository.find({ relations: ['anthology'] });
+  }
+
+  async findOneByAnthologyId(anthologyId: number): Promise<ProductionInfo> {
+    const productionInfo = await this.productionInfoRepository.findOne({
+      where: { anthology: { id: anthologyId } },
+      relations: ['anthology'],
+    });
+
+    if (!productionInfo) {
+      throw new NotFoundException(`Production info for anthology ID ${anthologyId} not found`);
+    }
+
+    return productionInfo;
+  }
+
+  async update(id: number, updateProductionInfoDto: UpdateProductionInfoDto): Promise<ProductionInfo> {
+    const productionInfo = await this.productionInfoRepository.findOne({
+      where: { id },
+      relations: ['anthology'],
+    });
+
+    if (!productionInfo) {
+      throw new NotFoundException(`Production info with ID ${id} not found`);
+    }
+
+    if (updateProductionInfoDto.anthology_id) {
+       const anthology = await this.anthologyRepository.findOne({
+        where: { id: updateProductionInfoDto.anthology_id },
+      });
+
+      if (!anthology) {
+        throw new NotFoundException(`Anthology with ID ${updateProductionInfoDto.anthology_id} not found`);
+      }
+      productionInfo.anthology = anthology;
+    }
+
+    Object.assign(productionInfo, updateProductionInfoDto);
+    
+    return this.productionInfoRepository.save(productionInfo);
   }
 }
