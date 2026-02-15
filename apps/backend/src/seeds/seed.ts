@@ -1,6 +1,67 @@
+import { DeepPartial, Repository } from 'typeorm';
 import dataSource from '../data-source';
 import { Discipline } from '../disciplines/disciplines.entity';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
+import { Application } from '../applications/application.entity';
+import {
+  AppStatus,
+  ExperienceType,
+  InterestArea,
+  School,
+  DaysOfTheWeek,
+  ApplicantType,
+} from '../applications/types';
+import { LearnerInfo } from '../learner-info/learner-info.entity';
+import { VolunteerInfo } from '../volunteer-info/volunteer-info.entity';
+
+const APPLICATION_SEED = [
+  {
+    email: 'jane.doe@example.com',
+    discipline: DISCIPLINE_VALUES.Nursing,
+    appStatus: AppStatus.APP_SUBMITTED,
+    daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.WEDNESDAY],
+    experienceType: ExperienceType.RN,
+    fileUploads: [] as string[],
+    interest: InterestArea.NURSING,
+    license: 'RN-12345',
+    phone: '555-123-4567',
+    applicantType: ApplicantType.VOLUNTEER,
+    school: School.OTHER,
+    referred: false,
+    weeklyHours: 15,
+  },
+  {
+    email: 'john.smith@example.com',
+    discipline: DISCIPLINE_VALUES.MD,
+    appStatus: AppStatus.IN_REVIEW,
+    daysAvailable: [DaysOfTheWeek.TUESDAY, DaysOfTheWeek.THURSDAY],
+    experienceType: ExperienceType.MD,
+    fileUploads: [] as string[],
+    interest: InterestArea.HARM_REDUCTION,
+    license: 'MD-67890',
+    phone: '555-234-5678',
+    applicantType: ApplicantType.LEARNER,
+    school: School.HARVARD_MEDICAL_SCHOOL,
+    referred: true,
+    referredEmail: 'referrer@example.com',
+    weeklyHours: 20,
+  },
+  {
+    email: 'maria.garcia@example.com',
+    discipline: DISCIPLINE_VALUES.PublicHealth,
+    appStatus: AppStatus.ACCEPTED,
+    daysAvailable: [DaysOfTheWeek.FRIDAY],
+    experienceType: ExperienceType.MS,
+    fileUploads: [] as string[],
+    interest: InterestArea.WOMENS_HEALTH,
+    license: 'PH-11111',
+    phone: '555-345-6789',
+    applicantType: ApplicantType.VOLUNTEER,
+    school: School.STANFORD_MEDICINE,
+    referred: false,
+    weeklyHours: 10,
+  },
+];
 
 async function seed() {
   try {
@@ -20,13 +81,50 @@ async function seed() {
 
     // Create disciplines using enum values
     console.log('📚 Creating disciplines...');
-    const disciplines = await dataSource.getRepository(Discipline).save(
+    await dataSource.getRepository(Discipline).save(
       Object.values(DISCIPLINE_VALUES).map((name) => ({
         name,
         admin_ids: [],
       })),
     );
-    console.log(`✅ Created ${disciplines.length} disciplines`);
+    console.log('✅ Disciplines created');
+
+    // Create application test data
+    console.log('📋 Creating applications...');
+    const applicationRepo: Repository<Application> =
+      dataSource.getRepository(Application);
+    const applications = await applicationRepo.save(
+      APPLICATION_SEED as DeepPartial<Application>[],
+    );
+    console.log(`✅ Created ${applications.length} applications`);
+
+    // Create learner_info for the learner application (john.smith)
+    const learnerApp = applications.find(
+      (a) => a.email === 'john.smith@example.com',
+    );
+    if (learnerApp) {
+      await dataSource.getRepository(LearnerInfo).save({
+        appId: learnerApp.appId,
+        school: School.HARVARD_MEDICAL_SCHOOL,
+      });
+      console.log('✅ Created learner_info for 1 application');
+    }
+
+    // Create volunteer_info for volunteer applications
+    const volunteerAppIds = applications
+      .filter((a) => a.applicantType === ApplicantType.VOLUNTEER)
+      .map((a) => a.appId);
+    if (volunteerAppIds.length > 0) {
+      await dataSource.getRepository(VolunteerInfo).save(
+        volunteerAppIds.map((appId) => ({
+          appId,
+          license: 'Volunteer-License',
+        })),
+      );
+      console.log(
+        `✅ Created volunteer_info for ${volunteerAppIds.length} applications`,
+      );
+    }
 
     console.log('🎉 Database seed completed successfully!');
   } catch (error) {
