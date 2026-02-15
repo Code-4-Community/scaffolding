@@ -9,7 +9,8 @@ import { InventoryHoldingModule } from './inventory-holding/inventory-holding.mo
 import AppDataSource from './data-source';
 import { ProductionInfoModule } from './production-info/production-info.module';
 import { StoryModule } from './story/story.module';
-//import {StoryDraftModule} from "./storydra"
+import { OmchaiModule } from './omchai/omchai.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,9 +18,10 @@ import { StoryModule } from './story/story.module';
     AuthorModule,
     InventoryModule,
     InventoryHoldingModule,
-    StoryModule,
-    //StoryDraftModule,
     ProductionInfoModule,
+    StoryModule,
+    OmchaiModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

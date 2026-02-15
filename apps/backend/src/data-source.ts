@@ -6,7 +6,8 @@ import { Author } from './author/author.entity';
 import { Inventory } from './inventory/inventory.entity';
 import { InventoryHolding } from './inventory-holding/inventory-holding.entity';
 import { Story } from './story/story.entity';
-//import { StoryDraft } from './story-draft/story-draft.entity';
+import { Omchai } from './omchai/omchai.entity';
+import { User } from './users/user.entity';
 import { ProductionInfo } from './production-info/production-info.entity';
 
 dotenv.config();
@@ -23,9 +24,10 @@ const AppDataSource = new DataSource({
     Author,
     Inventory,
     InventoryHolding,
-    Story,
-    //StoryDraft,
     ProductionInfo,
+    Story,
+    Omchai,
+    User,
   ],
   migrations: ['apps/backend/src/migrations/*.js'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
