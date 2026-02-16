@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { volunteerInfoController } from './volunteer-info.controller';
+import { VolunteerInfoController } from './volunteer-info.controller';
 import { VolunteerInfoService } from './volunteer-info.service';
 import { VolunteerInfo } from './volunteer-info.entity';
 import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto';
 import { BadRequestException } from '@nestjs/common';
 
-describe('volunteerInfoController', () => {
-  let controller: volunteerInfoController;
+describe('VolunteerInfoController', () => {
+  let controller: VolunteerInfoController;
 
   const mockVolunteerInfoService = {
     create: jest.fn(),
@@ -15,7 +15,7 @@ describe('volunteerInfoController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [volunteerInfoController],
+      controllers: [VolunteerInfoController],
       providers: [
         {
           provide: VolunteerInfoService,
@@ -28,7 +28,7 @@ describe('volunteerInfoController', () => {
       ],
     }).compile();
 
-    controller = module.get<volunteerInfoController>(volunteerInfoController);
+    controller = module.get<VolunteerInfoController>(VolunteerInfoController);
   });
 
   afterEach(() => {
