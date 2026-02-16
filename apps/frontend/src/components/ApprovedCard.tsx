@@ -8,12 +8,12 @@ interface ApprovedCardProps {
   icon: React.ReactNode;
 }
 
-export const ApprovedCard: React.FC<ApprovedCardProps> = ({
+export function ApprovedCard({
   title,
   count,
   description,
   icon,
-}) => {
+}: ApprovedCardProps) {
   return (
     <Box
       borderWidth="2px"
@@ -61,4 +61,4 @@ export const ApprovedCard: React.FC<ApprovedCardProps> = ({
       </Text>
     </Box>
   );
-};
+}

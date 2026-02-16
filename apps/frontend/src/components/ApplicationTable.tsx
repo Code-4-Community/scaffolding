@@ -62,9 +62,7 @@ interface ApplicationTableProps {
   searchQuery?: string;
 }
 
-export const ApplicationTable: React.FC<ApplicationTableProps> = ({
-  searchQuery = '',
-}) => {
+export function ApplicationTable({ searchQuery = '' }: ApplicationTableProps) {
   const filteredApplications = APPLICATIONS.filter((application) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -106,6 +104,6 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
       </Table.Body>
     </Table.Root>
   );
-};
+}
 
 export default ApplicationTable;

@@ -8,7 +8,7 @@ import checkmarkIcon from '../assets/icons/checkmark.svg';
 import { Box } from '@chakra-ui/react';
 import { useState } from 'react';
 import PageTransitionButton from '@components/PageTransitionButton';
-import Searchbar from '@components/Searchbar';
+import Searchbar from '@components/TableSearchBar';
 import PageCounter from '@components/PageCounter';
 import ApplicationTable from '@components/ApplicationTable';
 
