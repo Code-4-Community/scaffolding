@@ -4,9 +4,8 @@ export class CreateAdminsTable1771176005881 implements MigrationInterface {
   name = 'CreateAdminsTable1771176005881';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Create the discipline enum type
     await queryRunner.query(`
-        CREATE TYPE "admins_discipline_enum" AS ENUM (
+        DO $$ BEGIN CREATE TYPE "admins_discipline_enum" AS ENUM (
           'MD/Medical Student/Pre-Med',
           'Medical NP/PA',
           'Psychiatry or Psychiatric NP/PA',
@@ -14,7 +13,7 @@ export class CreateAdminsTable1771176005881 implements MigrationInterface {
           'RN',
           'Social Work',
           'Other'
-        )
+        ); EXCEPTION WHEN duplicate_object THEN null; END $$
       `);
 
     await queryRunner.createTable(

@@ -1,0 +1,66 @@
+IMPORT THIS:
+
+'''
+import { Admin } from '../users/admin.entity';
+import { User } from '../users/user.entity';
+import { Status } from '../users/types';
+'''
+
+Put this after where the applications are created/seeded
+'''
+const adminRepo = dataSource.getRepository(Admin);
+    const userRepo = dataSource.getRepository(User);
+
+    // Clear existing data
+    await adminRepo.clear();
+    await userRepo.clear();
+
+    // Seed Admins
+    const admins = await adminRepo.save([
+      {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@northeastern.edu',
+        discipline: DISCIPLINE_VALUES.RN,
+      },
+      {
+        firstName: 'John',
+        lastName: 'Smith',
+        email: 'john.smith@northeastern.edu',
+        discipline: DISCIPLINE_VALUES.PublicHealth,
+      },
+      {
+        firstName: 'Alice',
+        lastName: 'Johnson',
+        email: 'alice.johnson@northeastern.edu',
+        discipline: DISCIPLINE_VALUES.SocialWork,
+      },
+    ]);
+    console.log(`✅ Seeded ${admins.length} admins`);
+
+    // Seed Users
+    const users = await userRepo.save([
+      {
+        appId: 1,
+        status: Status.ADMIN,
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@northeastern.edu',
+      },
+      {
+        appId: 2,
+        status: Status.STANDARD,
+        firstName: 'John',
+        lastName: 'Smith',
+        email: 'john.smith@northeastern.edu',
+      },
+      {
+        appId: 3,
+        status: Status.STANDARD,
+        firstName: 'Bob',
+        lastName: 'Wilson',
+        email: 'bob.wilson@northeastern.edu',
+      },
+    ]);
+    console.log(`✅ Seeded ${users.length} users`);
+'''
