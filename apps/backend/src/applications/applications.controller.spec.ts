@@ -28,7 +28,7 @@ const mockApplication: Application = {
   daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
   experienceType: ExperienceType.BS,
   fileUploads: [],
-  interest: InterestArea.NURSING,
+  interest: [InterestArea.NURSING],
   license: null,
   applicantType: ApplicantType.LEARNER,
   phone: '123-456-7890',
