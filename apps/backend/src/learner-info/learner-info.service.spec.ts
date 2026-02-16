@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
-import { ExperienceType, InterestArea, School } from './types';
+import { School } from './types';
 import { NotFoundException } from '@nestjs/common';
 
 describe('LearnerInfoService', () => {
@@ -49,6 +49,8 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       mockRepository.save.mockResolvedValue(LearnerInfo);
@@ -66,6 +68,8 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       await expect(service.create(LearnerInfo)).rejects.toThrow(
@@ -77,6 +81,8 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: -1,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       mockRepository.save.mockResolvedValue(LearnerInfo);
@@ -89,6 +95,8 @@ describe('LearnerInfoService', () => {
       const LearnerInfo: LearnerInfo = {
         appId: 1,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       mockRepository.findOne.mockResolvedValue(LearnerInfo);

@@ -46,6 +46,9 @@ describe('LearnerInfoController', () => {
       const createLearnerInfo: CreateLearnerInfoDto = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        schoolDepartment: 'Infectious Diseases',
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       mockLearnerInfoService.create.mockResolvedValue(
@@ -69,6 +72,8 @@ describe('LearnerInfoController', () => {
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       await expect(
@@ -80,6 +85,8 @@ describe('LearnerInfoController', () => {
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: -1,
         school: School.HARVARD_MEDICAL_SCHOOL,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       mockLearnerInfoService.create.mockRejectedValue(

@@ -8,7 +8,6 @@ import {
   ExperienceType,
   InterestArea,
   School,
-  DaysOfTheWeek,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -25,19 +24,31 @@ const mockApplicationsService: Partial<ApplicationsService> = {
 const mockApplication: Application = {
   appId: 1,
   appStatus: AppStatus.APP_SUBMITTED,
-  daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+  mondayAvailability: '12pm and on every other week',
+  tuesdayAvailability: 'approximately 10am-3pm',
+  wednesdayAvailability: 'no availability',
+  thursdayAvailability: 'maybe before 10am',
+  fridayAvailability: 'Sometime between 4-6',
+  saturdayAvailability: 'no availability',
   experienceType: ExperienceType.BS,
-  fileUploads: [],
-  interest: [InterestArea.NURSING],
-  license: null,
+  interest: [InterestArea.WOMENS_HEALTH],
+  license: 'n/a',
   applicantType: ApplicantType.LEARNER,
   phone: '123-456-7890',
   school: School.HARVARD_MEDICAL_SCHOOL,
   email: 'test@example.com',
-  discipline: DISCIPLINE_VALUES.Nursing,
+  discipline: DISCIPLINE_VALUES.RN,
   referred: false,
-  referredEmail: null,
   weeklyHours: 20,
+  pronouns: 'they/them',
+  nonEnglishLangs: 'some french, native spanish speaker',
+  desiredExperience:
+    'I want to give back to the boston community and learn to talk better with patients',
+  resume: 'janedoe_resume_2_6_2026.pdf',
+  coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+  emergencyContactName: 'Jane Doe',
+  emergencyContactPhone: '111-111-1111',
+  emergencyContactRelationship: 'Mother',
 };
 
 describe('ApplicationsController', () => {
@@ -81,13 +92,13 @@ describe('ApplicationsController', () => {
         .mockResolvedValue(mockApplications);
 
       const result = await controller.getApplicationsByDiscipline(
-        DISCIPLINE_VALUES.Nursing,
+        DISCIPLINE_VALUES.RN,
         {},
       );
 
       expect(result).toEqual(mockApplications);
       expect(mockApplicationsService.findByDiscipline).toHaveBeenCalledWith(
-        DISCIPLINE_VALUES.Nursing,
+        DISCIPLINE_VALUES.RN,
       );
     });
 
@@ -97,13 +108,13 @@ describe('ApplicationsController', () => {
         .mockResolvedValue([]);
 
       const result = await controller.getApplicationsByDiscipline(
-        DISCIPLINE_VALUES.MD,
+        DISCIPLINE_VALUES.RN,
         {},
       );
 
       expect(result).toEqual([]);
       expect(mockApplicationsService.findByDiscipline).toHaveBeenCalledWith(
-        DISCIPLINE_VALUES.MD,
+        DISCIPLINE_VALUES.RN,
       );
     });
 
@@ -134,11 +145,11 @@ describe('ApplicationsController', () => {
         .mockRejectedValue(new Error(errorMessage));
 
       await expect(
-        controller.getApplicationsByDiscipline(DISCIPLINE_VALUES.Nursing, {}),
+        controller.getApplicationsByDiscipline(DISCIPLINE_VALUES.RN, {}),
       ).rejects.toThrow(errorMessage);
 
       expect(mockApplicationsService.findByDiscipline).toHaveBeenCalledWith(
-        DISCIPLINE_VALUES.Nursing,
+        DISCIPLINE_VALUES.RN,
       );
     });
 
@@ -156,6 +167,92 @@ describe('ApplicationsController', () => {
           discipline,
         );
       }
+    });
+  });
+
+  /**
+   * Tests for PATCH /:appId/discipline (updateApplicationDiscipline).
+   * Verifies that the controller delegates to the service and returns or throws as documented.
+   */
+  describe('updateApplicationDiscipline', () => {
+    /**
+     * When the service returns an updated application, the controller should return that same application.
+     */
+    it('should return the updated application when discipline is updated successfully', async () => {
+      const updateDisciplineDto = {
+        discipline: DISCIPLINE_VALUES.PublicHealth,
+      };
+      const updatedApplication: Application = {
+        ...mockApplication,
+        discipline: DISCIPLINE_VALUES.PublicHealth,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'update')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationDiscipline(
+        1,
+        updateDisciplineDto,
+        {},
+      );
+
+      expect(result).toEqual(updatedApplication);
+      expect(mockApplicationsService.update).toHaveBeenCalledWith(1, {
+        discipline: DISCIPLINE_VALUES.PublicHealth,
+      });
+    });
+
+    /**
+     * The returned application's discipline field must equal the discipline sent in the request (discipline is changeable).
+     */
+    it('should return an application whose discipline field equals the requested discipline', async () => {
+      const requestedDiscipline = DISCIPLINE_VALUES.PublicHealth;
+      const updateDisciplineDto = { discipline: requestedDiscipline };
+      const updatedApplication: Application = {
+        ...mockApplication,
+        discipline: requestedDiscipline,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'update')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationDiscipline(
+        1,
+        updateDisciplineDto,
+        {},
+      );
+
+      expect(result.discipline).toBe(requestedDiscipline);
+      expect(result.discipline).not.toBe(mockApplication.discipline);
+    });
+
+    /**
+     * The controller should call the service with the application id and the discipline from the DTO.
+     */
+    it('should call the service with the correct appId and discipline', async () => {
+      const appId = 42;
+      const updateDisciplineDto = { discipline: DISCIPLINE_VALUES.RN };
+      const updatedApplication: Application = {
+        ...mockApplication,
+        appId,
+        discipline: DISCIPLINE_VALUES.RN,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'update')
+        .mockResolvedValue(updatedApplication);
+
+      await controller.updateApplicationDiscipline(
+        appId,
+        updateDisciplineDto,
+        {},
+      );
+
+      expect(mockApplicationsService.update).toHaveBeenCalledWith(appId, {
+        discipline: DISCIPLINE_VALUES.RN,
+      });
     });
   });
 });
