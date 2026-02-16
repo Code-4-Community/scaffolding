@@ -13,6 +13,24 @@ import {
 } from '../applications/types';
 import { LearnerInfo } from '../learner-info/learner-info.entity';
 import { VolunteerInfo } from '../volunteer-info/volunteer-info.entity';
+import { Applicant } from '../applicants/applicant.entity';
+
+const APPLICANT_SEED = [
+  {
+    appId: 1,
+    firstName: 'Jane',
+    lastName: 'Doe',
+    startDate: '2024-01-01',
+    endDate: '2024-06-30',
+  },
+  {
+    appId: 2,
+    firstName: 'John',
+    lastName: 'Smith',
+    startDate: '2026-01-01',
+    endDate: '2026-06-30',
+  },
+];
 
 const APPLICATION_SEED = [
   {
@@ -99,6 +117,7 @@ async function seed() {
     console.log(`✅ Created ${applications.length} applications`);
 
     // Create learner_info for the learner application (john.smith)
+    console.log('📋 Creating learner infos...');
     const learnerApp = applications.find(
       (a) => a.email === 'john.smith@example.com',
     );
@@ -111,6 +130,7 @@ async function seed() {
     }
 
     // Create volunteer_info for volunteer applications
+    console.log('📋 Creating volunteer infos...');
     const volunteerAppIds = applications
       .filter((a) => a.applicantType === ApplicantType.VOLUNTEER)
       .map((a) => a.appId);
@@ -125,6 +145,15 @@ async function seed() {
         `✅ Created volunteer_info for ${volunteerAppIds.length} applications`,
       );
     }
+
+    // Create applicant test data
+    console.log('📋 Creating applicants...');
+    const applicantRepo: Repository<Applicant> =
+      dataSource.getRepository(Applicant);
+    const applicants = await applicantRepo.save(
+      APPLICANT_SEED as DeepPartial<Applicant>[],
+    );
+    console.log(`✅ Created ${applicants.length} applicants`);
 
     console.log('🎉 Database seed completed successfully!');
   } catch (error) {
