@@ -3,8 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Story } from './story.entity';
-import { AnthologyService } from '../anthology/anthology.service';
-import { Anthology } from '../anthology/anthology.entity';
 
 @Injectable()
 export class StoryService {
@@ -74,8 +72,8 @@ export class StoryService {
       description,
       genre,
       theme,
-      author: { id: authorId },
-      anthology: { id: anthologyId },
+      authorId,
+      anthologyId,
     });
 
     await this.repo.save(story);

@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   UseGuards,
   UseInterceptors,
+  NotFoundException,
 } from '@nestjs/common';
 import { AnthologyService } from './anthology.service';
 import { Anthology } from './anthology.entity';
@@ -21,11 +22,17 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class AnthologyController {
   constructor(private readonly anthologyService: AnthologyService) {}
 
-  @Get('/:id')
+  @Get(':id')
   async getAnthology(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Anthology> {
-    return this.anthologyService.findOne(id);
+    const anthology = await this.anthologyService.findOne(id);
+
+    if (!anthology) {
+      throw new NotFoundException(`Anthology with ID ${id} not found`);
+    }
+
+    return anthology;
   }
 
   @Get()

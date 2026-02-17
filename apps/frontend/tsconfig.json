@@ -6,7 +6,6 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "types": ["vite/client", "vitest"],
-    "baseUrl": "src",
     "paths": {
       "@api/*": ["api/*"],
       "@components/*": ["components/*"],
