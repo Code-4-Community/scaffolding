@@ -23,6 +23,7 @@ import { DisciplinesModule } from './disciplines/disciplines.module';
     }),
     TypeOrmModule.forRoot({
       ...AppDataSource.options,
+      migrations: [], // Don't load migrations when server starts - only load them when running migration commands (i had to add this to get the server to run without errors)
     }),
     UtilModule,
     AdminsModule,

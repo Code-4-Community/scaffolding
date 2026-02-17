@@ -29,74 +29,32 @@ export class Init1754254886189 implements MigrationInterface {
       `CREATE TYPE "public"."interest_area_enum" AS ENUM('Nursing', 'HarmReduction', 'WomensHealth')`,
     );
 
-    // Use Site enum values dynamically
-    const siteValues = Object.values(Site)
-      .map((site) => `'${site}'`)
-      .join(', ');
     await queryRunner.query(
-      `CREATE TYPE "public"."admins_site_enum" AS ENUM(${siteValues})`,
+      `CREATE TYPE "public"."admins_discipline_enum" AS ENUM('MD/Medical Student/Pre-Med', 'Medical NP/PA', 'Psychiatry or Psychiatric NP/PA', 'Public Health', 'RN', 'Social Work', 'Other')`,
     );
-
     await queryRunner.query(
-      `CREATE TABLE "admin" (
-                "id" SERIAL NOT NULL, 
-                "name" character varying NOT NULL, 
-                "email" character varying NOT NULL UNIQUE, 
-                CONSTRAINT "PK_admin_id" PRIMARY KEY ("id")
-            )`,
+      `CREATE TYPE "public"."application_discipline_enum" AS ENUM('MD/Medical Student/Pre-Med', 'Medical NP/PA', 'Psychiatry or Psychiatric NP/PA', 'Public Health', 'RN', 'Social Work', 'Other')`,
     );
-
     await queryRunner.query(
-      `CREATE TABLE "admins" (
-            "id" SERIAL NOT NULL, 
-            "name" character varying NOT NULL, 
-            "email" character varying NOT NULL UNIQUE,
-            "site" "public"."admins_site_enum" NOT NULL,
-            "createdAt" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            "updatedAt" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            CONSTRAINT "PK_admins_id" PRIMARY KEY ("id")
-        )`,
+      `CREATE TYPE "public"."application_appstatus_enum" AS ENUM('App submitted', 'In review', 'Forms sent', 'Accepted', 'No Availability', 'Declined', 'Active', 'Inactive')`,
     );
-
     await queryRunner.query(
-      `CREATE TABLE "discipline" (
-                "id" SERIAL NOT NULL, 
-                "name" character varying NOT NULL, 
-                "admin_ids" integer[] NOT NULL DEFAULT '{}', 
-                CONSTRAINT "PK_discipline_id" PRIMARY KEY ("id")
-            )`,
+      `CREATE TYPE "public"."application_experiencetype_enum" AS ENUM('BS', 'MS', 'PhD', 'MD', 'MD PhD', 'RN', 'NP', 'PA', 'Other')`,
     );
-
     await queryRunner.query(
-      `CREATE TABLE "application" (
-                "appId" SERIAL NOT NULL, 
-                "phone" character varying NOT NULL, 
-                "school" "public"."school_enum" NOT NULL, 
-                "daysAvailable" character varying NOT NULL, 
-                "weeklyHours" integer NOT NULL, 
-                "experienceType" "public"."experience_type_enum" NOT NULL, 
-                "interest" "public"."interest_area_enum" NOT NULL, 
-                "license" character varying NOT NULL, 
-                "appStatus" "public"."app_status_enum" NOT NULL DEFAULT 'App submitted', 
-                "isInternational" boolean NOT NULL DEFAULT false, 
-                "isLearner" boolean NOT NULL DEFAULT false, 
-                "referredEmail" character varying, 
-                "referred" boolean DEFAULT false, 
-                "fileUploads" text[] NOT NULL DEFAULT '{}', 
-                CONSTRAINT "PK_application_appId" PRIMARY KEY ("appId")
-            )`,
+      `CREATE TYPE "public"."application_interest_enum" AS ENUM('Women''s Health', 'Medical Respite/Inpatient', 'Street Medicine', 'Addiction Medicine', 'Primary Care', 'Behavioral Health', 'Veterans Services', 'Family and Youth Services', 'Hep C Care', 'HIV Services', 'Case Management', 'Dental')`,
     );
-
     await queryRunner.query(
-      `CREATE TABLE "learner" (
-                "id" SERIAL NOT NULL, 
-                "app_id" integer NOT NULL, 
-                "name" character varying NOT NULL, 
-                "startDate" DATE NOT NULL, 
-                "endDate" DATE NOT NULL, 
-                CONSTRAINT "PK_learner_id" PRIMARY KEY ("id"),
-                CONSTRAINT "FK_learner_app_id" FOREIGN KEY ("app_id") REFERENCES "application"("appId") ON DELETE CASCADE
-            )`,
+      `CREATE TYPE "public"."application_applicanttype_enum" AS ENUM('Learner', 'Volunteer')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."application_school_enum" AS ENUM('Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', 'Mayo Clinic', 'Other')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."discipline_name_enum" AS ENUM('MD/Medical Student/Pre-Med', 'Medical NP/PA', 'Psychiatry or Psychiatric NP/PA', 'Public Health', 'RN', 'Social Work', 'Other')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."learner_info_school_enum" AS ENUM('Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', 'Mayo Clinic', 'Other')`,
     );
   }
 

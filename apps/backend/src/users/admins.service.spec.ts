@@ -25,7 +25,7 @@ describe('AdminsService', () => {
     firstName: 'John',
     lastName: 'Doe',
     email: 'john@example.com',
-    discipline: DISCIPLINE_VALUES.Nursing,
+    discipline: DISCIPLINE_VALUES.RN,
     createdAt: new Date('2025-01-01'),
     updatedAt: new Date('2025-01-01'),
   };
@@ -55,7 +55,7 @@ describe('AdminsService', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockReturnValue(mockAdmin);
@@ -73,7 +73,7 @@ describe('AdminsService', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockReturnValue(mockAdmin);
@@ -88,7 +88,7 @@ describe('AdminsService', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockImplementationOnce(() => {
@@ -105,7 +105,7 @@ describe('AdminsService', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockReturnValue(mockAdmin);

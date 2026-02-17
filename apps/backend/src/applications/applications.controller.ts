@@ -15,7 +15,7 @@ import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
-import { UpdateApplicationInterestDto } from './dto/update-application-interest.request.dto';
+import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
@@ -107,22 +107,23 @@ export class ApplicationsController {
   }
 
   /**
-   * Exposes an endpoint to update the applicant's interest in their application.
+   * Exposes an endpoint to update the application's discipline.
    * @param appId The id of the application to modify.
-   * @param updateInterestDto Object containing the desired new interest.
+   * @param updateDisciplineDto Object containing the desired new discipline (must be a valid DISCIPLINE_VALUES enum value).
+   * @param req The request object from the caller (frontend). Currently not used.
    * @returns The updated application object.
    * @throws {NotFoundException} with message 'Application with ID <id> not found'
    *         if the application does not exist.
    * @throws {Error} which is unchanged from what repository throws.
    */
-  @Patch('/:appId/interest')
-  async updateApplicationInterest(
+  @Patch('/:appId/discipline')
+  async updateApplicationDiscipline(
     @Param('appId', ParseIntPipe) appId: number,
-    @Body() updateInterestDto: UpdateApplicationInterestDto,
+    @Body() updateDisciplineDto: UpdateApplicationDisciplineDto,
     @Request() req,
   ): Promise<Application> {
     return await this.applicationsService.update(appId, {
-      interest: updateInterestDto.interest,
+      discipline: updateDisciplineDto.discipline,
     });
   }
 

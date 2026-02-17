@@ -1,0 +1,162 @@
+{
+    "info": {
+        "name": "Applications API",
+        "description": "Collection for testing Application endpoints",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get All Applications",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/api/applications",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "applications"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Application by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/api/applications/1",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "applications",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Application",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"email\": \"test.applicant@example.com\",\n  \"discipline\": \"Nursing\",\n  \"appStatus\": \"App submitted\",\n  \"daysAvailable\": [\"Monday\", \"Wednesday\", \"Friday\"],\n  \"experienceType\": \"BS\",\n  \"fileUploads\": [\"resume.pdf\", \"transcript.pdf\"],\n  \"interest\": \"Nursing\",\n  \"license\": \"RN-12345\",\n  \"phone\": \"555-123-4567\",\n  \"applicantType\": \"Learner\",\n  \"school\": \"Harvard Medical School\",\n  \"referred\": false,\n  \"weeklyHours\": 20\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/applications",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "applications"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Application Status",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"appStatus\": \"In review\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/applications/1/status",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "applications",
+                        "1",
+                        "status"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Application Interest",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"interest\": \"HarmReduction\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/applications/1/interest",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "applications",
+                        "1",
+                        "interest"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Application",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/api/applications/1",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "applications",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
