@@ -8,6 +8,7 @@ import { InventoryHolding } from './inventory-holding/inventory-holding.entity';
 import { Story } from './story/story.entity';
 import { Omchai } from './omchai/omchai.entity';
 import { User } from './users/user.entity';
+import { ProductionInfo } from './production-info/production-info.entity';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ const AppDataSource = new DataSource({
     Author,
     Inventory,
     InventoryHolding,
+    ProductionInfo,
     Story,
     Omchai,
     User,

@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
 
 @Entity()
@@ -15,6 +9,6 @@ export class Inventory {
   @Column()
   name: string;
 
-  @OneToMany(() => InventoryHolding, (ih) => ih.inventory)
+  @OneToMany(() => InventoryHolding, (holding) => holding.inventory)
   holdings: InventoryHolding[];
 }

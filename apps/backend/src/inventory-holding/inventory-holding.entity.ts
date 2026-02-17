@@ -7,11 +7,11 @@ export class InventoryHolding {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Anthology, (anthology) => anthology.holdings)
-  anthology: Anthology;
+  @Column()
+  inventory_id: number;
 
-  @ManyToOne(() => Inventory, (inventory) => inventory.holdings)
-  inventory: Inventory;
+  @Column()
+  anthology_id: number;
 
   @Column()
   num_copies: number;
