@@ -1,5 +1,11 @@
-import { IsString, IsNotEmpty, IsDefined, Matches } from 'class-validator';
-import { PrimaryColumn } from 'typeorm';
+import {
+  IsString,
+  IsNotEmpty,
+  IsDefined,
+  Matches,
+  IsInt,
+  IsPositive,
+} from 'class-validator';
 
 /**
  * Defines the expected shape of data for creating a applicant.
@@ -10,7 +16,9 @@ export class CreateApplicantDto {
   /**
    * Corresponding application id number.
    */
-  @PrimaryColumn()
+  @IsInt()
+  @IsPositive()
+  @IsDefined()
   appId: number;
 
   /**

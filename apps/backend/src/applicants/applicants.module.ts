@@ -3,19 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApplicantsController } from './applicants.controller';
 import { ApplicantsService } from './applicants.service';
 import { Applicant } from './applicant.entity';
-import { JwtStrategy } from '../auth/jwt.strategy';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
-import { AuthService } from '../auth/auth.service';
+import { UsersModule } from '../users/users.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Applicant])],
+  imports: [TypeOrmModule.forFeature([Applicant]), UsersModule, AuthModule],
   controllers: [ApplicantsController],
-  providers: [
-    ApplicantsService,
-    AuthService,
-    JwtStrategy,
-    CurrentUserInterceptor,
-  ],
+  providers: [ApplicantsService, CurrentUserInterceptor],
   exports: [ApplicantsService],
 })
 export class ApplicantsModule {}
