@@ -56,6 +56,15 @@ export class Init1754254886189 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TYPE "public"."learner_info_school_enum" AS ENUM('Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', 'Mayo Clinic', 'Other')`,
     );
+
+    await queryRunner.query(
+      `CREATE TABLE "discipline" (
+                "id" SERIAL NOT NULL, 
+                "name" character varying NOT NULL, 
+                "admin_ids" integer[] NOT NULL DEFAULT '{}', 
+                CONSTRAINT "PK_discipline_id" PRIMARY KEY ("id")
+            )`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

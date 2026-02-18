@@ -18,7 +18,7 @@ export class CreateApplicationTable1770300403706 implements MigrationInterface {
              "fridayAvailability" character varying NOT NULL,
              "saturdayAvailability" character varying NOT NULL,
              "experienceType" "public"."application_experiencetype_enum" NOT NULL,
-             "interest" "public"."application_interest_enum" NOT NULL,
+             "interest" "public"."application_interest_enum"[] NOT NULL,
              "license" character varying NOT NULL,
              "phone" character varying NOT NULL,
              "applicantType" "public"."application_applicanttype_enum" NOT NULL,

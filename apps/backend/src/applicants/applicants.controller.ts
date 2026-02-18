@@ -21,7 +21,7 @@ import { CreateApplicantDto } from './dto/applicant.dto';
  * about the app's applicants, including start and end dates.
  */
 @Controller('applicants')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(CurrentUserInterceptor)
 export class ApplicantsController {
   constructor(private applicantsService: ApplicantsService) {}

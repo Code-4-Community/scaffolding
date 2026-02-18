@@ -9,7 +9,7 @@ import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto'
  */
 @ApiTags('volunteerInfo')
 @Controller('volunteer_info')
-export class volunteerInfoController {
+export class VolunteerInfoController {
   constructor(private volunteerInfoService: VolunteerInfoService) {}
 
   /**

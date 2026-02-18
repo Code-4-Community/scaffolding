@@ -1,3 +1,4 @@
+import { DeepPartial, Repository } from 'typeorm';
 import dataSource from '../data-source';
 import { Discipline } from '../disciplines/disciplines.entity';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -9,6 +10,116 @@ import {
   School,
   ApplicantType,
 } from '../applications/types';
+import { LearnerInfo } from '../learner-info/learner-info.entity';
+import { VolunteerInfo } from '../volunteer-info/volunteer-info.entity';
+import { Applicant } from '../applicants/applicant.entity';
+
+const APPLICANT_SEED = [
+  {
+    appId: 1,
+    firstName: 'Jane',
+    lastName: 'Doe',
+    startDate: '2024-01-01',
+    endDate: '2024-06-30',
+  },
+  {
+    appId: 2,
+    firstName: 'John',
+    lastName: 'Smith',
+    startDate: '2026-01-01',
+    endDate: '2026-06-30',
+  },
+];
+
+const APPLICATION_SEED = [
+  {
+    appId: 1,
+    appStatus: AppStatus.APP_SUBMITTED,
+    mondayAvailability: '12pm and on every other week',
+    tuesdayAvailability: 'approximately 10am-3pm',
+    wednesdayAvailability: 'no availability',
+    thursdayAvailability: 'maybe before 10am',
+    fridayAvailability: 'Sometime between 4-6',
+    saturdayAvailability: 'no availability',
+    experienceType: ExperienceType.BS,
+    interest: [InterestArea.MEDICAL_RESPITE_INPATIENT],
+    license: 'n/a',
+    applicantType: ApplicantType.LEARNER,
+    phone: '123-456-7890',
+    school: School.HARVARD_MEDICAL_SCHOOL,
+    email: 'test@example.com',
+    discipline: DISCIPLINE_VALUES.RN,
+    referred: false,
+    weeklyHours: 20,
+    pronouns: 'she/her',
+    nonEnglishLangs: 'spoken chinese only',
+    desiredExperience:
+      'I want to give back to the boston community and learn to talk better with patients',
+    resume: 'janedoe_resume_2_6_2026.pdf',
+    coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+    emergencyContactName: 'Jane Doe',
+    emergencyContactPhone: '111-111-1111',
+    emergencyContactRelationship: 'Mother',
+  },
+  {
+    appId: 2,
+    appStatus: AppStatus.APP_SUBMITTED,
+    mondayAvailability: '12pm and on every other week',
+    tuesdayAvailability: 'approximately 10am-3pm',
+    wednesdayAvailability: 'no availability',
+    thursdayAvailability: 'maybe before 10am',
+    fridayAvailability: 'Sometime between 4-6',
+    saturdayAvailability: 'no availability',
+    experienceType: ExperienceType.BS,
+    interest: [InterestArea.MEDICAL_RESPITE_INPATIENT],
+    license: 'n/a',
+    applicantType: ApplicantType.LEARNER,
+    phone: '123-456-7890',
+    school: School.HARVARD_MEDICAL_SCHOOL,
+    email: 'test@example.com',
+    discipline: DISCIPLINE_VALUES.RN,
+    referred: false,
+    weeklyHours: 20,
+    pronouns: 'she/her',
+    nonEnglishLangs: 'spoken chinese only',
+    desiredExperience:
+      'I want to give back to the boston community and learn to talk better with patients',
+    resume: 'janedoe_resume_2_6_2026.pdf',
+    coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+    emergencyContactName: 'Jane Doe',
+    emergencyContactPhone: '111-111-1111',
+    emergencyContactRelationship: 'Mother',
+  },
+  {
+    appId: 3,
+    appStatus: AppStatus.APP_SUBMITTED,
+    mondayAvailability: '12pm and on every other week',
+    tuesdayAvailability: 'approximately 10am-3pm',
+    wednesdayAvailability: 'no availability',
+    thursdayAvailability: 'maybe before 10am',
+    fridayAvailability: 'Sometime between 4-6',
+    saturdayAvailability: 'no availability',
+    experienceType: ExperienceType.BS,
+    interest: [InterestArea.MEDICAL_RESPITE_INPATIENT],
+    license: 'n/a',
+    applicantType: ApplicantType.LEARNER,
+    phone: '123-456-7890',
+    school: School.HARVARD_MEDICAL_SCHOOL,
+    email: 'test@example.com',
+    discipline: DISCIPLINE_VALUES.RN,
+    referred: false,
+    weeklyHours: 20,
+    pronouns: 'she/her',
+    nonEnglishLangs: 'spoken chinese only',
+    desiredExperience:
+      'I want to give back to the boston community and learn to talk better with patients',
+    resume: 'janedoe_resume_2_6_2026.pdf',
+    coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+    emergencyContactName: 'Jane Doe',
+    emergencyContactPhone: '111-111-1111',
+    emergencyContactRelationship: 'Mother',
+  },
+];
 
 async function seed() {
   try {
@@ -23,13 +134,61 @@ async function seed() {
 
     // Create disciplines
     console.log('📚 Creating disciplines...');
-    const disciplines = await dataSource.getRepository(Discipline).save(
+    await dataSource.getRepository(Discipline).save(
       Object.values(DISCIPLINE_VALUES).map((name) => ({
         name,
         admin_ids: [],
       })),
     );
-    console.log(`✅ Created ${disciplines.length} disciplines`);
+    console.log('✅ Disciplines created');
+
+    // Create application test data
+    console.log('📋 Creating applications...');
+    const applicationRepo: Repository<Application> =
+      dataSource.getRepository(Application);
+    const applications = await applicationRepo.save(
+      APPLICATION_SEED as DeepPartial<Application>[],
+    );
+    console.log(`✅ Created ${applications.length} applications`);
+
+    // Create learner_info for the learner application (john.smith)
+    console.log('📋 Creating learner infos...');
+    const learnerApp = applications.find(
+      (a) => a.email === 'john.smith@example.com',
+    );
+    if (learnerApp) {
+      await dataSource.getRepository(LearnerInfo).save({
+        appId: learnerApp.appId,
+        school: School.HARVARD_MEDICAL_SCHOOL,
+      });
+      console.log('✅ Created learner_info for 1 application');
+    }
+
+    // Create volunteer_info for volunteer applications
+    console.log('📋 Creating volunteer infos...');
+    const volunteerAppIds = applications
+      .filter((a) => a.applicantType === ApplicantType.VOLUNTEER)
+      .map((a) => a.appId);
+    if (volunteerAppIds.length > 0) {
+      await dataSource.getRepository(VolunteerInfo).save(
+        volunteerAppIds.map((appId) => ({
+          appId,
+          license: 'Volunteer-License',
+        })),
+      );
+      console.log(
+        `✅ Created volunteer_info for ${volunteerAppIds.length} applications`,
+      );
+    }
+
+    // Create applicant test data
+    console.log('📋 Creating applicants...');
+    const applicantRepo: Repository<Applicant> =
+      dataSource.getRepository(Applicant);
+    const applicants = await applicantRepo.save(
+      APPLICANT_SEED as DeepPartial<Applicant>[],
+    );
+    console.log(`✅ Created ${applicants.length} applicants`);
 
     // TODO: UNcomment after the migration shape is updated.
     // Create test applications
@@ -74,7 +233,7 @@ async function seed() {
     //     experienceType: ExperienceType.MD,
     //     resume: 'jane_smith_resume.pdf',
     //     coverLetter: 'jane_smith_cover_letter.pdf',
-    //     interest: InterestArea.WOMENS_HEALTH,
+    //     interest: InterestArea.MEDICAL_RESPITE_INPATIENT,
     //     license: 'MD-67890',
     //     phone: '555-987-6543',
     //     applicantType: ApplicantType.VOLUNTEER,
