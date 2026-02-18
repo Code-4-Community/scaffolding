@@ -48,26 +48,6 @@ const Root: React.FC = () => {
           />
         </Box>
 
-        <Box pl="4" pt="6" mb="6">
-          <Flex gap="3" maxW="100%" flexWrap="nowrap">
-            <DocumentDownloadCard
-              variant="resume"
-              downloadUrl={undefined}
-              style={{ width: 'calc(33.333% - 8px)' }}
-            />
-            <DocumentDownloadCard
-              variant="coverLetter"
-              downloadUrl={undefined}
-              style={{ width: 'calc(33.333% - 8px)' }}
-            />
-            <DocumentDownloadCard
-              variant="syllabus"
-              downloadUrl={undefined}
-              style={{ width: 'calc(33.333% - 8px)' }}
-            />
-          </Flex>
-        </Box>
-
         <ApplicationTable />
       </Box>
     </div>
