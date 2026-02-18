@@ -1,11 +1,12 @@
 import DashboardCard from '@components/DashboardCard';
+import DocumentDownloadCard from '@components/DocumentDownloadCard';
 import NavBar from '@components/NavBar/NavBar';
 
 import usersIcon from '../assets/icons/users.svg';
 import clockIcon from '../assets/icons/clock.svg';
 import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import ApplicationTable from '@components/ApplicationTable';
 
 const Root: React.FC = () => {
@@ -46,6 +47,27 @@ const Root: React.FC = () => {
             icon={checkmarkIcon}
           />
         </Box>
+
+        <Box pl="4" pt="6" mb="6">
+          <Flex gap="3" maxW="100%" flexWrap="nowrap">
+            <DocumentDownloadCard
+              variant="resume"
+              downloadUrl={undefined}
+              style={{ width: 'calc(33.333% - 8px)' }}
+            />
+            <DocumentDownloadCard
+              variant="coverLetter"
+              downloadUrl={undefined}
+              style={{ width: 'calc(33.333% - 8px)' }}
+            />
+            <DocumentDownloadCard
+              variant="syllabus"
+              downloadUrl={undefined}
+              style={{ width: 'calc(33.333% - 8px)' }}
+            />
+          </Flex>
+        </Box>
+
         <ApplicationTable />
       </Box>
     </div>
