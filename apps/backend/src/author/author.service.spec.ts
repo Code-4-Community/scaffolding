@@ -3,16 +3,16 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { AuthorService } from './author.service';
 import { Author } from './author.entity';
+import {
+  mockAuthor1,
+  mockAuthor2,
+  mockCreateAuthor1Dto,
+} from './author.controller.spec';
+import { CreateAuthorDto } from './dtos/create-author.dto';
+import { EditAuthorDto } from './dtos/edit-author.dto';
 
 describe('AuthorService', () => {
   let service: AuthorService;
-
-  const mockAuthor: Author = {
-    id: 1,
-    name: 'Test Author',
-    bio: 'Test bio',
-    grade: 5,
-  };
 
   const mockRepository = {
     create: jest.fn(),
@@ -47,28 +47,31 @@ describe('AuthorService', () => {
 
   describe('create', () => {
     it('should create a new author', async () => {
-      const newAuthor: Author = {
-        id: 1,
-        name: 'New Author',
-        bio: 'New bio',
-        grade: 7,
-      };
-
       mockRepository.count.mockResolvedValue(0);
-      mockRepository.create.mockReturnValue(newAuthor);
-      mockRepository.save.mockResolvedValue(newAuthor);
+      mockRepository.create.mockResolvedValue({
+        ...mockCreateAuthor1Dto,
+        id: 1,
+      });
+      mockRepository.save.mockResolvedValue({
+        ...mockCreateAuthor1Dto,
+        id: 1,
+      });
 
-      const result = await service.create('New Author', 'New bio', 7);
+      const result = await service.create(mockCreateAuthor1Dto);
 
-      expect(result).toEqual(newAuthor);
+      expect(result).toEqual({
+        ...mockCreateAuthor1Dto,
+        id: 1,
+      });
       expect(mockRepository.count).toHaveBeenCalled();
       expect(mockRepository.create).toHaveBeenCalledWith({
+        ...mockCreateAuthor1Dto,
         id: 1,
-        name: 'New Author',
-        bio: 'New bio',
-        grade: 7,
       });
-      expect(mockRepository.save).toHaveBeenCalledWith(newAuthor);
+      expect(mockRepository.save).toHaveBeenCalledWith({
+        ...mockCreateAuthor1Dto,
+        id: 1,
+      });
     });
 
     it('should increment id based on count', async () => {
@@ -78,30 +81,33 @@ describe('AuthorService', () => {
         bio: 'Another bio',
         grade: 3,
       };
+      const createdDto: CreateAuthorDto = {
+        name: 'Another Author',
+        bio: 'Another bio',
+        grade: 3,
+      };
 
       mockRepository.count.mockResolvedValue(5);
       mockRepository.create.mockReturnValue(created);
       mockRepository.save.mockResolvedValue(created);
 
-      const result = await service.create('Another Author', 'Another bio', 3);
+      const result = await service.create(createdDto);
 
       expect(result).toEqual(created);
       expect(mockRepository.create).toHaveBeenCalledWith({
+        ...createdDto,
         id: 6,
-        name: 'Another Author',
-        bio: 'Another bio',
-        grade: 3,
       });
     });
   });
 
   describe('findOne', () => {
     it('should return author when found', async () => {
-      mockRepository.findOneBy.mockResolvedValue(mockAuthor);
+      mockRepository.findOneBy.mockResolvedValue(mockAuthor2);
 
       const result = await service.findOne(1);
 
-      expect(result).toEqual(mockAuthor);
+      expect(result).toEqual(mockAuthor2);
       expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
     });
 
@@ -124,10 +130,7 @@ describe('AuthorService', () => {
 
   describe('findAll', () => {
     it('should return authors', async () => {
-      const authors: Author[] = [
-        mockAuthor,
-        { ...mockAuthor, id: 2, name: 'Second Author' },
-      ];
+      const authors: Author[] = [mockAuthor1, mockAuthor2];
       mockRepository.find.mockResolvedValue(authors);
 
       const result = await service.findAll();
@@ -139,13 +142,15 @@ describe('AuthorService', () => {
 
   describe('update', () => {
     it('should update an author when found', async () => {
-      const existing: Author = { ...mockAuthor };
-      const updated: Author = { ...mockAuthor, bio: 'Updated bio' };
+      const existing: Author = { ...mockAuthor1 };
+      const updated: Author = { ...mockAuthor1, bio: 'Updated bio' };
 
       mockRepository.findOneBy.mockResolvedValue(existing);
       mockRepository.save.mockResolvedValue(updated);
 
-      const result = await service.update(1, { bio: 'Updated bio' });
+      const editAuthorDto: EditAuthorDto = { bio: 'Updated bio' };
+
+      const result = await service.update(1, editAuthorDto);
 
       expect(result).toEqual(updated);
       expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
@@ -168,14 +173,12 @@ describe('AuthorService', () => {
 
   describe('remove', () => {
     it('should remove author when found', async () => {
-      mockRepository.findOneBy.mockResolvedValue(mockAuthor);
-      mockRepository.remove.mockResolvedValue(mockAuthor);
+      mockRepository.findOneBy.mockResolvedValue(mockAuthor2);
+      mockRepository.remove.mockResolvedValue(mockAuthor2);
+      await service.remove(1);
 
-      const result = await service.remove(1);
-
-      expect(result).toEqual(mockAuthor);
       expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
-      expect(mockRepository.remove).toHaveBeenCalledWith(mockAuthor);
+      expect(mockRepository.remove).toHaveBeenCalledWith(mockAuthor2);
     });
 
     it('should throw NotFoundException when author not found', async () => {
