@@ -14,26 +14,26 @@ export class AnthologyService {
   async create(
     title: string,
     description: string,
-    published_year: number,
+    publishedDate: string,
     status: AnthologyStatus,
-    pub_level: AnthologyPubLevel,
+    pubLevel: AnthologyPubLevel,
     programs?: string[],
-    photo_url?: string,
+    photoUrl?: string,
     isbn?: string,
-    shopify_url?: string,
+    shopifyUrl?: string,
   ) {
     const anthologyId = (await this.repo.count()) + 1;
     const anthology = this.repo.create({
       id: anthologyId,
       title,
       description,
-      published_year,
+      publishedDate,
       status,
-      pub_level,
+      pubLevel,
       programs,
-      photo_url,
+      photoUrl,
       isbn,
-      shopify_url,
+      shopifyUrl,
     });
 
     return this.repo.save(anthology);
@@ -55,12 +55,12 @@ export class AnthologyService {
     return this.repo.find({ where: { status } });
   }
 
-  findByPubLevel(pub_level: AnthologyPubLevel) {
-    return this.repo.find({ where: { pub_level } });
+  findByPubLevel(pubLevel: AnthologyPubLevel) {
+    return this.repo.find({ where: { pubLevel } });
   }
 
-  findByYear(published_year: number) {
-    return this.repo.find({ where: { published_year } });
+  findByYear(publishedDate: Date) {
+    return this.repo.find({ where: { publishedDate } });
   }
 
   async update(id: number, attrs: Partial<Anthology>) {

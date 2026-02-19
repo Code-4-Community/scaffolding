@@ -25,26 +25,26 @@ export class Anthology {
   @Column()
   description: string;
 
-  @Column({ type: 'int' })
-  published_year: number;
+  @Column({ name: 'published_date', type: 'date' })
+  publishedDate: Date;
 
-  @Column('text', { nullable: true })
+  @Column({ type: 'simple-array', nullable: true })
   programs?: string[];
 
-  @Column()
+  @Column({ type: 'enum', enum: AnthologyStatus })
   status: AnthologyStatus;
 
-  @Column()
-  pub_level: AnthologyPubLevel;
+  @Column({ name: 'pub_level', type: 'enum', enum: AnthologyPubLevel })
+  pubLevel: AnthologyPubLevel;
 
-  @Column({ nullable: true })
-  photo_url: string;
+  @Column({ name: 'photo_url', nullable: true })
+  photoUrl: string;
 
   @Column({ nullable: true })
   isbn: string;
 
-  @Column({ nullable: true })
-  shopify_url: string;
+  @Column({ name: 'shopify_url', nullable: true })
+  shopifyUrl: string;
 
   @OneToMany(() => Story, (story) => story.anthologyId)
   stories: Story[];
