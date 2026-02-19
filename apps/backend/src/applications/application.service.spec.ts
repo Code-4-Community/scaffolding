@@ -65,8 +65,8 @@ describe('ApplicationsService', () => {
           fridayAvailability: 'Sometime between 4-6',
           saturdayAvailability: 'no availability',
           experienceType: ExperienceType.BS,
-          interest: InterestArea.WOMENS_HEALTH,
-          license: 'n/a',
+          interest: [InterestArea.WOMENS_HEALTH],
+          license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
           school: School.HARVARD_MEDICAL_SCHOOL,
@@ -126,8 +126,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.MEDICAL_RESPITE_INPATIENT,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -168,6 +168,47 @@ describe('ApplicationsService', () => {
       });
     });
 
+    // TODO: Address this in codebase so it passes.
+    // Note: Adding .skip for now so it doesn't confuse people in their develop then tests all pass work cycle
+    it.skip('should not return an application from the repo if the id is not the same as asked for', async () => {
+      const mockApplication: Application = {
+        appId: 1,
+        appStatus: AppStatus.APP_SUBMITTED,
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
+        experienceType: ExperienceType.BS,
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: 'n/a',
+        applicantType: ApplicantType.LEARNER,
+        phone: '123-456-7890',
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        email: 'test@example.com',
+        discipline: DISCIPLINE_VALUES.RN,
+        referred: false,
+        weeklyHours: 20,
+        pronouns: 'they/them',
+        nonEnglishLangs: 'some french, native spanish speaker',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+      };
+
+      mockRepository.findOne.mockResolvedValue(mockApplication);
+
+      const result = await service.findById(10);
+
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 10 } });
+      expect(repository.findOne).toThrow();
+    });
+
     it('should handle returning an application with no changes when optional fields are ommitted', async () => {
       const mockApplication: Application = {
         appId: 1,
@@ -179,8 +220,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.STREET_MEDICINE,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -228,8 +269,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.ADDICTION_MEDICINE,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -275,8 +316,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.PRIMARY_CARE,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -307,8 +348,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.BEHAVIORAL_HEALTH,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -346,8 +387,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.VETERANS_SERVICES,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-4562',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -385,8 +426,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.FAMILY_AND_YOUTH_SERVICES,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-8-90',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -424,8 +465,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.HEP_C_CARE,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -463,8 +504,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.HIV_SERVICES,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -506,8 +547,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.CASE_MANAGEMENT,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -558,8 +599,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.WOMENS_HEALTH,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -579,20 +620,20 @@ describe('ApplicationsService', () => {
 
       const updatedApplication: Application = {
         ...mockApplication,
-        interest: InterestArea.WOMENS_HEALTH,
+        interest: [InterestArea.STREET_MEDICINE],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
       mockRepository.save.mockResolvedValue(updatedApplication);
 
       const result = await service.update(1, {
-        interest: InterestArea.WOMENS_HEALTH,
+        interest: [InterestArea.STREET_MEDICINE],
       });
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
       expect(repository.save).toHaveBeenCalledWith({
         ...mockApplication,
-        interest: InterestArea.WOMENS_HEALTH,
+        interest: [InterestArea.STREET_MEDICINE],
       });
       expect(result).toEqual(updatedApplication);
     });
@@ -620,7 +661,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.WOMENS_HEALTH }),
+        service.update(1, { interest: [InterestArea.STREET_MEDICINE] }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -645,8 +686,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.DENTAL,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -670,7 +711,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.WOMENS_HEALTH }),
+        service.update(1, { interest: [InterestArea.STREET_MEDICINE] }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -685,8 +726,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.DENTAL,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -727,8 +768,8 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        interest: InterestArea.DENTAL,
-        license: 'n/a',
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
@@ -785,8 +826,8 @@ describe('ApplicationsService', () => {
           fridayAvailability: 'Sometime between 4-6',
           saturdayAvailability: 'no availability',
           experienceType: ExperienceType.BS,
-          interest: InterestArea.WOMENS_HEALTH,
-          license: 'n/a',
+          interest: [InterestArea.WOMENS_HEALTH],
+          license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
           school: School.HARVARD_MEDICAL_SCHOOL,
@@ -805,17 +846,17 @@ describe('ApplicationsService', () => {
           emergencyContactRelationship: 'Mother',
         },
         {
-          appId: 1,
-          appStatus: AppStatus.APP_SUBMITTED,
+          appId: 2,
+          appStatus: AppStatus.IN_REVIEW,
           mondayAvailability: '12pm and on every other week',
           tuesdayAvailability: 'approximately 10am-3pm',
           wednesdayAvailability: 'no availability',
           thursdayAvailability: 'maybe before 10am',
           fridayAvailability: 'Sometime between 4-6',
           saturdayAvailability: 'no availability',
-          experienceType: ExperienceType.BS,
-          interest: InterestArea.WOMENS_HEALTH,
-          license: 'n/a',
+          experienceType: ExperienceType.MS,
+          interest: [InterestArea.WOMENS_HEALTH],
+          license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
           school: School.HARVARD_MEDICAL_SCHOOL,

@@ -10,6 +10,7 @@ import {
   Min,
   Max,
   IsEmail,
+  IsArray,
 } from 'class-validator';
 import {
   AppStatus,
@@ -103,13 +104,14 @@ export class CreateApplicationDto {
   experienceType: ExperienceType;
 
   /**
-   * Applicant's area of interest for the commitment.
+   * Applicant's areas of interest for the commitment (multiple select).
    *
-   * Example: InterestArea.PRIMARY_CARE.
+   * Example: [InterestArea.NURSING, InterestArea.HARM_REDUCTION].
    */
-  @IsEnum(InterestArea)
+  @IsArray()
+  @IsEnum(InterestArea, { each: true })
   @IsDefined()
-  interest: InterestArea;
+  interest: InterestArea[];
 
   /**
    * Any licenses that the applicant holds
