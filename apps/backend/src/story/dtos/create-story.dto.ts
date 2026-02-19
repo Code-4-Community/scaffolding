@@ -1,11 +1,5 @@
-import {
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsEnum,
-  IsArray,
-} from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateStoryDto {
   @ApiProperty({ description: 'Title of the story' })
@@ -16,14 +10,10 @@ export class CreateStoryDto {
   @IsString()
   description: string;
 
-  @ApiProperty({ description: 'Author of story' })
-  @IsString()
-  author: string;
-
   @ApiProperty({ description: 'Student bio of story' })
   @IsString()
   @IsOptional()
-  student_bio: string;
+  studentBio: string;
 
   @ApiProperty({ description: 'Genre of story' })
   @IsString()
@@ -38,5 +28,9 @@ export class CreateStoryDto {
   @ApiProperty({ description: 'ID of Anthology the story is in' })
   @IsNumber()
   @IsOptional()
-  anthology_id: number;
+  anthologyId: number;
+
+  @ApiProperty({ description: 'Author of story' })
+  @IsNumber()
+  authorId: number;
 }

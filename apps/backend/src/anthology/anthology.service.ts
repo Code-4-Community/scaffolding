@@ -17,11 +17,8 @@ export class AnthologyService {
     published_year: number,
     status: AnthologyStatus,
     pub_level: AnthologyPubLevel,
-    programs?: string[] | string,
-    inventory?: number,
+    programs?: string[],
     photo_url?: string,
-    genre?: string,
-    theme?: string,
     isbn?: string,
     shopify_url?: string,
   ) {
@@ -34,10 +31,7 @@ export class AnthologyService {
       status,
       pub_level,
       programs,
-      inventory,
       photo_url,
-      genre,
-      theme,
       isbn,
       shopify_url,
     });
@@ -69,14 +63,6 @@ export class AnthologyService {
     return this.repo.find({ where: { published_year } });
   }
 
-  findByGenre(genre: string) {
-    return this.repo.find({ where: { genre } });
-  }
-
-  findByTheme(theme: string) {
-    return this.repo.find({ where: { theme } });
-  }
-
   async update(id: number, attrs: Partial<Anthology>) {
     const anthology = await this.findOne(id);
 
@@ -97,17 +83,6 @@ export class AnthologyService {
     }
 
     return this.repo.remove(anthology);
-  }
-
-  async updateInventory(id: number, inventory: number) {
-    const anthology = await this.findOne(id);
-
-    if (!anthology) {
-      throw new NotFoundException('Anthology not found');
-    }
-
-    anthology.inventory = inventory;
-    return this.repo.save(anthology);
   }
 
   async updateStatus(id: number, status: AnthologyStatus) {

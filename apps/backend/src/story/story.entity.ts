@@ -1,8 +1,10 @@
-import { Entity, Column, IntegerType } from 'typeorm';
+import { PrimaryGeneratedColumn, Entity, Column, ManyToOne } from 'typeorm';
+import { Anthology } from '../anthology/anthology.entity';
+import { Author } from '../author/author.entity';
 
 @Entity()
 export class Story {
-  @Column({ primary: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
@@ -12,10 +14,7 @@ export class Story {
   description?: string;
 
   @Column()
-  author: string;
-
-  @Column()
-  student_bio?: string;
+  studentBio?: string;
 
   @Column()
   genre?: string;
@@ -24,11 +23,14 @@ export class Story {
   theme?: string;
 
   @Column()
-  anthology_id?: number;
+  anthologyId: number;
 
-  /*
-  @ManyToOne(() => Anthology)
-  @JoinColumn({ name: 'anthology_id' })
-  anthology?: Anthology;
-  */
+  @ManyToOne(() => Anthology, (anthology) => anthology.stories)
+  anthology: Anthology;
+
+  @Column()
+  authorId: number;
+
+  @ManyToOne(() => Author, (author) => author.stories)
+  author: Author;
 }

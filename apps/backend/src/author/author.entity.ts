@@ -1,16 +1,16 @@
-import { Entity, Column } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Author {
-  @Column({ primary: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   bio: string;
 
-  @Column({ type: 'int' })
+  @Column({ nullable: true, type: 'int' })
   grade: number;
 }

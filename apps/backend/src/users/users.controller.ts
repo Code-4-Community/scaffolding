@@ -21,6 +21,11 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  }
+
   @Get('/:userId')
   async getUser(@Param('userId', ParseIntPipe) userId: number): Promise<User> {
     return this.usersService.findOne(userId);

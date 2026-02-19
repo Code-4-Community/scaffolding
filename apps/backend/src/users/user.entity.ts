@@ -21,4 +21,7 @@ export class User {
 
   @Column({ nullable: true })
   publishingName?: string;
+
+  @Column({ nullable: true })
+  name?: string;
 }

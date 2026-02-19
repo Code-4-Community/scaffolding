@@ -23,7 +23,9 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { AnthologyService } from '../anthology/anthology.service';
-import { CreateStoryDto } from '../anthology/dtos/create-story.dto';
+import { AuthorService } from '../author/author.service';
+import { CreateStoryDto } from './dtos/create-story.dto';
+import { create } from 'domain';
 
 @ApiTags('Story')
 @ApiBearerAuth()
@@ -34,6 +36,7 @@ export class StoryController {
   constructor(
     private storyService: StoryService,
     private anthologyService: AnthologyService,
+    private authorService: AuthorService,
   ) {}
 
   @Get('/library/anthology/:anthologyId/story/:storyId')
@@ -63,25 +66,22 @@ export class StoryController {
     status: 404,
     description: 'Anthology not found',
   })
-  async createStory(
-    @Param('anthologyId', ParseIntPipe) anthologyId: number,
-    @Param('storyId', ParseIntPipe) storyId: number,
-    @Body() createStoryDto: CreateStoryDto,
-  ): Promise<Story> {
-    const anthology = await this.anthologyService.findOne(anthologyId);
-
-    if (!anthology) {
-      throw new NotFoundException('Anthology not found');
+  async createStory(@Body() createStoryDto: CreateStoryDto): Promise<Story> {
+    const anthology = await this.anthologyService.findOne(
+      createStoryDto.anthologyId,
+    );
+    const author = await this.authorService.findOne(createStoryDto.authorId);
+    if (!anthology || !author) {
+      throw new NotFoundException('Anthology or author not found');
     }
-
     return this.storyService.createStory(
       createStoryDto.title,
-      createStoryDto.author,
-      createStoryDto.student_bio,
+      createStoryDto.anthologyId,
+      createStoryDto.authorId,
+      createStoryDto.studentBio,
       createStoryDto.description,
       createStoryDto.genre,
       createStoryDto.theme,
-      anthologyId,
     );
   }
 }

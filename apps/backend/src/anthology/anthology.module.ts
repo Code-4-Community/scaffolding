@@ -6,15 +6,13 @@ import { Anthology } from './anthology.entity';
 import { AuthService } from '../auth/auth.service';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthModule } from '../auth/auth.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Anthology])],
+  imports: [TypeOrmModule.forFeature([Anthology]), AuthModule, UsersModule],
   controllers: [AnthologyController],
-  providers: [
-    AnthologyService,
-    AuthService,
-    JwtStrategy,
-    CurrentUserInterceptor,
-  ],
+  providers: [AnthologyService, CurrentUserInterceptor],
+  exports: [AnthologyService],
 })
 export class AnthologyModule {}

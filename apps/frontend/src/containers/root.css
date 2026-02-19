@@ -42,6 +42,12 @@
   box-shadow: 0px 1px 6px 0px rgba(0, 0, 0, 0.25);
   border-radius: 0px 8px 8px 0px;
   z-index: 10;
+  transition: width 0.3s ease, min-width 0.3s ease;
+}
+
+.root-sidebar.collapsed {
+  width: 80px;
+  min-width: 80px;
 }
 
 /* Logo Section */
@@ -51,6 +57,12 @@
   align-items: center;
   padding: 48px 24px 0px 38px;
   gap: 171px;
+}
+
+.root-sidebar.collapsed .sidebar-logo-section {
+  padding: 48px 0 0 0;
+  justify-content: center;
+  gap: 0;
 }
 
 .sidebar-logo {
@@ -64,7 +76,11 @@
   height: 24px;
   object-fit: contain;
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.3s ease;
+}
+
+.sidebar-collapse-arrow.collapsed {
+  transform: rotate(180deg);
 }
 
 .sidebar-collapse-arrow:hover {
@@ -88,6 +104,11 @@
   transition: background-color 0.15s ease;
 }
 
+.root-sidebar.collapsed .sidebar-nav-item {
+  padding: 12px 0;
+  align-items: center;
+}
+
 .sidebar-nav-item:hover {
   background-color: var(--neutral-150);
 }
@@ -98,6 +119,11 @@
   justify-content: space-between;
   gap: 8px;
   padding-right: 12px;
+}
+
+.root-sidebar.collapsed .sidebar-nav-item-content {
+  padding-right: 0;
+  justify-content: center;
 }
 
 .sidebar-nav-item-left {
@@ -118,6 +144,7 @@
   font-size: 18px;
   line-height: 1.36;
   color: #000000;
+  white-space: nowrap;
 }
 
 .sidebar-nav-label--bold {
@@ -152,6 +179,11 @@
   transition: background-color 0.15s ease;
 }
 
+.root-sidebar.collapsed .sidebar-library-header {
+  padding: 12px 0;
+  align-items: center;
+}
+
 .sidebar-library-header:hover {
   background-color: var(--neutral-150);
 }
@@ -160,6 +192,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.root-sidebar.collapsed .sidebar-library-header-content {
+  justify-content: center;
 }
 
 .sidebar-library-header-left {
@@ -204,6 +240,12 @@
   padding: 24px 38px;
 }
 
+.root-sidebar.collapsed .sidebar-logout-section {
+  padding: 24px 0;
+  display: flex;
+  justify-content: center;
+}
+
 .sidebar-logout {
   display: flex;
   align-items: center;
@@ -233,7 +275,7 @@
 .root-main {
   flex: 1;
   background-color: var(--neutral-100);
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   flex-direction: column;
 }
