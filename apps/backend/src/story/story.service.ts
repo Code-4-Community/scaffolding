@@ -24,10 +24,6 @@ export class StoryService {
     return this.repo.find({ where: { title } });
   }
 
-  findByGenre(genre: string) {
-    return this.repo.find({ where: { genre } });
-  }
-
   findByTheme(theme: string) {
     return this.repo.find({ where: { theme } });
   }
@@ -54,14 +50,30 @@ export class StoryService {
     return this.repo.remove(story);
   }
 
+  async findByAnthologyAndId(
+    anthologyId: number,
+    storyId: number,
+  ): Promise<Story> {
+    const story = await this.repo.findOne({
+      where: {
+        id: storyId,
+        anthologyId: anthologyId,
+      },
+    });
+
+    if (!story) {
+      throw new NotFoundException('Story not found in this anthology');
+    }
+
+    return story;
+  }
+
   async createStory(
     title: string,
     anthologyId: number,
     authorId: number,
     studentBio?: string,
     description?: string,
-    genre?: string,
-    theme?: string,
   ): Promise<Story> {
     // TODO: security concern for not randomizing the primary key
     const storyId = (await this.repo.count()) + 1;
@@ -70,8 +82,6 @@ export class StoryService {
       title,
       studentBio,
       description,
-      genre,
-      theme,
       authorId,
       anthologyId,
     });

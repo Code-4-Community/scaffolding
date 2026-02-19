@@ -23,9 +23,6 @@ export class Story {
   studentBio?: string;
 
   @Column()
-  genre?: string;
-
-  @Column()
   theme?: string;
 
   @Column({ name: 'anthology_id' })

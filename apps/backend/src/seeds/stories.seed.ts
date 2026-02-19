@@ -4,11 +4,10 @@ import { Story } from '../story/story.entity';
 export const StoriesSeed: DeepPartial<Story>[] = [
   {
     id: 1,
-    title: 'Seed Story',
-    description: 'Description',
-    studentBio: 'Bio',
-    genre: 'Genre',
-    theme: 'Theme',
+    title: 'Seed Story', // not obvious from omchai
+    description: 'Description', // not obvious from omchai
+    studentBio: 'Bio', // not obvious from bio
+    theme: 'Looking ahead',
     anthologyId: 1,
     authorId: 1,
   },
@@ -17,8 +16,7 @@ export const StoriesSeed: DeepPartial<Story>[] = [
     title: 'Another Story',
     description: 'Another description',
     studentBio: 'Another bio',
-    genre: 'Fiction',
-    theme: 'Adventure',
+    theme: 'Most days I feel',
     anthologyId: 1,
     authorId: 2,
   },
