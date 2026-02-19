@@ -109,10 +109,10 @@ export class Application {
   /**
    * Applicant's area of interest for the commitment.
    *
-   * Example: InterestArea.PRIMARY_CARE.
+   * Example: [InterestArea.NURSING, InterestArea.HARM_REDUCTION].
    */
-  @Column({ type: 'enum', enum: InterestArea })
-  interest!: InterestArea;
+  @Column({ type: 'enum', enum: InterestArea, array: true, default: [] })
+  interest!: InterestArea[];
 
   /**
    * Any licenses that the applicant holds

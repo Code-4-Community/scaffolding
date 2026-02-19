@@ -31,7 +31,7 @@ const mockApplication: Application = {
   fridayAvailability: 'Sometime between 4-6',
   saturdayAvailability: 'no availability',
   experienceType: ExperienceType.BS,
-  interest: InterestArea.WOMENS_HEALTH,
+  interest: [InterestArea.WOMENS_HEALTH],
   license: 'n/a',
   applicantType: ApplicantType.LEARNER,
   phone: '123-456-7890',

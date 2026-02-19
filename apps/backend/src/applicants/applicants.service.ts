@@ -50,6 +50,11 @@ export class ApplicantsService {
       throw new BadRequestException('Start date and end date are required');
     }
 
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new BadRequestException(
+        'Start date and end date must be valid dates',
+      );
+    }
     if (startDate >= endDate) {
       throw new BadRequestException('Start date must be before end date');
     }
@@ -115,6 +120,10 @@ export class ApplicantsService {
       throw new BadRequestException('Start date is required');
     }
 
+    if (isNaN(startDate.getTime())) {
+      throw new BadRequestException('Start date must be a valid date');
+    }
+
     const applicant = await this.repo.findOneBy({ appId });
     if (!applicant) {
       throw new NotFoundException(`Applicant with ID ${appId} not found`);
@@ -145,6 +154,10 @@ export class ApplicantsService {
 
     if (!endDate) {
       throw new BadRequestException('End date is required');
+    }
+
+    if (isNaN(endDate.getTime())) {
+      throw new BadRequestException('End date must be a valid date');
     }
 
     const applicant = await this.repo.findOneBy({ appId });

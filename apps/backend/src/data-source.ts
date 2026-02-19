@@ -6,6 +6,7 @@ import { Application } from './applications/application.entity';
 import { Discipline } from './disciplines/disciplines.entity';
 import { LearnerInfo } from './learner-info/learner-info.entity';
 import { VolunteerInfo } from './volunteer-info/volunteer-info.entity';
+import { Applicant } from './applicants/applicant.entity';
 
 dotenv.config();
 
@@ -16,7 +17,14 @@ const AppDataSource = new DataSource({
   username: process.env.NX_DB_USERNAME,
   password: process.env.NX_DB_PASSWORD,
   database: process.env.NX_DB_DATABASE,
-  entities: [Application, Admin, Discipline, VolunteerInfo, LearnerInfo],
+  entities: [
+    Application,
+    Admin,
+    Discipline,
+    VolunteerInfo,
+    LearnerInfo,
+    Applicant,
+  ],
   // migrations: ['apps/backend/src/migrations/*.js'],
   migrations: ['apps/backend/src/migrations/*.ts'], // use this line instead of the above when running migrations locally,
   // then switch back to the above before pushing to github so that it works on the deployment server

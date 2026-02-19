@@ -129,6 +129,30 @@ describe('ApplicantsService', () => {
       ).rejects.toThrow('Start date must be before end date');
     });
 
+    it('should throw error if start date is invalid', async () => {
+      await expect(
+        service.create(
+          1,
+          'John',
+          'Doe',
+          new Date('not-a-date'),
+          new Date('2024-06-30'),
+        ),
+      ).rejects.toThrow('Start date and end date must be valid dates');
+    });
+
+    it('should throw error if end date is invalid', async () => {
+      await expect(
+        service.create(
+          1,
+          'John',
+          'Doe',
+          new Date('2024-01-01'),
+          new Date('not-a-date'),
+        ),
+      ).rejects.toThrow('Start date and end date must be valid dates');
+    });
+
     it('should error out without information loss if the repository throws an error during create', async () => {
       const createData = {
         appId: 1,
@@ -352,6 +376,12 @@ describe('ApplicantsService', () => {
       );
     });
 
+    it('should throw error if start date is invalid', async () => {
+      await expect(
+        service.updateStartDate(1, new Date('not-a-date')),
+      ).rejects.toThrow('Start date must be a valid date');
+    });
+
     it('should error out without information loss if the repository throws an error during retrieval', async () => {
       jest
         .spyOn(mockApplicantsRepository, 'findOneBy')
@@ -430,6 +460,12 @@ describe('ApplicantsService', () => {
       await expect(service.updateEndDate(1, null)).rejects.toThrow(
         'End date is required',
       );
+    });
+
+    it('should throw error if end date is invalid', async () => {
+      await expect(
+        service.updateEndDate(1, new Date('not-a-date')),
+      ).rejects.toThrow('End date must be a valid date');
     });
 
     it('should error out without information loss if the repository throws an error during retrieval', async () => {
