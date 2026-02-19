@@ -12,6 +12,8 @@ import { LearnerInfoModule } from './learner-info/learner-info.module';
 import { VolunteerInfoModule } from './volunteer-info/volunteer-info.module';
 import { Application } from './applications/application.entity';
 import { AdminsModule } from './users/admins.module';
+import { UsersModule } from './users/users.module';
+import { Admin } from './users/admin.entity';
 import { ConfigModule } from '@nestjs/config';
 import { DisciplinesModule } from './disciplines/disciplines.module';
 
@@ -27,6 +29,7 @@ import { DisciplinesModule } from './disciplines/disciplines.module';
     }),
     UtilModule,
     AdminsModule,
+    UsersModule,
     AWSS3Module,
     TypeOrmModule.forFeature([Application]),
     DisciplinesModule,
