@@ -11,7 +11,7 @@ export class CreateOmchaiDto {
   @IsNumber()
   user_id: number;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Role of the user in the project',
     enum: OmchaiRole,
   })

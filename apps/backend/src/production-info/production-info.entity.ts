@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Anthology } from '../anthology/anthology.entity';
 
 @Entity()
@@ -6,9 +12,7 @@ export class ProductionInfo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Anthology, (anthology) => anthology.productionInfo)
-  @JoinColumn({ name: 'anthology_id' })
-  anthology: Anthology;
+  anthology_id: number;
 
   @Column({ nullable: true })
   design_files_link: string;

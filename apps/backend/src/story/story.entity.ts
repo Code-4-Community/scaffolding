@@ -25,12 +25,6 @@ export class Story {
   @Column()
   anthologyId: number;
 
-  @ManyToOne(() => Anthology, (anthology) => anthology.stories)
-  anthology: Anthology;
-
   @Column()
   authorId: number;
-
-  @ManyToOne(() => Author, (author) => author.stories)
-  author: Author;
 }

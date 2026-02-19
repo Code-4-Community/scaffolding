@@ -4,7 +4,8 @@ import {
   STATIC_ARCHIVED,
   RECENTLY_EDITED,
   MOCK_LAST_MODIFIED,
-  Anthology,
+  MOCK_STORIES,
+  MOCK_AUTHORS,
 } from '@utils/mock-data';
 
 // Import SVG icons
@@ -14,6 +15,7 @@ import ListIcon from '../../assets/icons/list.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
 import BookmarkIcon from '../../assets/icons/bookmark.svg';
+import { Anthology, AnthologyStatus } from '../../types';
 
 export default function ArchivedPublications() {
   const [archived, setArchived] = useState<Anthology[]>(STATIC_ARCHIVED);
@@ -25,7 +27,7 @@ export default function ArchivedPublications() {
       .then((res) => res.json())
       .then((data) => {
         const archivedOnly = (data as Anthology[]).filter(
-          (item) => item.status === 'archived',
+          (item) => item.status === AnthologyStatus.ARCHIVED,
         );
         if (archivedOnly.length > 0) {
           setArchived(archivedOnly);
@@ -39,7 +41,9 @@ export default function ArchivedPublications() {
   const filteredPublications = archived.filter((pub) => {
     const query = searchQuery.toLowerCase();
     const titleMatch = pub.title.toLowerCase().includes(query);
-    const authors = pub.authors || [];
+    const authors = MOCK_STORIES.filter((s) => s.anthologyId === pub.id)
+      .map((s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name)
+      .filter(Boolean) as string[];
     const authorMatch = authors.some((a) => a.toLowerCase().includes(query));
     return titleMatch || authorMatch;
   });
@@ -152,10 +156,16 @@ export default function ArchivedPublications() {
                   <div className="publication-card-details">
                     <h3 className="publication-card-title">{pub.title}</h3>
                     <p className="publication-card-author">
-                      {pub.authors?.join(', ') || 'Author Name'}
+                      {MOCK_STORIES.filter((s) => s.anthologyId === pub.id)
+                        .map(
+                          (s) =>
+                            MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name,
+                        )
+                        .filter(Boolean)
+                        .join(', ') || 'Author Name'}
                     </p>
                     <div className="publication-card-meta">
-                      <span className="publication-card-modified">
+                      {/* <span className="publication-card-modified">
                         Last modified{' '}
                         {pub.updated_at
                           ? new Date(pub.updated_at).toLocaleDateString(
@@ -167,7 +177,7 @@ export default function ArchivedPublications() {
                               },
                             )
                           : MOCK_LAST_MODIFIED}
-                      </span>
+                      </span> */}
                       <img
                         src={MenuDotsIcon}
                         alt=""

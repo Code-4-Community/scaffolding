@@ -8,7 +8,4 @@ export class Inventory {
 
   @Column()
   name: string;
-
-  @OneToMany(() => InventoryHolding, (holding) => holding.inventory)
-  holdings: InventoryHolding[];
 }

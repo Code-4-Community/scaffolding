@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl" : ".",
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
@@ -13,7 +14,9 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "paths": {}
+    "paths": {
+      
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

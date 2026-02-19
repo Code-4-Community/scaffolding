@@ -12,6 +12,13 @@ export enum AnthologyPubLevel {
   SIGNATURE = 'Signature',
 }
 
+export interface Author {
+  id: number;
+  name: string;
+  bio?: string;
+  grade?: number;
+}
+
 export interface Anthology {
   id: number;
   title: string;
@@ -43,4 +50,17 @@ export interface Anthology {
   weight?: string;
   // Inventory breakdown locations
   inventory_locations?: Record<string, number>;
+}
+
+export interface Story {
+  id: number;
+  title: string;
+  description?: string;
+  studentBio?: string;
+  genre?: string;
+  theme?: string;
+  anthologyId: number;
+  anthology?: Anthology;
+  authorId: number;
+  author?: Author;
 }

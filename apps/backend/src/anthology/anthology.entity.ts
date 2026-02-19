@@ -52,6 +52,9 @@ export class Anthology {
   @OneToMany(() => InventoryHolding, (ih) => ih.anthology_id)
   holdings: InventoryHolding[];
 
-  @OneToOne(() => ProductionInfo, (productionInfo) => productionInfo.anthology)
+  @OneToOne(
+    () => ProductionInfo,
+    (productionInfo) => productionInfo.anthology_id,
+  )
   productionInfo: ProductionInfo;
 }
