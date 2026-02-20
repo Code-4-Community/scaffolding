@@ -9,9 +9,7 @@ export async function seedAnthologies(dataSource: DataSource) {
   console.log('Seeding anthologies...');
 
   for (const data of AnthologiesSeed) {
-    const exists = await repository.findOne({
-      where: { id: data.id },
-    });
+    const exists = await repository.findOne({ where: { title: data.title } });
 
     if (!exists) {
       const entity = repository.create(data);

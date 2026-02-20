@@ -6,6 +6,7 @@ import {
   OneToMany,
   ManyToOne,
   OneToOne,
+  Relation,
 } from 'typeorm';
 
 import { AnthologyStatus, AnthologyPubLevel, AgeCategory } from './types';
@@ -61,17 +62,25 @@ export class Anthology {
   })
   pubLevel: AnthologyPubLevel;
 
-  @Column({ name: 'photo_url', nullable: true })
+  @Column({
+    name: 'photo_url',
+    nullable: true,
+    default: '',
+  })
   photoUrl: string;
 
   @Column({ nullable: true })
   isbn: string;
 
-  @Column({ name: 'shopify_url', nullable: true })
+  @Column({
+    name: 'shopify_url',
+    nullable: true,
+    default: '',
+  })
   shopifyUrl: string;
 
-  @OneToMany(() => Story, (story) => story.anthologyId)
-  stories: Story[];
+  @OneToMany(() => Story, (story) => story.anthology)
+  stories: Relation<Story[]>;
 
   @OneToMany(() => InventoryHolding, (ih) => ih.anthology_id)
   holdings: InventoryHolding[];
