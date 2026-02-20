@@ -28,7 +28,10 @@ export class AuthController {
     try {
       await this.authService.signup(signUpDto);
     } catch (e) {
-      throw new BadRequestException(e.message);
+      if (e instanceof Error) {
+        throw new BadRequestException(e.message);
+      }
+      throw new BadRequestException('An unknown error occurred');
     }
 
     const user = await this.usersService.create(
@@ -76,10 +79,17 @@ export class AuthController {
   async delete(@Body() body: DeleteUserDto): Promise<void> {
     const user = await this.usersService.findOne(body.userId);
 
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
     try {
       await this.authService.deleteUser(user.email);
     } catch (e) {
-      throw new BadRequestException(e.message);
+      if (e instanceof Error) {
+        throw new BadRequestException(e.message);
+      }
+      throw new BadRequestException('An unknown error occurred');
     }
 
     this.usersService.remove(user.id);

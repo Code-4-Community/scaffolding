@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 import { Anthology } from '../anthology/anthology.entity';
 import { Inventory } from '../inventory/inventory.entity';
 
@@ -7,12 +13,18 @@ export class InventoryHolding {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  inventory_id: number;
+  @Column({ name: 'inventory_id' })
+  inventoryId: number;
 
-  @Column()
-  anthology_id: number;
+  @ManyToOne(() => Inventory, (inventory) => inventory.holdings)
+  inventory: Relation<Inventory>;
 
-  @Column()
-  num_copies: number;
+  @Column({ name: 'anthology_id' })
+  anthologyId: number;
+
+  @ManyToOne(() => Anthology, (anthology) => anthology.inventoryHoldings)
+  anthology: Relation<Anthology>;
+
+  @Column({ name: 'num_copies' })
+  numCopies: number;
 }

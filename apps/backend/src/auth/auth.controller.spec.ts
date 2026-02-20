@@ -54,7 +54,7 @@ describe('AuthController', () => {
         status: Status.STANDARD,
       };
 
-      jest.spyOn(authService, 'signup').mockResolvedValue(undefined);
+      jest.spyOn(authService, 'signup').mockResolvedValue(true);
       jest.spyOn(usersService, 'create').mockResolvedValue(expectedUser);
 
       const result = await controller.createUser(signUpDto);
@@ -88,7 +88,7 @@ describe('AuthController', () => {
         publishingName: 'J.D. Writer',
       };
 
-      jest.spyOn(authService, 'signup').mockResolvedValue(undefined);
+      jest.spyOn(authService, 'signup').mockResolvedValue(true);
       jest.spyOn(usersService, 'create').mockResolvedValue(expectedUser);
 
       const result = await controller.createUser(signUpDto);

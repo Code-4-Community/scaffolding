@@ -1,4 +1,5 @@
 import { Entity, Column } from 'typeorm';
+
 import { Status } from './types';
 
 @Entity()
@@ -9,16 +10,16 @@ export class User {
   @Column({ type: 'enum', enum: Status })
   status: Status;
 
-  @Column()
+  @Column({ name: 'first_name' })
   firstName: string;
 
-  @Column()
+  @Column({ name: 'last_name', default: '' })
   lastName: string;
 
-  @Column()
+  @Column({ default: '' })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'publishing_name', nullable: true })
   publishingName?: string;
 
   @Column({ nullable: true })

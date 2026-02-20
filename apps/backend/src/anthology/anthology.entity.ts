@@ -14,6 +14,7 @@ import { AnthologyStatus, AnthologyPubLevel, AgeCategory } from './types';
 import { Story } from '../story/story.entity';
 import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
 import { ProductionInfo } from '../production-info/production-info.entity';
+import { Omchai } from 'src/omchai/omchai.entity';
 
 @Entity()
 export class Anthology {
@@ -25,6 +26,9 @@ export class Anthology {
 
   @Column({ default: '' })
   byline: string;
+
+  @Column({ nullable: true })
+  subtitle: 'A College Essay Anthology';
 
   @Column()
   description: string;
@@ -44,6 +48,9 @@ export class Anthology {
   @Column({ type: 'simple-array', nullable: true })
   programs?: string[];
 
+  @Column({ type: 'simple-array', nullable: true })
+  sponsors?: string[];
+
   @Column({ type: 'enum', enum: AnthologyStatus })
   status: AnthologyStatus;
 
@@ -51,7 +58,7 @@ export class Anthology {
     type: 'enum',
     enum: AgeCategory,
     name: 'age_category',
-    default: AgeCategory.YA,
+    nullable: true,
   })
   ageCategory: AgeCategory;
 
@@ -82,8 +89,8 @@ export class Anthology {
   @OneToMany(() => Story, (story) => story.anthology)
   stories: Relation<Story[]>;
 
-  @OneToMany(() => InventoryHolding, (ih) => ih.anthology_id)
-  holdings: InventoryHolding[];
+  @OneToMany(() => InventoryHolding, (holding) => holding.anthology)
+  inventoryHoldings: Relation<InventoryHolding[]>;
 
   @OneToOne(
     () => ProductionInfo,

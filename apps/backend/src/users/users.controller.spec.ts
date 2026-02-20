@@ -14,11 +14,8 @@ describe('UsersController', () => {
   const mockUser: User = {
     id: 1,
     status: 'STANDARD' as Status,
-    firstName: 'John',
-    lastName: 'Doe',
+    name: 'John Doe',
     email: 'john@example.com',
-    publishingName: null,
-    name: null,
   };
 
   const mockUsersService = {

@@ -9,10 +9,10 @@ describe('OmchaiService', () => {
 
   const mockOmchai: Omchai = {
     id: 1,
-    anthology_id: 1,
-    user_id: 1,
+    anthologyId: 1,
+    userId: 1,
     role: OmchaiRole.OWNER,
-    datetime_assigned: new Date(),
+    datetimeAssigned: new Date(),
   };
 
   const mockRepository = {
@@ -47,7 +47,7 @@ describe('OmchaiService', () => {
   describe('create', () => {
     it('should create a new omchai', async () => {
       const dto = {
-        anthology_id: 1,
+        anthologyId: 1,
         user_id: 1,
         role: OmchaiRole.OWNER,
         datetime_assigned: new Date(),
@@ -82,7 +82,7 @@ describe('OmchaiService', () => {
       const result = await service.findByAnthologyId(1);
 
       expect(mockRepository.find).toHaveBeenCalledWith({
-        where: { anthology_id: 1 },
+        where: { anthologyId: 1 },
       });
       expect(result).toEqual([mockOmchai]);
     });

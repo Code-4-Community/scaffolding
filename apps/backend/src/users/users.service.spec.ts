@@ -13,11 +13,8 @@ describe('UsersService', () => {
   const mockUser: User = {
     id: 1,
     status: Status.STANDARD,
-    firstName: 'John',
-    lastName: 'Doe',
     email: 'john@example.com',
-    publishingName: null,
-    name: null,
+    name: 'John Doe',
   };
 
   const mockRepository = {
@@ -60,8 +57,7 @@ describe('UsersService', () => {
 
       const result = await service.create(
         'john@example.com',
-        'John',
-        'Doe',
+        'John Doe',
         Status.STANDARD,
       );
 
@@ -116,18 +112,18 @@ describe('UsersService', () => {
   describe('update', () => {
     it('should update a user', async () => {
       mockRepository.findOneBy.mockResolvedValue(mockUser);
-      mockRepository.save.mockResolvedValue({ ...mockUser, firstName: 'Jane' });
+      mockRepository.save.mockResolvedValue({ ...mockUser, name: 'Jane' });
 
-      const result = await service.update(1, { firstName: 'Jane' });
+      const result = await service.update(1, { name: 'Jane' });
 
       expect(repo.save).toHaveBeenCalled();
-      expect(result.firstName).toBe('Jane');
+      expect(result.name).toBe('Jane');
     });
 
     it('should throw NotFoundException if user not found', async () => {
       mockRepository.findOneBy.mockResolvedValue(null);
 
-      await expect(service.update(999, { firstName: 'Jane' })).rejects.toThrow(
+      await expect(service.update(999, { name: 'Jane' })).rejects.toThrow(
         NotFoundException,
       );
     });
