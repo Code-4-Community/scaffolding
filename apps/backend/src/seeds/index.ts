@@ -1,6 +1,7 @@
 import AppDataSource from 'src/data-source';
 import { seedStories } from './seed-stories';
 import { seedAnthologies } from './seed-anthologies';
+import { seedAuthors } from './seed-authors';
 
 async function runSeeds() {
   try {
@@ -13,8 +14,8 @@ async function runSeeds() {
     await seedAnthologies(AppDataSource);
     console.log('Anthologies seeded successfully.');
 
-    // await seedAuthors();
-    // console.log('Authors seeded successfully.');
+    await seedAuthors(AppDataSource);
+    console.log('Authors seeded successfully.');
 
     await seedStories(AppDataSource);
     console.log('Stories seeded successfully.');
