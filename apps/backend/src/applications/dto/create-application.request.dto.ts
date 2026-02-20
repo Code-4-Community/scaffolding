@@ -135,23 +135,6 @@ export class CreateApplicationDto {
   phone: string;
 
   /**
-   * School of the applicant, includes well-known medical schools, or an other option.
-   *
-   * Example: School.STANFORD_MEDICINE.
-   */
-  @IsEnum(School)
-  @IsDefined()
-  school: School;
-
-  /**
-   * Name of school if chose other
-   *
-   * Example: Northeastern University
-   */
-  @IsString()
-  otherSchool?: string;
-
-  /**
    * Email of the applicant.
    *
    * Example: bob.ross@example.com
