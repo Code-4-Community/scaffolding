@@ -57,7 +57,7 @@ describe('ApplicantsService', () => {
         appId: 1,
         firstName: 'John',
         lastName: 'Doe',
-        startDate: new Date('2024-01-01'),
+        proposedStartDate: new Date('2024-01-01'),
         endDate: new Date('2024-06-30'),
       };
 
@@ -72,7 +72,7 @@ describe('ApplicantsService', () => {
         createData.appId,
         createData.firstName,
         createData.lastName,
-        createData.startDate,
+        createData.proposedStartDate,
         createData.endDate,
       );
 
@@ -117,7 +117,7 @@ describe('ApplicantsService', () => {
       ).rejects.toThrow('Applicant last name is required');
     });
 
-    it('should throw error if start date is after end date', async () => {
+    it('should throw error if proposed start date is after end date', async () => {
       await expect(
         service.create(
           1,
@@ -126,10 +126,10 @@ describe('ApplicantsService', () => {
           new Date('2024-06-30'),
           new Date('2024-01-01'),
         ),
-      ).rejects.toThrow('Start date must be before end date');
+      ).rejects.toThrow('proposed start date must be before end date');
     });
 
-    it('should throw error if start date is invalid', async () => {
+    it('should throw error if proposed start date is invalid', async () => {
       await expect(
         service.create(
           1,
@@ -138,7 +138,7 @@ describe('ApplicantsService', () => {
           new Date('not-a-date'),
           new Date('2024-06-30'),
         ),
-      ).rejects.toThrow('Start date and end date must be valid dates');
+      ).rejects.toThrow('proposed start date and end date must be valid dates');
     });
 
     it('should throw error if end date is invalid', async () => {
@@ -150,7 +150,7 @@ describe('ApplicantsService', () => {
           new Date('2024-01-01'),
           new Date('not-a-date'),
         ),
-      ).rejects.toThrow('Start date and end date must be valid dates');
+      ).rejects.toThrow('proposed start date and end date must be valid dates');
     });
 
     it('should error out without information loss if the repository throws an error during create', async () => {
@@ -158,7 +158,7 @@ describe('ApplicantsService', () => {
         appId: 1,
         firstName: 'John',
         lastName: 'Doe',
-        startDate: new Date('2024-01-01'),
+        proposedStartDate: new Date('2024-01-01'),
         endDate: new Date('2024-06-30'),
       };
 
@@ -173,7 +173,7 @@ describe('ApplicantsService', () => {
           createData.appId,
           createData.firstName,
           createData.lastName,
-          createData.startDate,
+          createData.proposedStartDate,
           createData.endDate,
         ),
       ).rejects.toThrow(`There was a problem retrieving the info`);
@@ -184,7 +184,7 @@ describe('ApplicantsService', () => {
         appId: 1,
         firstName: 'John',
         lastName: 'Doe',
-        startDate: new Date('2024-01-01'),
+        proposedStartDate: new Date('2024-01-01'),
         endDate: new Date('2024-06-30'),
       };
 
@@ -199,7 +199,7 @@ describe('ApplicantsService', () => {
           createData.appId,
           createData.firstName,
           createData.lastName,
-          createData.startDate,
+          createData.proposedStartDate,
           createData.endDate,
         ),
       ).rejects.toThrow(`There was a problem saving the info`);
@@ -324,11 +324,14 @@ describe('ApplicantsService', () => {
     });
   });
 
-  describe('updateStartDate', () => {
-    const updatedStartDate = new Date('2024-02-01');
-    const updatedApplicant = { ...applicant1, startDate: updatedStartDate };
+  describe('updateproposedStartDate', () => {
+    const updatedproposedStartDate = new Date('2024-02-01');
+    const updatedApplicant = {
+      ...applicant1,
+      proposedStartDate: updatedproposedStartDate,
+    };
 
-    it('should update applicant start date', async () => {
+    it('should update applicant proposed start date', async () => {
       jest
         .spyOn(mockApplicantsRepository, 'findOneBy')
         .mockResolvedValue(applicant1);
@@ -336,7 +339,10 @@ describe('ApplicantsService', () => {
         .spyOn(mockApplicantsRepository, 'save')
         .mockResolvedValue(updatedApplicant);
 
-      const result = await service.updateStartDate(1, updatedStartDate);
+      const result = await service.updateproposedStartDate(
+        1,
+        updatedproposedStartDate,
+      );
 
       expect(result).toEqual(updatedApplicant);
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
@@ -344,7 +350,7 @@ describe('ApplicantsService', () => {
       });
       expect(mockApplicantsRepository.save).toHaveBeenCalledWith({
         ...applicant1,
-        startDate: updatedStartDate,
+        proposedStartDate: updatedproposedStartDate,
       });
     });
 
@@ -352,11 +358,11 @@ describe('ApplicantsService', () => {
       jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
 
       await expect(
-        service.updateStartDate(999, updatedStartDate),
+        service.updateproposedStartDate(999, updatedproposedStartDate),
       ).rejects.toThrow('Applicant with ID 999 not found');
     });
 
-    it('should throw error if start date is after end date', async () => {
+    it('should throw error if proposed start date is after end date', async () => {
       const existingApplicant = {
         ...applicant1,
         endDate: new Date('2024-01-15'),
@@ -366,20 +372,20 @@ describe('ApplicantsService', () => {
         .mockResolvedValue(existingApplicant);
 
       await expect(
-        service.updateStartDate(1, updatedStartDate),
-      ).rejects.toThrow('Start date must be before end date');
+        service.updateproposedStartDate(1, updatedproposedStartDate),
+      ).rejects.toThrow('proposed start date must be before end date');
     });
 
-    it('should throw error if no start date provided', async () => {
-      await expect(service.updateStartDate(1, null)).rejects.toThrow(
-        'Start date is required',
+    it('should throw error if no proposed start date provided', async () => {
+      await expect(service.updateproposedStartDate(1, null)).rejects.toThrow(
+        'proposed start date is required',
       );
     });
 
-    it('should throw error if start date is invalid', async () => {
+    it('should throw error if proposed start date is invalid', async () => {
       await expect(
-        service.updateStartDate(1, new Date('not-a-date')),
-      ).rejects.toThrow('Start date must be a valid date');
+        service.updateproposedStartDate(1, new Date('not-a-date')),
+      ).rejects.toThrow('proposed start date must be a valid date');
     });
 
     it('should error out without information loss if the repository throws an error during retrieval', async () => {
@@ -390,7 +396,7 @@ describe('ApplicantsService', () => {
         );
 
       await expect(
-        service.updateStartDate(999, updatedStartDate),
+        service.updateproposedStartDate(999, updatedproposedStartDate),
       ).rejects.toThrow('There was a problem retrieving the info');
     });
 
@@ -405,7 +411,7 @@ describe('ApplicantsService', () => {
         );
 
       await expect(
-        service.updateStartDate(1, updatedStartDate),
+        service.updateproposedStartDate(1, updatedproposedStartDate),
       ).rejects.toThrow('There was a problem saving the info');
     });
   });
@@ -442,17 +448,17 @@ describe('ApplicantsService', () => {
       );
     });
 
-    it('should throw error if end date is before start date', async () => {
+    it('should throw error if end date is before proposed start date', async () => {
       const existingApplicant = {
         ...applicant1,
-        startDate: new Date('2024-08-15'),
+        proposedStartDate: new Date('2024-08-15'),
       };
       jest
         .spyOn(mockApplicantsRepository, 'findOneBy')
         .mockResolvedValue(existingApplicant);
 
       await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
-        'End date must be after start date',
+        'End date must be after proposed start date',
       );
     });
 

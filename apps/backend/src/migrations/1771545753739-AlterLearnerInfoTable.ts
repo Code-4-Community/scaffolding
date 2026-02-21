@@ -25,29 +25,13 @@ export class AlterLearnerInfoTable1771545753739 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "learner_info" ADD "syllabus" character varying`,
     );
+
     await queryRunner.query(
-      `ALTER TYPE "public"."application_school_enum" RENAME TO "application_school_enum_old"`,
+      `ALTER TABLE "learner_info" ADD "otherSchool" character varying`,
     );
-    await queryRunner.query(
-      `CREATE TYPE "public"."learner_info_school_enum" AS ENUM('Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', 'Mayo Clinic', 'Other')`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "learner_info" ALTER COLUMN "school" TYPE "public"."learner_info_school_enum" USING "school"::"text"::"public"."learner_info_school_enum"`,
-    );
-    await queryRunner.query(`DROP TYPE "public"."application_school_enum_old"`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `CREATE TYPE "public"."application_school_enum_old" AS ENUM('Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', 'Mayo Clinic', 'Other')`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "learner_info" ALTER COLUMN "school" TYPE "public"."application_school_enum_old" USING "school"::"text"::"public"."application_school_enum_old"`,
-    );
-    await queryRunner.query(`DROP TYPE "public"."learner_info_school_enum"`);
-    await queryRunner.query(
-      `ALTER TYPE "public"."application_school_enum_old" RENAME TO "application_school_enum"`,
-    );
     await queryRunner.query(
       `ALTER TABLE "learner_info" DROP COLUMN "syllabus"`,
     );
@@ -68,6 +52,9 @@ export class AlterLearnerInfoTable1771545753739 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "learner_info" DROP COLUMN "schoolDepartment"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "learner_info" DROP COLUMN "otherSchool"`,
     );
   }
 }

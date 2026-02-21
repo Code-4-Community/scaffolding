@@ -47,6 +47,7 @@ const mockApplication: Application = {
   emergencyContactName: 'Jane Doe',
   emergencyContactPhone: '111-111-1111',
   emergencyContactRelationship: 'Mother',
+  heardAboutFrom: [],
 };
 
 describe('ApplicationsController', () => {

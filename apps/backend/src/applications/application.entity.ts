@@ -4,7 +4,7 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
+  HeardAboutFrom,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -245,4 +245,12 @@ export class Application {
    */
   @Column({ type: 'varchar' })
   emergencyContactRelationship!: string;
+
+  /**
+   * List of sources that the applicant heard about BHCHP from
+   *
+   * Example: [HeardAboutFrom.OTHER, HeardAboutFrom.SCHOOL]
+   */
+  @Column({ type: 'enum', enum: HeardAboutFrom, array: true, default: [] })
+  heardAboutFrom: HeardAboutFrom[];
 }

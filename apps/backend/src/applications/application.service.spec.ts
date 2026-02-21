@@ -82,6 +82,7 @@ describe('ApplicationsService', () => {
           emergencyContactName: 'Jane Doe',
           emergencyContactPhone: '111-111-1111',
           emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
         },
       ];
 
@@ -142,6 +143,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -196,6 +198,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -233,6 +236,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -552,6 +556,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const updatedApplication: Application = {
@@ -603,6 +608,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const updatedApplication: Application = {
@@ -689,6 +695,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -728,6 +735,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -770,6 +778,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -827,6 +836,7 @@ describe('ApplicationsService', () => {
           emergencyContactName: 'Jane Doe',
           emergencyContactPhone: '111-111-1111',
           emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
         },
         {
           appId: 2,
@@ -855,6 +865,7 @@ describe('ApplicationsService', () => {
           emergencyContactName: 'Jane Doe',
           emergencyContactPhone: '111-111-1111',
           emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
         },
       ];
 

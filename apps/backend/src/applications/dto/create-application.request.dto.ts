@@ -16,7 +16,6 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
   ApplicantType,
   HeardAboutFrom,
 } from '../types';

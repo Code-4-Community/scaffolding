@@ -34,6 +34,14 @@ export class CreateLearnerInfoDto {
   school!: School;
 
   /**
+   * Name of school if chose other
+   *
+   * Example: Northeastern University
+   */
+  @IsString()
+  otherSchool?: string;
+
+  /**
    * Name of the department in the school studied in if relevent
    *
    * Example: Infectious Diseases
