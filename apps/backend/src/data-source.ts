@@ -27,7 +27,6 @@ const AppDataSource = new DataSource({
     LearnerInfo,
     User,
   ],
-  // entities: [LearnerInfo],
   // migrations: ['apps/backend/src/migrations/*.js'],
   migrations: ['apps/backend/src/migrations/*.ts'], // use this line instead of the above when running migrations locally,
   // then switch back to the above before pushing to github so that it works on the deployment server
