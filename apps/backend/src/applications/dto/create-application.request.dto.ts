@@ -155,6 +155,7 @@ export class CreateApplicationDto {
    * Discipline or area of interest description of applicant clicked other
    */
   @IsString()
+  @IsOptional()
   otherDisciplineDescription?: string;
 
   /**
@@ -223,6 +224,36 @@ export class CreateApplicationDto {
   elaborateOtherDiscipline?: string;
 
   /**
+   * Name of the resume file stored in S3 with its extension
+   *
+   * Example:  janedoe_resume_2_6_2026.pdf
+   *
+   * Note: In the code when accessing the files we would prepend the s3 address, e.g.
+   * a full link looks like this:
+   * https://shelter-link-shelters.s3.us-east-2.amazonaws.com/test_photo.webp
+   * But since "https://shelter-link-shelters.s3.us-east-2.amazonaws.com/" would look the same
+   * for every single file we can just store the file with its extension e.g. "test_photo.webp"
+   */
+  @IsString()
+  @IsNotEmpty()
+  resume: string;
+
+  /**
+   * Name of the cover letter file stored in S3 with its extension
+   *
+   * Example:  janedoe_coverLetter_2_6_2026.pdf
+   *
+   * Note: In the code when accessing the files we would prepend the s3 address, e.g.
+   * a full link looks like this:
+   * https://shelter-link-shelters.s3.us-east-2.amazonaws.com/test_photo.webp
+   * But since "https://shelter-link-shelters.s3.us-east-2.amazonaws.com/" would look the same
+   * for every single file we can just store the file with its extension e.g. "test_photo.webp"
+   */
+  @IsString()
+  @IsNotEmpty()
+  coverLetter: string;
+
+  /**
    * Name of the applicant's emergency contact
    *
    * Example: Jane Doe
@@ -257,6 +288,8 @@ export class CreateApplicationDto {
    *
    * Example: HeardAboutFrom.OTHER, HeardAboutFrom.SCHOOL
    */
-  @IsEnum(HeardAboutFrom)
+  @IsArray()
+  @IsEnum(HeardAboutFrom, { each: true })
+  @IsDefined()
   heardAboutFrom: HeardAboutFrom[];
 }

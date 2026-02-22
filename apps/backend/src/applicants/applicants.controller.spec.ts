@@ -5,7 +5,6 @@ import { ApplicantsService } from './applicants.service';
 import { Applicant } from './applicant.entity';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
-import { applicantFactory } from '../testing/factories/applicant.factory';
 
 const mockApplicantsService: Partial<ApplicantsService> = {
   create: jest.fn(),
@@ -25,11 +24,13 @@ const mockUsersService = {
   find: jest.fn(),
 };
 
-const defaultApplicant: Applicant = applicantFactory({
+const defaultApplicant: Applicant = {
   appId: 1,
   firstName: 'John',
   lastName: 'Doe',
-});
+  proposedStartDate: new Date('2026-22-02'),
+  endDate: new Date('2026-22-02'),
+};
 
 describe('ApplicantsController', () => {
   let controller: ApplicantsController;
@@ -112,9 +113,15 @@ describe('ApplicantsController', () => {
 
   describe('getAllApplicants', () => {
     it('should return all applicants', async () => {
-      const applicants = [
+      const applicants: Applicant[] = [
         defaultApplicant,
-        applicantFactory({ appId: 2, firstName: 'Jane', lastName: 'Doe' }),
+        {
+          appId: 2,
+          firstName: 'Jane',
+          lastName: 'Doe',
+          proposedStartDate: new Date('2027-22-02'),
+          endDate: new Date('2028-02-18'),
+        },
       ];
       jest
         .spyOn(mockApplicantsService, 'findAll')

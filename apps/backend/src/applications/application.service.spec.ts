@@ -9,7 +9,6 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -281,6 +280,8 @@ describe('ApplicationsService', () => {
         nonEnglishLangs: 'some chinese',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -325,6 +326,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -357,6 +360,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -395,6 +400,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -433,6 +440,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -471,6 +480,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -509,6 +520,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         elaborateOtherDiscipline: 'text',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',

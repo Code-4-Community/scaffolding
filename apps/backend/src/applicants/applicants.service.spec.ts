@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 
 import { ApplicantsService } from './applicants.service';
 import { Applicant } from './applicant.entity';
-import { applicantFactory } from '../testing/factories/applicant.factory';
 
 const mockApplicantsRepository: Partial<Repository<Applicant>> = {
   create: jest.fn(),
@@ -15,16 +14,20 @@ const mockApplicantsRepository: Partial<Repository<Applicant>> = {
   remove: jest.fn(),
 };
 
-const applicant1: Applicant = applicantFactory({
+const applicant1: Applicant = {
   appId: 1,
   firstName: 'John',
   lastName: 'Doe',
-});
-const applicant2: Applicant = applicantFactory({
+  proposedStartDate: new Date('2027-22-02'),
+  endDate: new Date('2028-02-18'),
+};
+const applicant2: Applicant = {
   appId: 2,
   firstName: 'Jane',
   lastName: 'Doe',
-});
+  proposedStartDate: new Date('2027-22-02'),
+  endDate: new Date('2028-02-18'),
+};
 
 describe('ApplicantsService', () => {
   let service: ApplicantsService;
