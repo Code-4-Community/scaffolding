@@ -39,6 +39,7 @@ export class CreateLearnerInfoDto {
    * Example: Northeastern University
    */
   @IsString()
+  @IsOptional()
   otherSchool?: string;
 
   /**
@@ -74,10 +75,10 @@ export class CreateLearnerInfoDto {
    * Example: '2000-01-01'.
    */
   @IsString()
-  @IsDefined()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
     message: 'Date must be in YYYY-MM-DD format',
   })
+  @IsOptional()
   dateOfBirth?: Date;
 
   /**
@@ -86,6 +87,7 @@ export class CreateLearnerInfoDto {
    * Example: 15 hours of patient facing work per week
    */
   @IsString()
+  @IsOptional()
   courseRequirements?: string;
 
   /**
@@ -94,9 +96,21 @@ export class CreateLearnerInfoDto {
    * Example: Jane Doe at khoury college of computer sciences, contact: doe.ja@northeastern.edu
    */
   @IsString()
+  @IsOptional()
   instructorInfo?: string;
 
   /**
-   * Course syllabus if relevant to volunteering
+   * Name of the syllabus file stored in S3 with its extension
+   *
+   * Example:  syllabus.pdf
+   *
+   * Note: In the code when accessing the files we would prepend the s3 address, e.g.
+   * a full link looks like this:
+   * https://shelter-link-shelters.s3.us-east-2.amazonaws.com/test_photo.webp
+   * But since "https://shelter-link-shelters.s3.us-east-2.amazonaws.com/" would look the same
+   * for every single file we can just store the file with its extension e.g. "test_photo.webp"
    */
+  @IsString()
+  @IsOptional()
+  syllabus?: string;
 }
