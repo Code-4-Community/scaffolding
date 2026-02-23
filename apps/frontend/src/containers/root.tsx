@@ -1,12 +1,11 @@
 import DashboardCard from '@components/DashboardCard';
-import DocumentDownloadCard from '@components/DocumentDownloadCard';
 import NavBar from '@components/NavBar/NavBar';
 
 import usersIcon from '../assets/icons/users.svg';
 import clockIcon from '../assets/icons/clock.svg';
 import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import ApplicationTable from '@components/ApplicationTable';
 
 const Root: React.FC = () => {

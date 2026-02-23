@@ -105,7 +105,8 @@ export default function DocumentDownloadCard({
         px="6"
         mt="-4"
         _hover={{ opacity: 0.9 }}
-        cursor="pointer"
+        cursor={downloadUrl ? 'pointer' : 'not-allowed'}
+        disabled={!downloadUrl}
       >
         Download File
       </Button>
