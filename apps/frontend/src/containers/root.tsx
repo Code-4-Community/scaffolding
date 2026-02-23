@@ -46,6 +46,7 @@ const Root: React.FC = () => {
             icon={checkmarkIcon}
           />
         </Box>
+
         <ApplicationTable />
       </Box>
     </div>
