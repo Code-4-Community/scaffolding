@@ -11,6 +11,7 @@ import { ProductionInfoModule } from './production-info/production-info.module';
 import { StoryModule } from './story/story.module';
 import { OmchaiModule } from './omchai/omchai.module';
 import { UsersModule } from './users/users.module';
+import { StoryDraftModule } from './story-draft/story-draft.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from './users/users.module';
     StoryModule,
     OmchaiModule,
     UsersModule,
+    StoryDraftModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,6 +9,7 @@ import { Story } from './story/story.entity';
 import { Omchai } from './omchai/omchai.entity';
 import { User } from './users/user.entity';
 import { ProductionInfo } from './production-info/production-info.entity';
+import { StoryDraft } from './story-draft/story-draft.entity';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ const AppDataSource = new DataSource({
     Story,
     Omchai,
     User,
+    StoryDraft,
   ],
   migrations: ['apps/backend/src/migrations/*.js'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
