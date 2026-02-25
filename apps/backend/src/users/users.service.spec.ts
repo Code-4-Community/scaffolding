@@ -6,18 +6,19 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { Status } from './types';
 
+export const mockUser: User = {
+  id: 1,
+  status: Status.STANDARD,
+  email: 'john@example.com',
+  name: 'John Doe',
+  firstName: '',
+  lastName: '',
+  omchaiAssignments: [],
+};
+
 describe('UsersService', () => {
   let service: UsersService;
   let repo: Repository<User>;
-
-  const mockUser: User = {
-    id: 1,
-    status: Status.STANDARD,
-    email: 'john@example.com',
-    name: 'John Doe',
-    firstName: '',
-    lastName: '',
-  };
 
   const mockRepository = {
     create: jest.fn(),

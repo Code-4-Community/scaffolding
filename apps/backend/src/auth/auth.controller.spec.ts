@@ -52,6 +52,7 @@ describe('AuthController', () => {
         firstName: 'John',
         lastName: 'Doe',
         status: Status.STANDARD,
+        omchaiAssignments: [],
       };
 
       jest.spyOn(authService, 'signup').mockResolvedValue(true);
@@ -86,6 +87,7 @@ describe('AuthController', () => {
         lastName: 'Doe',
         status: Status.STANDARD,
         publishingName: 'J.D. Writer',
+        omchaiAssignments: [],
       };
 
       jest.spyOn(authService, 'signup').mockResolvedValue(true);

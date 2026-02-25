@@ -1,22 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { User } from './user.entity';
-import { Status } from './types';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { AuthService } from '../auth/auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { mockUser } from './users.service.spec';
 
 describe('UsersController', () => {
   let controller: UsersController;
   let service: UsersService;
-
-  const mockUser: User = {
-    id: 1,
-    status: 'STANDARD' as Status,
-    name: 'John Doe',
-    email: 'john@example.com',
-  };
 
   const mockUsersService = {
     findAll: jest.fn(),

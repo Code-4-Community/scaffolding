@@ -3,6 +3,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { OmchaiService } from './omchai.service';
 import { Omchai, OmchaiRole } from './omchai.entity';
+import { Anthology } from 'src/anthology/anthology.entity';
+import { User } from 'src/users/user.entity';
+import { mockAnthology } from 'src/production-info/production-info.service.spec';
+import { mockUser } from 'src/users/users.service.spec';
 
 describe('OmchaiService', () => {
   let service: OmchaiService;
@@ -13,6 +17,8 @@ describe('OmchaiService', () => {
     userId: 1,
     role: OmchaiRole.OWNER,
     datetimeAssigned: new Date(),
+    user: mockUser,
+    anthology: mockAnthology,
   };
 
   const mockRepository = {
@@ -47,7 +53,7 @@ describe('OmchaiService', () => {
   describe('create', () => {
     it('should create a new omchai', async () => {
       const dto = {
-        anthologyId: 1,
+        anthology_id: 1,
         user_id: 1,
         role: OmchaiRole.OWNER,
         datetime_assigned: new Date(),

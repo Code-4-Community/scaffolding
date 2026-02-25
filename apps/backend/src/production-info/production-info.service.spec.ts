@@ -7,22 +7,52 @@ import { Anthology } from '../anthology/anthology.entity';
 import { CreateProductionInfoDto } from './dtos/create-production-info.dto';
 import { UpdateProductionInfoDto } from './dtos/update-production-info.dto';
 import { Repository } from 'typeorm';
+import {
+  AnthologyStatus,
+  AgeCategory,
+  AnthologyPubLevel,
+} from 'src/anthology/types';
+
+export const mockAnthology: Anthology = {
+  id: 1,
+  title: 'Test Anthology',
+  byline: '',
+  subtitle: 'A College Essay Anthology',
+  description: '',
+  genres: [],
+  themes: [],
+  triggers: [],
+  publishedDate: undefined,
+  status: AnthologyStatus.ARCHIVED,
+  ageCategory: AgeCategory.YA,
+  pubLevel: AnthologyPubLevel.ZINE,
+  photoUrl: '',
+  isbn: '',
+  shopifyUrl: '',
+  stories: [],
+  inventoryHoldings: [],
+  productionInfo: new ProductionInfo(),
+  omchaiAssignments: [],
+};
+
+export const mockProductionInfo: ProductionInfo = {
+  id: 1,
+  anthology_id: 1,
+  design_files_link: 'http://example.com',
+  cover_image_file_link: '',
+  binding_type: '',
+  dimensions: '',
+  printing_cost: 0,
+  print_run: 0,
+  weight_in_grams: 0,
+  page_count: 0,
+  printed_by: '',
+};
 
 describe('ProductionInfoService', () => {
   let service: ProductionInfoService;
   let productionInfoRepository: Repository<ProductionInfo>;
   let anthologyRepository: Repository<Anthology>;
-
-  const mockAnthology = {
-    id: 1,
-    title: 'Test Anthology',
-  } as Anthology;
-
-  const mockProductionInfo = {
-    id: 1,
-    anthology_id: mockAnthology.id,
-    design_files_link: 'http://example.com',
-  } as ProductionInfo;
 
   const mockProductionInfoRepository = {
     create: jest.fn(),
@@ -119,7 +149,7 @@ describe('ProductionInfoService', () => {
       const result = await service.findOneByAnthologyId(1);
 
       expect(productionInfoRepository.findOne).toHaveBeenCalledWith({
-        where: { anthology: { id: 1 } },
+        where: { anthology_id: 1 },
         relations: ['anthology'],
       });
       expect(result).toEqual(mockProductionInfo);
