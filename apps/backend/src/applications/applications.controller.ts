@@ -16,6 +16,7 @@ import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
+import { UpdateApplicationAvailabilityDto } from './dto/update-application-availability.request.dto';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
@@ -125,6 +126,23 @@ export class ApplicationsController {
     return await this.applicationsService.update(appId, {
       discipline: updateDisciplineDto.discipline,
     });
+  }
+
+  /**
+   * Exposes an endpoint to update the availability fields of an application.
+   * @param appId The id of the application to update.
+   * @param updateAvailabilityDto Object containing one or more day availability strings.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns The updated application object.
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  @Patch('/:appId/availability')
+  async updateApplicationAvailability(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body() updateAvailabilityDto: UpdateApplicationAvailabilityDto,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.update(appId, updateAvailabilityDto);
   }
 
   /**
