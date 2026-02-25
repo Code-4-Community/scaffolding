@@ -1,27 +1,31 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
-import type { Status } from './types';
+import { Status } from './types';
+import { Omchai } from 'src/omchai/omchai.entity';
 
 @Entity()
 export class User {
   @Column({ primary: true })
   id: number;
 
-  @Column()
+  @Column({ type: 'enum', enum: Status })
   status: Status;
 
-  @Column()
+  @Column({ name: 'first_name' })
   firstName: string;
 
-  @Column()
+  @Column({ name: 'last_name', default: '' })
   lastName: string;
 
-  @Column()
+  @Column({ default: '' })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'publishing_name', nullable: true })
   publishingName?: string;
 
   @Column({ nullable: true })
   name?: string;
+
+  @OneToMany(() => Omchai, (omchai) => omchai.user)
+  omchaiAssignments: Omchai[];
 }

@@ -31,9 +31,9 @@ const AppDataSource = new DataSource({
     User,
     StoryDraft,
   ],
-  migrations: ['apps/backend/src/migrations/*.js'],
+  migrations: ['apps/backend/src/migrations/*.ts'],
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
-  synchronize: false,
+  synchronize: true,
   namingStrategy: new PluralNamingStrategy(),
 });
 

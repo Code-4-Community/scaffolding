@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Put, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ProductionInfoService } from './production-info.service';
 import { CreateProductionInfoDto } from './dtos/create-production-info.dto';
 import { UpdateProductionInfoDto } from './dtos/update-production-info.dto';
@@ -9,7 +17,9 @@ export class ProductionInfoController {
   constructor(private readonly productionInfoService: ProductionInfoService) {}
 
   @Post()
-  create(@Body() createProductionInfoDto: CreateProductionInfoDto): Promise<ProductionInfo> {
+  create(
+    @Body() createProductionInfoDto: CreateProductionInfoDto,
+  ): Promise<ProductionInfo> {
     return this.productionInfoService.create(createProductionInfoDto);
   }
 
@@ -19,7 +29,9 @@ export class ProductionInfoController {
   }
 
   @Get(':anthologyId')
-  findOneByAnthologyId(@Param('anthologyId', ParseIntPipe) anthologyId: number): Promise<ProductionInfo> {
+  findOneByAnthologyId(
+    @Param('anthologyId', ParseIntPipe) anthologyId: number,
+  ): Promise<ProductionInfo> {
     return this.productionInfoService.findOneByAnthologyId(anthologyId);
   }
 

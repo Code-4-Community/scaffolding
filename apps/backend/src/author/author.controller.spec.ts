@@ -32,6 +32,9 @@ export const mockAuthor1: Author = {
   name: 'Regina George',
   bio: '...',
   grade: 10,
+  classPeriod: '',
+  nameInBook: '',
+  stories: [],
 };
 
 export const mockAuthor2: Author = {
@@ -39,6 +42,9 @@ export const mockAuthor2: Author = {
   name: 'George Bush',
   bio: '...',
   grade: 11,
+  classPeriod: '',
+  nameInBook: '',
+  stories: [],
 };
 
 describe('AuthorController', () => {

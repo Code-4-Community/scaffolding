@@ -52,9 +52,10 @@ describe('AuthController', () => {
         firstName: 'John',
         lastName: 'Doe',
         status: Status.STANDARD,
+        omchaiAssignments: [],
       };
 
-      jest.spyOn(authService, 'signup').mockResolvedValue(undefined);
+      jest.spyOn(authService, 'signup').mockResolvedValue(true);
       jest.spyOn(usersService, 'create').mockResolvedValue(expectedUser);
 
       const result = await controller.createUser(signUpDto);
@@ -86,9 +87,10 @@ describe('AuthController', () => {
         lastName: 'Doe',
         status: Status.STANDARD,
         publishingName: 'J.D. Writer',
+        omchaiAssignments: [],
       };
 
-      jest.spyOn(authService, 'signup').mockResolvedValue(undefined);
+      jest.spyOn(authService, 'signup').mockResolvedValue(true);
       jest.spyOn(usersService, 'create').mockResolvedValue(expectedUser);
 
       const result = await controller.createUser(signUpDto);

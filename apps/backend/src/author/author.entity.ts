@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Story } from 'src/story/story.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 
 @Entity()
 export class Author {
@@ -8,9 +15,21 @@ export class Author {
   @Column()
   name: string;
 
+  @Column({ name: 'class_period' })
+  classPeriod: string;
+
+  @Column({
+    name: 'name_in_book',
+    nullable: true,
+  })
+  nameInBook: string;
+
   @Column({ nullable: true })
   bio: string;
 
   @Column({ nullable: true, type: 'int' })
   grade: number;
+
+  @OneToMany(() => Story, (story) => story.author)
+  stories: Relation<Story>[];
 }

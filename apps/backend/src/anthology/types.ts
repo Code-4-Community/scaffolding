@@ -11,3 +11,7 @@ export enum AnthologyPubLevel {
   PERFECT_BOUND = 'PerfectBound',
   SIGNATURE = 'Signature',
 }
+
+export enum AgeCategory {
+  YA = 'Young Adult Books (Ages 13-18)',
+}

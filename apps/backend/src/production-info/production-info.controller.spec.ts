@@ -11,7 +11,7 @@ describe('ProductionInfoController', () => {
 
   const mockProductionInfo = {
     id: 1,
-    anthology: { id: 1 },
+    anthology_id: 1,
     design_files_link: 'http://noidea.com',
   } as ProductionInfo;
 
