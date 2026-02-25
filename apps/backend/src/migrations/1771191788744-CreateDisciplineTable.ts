@@ -5,6 +5,20 @@ export class CreateDisciplineTable1771191788744 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
+      `DO $$ BEGIN
+        CREATE TYPE "public"."discipline_name_enum" AS ENUM(
+          'MD/Medical Student/Pre-Med',
+          'Medical NP/PA',
+          'Psychiatry or Psychiatric NP/PA',
+          'Public Health',
+          'RN',
+          'Social Work',
+          'Other'
+        );
+      EXCEPTION WHEN duplicate_object THEN null;
+      END $$`,
+    );
+    await queryRunner.query(
       `CREATE TABLE "discipline" ("id" SERIAL NOT NULL, "name" "public"."discipline_name_enum" NOT NULL, "admin_ids" integer array NOT NULL DEFAULT '{}', CONSTRAINT "PK_139512aefbb11a5b2fa92696828" PRIMARY KEY ("id"))`,
     );
   }

@@ -4,6 +4,7 @@ import { User } from './users/user.entity';
 import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
 import * as dotenv from 'dotenv';
 import { Application } from './applications/application.entity';
+import { Applicant } from './applicants/applicant.entity';
 import { Discipline } from './disciplines/disciplines.entity';
 import { LearnerInfo } from './learner-info/learner-info.entity';
 import { VolunteerInfo } from './volunteer-info/volunteer-info.entity';
@@ -20,16 +21,15 @@ const AppDataSource = new DataSource({
   database: process.env.NX_DB_DATABASE,
   entities: [
     Application,
+    Applicant,
     Admin,
     Discipline,
-    Applicant,
     VolunteerInfo,
     LearnerInfo,
     User,
   ],
-  // migrations: ['apps/backend/src/migrations/*.js'],
-  migrations: ['apps/backend/src/migrations/*.ts'], // use this line instead of the above when running migrations locally,
-  // then switch back to the above before pushing to github so that it works on the deployment server
+  migrations: ['apps/backend/src/migrations/*.js'], // use this line before pushing to github so that it works on the deployment server
+  // migrations: ['apps/backend/src/migrations/*.ts'], // use this line when running migrations locally
   // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data
   synchronize: false,
   namingStrategy: new PluralNamingStrategy(),
