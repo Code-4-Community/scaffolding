@@ -15,6 +15,8 @@ describe('UsersService', () => {
     status: Status.STANDARD,
     email: 'john@example.com',
     name: 'John Doe',
+    firstName: '',
+    lastName: '',
   };
 
   const mockRepository = {

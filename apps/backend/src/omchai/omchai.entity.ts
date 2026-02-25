@@ -3,6 +3,7 @@ import { User } from 'src/users/user.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -36,4 +37,12 @@ export class Omchai {
 
   @Column({ type: 'date', name: 'datetime_assigned' })
   datetimeAssigned: Date;
+
+  @ManyToOne(() => User, (user) => user.omchaiAssignments)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Anthology, (anthology) => anthology.omchaiAssignments)
+  @JoinColumn({ name: 'anthology_id' })
+  anthology: Anthology;
 }

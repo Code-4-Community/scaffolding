@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Story } from 'src/story/story.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 
 @Entity()
 export class Author {
@@ -22,4 +29,7 @@ export class Author {
 
   @Column({ nullable: true, type: 'int' })
   grade: number;
+
+  @OneToMany(() => Story, (story) => story.author)
+  stories: Relation<Story>[];
 }

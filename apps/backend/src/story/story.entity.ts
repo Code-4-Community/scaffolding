@@ -5,6 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
   Relation,
+  ManyToMany,
 } from 'typeorm';
 import { Anthology } from '../anthology/anthology.entity';
 import { Author } from '../author/author.entity';
@@ -30,8 +31,13 @@ export class Story {
   anthologyId: number;
 
   @ManyToOne(() => Anthology, (anthology) => anthology.stories)
+  @JoinColumn({ name: 'anthology_id' })
   anthology: Relation<Anthology>;
 
   @Column({ name: 'author_id' })
   authorId: number;
+
+  @ManyToOne(() => Author, (author) => author.stories)
+  @JoinColumn({ name: 'author_id' })
+  author: Relation<Author>;
 }

@@ -97,4 +97,7 @@ export class Anthology {
     (productionInfo) => productionInfo.anthology_id,
   )
   productionInfo: ProductionInfo;
+
+  @OneToMany(() => Omchai, (omchai) => omchai.anthology)
+  omchaiAssignments: Omchai[];
 }
