@@ -58,6 +58,7 @@ describe('ApplicationsService', () => {
         {
           appId: 1,
           appStatus: AppStatus.APP_SUBMITTED,
+          sundayAvailability: 'no availability',
           mondayAvailability: '12pm and on every other week',
           tuesdayAvailability: 'approximately 10am-3pm',
           wednesdayAvailability: 'no availability',
@@ -119,6 +120,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -174,6 +176,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -213,6 +216,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -262,6 +266,7 @@ describe('ApplicationsService', () => {
     it('should create and save a new application', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -309,6 +314,7 @@ describe('ApplicationsService', () => {
       );
       const mockApplication: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -341,6 +347,7 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is too long', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -380,6 +387,7 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is too short', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -419,6 +427,7 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is the right length but not in ###-###-#### format', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -458,6 +467,7 @@ describe('ApplicationsService', () => {
     it('should not accept 0 weekly hours', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -497,6 +507,7 @@ describe('ApplicationsService', () => {
     it('should not accept negative weekly hours', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -540,6 +551,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -592,6 +604,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -679,6 +692,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -719,6 +733,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -761,6 +776,7 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
+        sundayAvailability: 'no availability',
         mondayAvailability: '12pm and on every other week',
         tuesdayAvailability: 'approximately 10am-3pm',
         wednesdayAvailability: 'no availability',
@@ -819,6 +835,7 @@ describe('ApplicationsService', () => {
         {
           appId: 1,
           appStatus: AppStatus.APP_SUBMITTED,
+          sundayAvailability: 'no availability',
           mondayAvailability: '12pm and on every other week',
           tuesdayAvailability: 'approximately 10am-3pm',
           wednesdayAvailability: 'no availability',
@@ -848,6 +865,7 @@ describe('ApplicationsService', () => {
         {
           appId: 2,
           appStatus: AppStatus.IN_REVIEW,
+          sundayAvailability: 'no availability',
           mondayAvailability: '12pm and on every other week',
           tuesdayAvailability: 'approximately 10am-3pm',
           wednesdayAvailability: 'no availability',
