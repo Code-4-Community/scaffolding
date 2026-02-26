@@ -10,12 +10,22 @@ export const RequirementsFrame: React.FC = () => {
       <Fieldset.Root>
         <Field.Root>
           <Field.Label>If this is for a course, please describe:</Field.Label>
-          <Textarea placeholder="Enter course requirements or context here" />
+          <Textarea
+            placeholder="Enter course requirements or context here"
+            borderColor="black"
+            borderWidth="1px"
+            height="100px"
+          />
         </Field.Root>
 
         <Field.Root>
           <Field.Label>Instructor Contact Info</Field.Label>
-          <Textarea placeholder="Enter instructor name, email, and phone here" />
+          <Textarea
+            placeholder="Enter instructor name, email, and phone here"
+            borderColor="black"
+            borderWidth="1px"
+            height="100px"
+          />
         </Field.Root>
       </Fieldset.Root>
     </Box>
