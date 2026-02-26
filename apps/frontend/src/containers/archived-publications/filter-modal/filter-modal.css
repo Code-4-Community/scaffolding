@@ -1,0 +1,243 @@
+/* Filter Modal Backdrop */
+.filter-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* Modal Container */
+.filter-modal {
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: 12px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  max-width: 860px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: filterModalFadeIn 0.2s ease-out;
+}
+
+/* Header */
+.filter-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 29px 42px 0;
+  flex-shrink: 0;
+}
+
+.filter-modal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-modal-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--neutral-600);
+  margin: 0;
+}
+
+.filter-modal-subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  color: #858585;
+  margin: 0;
+}
+
+.filter-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--neutral-600);
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.filter-modal-close:hover {
+  opacity: 0.6;
+}
+
+/* Body */
+.filter-modal-body {
+  padding: 21px 42px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Section */
+.filter-modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.filter-modal-section-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--neutral-600);
+  margin: 0 0 4px;
+}
+
+/* Footer */
+.filter-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 42px 24px;
+  border-top: 1px solid var(--neutral-200);
+  flex-shrink: 0;
+}
+
+.filter-modal-btn {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.filter-modal-btn:hover {
+  opacity: 0.8;
+}
+
+.filter-modal-btn--clear {
+  background: white;
+  border: 1px solid var(--neutral-300);
+  color: var(--neutral-600);
+}
+
+.filter-modal-btn--apply {
+  background: var(--neutral-600);
+  border: 1px solid var(--neutral-600);
+  color: white;
+}
+
+/* ── Shared: Tab Filter Row ──────────────────────────────── */
+
+.filter-tab-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+
+/* When a label column is present */
+.filter-tab-row--labeled {
+  gap: 12px;
+}
+
+.filter-tab-label {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--neutral-600);
+  width: 118px;
+  flex-shrink: 0;
+}
+
+.filter-tab-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: center;
+  flex: 1;
+}
+
+.filter-tab-option {
+  background: none;
+  border: none;
+  border-bottom: 0.5px solid var(--neutral-300);
+  padding: 8px 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--neutral-600);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease;
+}
+
+.filter-tab-option:hover {
+  border-bottom-color: var(--neutral-600);
+}
+
+.filter-tab-option--active {
+  font-weight: 700;
+  border-bottom: 0.5px solid var(--neutral-600);
+}
+
+/* ── Shared: Range Filter Row ────────────────────────────── */
+
+.filter-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-range-input {
+  border: 0.5px solid #858585;
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--neutral-600);
+  width: 90px;
+  outline: none;
+  background: white;
+  /* Remove browser-default number spinners */
+  -moz-appearance: textfield;
+}
+
+.filter-range-input::-webkit-outer-spin-button,
+.filter-range-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.filter-range-input::placeholder {
+  color: #858585;
+}
+
+.filter-range-input:focus {
+  border-color: var(--neutral-600);
+}
+
+.filter-range-separator {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--neutral-600);
+  flex-shrink: 0;
+}
+
+@keyframes filterModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

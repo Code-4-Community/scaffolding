@@ -19,6 +19,65 @@ export interface Author {
   grade?: number;
 }
 
+export interface Story {
+  id: number;
+  title: string;
+  description?: string;
+  studentBio?: string;
+  genre?: string;
+  theme?: string;
+  anthologyId: number;
+  anthology?: Anthology;
+  authorId: number;
+  author?: Author;
+}
+
+export enum AnthologyProgram {
+  TUTORING = 'Tutoring',
+  WRITERS_ROOM = "Writer's Room",
+  STEM_LITERACY = 'STEM Literacy',
+  SCHOOL_PARTNERSHIP = 'School Partnership',
+  YOUNG_AUTHORS = 'Young Authors',
+}
+
+export enum AnthologyGenre {
+  MYSTERY = 'Mystery',
+  FANTASY = 'Fantasy',
+  HISTORICAL_FICTION = 'Historical Fiction',
+  ROMANCE = 'Romance',
+  COMEDY = 'Comedy',
+  POETRY = 'Poetry',
+}
+
+export enum SortOption {
+  TITLE_ASC = 'title-asc',
+  AUTHOR_ASC = 'author-asc',
+  DATE_NEWEST = 'date-newest',
+  DATE_OLDEST = 'date-oldest',
+}
+
+export interface FilterState {
+  sortBy: SortOption;
+  pubDateStart: string;
+  pubDateEnd: string;
+  pubLevel: AnthologyPubLevel | null;
+  program: AnthologyProgram | null;
+  genres: AnthologyGenre[];
+  inventoryMin: string;
+  inventoryMax: string;
+}
+
+export const DEFAULT_FILTER_STATE: FilterState = {
+  sortBy: SortOption.TITLE_ASC,
+  pubDateStart: '',
+  pubDateEnd: '',
+  pubLevel: null,
+  program: null,
+  genres: [],
+  inventoryMin: '',
+  inventoryMax: '',
+};
+
 export interface Anthology {
   id: number;
   title: string;
@@ -29,8 +88,8 @@ export interface Anthology {
   status: AnthologyStatus;
   pub_level: AnthologyPubLevel;
   photo_url?: string;
-  genre?: string;
-  theme?: string;
+  genres?: string[];
+  themes?: string[];
   isbn?: string;
   shopify_url?: string;
 
@@ -50,17 +109,4 @@ export interface Anthology {
   weight?: string;
   // Inventory breakdown locations
   inventory_locations?: Record<string, number>;
-}
-
-export interface Story {
-  id: number;
-  title: string;
-  description?: string;
-  studentBio?: string;
-  genre?: string;
-  theme?: string;
-  anthologyId: number;
-  anthology?: Anthology;
-  authorId: number;
-  author?: Author;
 }
