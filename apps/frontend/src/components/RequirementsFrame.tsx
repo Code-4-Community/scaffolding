@@ -1,4 +1,7 @@
-import { Box, Heading, Textarea, Fieldset, Field } from '@chakra-ui/react';
+import { Box, Heading, Text } from '@chakra-ui/react';
+
+const STUDENT_REQUIREMENTS_PLACEHOLDER = 'PLACEHOLDER INFO HERE';
+const INSTRUCTOR_CONTACT_INFO_PLACEHOLDER = 'PLACEHOLDER INFO HERE';
 
 export const RequirementsFrame: React.FC = () => {
   return (
@@ -7,27 +10,35 @@ export const RequirementsFrame: React.FC = () => {
         Course Requirements
       </Heading>
 
-      <Fieldset.Root>
-        <Field.Root>
-          <Field.Label>If this is for a course, please describe:</Field.Label>
-          <Textarea
-            placeholder="Enter course requirements or context here"
-            borderColor="black"
-            borderWidth="1px"
-            height="100px"
-          />
-        </Field.Root>
+      <Box mb={4}>
+        <Text display="block" fontSize="sm" fontWeight="medium" mb={2}>
+          If this is for a course, please describe:
+        </Text>
+        <Box
+          borderColor="black"
+          borderWidth="1px"
+          height="100px"
+          p={3}
+          overflow="auto"
+        >
+          <Text fontSize="sm">{STUDENT_REQUIREMENTS_PLACEHOLDER}</Text>
+        </Box>
+      </Box>
 
-        <Field.Root>
-          <Field.Label>Instructor Contact Info</Field.Label>
-          <Textarea
-            placeholder="Enter instructor name, email, and phone here"
-            borderColor="black"
-            borderWidth="1px"
-            height="100px"
-          />
-        </Field.Root>
-      </Fieldset.Root>
+      <Box>
+        <Text display="block" fontSize="sm" fontWeight="medium" mb={2}>
+          Instructor Contact Info
+        </Text>
+        <Box
+          borderColor="black"
+          borderWidth="1px"
+          height="100px"
+          p={3}
+          overflow="auto"
+        >
+          <Text fontSize="sm">{INSTRUCTOR_CONTACT_INFO_PLACEHOLDER}</Text>
+        </Box>
+      </Box>
     </Box>
   );
 };
