@@ -1,4 +1,3 @@
-import React from 'react';
 import { Flex, Heading, Text, Circle } from '@chakra-ui/react';
 
 export interface SchoolAffiliationProps {
@@ -12,7 +11,7 @@ export interface SchoolAffiliationProps {
   totalTimeRequested: string;
 }
 
-const SchoolAffiliationFrame: React.FC<SchoolAffiliationProps> = ({
+const SchoolAffiliationFrame = ({
   schoolName,
   schoolDepartment,
   license,
@@ -21,7 +20,7 @@ const SchoolAffiliationFrame: React.FC<SchoolAffiliationProps> = ({
   actualStartDate,
   endDate,
   totalTimeRequested,
-}) => {
+}: SchoolAffiliationProps) => {
   return (
     <Flex
       direction="column"
@@ -33,7 +32,7 @@ const SchoolAffiliationFrame: React.FC<SchoolAffiliationProps> = ({
       boxSizing="border-box"
       mb="24px"
     >
-      <Heading as="h1" size="lg" mb="2">
+      <Heading as="h2" size="sm" mb="2">
         School Affiliation
       </Heading>
 
