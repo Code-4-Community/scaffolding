@@ -7,6 +7,7 @@ import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
 import { Box } from '@chakra-ui/react';
 import ApplicationTable from '@components/ApplicationTable';
+import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
 
 const Root: React.FC = () => {
   return (
@@ -46,7 +47,16 @@ const Root: React.FC = () => {
             icon={checkmarkIcon}
           />
         </Box>
-
+        <SchoolAffiliationFrame
+          schoolName="Northeastern University"
+          schoolDepartment="Nursing"
+          license="RN"
+          areaOfInterest="Women's Health"
+          proposedStartDate="XX/XX/XXXX"
+          actualStartDate="___________"
+          endDate="XX/XX/XXXX"
+          totalTimeRequested="00:00"
+        />
         <ApplicationTable />
       </Box>
     </div>
