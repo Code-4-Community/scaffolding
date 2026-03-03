@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Admin } from './users/admin.entity';
+import { Admin } from './admin-info/admin-info.entity';
 import { User } from './users/user.entity';
 import { PluralNamingStrategy } from './strategies/plural-naming.strategy';
 import * as dotenv from 'dotenv';

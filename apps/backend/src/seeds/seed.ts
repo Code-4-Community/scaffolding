@@ -12,7 +12,7 @@ import {
 } from '../applications/types';
 import { LearnerInfo } from '../learner-info/learner-info.entity';
 import { VolunteerInfo } from '../volunteer-info/volunteer-info.entity';
-import { Applicant } from '../applicants/applicant.entity';
+import { Applicant } from '../candidate-info/candidate-info.entity';
 
 const APPLICANT_SEED = [
   {

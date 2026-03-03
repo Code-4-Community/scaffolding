@@ -2,13 +2,13 @@ import {
   IsString,
   IsNotEmpty,
   IsDefined,
-  Matches,
   IsInt,
   IsPositive,
+  IsEmail,
 } from 'class-validator';
 
 /**
- * Defines the expected shape of data for creating a applicant.
+ * Defines the expected shape of data for creating an applicant (candidate info).
  *
  * DTO - data transfer object (defines and validates the structure of data sent over the network).
  */
@@ -22,20 +22,11 @@ export class CreateApplicantDto {
   appId: number;
 
   /**
-   * The applicant's first name.
+   * The applicant's email (primary key for candidate info).
    *
-   * Example: 'Jane'.
+   * Example: 'jane.doe@example.com'.
    */
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
-  firstName: string;
-
-  /**
-   * The applicant's last name.
-   *
-   * Example: 'Jane'.
-   */
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
+  email: string;
 }

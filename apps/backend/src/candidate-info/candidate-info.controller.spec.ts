@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ApplicantsController } from './applicants.controller';
-import { ApplicantsService } from './applicants.service';
-import { Applicant } from './applicant.entity';
+import { ApplicantsController } from './candidate-info.controller';
+import { ApplicantsService } from './candidate-info.service';
+import { Applicant } from './candidate-info.entity';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
 import { applicantFactory } from '../testing/factories/applicant.factory';
@@ -25,8 +25,7 @@ const mockUsersService = {
 
 const defaultApplicant: Applicant = applicantFactory({
   appId: 1,
-  firstName: 'John',
-  lastName: 'Doe',
+  email: 'john@example.com',
 });
 
 describe('ApplicantsController', () => {
@@ -66,10 +65,7 @@ describe('ApplicantsController', () => {
     it('should create a new applicant', async () => {
       const createApplicantDto = {
         appId: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        startDate: '2024-01-01',
-        endDate: '2024-06-30',
+        email: 'john@example.com',
       };
 
       jest
@@ -81,20 +77,14 @@ describe('ApplicantsController', () => {
       expect(result).toEqual(defaultApplicant);
       expect(mockApplicantsService.create).toHaveBeenCalledWith(
         1,
-        'John',
-        'Doe',
-        new Date('2024-01-01'),
-        new Date('2024-06-30'),
+        'john@example.com',
       );
     });
 
     it('should handle service errors when creating applicant', async () => {
       const createApplicantDto = {
         appId: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        startDate: '2024-01-01',
-        endDate: '2024-06-30',
+        email: 'john@example.com',
       };
 
       const errorMessage = 'Failed to create applicant';
@@ -112,7 +102,7 @@ describe('ApplicantsController', () => {
     it('should return all applicants', async () => {
       const applicants = [
         defaultApplicant,
-        applicantFactory({ appId: 2, firstName: 'Jane', lastName: 'Doe' }),
+        applicantFactory({ appId: 2, email: 'jane@example.com' }),
       ];
       jest
         .spyOn(mockApplicantsService, 'findAll')
@@ -145,38 +135,59 @@ describe('ApplicantsController', () => {
     });
   });
 
-  describe('getApplicant', () => {
-    it('should return a specific applicant', async () => {
+  describe('getApplicantByEmail', () => {
+    it('should return a specific applicant by email', async () => {
       jest
         .spyOn(mockApplicantsService, 'findOne')
         .mockResolvedValue(defaultApplicant);
 
-      const result = await controller.getApplicant(1);
+      const result = await controller.getApplicantByEmail('john@example.com');
 
       expect(result).toEqual(defaultApplicant);
-      expect(mockApplicantsService.findOne).toHaveBeenCalledWith(1);
+      expect(mockApplicantsService.findOne).toHaveBeenCalledWith(
+        'john@example.com',
+      );
     });
 
     it('should throw an error if applicant is not found', async () => {
-      const errorMessage = 'Applicant with ID 999 not found';
+      const errorMessage =
+        'Applicant with email notfound@example.com not found';
       jest
         .spyOn(mockApplicantsService, 'findOne')
         .mockRejectedValue(new Error(errorMessage));
 
-      await expect(controller.getApplicant(999)).rejects.toThrow(errorMessage);
+      await expect(
+        controller.getApplicantByEmail('notfound@example.com'),
+      ).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('getApplicantsByAppId', () => {
+    it('should return applicants for the given app id', async () => {
+      const applicants = [defaultApplicant];
+      jest
+        .spyOn(mockApplicantsService, 'findByAppId')
+        .mockResolvedValue(applicants);
+
+      const result = await controller.getApplicantsByAppId(1);
+
+      expect(result).toEqual(applicants);
+      expect(mockApplicantsService.findByAppId).toHaveBeenCalledWith(1);
     });
   });
 
   describe('deleteApplicant', () => {
-    it('should delete a applicant', async () => {
+    it('should delete an applicant by email', async () => {
       jest
         .spyOn(mockApplicantsService, 'delete')
         .mockResolvedValue(defaultApplicant);
 
-      const result = await controller.deleteApplicant(1);
+      const result = await controller.deleteApplicant('john@example.com');
 
       expect(result).toEqual(defaultApplicant);
-      expect(mockApplicantsService.delete).toHaveBeenCalledWith(1);
+      expect(mockApplicantsService.delete).toHaveBeenCalledWith(
+        'john@example.com',
+      );
     });
 
     it('should handle service errors when deleting applicant', async () => {
@@ -185,20 +196,21 @@ describe('ApplicantsController', () => {
         .spyOn(mockApplicantsService, 'delete')
         .mockRejectedValue(new Error(errorMessage));
 
-      await expect(controller.deleteApplicant(1)).rejects.toThrow(
-        'Failed to delete applicant',
-      );
+      await expect(
+        controller.deleteApplicant('john@example.com'),
+      ).rejects.toThrow('Failed to delete applicant');
     });
 
     it('should throw an error if applicant is not found', async () => {
-      const errorMessage = 'Applicant with ID 999 not found';
+      const errorMessage =
+        'Applicant with email notfound@example.com not found';
       jest
         .spyOn(mockApplicantsService, 'delete')
         .mockRejectedValue(new Error(errorMessage));
 
-      await expect(controller.deleteApplicant(999)).rejects.toThrow(
-        'Applicant with ID 999 not found',
-      );
+      await expect(
+        controller.deleteApplicant('notfound@example.com'),
+      ).rejects.toThrow(errorMessage);
     });
   });
 });

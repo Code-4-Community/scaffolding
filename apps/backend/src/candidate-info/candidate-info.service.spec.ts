@@ -3,8 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
 
-import { ApplicantsService } from './applicants.service';
-import { Applicant } from './applicant.entity';
+import { ApplicantsService } from './candidate-info.service';
+import { Applicant } from './candidate-info.entity';
 import { applicantFactory } from '../testing/factories/applicant.factory';
 
 const mockApplicantsRepository: Partial<Repository<Applicant>> = {
@@ -17,13 +17,11 @@ const mockApplicantsRepository: Partial<Repository<Applicant>> = {
 
 const applicant1: Applicant = applicantFactory({
   appId: 1,
-  firstName: 'John',
-  lastName: 'Doe',
+  email: 'john@example.com',
 });
 const applicant2: Applicant = applicantFactory({
   appId: 2,
-  firstName: 'Jane',
-  lastName: 'Doe',
+  email: 'jane@example.com',
 });
 
 describe('ApplicantsService', () => {
@@ -55,8 +53,7 @@ describe('ApplicantsService', () => {
     it('should create a new applicant', async () => {
       const createData = {
         appId: 1,
-        firstName: 'John',
-        lastName: 'Doe',
+        email: 'john@example.com',
       };
 
       jest
@@ -66,11 +63,7 @@ describe('ApplicantsService', () => {
         .spyOn(mockApplicantsRepository, 'save')
         .mockResolvedValue(applicant1);
 
-      const result = await service.create(
-        createData.appId,
-        createData.firstName,
-        createData.lastName,
-      );
+      const result = await service.create(createData.appId, createData.email);
 
       expect(result).toEqual(applicant1);
       expect(mockApplicantsRepository.create).toHaveBeenCalledWith(createData);
@@ -78,94 +71,68 @@ describe('ApplicantsService', () => {
     });
 
     it('should throw error if appId is invalid', async () => {
-      await expect(service.create(0, 'John', 'Doe')).rejects.toThrow(
+      await expect(service.create(0, 'john@example.com')).rejects.toThrow(
         'Valid app ID is required',
       );
     });
 
-    it('should throw error if first name is empty', async () => {
-      await expect(service.create(1, '', 'Doe')).rejects.toThrow(
-        'Applicant first name is required',
-      );
-    });
-
-    it('should throw error if last name is empty', async () => {
-      await expect(service.create(1, 'Jane', '')).rejects.toThrow(
-        'Applicant last name is required',
+    it('should throw error if email is empty', async () => {
+      await expect(service.create(1, '')).rejects.toThrow(
+        'Applicant email is required',
       );
     });
 
     it('should error out without information loss if the repository throws an error during create', async () => {
-      const createData = {
-        appId: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-      };
-
       jest
         .spyOn(mockApplicantsRepository, 'create')
         .mockImplementationOnce(() => {
           throw new Error('There was a problem retrieving the info');
         });
 
-      await expect(
-        service.create(
-          createData.appId,
-          createData.firstName,
-          createData.lastName,
-        ),
-      ).rejects.toThrow(`There was a problem retrieving the info`);
+      await expect(service.create(1, 'john@example.com')).rejects.toThrow(
+        `There was a problem retrieving the info`,
+      );
     });
 
     it('should error out without information loss if the repository throws an error during save', async () => {
-      const createData = {
-        appId: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-      };
-
       jest
         .spyOn(mockApplicantsRepository, 'save')
         .mockImplementationOnce(() => {
           throw new Error('There was a problem saving the info');
         });
 
-      await expect(
-        service.create(
-          createData.appId,
-          createData.firstName,
-          createData.lastName,
-        ),
-      ).rejects.toThrow(`There was a problem saving the info`);
+      await expect(service.create(1, 'john@example.com')).rejects.toThrow(
+        `There was a problem saving the info`,
+      );
     });
   });
 
   describe('findOne', () => {
-    it('should throw error if id is not provided', async () => {
-      await expect(service.findOne(null)).rejects.toThrow(
-        'Applicant ID is required',
+    it('should throw error if email is not provided', async () => {
+      await expect(service.findOne('')).rejects.toThrow(
+        'Applicant email is required',
       );
       expect(mockApplicantsRepository.findOneBy).not.toHaveBeenCalled();
     });
 
-    it('should find a applicant by id', async () => {
+    it('should find an applicant by email', async () => {
       jest
         .spyOn(mockApplicantsRepository, 'findOneBy')
         .mockResolvedValue(applicant1);
 
-      const result = await service.findOne(1);
+      const result = await service.findOne('john@example.com');
 
       expect(result).toEqual(applicant1);
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        appId: 1,
+        email: 'john@example.com',
       });
     });
 
     it('should throw error if applicant is not found', async () => {
       jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
 
-      await expect(service.findOne(999)).rejects.toThrow(
-        'Applicant with ID 999 not found',
+      await expect(service.findOne('notfound@example.com')).rejects.toThrow(
+        'Applicant with email notfound@example.com not found',
       );
     });
 
@@ -176,7 +143,7 @@ describe('ApplicantsService', () => {
           new Error('There was a problem retrieving the info'),
         );
 
-      await expect(service.findOne(1)).rejects.toThrow(
+      await expect(service.findOne('john@example.com')).rejects.toThrow(
         'There was a problem retrieving the info',
       );
     });
@@ -259,7 +226,7 @@ describe('ApplicantsService', () => {
   });
 
   describe('delete', () => {
-    it('should delete a learner successfully', async () => {
+    it('should delete an applicant successfully', async () => {
       jest
         .spyOn(mockApplicantsRepository, 'findOneBy')
         .mockResolvedValue(applicant1);
@@ -267,24 +234,25 @@ describe('ApplicantsService', () => {
         .spyOn(mockApplicantsRepository, 'remove')
         .mockResolvedValue(applicant1);
 
-      const result = await service.delete(1);
+      const result = await service.delete('john@example.com');
 
-      // returns the deleted applicant
       expect(result).toEqual(applicant1);
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        appId: 1,
+        email: 'john@example.com',
       });
       expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
     });
 
-    it('should throw NotFoundException if learner is not found', async () => {
+    it('should throw NotFoundException if applicant is not found', async () => {
       jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
 
-      await expect(service.delete(999)).rejects.toThrow(
-        new NotFoundException('Applicant with ID 999 not found'),
+      await expect(service.delete('notfound@example.com')).rejects.toThrow(
+        new NotFoundException(
+          'Applicant with email notfound@example.com not found',
+        ),
       );
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        appId: 999,
+        email: 'notfound@example.com',
       });
       expect(mockApplicantsRepository.remove).not.toHaveBeenCalled();
     });
@@ -296,7 +264,7 @@ describe('ApplicantsService', () => {
           new Error('There was a problem retrieving the info'),
         );
 
-      await expect(service.delete(1)).rejects.toThrow(
+      await expect(service.delete('john@example.com')).rejects.toThrow(
         'There was a problem retrieving the info',
       );
       expect(mockApplicantsRepository.remove).not.toHaveBeenCalled();
@@ -312,11 +280,11 @@ describe('ApplicantsService', () => {
           new Error('There was a problem removing the info'),
         );
 
-      await expect(service.delete(1)).rejects.toThrow(
+      await expect(service.delete('john@example.com')).rejects.toThrow(
         'There was a problem removing the info',
       );
       expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        appId: 1,
+        email: 'john@example.com',
       });
       expect(mockApplicantsRepository.remove).toHaveBeenCalledWith(applicant1);
     });

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ApplicantsController } from './applicants.controller';
-import { ApplicantsService } from './applicants.service';
-import { Applicant } from './applicant.entity';
+import { ApplicantsController } from './candidate-info.controller';
+import { ApplicantsService } from './candidate-info.service';
+import { Applicant } from './candidate-info.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { UsersModule } from '../users/users.module';
 import { AuthModule } from '../auth/auth.module';

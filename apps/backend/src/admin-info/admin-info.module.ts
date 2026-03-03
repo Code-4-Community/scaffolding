@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AdminsService } from './admins.service';
-import { AdminsController } from './admins.controller';
-import { Admin } from './admin.entity';
-import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AdminsService } from './admin-info.service';
+import { AdminsController } from './admin-info.controller';
+import { Admin } from './admin-info.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({

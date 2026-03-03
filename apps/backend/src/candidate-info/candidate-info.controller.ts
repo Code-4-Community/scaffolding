@@ -10,11 +10,11 @@ import {
   UseInterceptors,
   Delete,
 } from '@nestjs/common';
-import { ApplicantsService } from './applicants.service';
+import { ApplicantsService } from './candidate-info.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Applicant } from './applicant.entity';
+import { Applicant } from './candidate-info.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
-import { CreateApplicantDto } from './dto/applicant.dto';
+import { CreateApplicantDto } from './dto/candidate-info.dto';
 
 /**
  * Controller exposing HTTP endpoints to get, create, and change information
@@ -41,8 +41,7 @@ export class ApplicantsController {
   ): Promise<Applicant> {
     return this.applicantsService.create(
       createApplicantDto.appId,
-      createApplicantDto.firstName,
-      createApplicantDto.lastName,
+      createApplicantDto.email,
     );
   }
 
@@ -57,33 +56,38 @@ export class ApplicantsController {
   }
 
   /**
-   * Exposes an endpoint to return a specific applicant by appId.
-   * @param appId The appId of the desired applicant to return.
-   * @returns The applicant with the desired appId.
+   * Exposes an endpoint to return a specific applicant by email.
+   * @param email The email of the desired applicant (primary key).
+   * @returns The applicant with the desired email.
    * @throws {Error} If the repository throws an error.
-   * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined).
-   * @throws {NotFoundException} with message 'Applicant with ID <id> not found'
-   *                             if the applicant with the specified appId does not exist.
+   * @throws {NotFoundException} if the applicant with the specified email does not exist.
    */
-  @Get('/:appId')
-  async getApplicant(
-    @Param('appId', ParseIntPipe) appId: number,
-  ): Promise<Applicant> {
-    return this.applicantsService.findOne(appId);
+  @Get('email/:email')
+  async getApplicantByEmail(@Param('email') email: string): Promise<Applicant> {
+    return this.applicantsService.findOne(email);
   }
 
   /**
-   * Exposes an endpoint to delete a applicant by id.
-   * @param id The id of the applicant to delete.
+   * Exposes an endpoint to return a specific applicant by appId (returns first match if multiple).
+   * @param appId The appId of the desired applicant to return.
+   * @returns The applicant(s) with the desired appId.
+   */
+  @Get('/:appId')
+  async getApplicantsByAppId(
+    @Param('appId', ParseIntPipe) appId: number,
+  ): Promise<Applicant[]> {
+    return this.applicantsService.findByAppId(appId);
+  }
+
+  /**
+   * Exposes an endpoint to delete an applicant by email.
+   * @param email The email of the applicant to delete (primary key).
    * @returns The deleted applicant object.
    * @throws {Error} If the repository throws an error.
-   * @throws {NotFoundException} with message 'Applicant with ID <id> not found'
-   *                             if the applicant with the specified id does not exist.
+   * @throws {NotFoundException} if the applicant with the specified email does not exist.
    */
-  @Delete('/:id')
-  async deleteApplicant(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Applicant> {
-    return this.applicantsService.delete(id);
+  @Delete('email/:email')
+  async deleteApplicant(@Param('email') email: string): Promise<Applicant> {
+    return this.applicantsService.delete(email);
   }
 }

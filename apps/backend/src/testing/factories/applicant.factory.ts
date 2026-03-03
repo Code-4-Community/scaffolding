@@ -1,11 +1,10 @@
 import merge from 'lodash/merge';
 
-import { Applicant } from '../../applicants/applicant.entity';
+import { Applicant } from '../../candidate-info/candidate-info.entity';
 
 export const defaultApplicant: Applicant = {
+  email: 'jane.doe@northeastern.edu',
   appId: 1,
-  firstName: 'Jane',
-  lastName: 'Doe',
 };
 
 export const applicantFactory = (

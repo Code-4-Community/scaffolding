@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Admin } from './admin.entity';
-import { CreateAdminDto } from './dtos/create-admin.dto';
-import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
+import { Admin } from './admin-info.entity';
+import { CreateAdminDto } from './dto/create-admin.dto';
+import { UpdateAdminEmailDto } from './dto/update-admin-email.dto';
 
 /**
  * Service to interface with the admin repository.
@@ -22,7 +22,10 @@ export class AdminsService {
    * @throws {Error} anything that the repository throws.
    */
   async create(createAdminDto: CreateAdminDto): Promise<Admin> {
-    const admin = this.adminRepository.create(createAdminDto);
+    const admin = this.adminRepository.create({
+      email: createAdminDto.email,
+      discipline: createAdminDto.discipline,
+    });
     return await this.adminRepository.save(admin);
   }
 
@@ -36,17 +39,16 @@ export class AdminsService {
   }
 
   /**
-   * Returns an admin's information by their id.
-   * @param id the id of the desired admin.
-   * @returns the admin with the desired id.
+   * Returns an admin's information by their email.
+   * @param email the email of the desired admin.
+   * @returns the admin with the desired email.
+   * @throws {NotFoundException} if an admin with the desired email does not exist in the system.
    * @throws {Error} anything that the repository throws.
-   * @throws {NotFoundException} if an admin with the
-   *         desired id does not exist in the system.
    */
-  async findOne(id: number): Promise<Admin> {
-    const admin = await this.adminRepository.findOne({ where: { id } });
+  async findOne(email: string): Promise<Admin> {
+    const admin = await this.adminRepository.findOne({ where: { email } });
     if (!admin) {
-      throw new NotFoundException(`Admin with ID ${id} not found`);
+      throw new NotFoundException(`Admin with email ${email} not found`);
     }
     return admin;
   }
@@ -64,29 +66,27 @@ export class AdminsService {
 
   /**
    * Updates admin's email.
-   * @param id the id fo the desired admin to update.
+   * @param email the email of the desired admin to update.
    * @param updateEmailDto object containing the new email to update to.
-   * @returns the new admin object.
+   * @returns the updated admin object.
    * @throws {Error} anything that the repository throws.
    */
   async updateEmail(
-    id: number,
+    email: string,
     updateEmailDto: UpdateAdminEmailDto,
   ): Promise<Admin> {
-    const admin = await this.findOne(id);
+    const admin = await this.findOne(email);
     admin.email = updateEmailDto.email;
     return await this.adminRepository.save(admin);
   }
 
   /**
-   * Deletes an admin by Id.
-   * @param id the id of the admin to be deleted.
+   * Deletes an admin by email.
+   * @param email the email of the admin to be deleted.
    * @throws {Error} anything that the repository throws.
-   *
-   * Does not return a value.
    */
-  async remove(id: number): Promise<void> {
-    const admin = await this.findOne(id);
+  async remove(email: string): Promise<void> {
+    const admin = await this.findOne(email);
     await this.adminRepository.remove(admin);
   }
 }
