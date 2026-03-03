@@ -19,15 +19,11 @@ const APPLICANT_SEED = [
     appId: 1,
     firstName: 'Jane',
     lastName: 'Doe',
-    startDate: '2024-01-01',
-    endDate: '2024-06-30',
   },
   {
     appId: 2,
     firstName: 'John',
     lastName: 'Smith',
-    startDate: '2026-01-01',
-    endDate: '2026-06-30',
   },
 ];
 
@@ -60,6 +56,8 @@ const APPLICATION_SEED = [
     emergencyContactName: 'Jane Doe',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
+    startDate: new Date('2024-01-01'),
+    endDate: new Date('2024-06-30'),
   },
   {
     appId: 2,
@@ -89,6 +87,8 @@ const APPLICATION_SEED = [
     emergencyContactName: 'Jane Doe',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
+    startDate: new Date('2026-01-01'),
+    endDate: new Date('2026-06-30'),
   },
   {
     appId: 3,
@@ -118,6 +118,8 @@ const APPLICATION_SEED = [
     emergencyContactName: 'Jane Doe',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
+    startDate: new Date('2024-01-01'),
+    endDate: new Date('2024-06-30'),
   },
 ];
 

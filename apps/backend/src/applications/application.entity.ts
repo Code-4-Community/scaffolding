@@ -29,6 +29,22 @@ export class Application {
   email!: string;
 
   /**
+   * The expected start date for the applicant's commitment, stored in YYYY-MM-DD format.
+   *
+   * Example: new Date('2024-06-30').
+   */
+  @Column({ type: 'date', nullable: true })
+  startDate?: Date;
+
+  /**
+   * The expected end date for the applicant's commitment, stored in YYYY-MM-DD format.
+   *
+   * Example: new Date('2024-06-30').
+   */
+  @Column({ type: 'date', nullable: true })
+  endDate?: Date;
+
+  /**
    * Discipline associated with the applicant.
    *
    * Example: "Nursing"

@@ -12,8 +12,6 @@ const mockApplicantsService: Partial<ApplicantsService> = {
   findOne: jest.fn(),
   findAll: jest.fn(),
   findByAppId: jest.fn(),
-  updateStartDate: jest.fn(),
-  updateEndDate: jest.fn(),
   delete: jest.fn(),
 };
 
@@ -166,72 +164,6 @@ describe('ApplicantsController', () => {
         .mockRejectedValue(new Error(errorMessage));
 
       await expect(controller.getApplicant(999)).rejects.toThrow(errorMessage);
-    });
-  });
-
-  describe('updateStartDate', () => {
-    const updatedStartDate = '2024-02-01';
-    const updatedApplicant = {
-      ...defaultApplicant,
-      startDate: new Date(updatedStartDate),
-    };
-
-    it('should update the start date of a applicant', async () => {
-      jest
-        .spyOn(mockApplicantsService, 'updateStartDate')
-        .mockResolvedValue(updatedApplicant);
-
-      const result = await controller.updateStartDate(1, updatedStartDate);
-
-      expect(result).toEqual(updatedApplicant);
-      expect(mockApplicantsService.updateStartDate).toHaveBeenCalledWith(
-        1,
-        new Date(updatedStartDate),
-      );
-    });
-
-    it('should handle service errors when updating start date', async () => {
-      const errorMessage = 'Start date must be before end date';
-      jest
-        .spyOn(mockApplicantsService, 'updateStartDate')
-        .mockRejectedValue(new Error(errorMessage));
-
-      await expect(
-        controller.updateStartDate(1, updatedStartDate),
-      ).rejects.toThrow(errorMessage);
-    });
-  });
-
-  describe('updateEndDate', () => {
-    const updatedEndDate = '2024-07-31';
-    const updatedApplicant = {
-      ...defaultApplicant,
-      endDate: new Date(updatedEndDate),
-    };
-
-    it('should update the end date of a applicant', async () => {
-      jest
-        .spyOn(mockApplicantsService, 'updateEndDate')
-        .mockResolvedValue(updatedApplicant);
-
-      const result = await controller.updateEndDate(1, updatedEndDate);
-
-      expect(result).toEqual(updatedApplicant);
-      expect(mockApplicantsService.updateEndDate).toHaveBeenCalledWith(
-        1,
-        new Date(updatedEndDate),
-      );
-    });
-
-    it('should handle service errors when updating end date', async () => {
-      const errorMessage = 'End date must be after start date';
-      jest
-        .spyOn(mockApplicantsService, 'updateEndDate')
-        .mockRejectedValue(new Error(errorMessage));
-
-      await expect(controller.updateEndDate(1, updatedEndDate)).rejects.toThrow(
-        errorMessage,
-      );
     });
   });
 

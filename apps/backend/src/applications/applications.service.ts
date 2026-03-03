@@ -140,6 +140,68 @@ export class ApplicationsService {
     return await this.applicationRepository.save(application);
   }
 
+  /**
+   * Updates an application's commitment starting date with validation.
+   * @param appId The id of the application to update.
+   * @param startDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not before endDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateStartDate(appId: number, startDate: Date): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!startDate) {
+      throw new BadRequestException('Start date is required');
+    }
+
+    if (isNaN(startDate.getTime())) {
+      throw new BadRequestException('Start date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (application.endDate && startDate >= application.endDate) {
+      throw new BadRequestException('Start date must be before end date');
+    }
+
+    application.startDate = startDate;
+    return await this.applicationRepository.save(application);
+  }
+
+  /**
+   * Updates an application's commitment ending date with validation.
+   * @param appId The id of the application to update.
+   * @param endDate The new ending date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not after startDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateEndDate(appId: number, endDate: Date): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!endDate) {
+      throw new BadRequestException('End date is required');
+    }
+
+    if (isNaN(endDate.getTime())) {
+      throw new BadRequestException('End date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (application.startDate && application.startDate >= endDate) {
+      throw new BadRequestException('End date must be after start date');
+    }
+
+    application.endDate = endDate;
+    return await this.applicationRepository.save(application);
+  }
+
   async delete(appId: number): Promise<void> {
     const application = await this.findById(appId);
     if (!application) {

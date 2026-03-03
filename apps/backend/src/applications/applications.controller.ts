@@ -128,6 +128,48 @@ export class ApplicationsController {
   }
 
   /**
+   * Exposes an endpoint to update an application's commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('startDate') startDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's commitment ending date.
+   * @param appId The id of the application to update.
+   * @param endDate The new ending date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/end-date')
+  async updateApplicationEndDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('endDate') endDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateEndDate(
+      appId,
+      new Date(endDate),
+    );
+  }
+
+  /**
    * Exposes an endpoint to delete an application from the system.
    * @param appId The id of the application to delete.
    * @param req The request object from the caller (frontend). Currently not used.

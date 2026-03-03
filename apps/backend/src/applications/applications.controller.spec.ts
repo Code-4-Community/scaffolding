@@ -19,6 +19,8 @@ const mockApplicationsService: Partial<ApplicationsService> = {
   update: jest.fn(),
   delete: jest.fn(),
   findByDiscipline: jest.fn(),
+  updateStartDate: jest.fn(),
+  updateEndDate: jest.fn(),
 };
 
 const mockApplication: Application = {
@@ -49,6 +51,8 @@ const mockApplication: Application = {
   emergencyContactName: 'Jane Doe',
   emergencyContactPhone: '111-111-1111',
   emergencyContactRelationship: 'Mother',
+  startDate: new Date('2024-01-01'),
+  endDate: new Date('2024-06-30'),
 };
 
 describe('ApplicationsController', () => {
@@ -253,6 +257,80 @@ describe('ApplicationsController', () => {
       expect(mockApplicationsService.update).toHaveBeenCalledWith(appId, {
         discipline: DISCIPLINE_VALUES.RN,
       });
+    });
+  });
+
+  describe('updateApplicationStartDate', () => {
+    const updatedStartDate = '2024-02-01';
+    const updatedApplication: Application = {
+      ...mockApplication,
+      startDate: new Date(updatedStartDate),
+    };
+
+    it('should update the start date of an application', async () => {
+      jest
+        .spyOn(mockApplicationsService, 'updateStartDate')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationStartDate(
+        1,
+        updatedStartDate,
+        {},
+      );
+
+      expect(result).toEqual(updatedApplication);
+      expect(mockApplicationsService.updateStartDate).toHaveBeenCalledWith(
+        1,
+        new Date(updatedStartDate),
+      );
+    });
+
+    it('should handle service errors when updating start date', async () => {
+      const errorMessage = 'Start date must be before end date';
+      jest
+        .spyOn(mockApplicationsService, 'updateStartDate')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(
+        controller.updateApplicationStartDate(1, updatedStartDate, {}),
+      ).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('updateApplicationEndDate', () => {
+    const updatedEndDate = '2024-07-31';
+    const updatedApplication: Application = {
+      ...mockApplication,
+      endDate: new Date(updatedEndDate),
+    };
+
+    it('should update the end date of an application', async () => {
+      jest
+        .spyOn(mockApplicationsService, 'updateEndDate')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationEndDate(
+        1,
+        updatedEndDate,
+        {},
+      );
+
+      expect(result).toEqual(updatedApplication);
+      expect(mockApplicationsService.updateEndDate).toHaveBeenCalledWith(
+        1,
+        new Date(updatedEndDate),
+      );
+    });
+
+    it('should handle service errors when updating end date', async () => {
+      const errorMessage = 'End date must be after start date';
+      jest
+        .spyOn(mockApplicationsService, 'updateEndDate')
+        .mockRejectedValue(new Error(errorMessage));
+
+      await expect(
+        controller.updateApplicationEndDate(1, updatedEndDate, {}),
+      ).rejects.toThrow(errorMessage);
     });
   });
 });

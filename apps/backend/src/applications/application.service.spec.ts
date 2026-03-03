@@ -756,6 +756,178 @@ describe('ApplicationsService', () => {
     });
   });
 
+  describe('updateStartDate', () => {
+    const updatedStartDate = new Date('2024-02-01');
+    const updatedApplicant = { ...applicant1, startDate: updatedStartDate };
+
+    it('should update applicant start date', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
+      jest
+        .spyOn(mockApplicantsRepository, 'save')
+        .mockResolvedValue(updatedApplicant);
+
+      const result = await service.updateStartDate(1, updatedStartDate);
+
+      expect(result).toEqual(updatedApplicant);
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
+        appId: 1,
+      });
+      expect(mockApplicantsRepository.save).toHaveBeenCalledWith({
+        ...applicant1,
+        startDate: updatedStartDate,
+      });
+    });
+
+    it('should throw error if applicant is not found', async () => {
+      jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
+
+      await expect(
+        service.updateStartDate(999, updatedStartDate),
+      ).rejects.toThrow('Applicant with ID 999 not found');
+    });
+
+    it('should throw error if start date is after end date', async () => {
+      const existingApplicant = {
+        ...applicant1,
+        endDate: new Date('2024-01-15'),
+      };
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(existingApplicant);
+
+      await expect(
+        service.updateStartDate(1, updatedStartDate),
+      ).rejects.toThrow('Start date must be before end date');
+    });
+
+    it('should throw error if no start date provided', async () => {
+      await expect(service.updateStartDate(1, null)).rejects.toThrow(
+        'Start date is required',
+      );
+    });
+
+    it('should throw error if start date is invalid', async () => {
+      await expect(
+        service.updateStartDate(1, new Date('not-a-date')),
+      ).rejects.toThrow('Start date must be a valid date');
+    });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(
+        service.updateStartDate(999, updatedStartDate),
+      ).rejects.toThrow('There was a problem retrieving the info');
+    });
+
+    it('should error out without information loss if the repository throws an error during save', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
+      jest
+        .spyOn(mockApplicantsRepository, 'save')
+        .mockRejectedValueOnce(
+          new Error('There was a problem saving the info'),
+        );
+
+      await expect(
+        service.updateStartDate(1, updatedStartDate),
+      ).rejects.toThrow('There was a problem saving the info');
+    });
+  });
+
+  describe('updateEndDate', () => {
+    const updatedEndDate = new Date('2024-07-31');
+    const updatedApplicant = { ...applicant1, endDate: updatedEndDate };
+
+    it('should update applicant end date', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
+      jest
+        .spyOn(mockApplicantsRepository, 'save')
+        .mockResolvedValue(updatedApplicant);
+
+      const result = await service.updateEndDate(1, updatedEndDate);
+
+      expect(result).toEqual(updatedApplicant);
+      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
+        appId: 1,
+      });
+      expect(mockApplicantsRepository.save).toHaveBeenCalledWith({
+        ...applicant1,
+        endDate: updatedEndDate,
+      });
+    });
+
+    it('should throw error if applicant is not found', async () => {
+      jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
+
+      await expect(service.updateEndDate(999, updatedEndDate)).rejects.toThrow(
+        'Applicant with ID 999 not found',
+      );
+    });
+
+    it('should throw error if end date is before start date', async () => {
+      const existingApplicant = {
+        ...applicant1,
+        startDate: new Date('2024-08-15'),
+      };
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(existingApplicant);
+
+      await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
+        'End date must be after start date',
+      );
+    });
+
+    it('should throw error if no end date provided', async () => {
+      await expect(service.updateEndDate(1, null)).rejects.toThrow(
+        'End date is required',
+      );
+    });
+
+    it('should throw error if end date is invalid', async () => {
+      await expect(
+        service.updateEndDate(1, new Date('not-a-date')),
+      ).rejects.toThrow('End date must be a valid date');
+    });
+
+    it('should error out without information loss if the repository throws an error during retrieval', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new Error('There was a problem retrieving the info'),
+        );
+
+      await expect(service.updateEndDate(999, updatedEndDate)).rejects.toThrow(
+        'There was a problem retrieving the info',
+      );
+    });
+
+    it('should error out without information loss if the repository throws an error during save', async () => {
+      jest
+        .spyOn(mockApplicantsRepository, 'findOneBy')
+        .mockResolvedValue(applicant1);
+      jest
+        .spyOn(mockApplicantsRepository, 'save')
+        .mockRejectedValueOnce(
+          new Error('There was a problem saving the info'),
+        );
+
+      await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
+        'There was a problem saving the info',
+      );
+    });
+  });
+
   describe('delete', () => {
     it('should delete an application', async () => {
       const mockApplication: Application = {

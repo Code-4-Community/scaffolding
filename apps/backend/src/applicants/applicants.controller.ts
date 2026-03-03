@@ -43,8 +43,6 @@ export class ApplicantsController {
       createApplicantDto.appId,
       createApplicantDto.firstName,
       createApplicantDto.lastName,
-      new Date(createApplicantDto.startDate),
-      new Date(createApplicantDto.endDate),
     );
   }
 
@@ -72,41 +70,6 @@ export class ApplicantsController {
     @Param('appId', ParseIntPipe) appId: number,
   ): Promise<Applicant> {
     return this.applicantsService.findOne(appId);
-  }
-
-  /**
-   * Exposes an endpoint to update a applicant's commitment starting date.
-   * @param appId The appId of the applicant to update.
-   * @param startDate The new starting date for the applicant's commitment.
-   * @throws {Error} If the repository throws an error.
-   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
-   * @throws {NotFoundException} with message 'Applicant with ID <appId> not found'
-   *                             if the applicant with the specified appId does not exist.
-   */
-  @Patch('/:appId/start-date')
-  async updateStartDate(
-    @Param('appId', ParseIntPipe) appId: number,
-    @Body('startDate') startDate: string,
-  ): Promise<Applicant> {
-    return this.applicantsService.updateStartDate(appId, new Date(startDate));
-  }
-
-  /**
-   * Exposes an endpoint to update a applicant's commitment ending date.
-   * @param appId The appId of the applicant to update.
-   * @param endDate The new ending date for the applicant's commitment.
-   * @returns The updated applicant object.
-   * @throws {Error} If the repository throws an error.
-   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
-   * @throws {NotFoundException} with message 'Applicant with ID <appId> not found'
-   *                             if the applicant with the specified appId does not exist.
-   */
-  @Patch('/:appId/end-date')
-  async updateEndDate(
-    @Param('appId', ParseIntPipe) appId: number,
-    @Body('endDate') endDate: string,
-  ): Promise<Applicant> {
-    return this.applicantsService.updateEndDate(appId, new Date(endDate));
   }
 
   /**
