@@ -1,4 +1,9 @@
-import { AnthologyGenre, FilterState } from '../../../types';
+import {
+  AnthologyGenre,
+  AnthologyProgram,
+  AnthologyPubLevel,
+  FilterState,
+} from '../../../types';
 import TabFilterRow from './TabFilterRow';
 import RangeFilterRow from './RangeFilterRow';
 import { PUB_LEVEL_OPTIONS, PROGRAM_OPTIONS, GENRE_OPTIONS } from './constants';
@@ -29,8 +34,9 @@ export default function FilterByAttributeSection({
       <TabFilterRow
         label="Publication Level"
         options={PUB_LEVEL_OPTIONS}
-        selected={draft.pubLevel}
-        onChange={(value) => update('pubLevel', value)}
+        multiSelect={true}
+        selected={draft.pubLevels}
+        onChange={(value) => update('pubLevels', value as AnthologyPubLevel[])}
         allowDeselect={true}
       />
 
@@ -47,8 +53,9 @@ export default function FilterByAttributeSection({
       <TabFilterRow
         label="Program"
         options={PROGRAM_OPTIONS}
-        selected={draft.program}
-        onChange={(value) => update('program', value)}
+        multiSelect={true}
+        selected={draft.programs}
+        onChange={(value) => update('programs', value as AnthologyProgram[])}
         allowDeselect={true}
       />
 

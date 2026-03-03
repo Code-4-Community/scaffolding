@@ -60,8 +60,8 @@ export interface FilterState {
   sortBy: SortOption;
   pubDateStart: string;
   pubDateEnd: string;
-  pubLevel: AnthologyPubLevel | null;
-  program: AnthologyProgram | null;
+  pubLevels: AnthologyPubLevel[];
+  programs: AnthologyProgram[];
   genres: AnthologyGenre[];
   inventoryMin: string;
   inventoryMax: string;
@@ -71,8 +71,8 @@ export const DEFAULT_FILTER_STATE: FilterState = {
   sortBy: SortOption.TITLE_ASC,
   pubDateStart: '',
   pubDateEnd: '',
-  pubLevel: null,
-  program: null,
+  pubLevels: [],
+  programs: [],
   genres: [],
   inventoryMin: '',
   inventoryMax: '',
