@@ -151,43 +151,6 @@ export default function ArchivedPublications() {
 
   return (
     <div className="archive-wrapper">
-      {/* Recently Edited Section */}
-      <section className="recently-edited-section">
-        <div className="recently-edited-content">
-          <h2 className="recently-edited-title">Recently Edited</h2>
-          <div className="recently-edited-list">
-            {RECENTLY_EDITED.map((pub) => (
-              <div
-                key={pub.id}
-                className="publication-list-item"
-                // onClick={() => setSelected(pub)}
-              >
-                <div className="publication-list-item-content">
-                  <div className="publication-list-item-left">
-                    <img
-                      src={DocumentIcon}
-                      alt=""
-                      className="publication-list-icon"
-                    />
-                    <span className="publication-list-title">{pub.title}</span>
-                  </div>
-                  <div className="publication-list-item-right">
-                    <span className="publication-list-modified">
-                      Last modified 1 hour ago
-                    </span>
-                    <img
-                      src={MenuDotsIcon}
-                      alt=""
-                      className="publication-list-menu"
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* All Publications Section */}
       <section className="all-publications-section">
         <div className="all-publications-content">
