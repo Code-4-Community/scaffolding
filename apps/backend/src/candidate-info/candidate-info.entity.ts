@@ -8,7 +8,7 @@ export class Applicant {
   /**
    * The Applicant's email.
    *
-   * Example: 'jane.doe@example.com'.
+   * Example: 'jane.doe@northeastern.edu'.
    */
   @PrimaryColumn({ name: 'email' })
   email: string;
