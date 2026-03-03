@@ -181,8 +181,8 @@ const mockAnthology: Anthology = {
   status: AnthologyStatus.CAN_BE_SHARED,
   pub_level: AnthologyPubLevel.PERFECT_BOUND,
   photo_url: undefined,
-  genre: 'Fantasy, Science Fiction, Mystery',
-  theme: 'Short Stories, Creative Writing',
+  genres: ['Fantasy', 'Science Fiction', 'Mystery'],
+  themes: ['Short Stories', 'Creative Writing'],
   isbn: '979-8-88694-087-9',
   shopify_url: 'https://example.com',
   praise_quotes:
@@ -316,13 +316,6 @@ const PublicationView: React.FC = () => {
 
   const fullDescription = anthology.description || 'No description available.';
 
-  // Helper to parse comma separated strings or arrays
-  const parseTags = (value?: string | string[]) => {
-    if (Array.isArray(value)) return value;
-    if (typeof value === 'string') return value.split(',').map((s) => s.trim());
-    return [];
-  };
-
   const getTagClass = (label: string) => {
     switch (label) {
       case 'Fantasy':
@@ -336,11 +329,11 @@ const PublicationView: React.FC = () => {
     }
   };
 
-  const genreTags = parseTags(anthology.genre).map((g) => ({
+  const genreTags = (anthology.genres ?? []).map((g) => ({
     label: g,
     className: getTagClass(g),
   }));
-  const themeTags = parseTags(anthology.theme).map((t) => ({
+  const themeTags = (anthology.themes ?? []).map((t) => ({
     label: t,
     className: 'tag-neutral',
   }));
@@ -359,7 +352,7 @@ const PublicationView: React.FC = () => {
     },
     {
       label: 'Theme',
-      value: anthology.theme || 'Empty',
+      value: anthology.themes?.join(', ') || 'Empty',
     },
     {
       label: 'Praise/Pull Quotes',
