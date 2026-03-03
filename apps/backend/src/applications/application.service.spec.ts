@@ -275,6 +275,8 @@ describe('ApplicationsService', () => {
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
+        startDate: '2024-01-01',
+        endDate: '2024-06-30',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
         weeklyHours: 20,
@@ -291,6 +293,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
@@ -322,6 +326,8 @@ describe('ApplicationsService', () => {
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
+        startDate: '2024-01-01',
+        endDate: '2024-06-30',
         discipline: DISCIPLINE_VALUES.RN,
         weeklyHours: 20,
         pronouns: 'they/them',
@@ -354,6 +360,8 @@ describe('ApplicationsService', () => {
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
+        startDate: '2024-01-01',
+        endDate: '2024-06-30',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
         weeklyHours: 20,
@@ -369,6 +377,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
@@ -393,6 +403,8 @@ describe('ApplicationsService', () => {
         phone: '123-4562',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
+        startDate: '2024-01-01',
+        endDate: '2024-06-30',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
         weeklyHours: 20,
@@ -408,6 +420,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
@@ -432,6 +446,8 @@ describe('ApplicationsService', () => {
         phone: '123-456-8-90',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
+        startDate: '2024-01-01',
+        endDate: '2024-06-30',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
         weeklyHours: 20,
@@ -447,6 +463,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
@@ -471,6 +489,8 @@ describe('ApplicationsService', () => {
         phone: '123-456-7890',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
+        startDate: '2024-01-01',
+        endDate: '2024-06-30',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
         weeklyHours: 0,
@@ -486,6 +506,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
@@ -510,6 +532,8 @@ describe('ApplicationsService', () => {
         phone: '123-456-78901231',
         school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
+        startDate: '2024-01-01',
+        endDate: '2024-06-30',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
         weeklyHours: -5,
@@ -526,6 +550,8 @@ describe('ApplicationsService', () => {
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
         resume: 'janedoe_resume_2_6_2026.pdf',
         coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
@@ -757,45 +783,72 @@ describe('ApplicationsService', () => {
   });
 
   describe('updateStartDate', () => {
-    const updatedStartDate = new Date('2024-02-01');
-    const updatedApplicant = { ...applicant1, startDate: updatedStartDate };
+    const existingApplication: Application = {
+      appId: 1,
+      appStatus: AppStatus.APP_SUBMITTED,
+      mondayAvailability: '12pm and on every other week',
+      tuesdayAvailability: 'approximately 10am-3pm',
+      wednesdayAvailability: 'no availability',
+      thursdayAvailability: 'maybe before 10am',
+      fridayAvailability: 'Sometime between 4-6',
+      saturdayAvailability: 'no availability',
+      experienceType: ExperienceType.BS,
+      interest: [InterestArea.WOMENS_HEALTH],
+      license: null,
+      applicantType: ApplicantType.LEARNER,
+      phone: '123-456-7890',
+      school: School.HARVARD_MEDICAL_SCHOOL,
+      email: 'test@example.com',
+      discipline: DISCIPLINE_VALUES.RN,
+      referred: false,
+      weeklyHours: 20,
+      pronouns: 'they/them',
+      desiredExperience:
+        'I want to give back to the boston community and learn to talk better with patients',
+      resume: 'janedoe_resume_2_6_2026.pdf',
+      coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+      emergencyContactName: 'Jane Doe',
+      emergencyContactPhone: '111-111-1111',
+      emergencyContactRelationship: 'Mother',
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-06-30'),
+    };
 
-    it('should update applicant start date', async () => {
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockResolvedValue(applicant1);
-      jest
-        .spyOn(mockApplicantsRepository, 'save')
-        .mockResolvedValue(updatedApplicant);
+    const updatedStartDate = new Date('2024-02-01');
+
+    it('should update application start date', async () => {
+      const updatedApplication: Application = {
+        ...existingApplication,
+        startDate: updatedStartDate,
+      };
+
+      mockRepository.findOne.mockResolvedValue(existingApplication);
+      mockRepository.save.mockResolvedValue(updatedApplication);
 
       const result = await service.updateStartDate(1, updatedStartDate);
 
-      expect(result).toEqual(updatedApplicant);
-      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        appId: 1,
-      });
-      expect(mockApplicantsRepository.save).toHaveBeenCalledWith({
-        ...applicant1,
+      expect(result).toEqual(updatedApplication);
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
+      expect(repository.save).toHaveBeenCalledWith({
+        ...existingApplication,
         startDate: updatedStartDate,
       });
     });
 
-    it('should throw error if applicant is not found', async () => {
-      jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
+    it('should throw error if application is not found', async () => {
+      mockRepository.findOne.mockResolvedValue(null);
 
       await expect(
         service.updateStartDate(999, updatedStartDate),
-      ).rejects.toThrow('Applicant with ID 999 not found');
+      ).rejects.toThrow('Application with ID 999 not found');
     });
 
     it('should throw error if start date is after end date', async () => {
-      const existingApplicant = {
-        ...applicant1,
+      const existingWithEarlierEndDate: Application = {
+        ...existingApplication,
         endDate: new Date('2024-01-15'),
       };
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockResolvedValue(existingApplicant);
+      mockRepository.findOne.mockResolvedValue(existingWithEarlierEndDate);
 
       await expect(
         service.updateStartDate(1, updatedStartDate),
@@ -815,11 +868,9 @@ describe('ApplicationsService', () => {
     });
 
     it('should error out without information loss if the repository throws an error during retrieval', async () => {
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockRejectedValueOnce(
-          new Error('There was a problem retrieving the info'),
-        );
+      mockRepository.findOne.mockRejectedValueOnce(
+        new Error('There was a problem retrieving the info'),
+      );
 
       await expect(
         service.updateStartDate(999, updatedStartDate),
@@ -827,14 +878,10 @@ describe('ApplicationsService', () => {
     });
 
     it('should error out without information loss if the repository throws an error during save', async () => {
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockResolvedValue(applicant1);
-      jest
-        .spyOn(mockApplicantsRepository, 'save')
-        .mockRejectedValueOnce(
-          new Error('There was a problem saving the info'),
-        );
+      mockRepository.findOne.mockResolvedValue(existingApplication);
+      mockRepository.save.mockRejectedValueOnce(
+        new Error('There was a problem saving the info'),
+      );
 
       await expect(
         service.updateStartDate(1, updatedStartDate),
@@ -843,45 +890,72 @@ describe('ApplicationsService', () => {
   });
 
   describe('updateEndDate', () => {
-    const updatedEndDate = new Date('2024-07-31');
-    const updatedApplicant = { ...applicant1, endDate: updatedEndDate };
+    const existingApplication: Application = {
+      appId: 1,
+      appStatus: AppStatus.APP_SUBMITTED,
+      mondayAvailability: '12pm and on every other week',
+      tuesdayAvailability: 'approximately 10am-3pm',
+      wednesdayAvailability: 'no availability',
+      thursdayAvailability: 'maybe before 10am',
+      fridayAvailability: 'Sometime between 4-6',
+      saturdayAvailability: 'no availability',
+      experienceType: ExperienceType.BS,
+      interest: [InterestArea.WOMENS_HEALTH],
+      license: null,
+      applicantType: ApplicantType.LEARNER,
+      phone: '123-456-7890',
+      school: School.HARVARD_MEDICAL_SCHOOL,
+      email: 'test@example.com',
+      discipline: DISCIPLINE_VALUES.RN,
+      referred: false,
+      weeklyHours: 20,
+      pronouns: 'they/them',
+      desiredExperience:
+        'I want to give back to the boston community and learn to talk better with patients',
+      resume: 'janedoe_resume_2_6_2026.pdf',
+      coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+      emergencyContactName: 'Jane Doe',
+      emergencyContactPhone: '111-111-1111',
+      emergencyContactRelationship: 'Mother',
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-06-30'),
+    };
 
-    it('should update applicant end date', async () => {
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockResolvedValue(applicant1);
-      jest
-        .spyOn(mockApplicantsRepository, 'save')
-        .mockResolvedValue(updatedApplicant);
+    const updatedEndDate = new Date('2024-07-31');
+
+    it('should update application end date', async () => {
+      const updatedApplication: Application = {
+        ...existingApplication,
+        endDate: updatedEndDate,
+      };
+
+      mockRepository.findOne.mockResolvedValue(existingApplication);
+      mockRepository.save.mockResolvedValue(updatedApplication);
 
       const result = await service.updateEndDate(1, updatedEndDate);
 
-      expect(result).toEqual(updatedApplicant);
-      expect(mockApplicantsRepository.findOneBy).toHaveBeenCalledWith({
-        appId: 1,
-      });
-      expect(mockApplicantsRepository.save).toHaveBeenCalledWith({
-        ...applicant1,
+      expect(result).toEqual(updatedApplication);
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
+      expect(repository.save).toHaveBeenCalledWith({
+        ...existingApplication,
         endDate: updatedEndDate,
       });
     });
 
-    it('should throw error if applicant is not found', async () => {
-      jest.spyOn(mockApplicantsRepository, 'findOneBy').mockResolvedValue(null);
+    it('should throw error if application is not found', async () => {
+      mockRepository.findOne.mockResolvedValue(null);
 
       await expect(service.updateEndDate(999, updatedEndDate)).rejects.toThrow(
-        'Applicant with ID 999 not found',
+        'Application with ID 999 not found',
       );
     });
 
     it('should throw error if end date is before start date', async () => {
-      const existingApplicant = {
-        ...applicant1,
+      const existingWithLaterStart: Application = {
+        ...existingApplication,
         startDate: new Date('2024-08-15'),
       };
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockResolvedValue(existingApplicant);
+      mockRepository.findOne.mockResolvedValue(existingWithLaterStart);
 
       await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
         'End date must be after start date',
@@ -901,11 +975,9 @@ describe('ApplicationsService', () => {
     });
 
     it('should error out without information loss if the repository throws an error during retrieval', async () => {
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockRejectedValueOnce(
-          new Error('There was a problem retrieving the info'),
-        );
+      mockRepository.findOne.mockRejectedValueOnce(
+        new Error('There was a problem retrieving the info'),
+      );
 
       await expect(service.updateEndDate(999, updatedEndDate)).rejects.toThrow(
         'There was a problem retrieving the info',
@@ -913,14 +985,10 @@ describe('ApplicationsService', () => {
     });
 
     it('should error out without information loss if the repository throws an error during save', async () => {
-      jest
-        .spyOn(mockApplicantsRepository, 'findOneBy')
-        .mockResolvedValue(applicant1);
-      jest
-        .spyOn(mockApplicantsRepository, 'save')
-        .mockRejectedValueOnce(
-          new Error('There was a problem saving the info'),
-        );
+      mockRepository.findOne.mockResolvedValue(existingApplication);
+      mockRepository.save.mockRejectedValueOnce(
+        new Error('There was a problem saving the info'),
+      );
 
       await expect(service.updateEndDate(1, updatedEndDate)).rejects.toThrow(
         'There was a problem saving the info',
