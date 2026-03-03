@@ -66,8 +66,10 @@ function applyFiltersAndSort(
     }
   }
 
-  if (filters.pubLevel) {
-    result = result.filter((p) => p.pub_level === filters.pubLevel);
+  if (filters.pubLevels) {
+    result = result.filter((p) =>
+      filters.pubLevels.some((l) => p.pub_level === l),
+    );
   }
 
   // Inventory range
@@ -86,15 +88,10 @@ function applyFiltersAndSort(
 
   // Program — normalize programs to array for comparison
   // Note: original entries 1–2 use 'YABP' and will not match any enum value
-  if (filters.program) {
-    result = result.filter((p) => {
-      const progs = Array.isArray(p.programs)
-        ? p.programs
-        : p.programs
-        ? [p.programs]
-        : [];
-      return progs.includes(filters.program as string);
-    });
+  if (filters.programs) {
+    result = result.filter((p) =>
+      filters.programs.some((g) => p.programs?.includes(g)),
+    );
   }
 
   if (filters.genres.length > 0) {

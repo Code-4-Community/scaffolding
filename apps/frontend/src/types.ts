@@ -1,3 +1,5 @@
+import { PUB_LEVEL_OPTIONS } from '@containers/archived-publications/filter-modal/constants';
+
 export enum AnthologyStatus {
   ARCHIVED = 'Archived',
   NOT_STARTED = 'NotStarted',
@@ -71,8 +73,19 @@ export const DEFAULT_FILTER_STATE: FilterState = {
   sortBy: SortOption.TITLE_ASC,
   pubDateStart: '',
   pubDateEnd: '',
-  pubLevels: [],
-  programs: [],
+  pubLevels: [
+    AnthologyPubLevel.CHAPBOOK,
+    AnthologyPubLevel.ZINE,
+    AnthologyPubLevel.PERFECT_BOUND,
+    AnthologyPubLevel.SIGNATURE,
+  ],
+  programs: [
+    AnthologyProgram.SCHOOL_PARTNERSHIP,
+    AnthologyProgram.STEM_LITERACY,
+    AnthologyProgram.TUTORING,
+    AnthologyProgram.WRITERS_ROOM,
+    AnthologyProgram.YOUNG_AUTHORS,
+  ],
   genres: [],
   inventoryMin: '',
   inventoryMax: '',
