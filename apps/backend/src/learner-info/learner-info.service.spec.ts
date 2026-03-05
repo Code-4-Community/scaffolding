@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
 import { School } from './types';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('LearnerInfoService', () => {
   let service: LearnerInfoService;
@@ -87,6 +87,28 @@ describe('LearnerInfoService', () => {
 
       mockRepository.save.mockResolvedValue(LearnerInfo);
       await expect(service.create(LearnerInfo)).rejects.toThrow();
+    });
+
+    it('should reject duplicate appId', async () => {
+      const LearnerInfo: LearnerInfo = {
+        appId: 2,
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
+      };
+
+      mockRepository.findOne.mockResolvedValue(LearnerInfo);
+
+      await expect(service.create(LearnerInfo)).rejects.toThrow(
+        new BadRequestException(
+          `Learner Info with AppId ${LearnerInfo.appId} already exists`,
+        ),
+      );
+
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { appId: LearnerInfo.appId },
+      });
+      expect(repository.save).not.toHaveBeenCalled();
     });
   });
 

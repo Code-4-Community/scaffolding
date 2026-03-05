@@ -1,0 +1,40 @@
+{
+  "info": {
+    "_postman_id": "c1be7c15-fdb3-4972-82a6-ec16f194d711",
+    "name": "BHCHP Volunteer Info Smoke",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41801404"
+  },
+  "item": [
+    {
+      "name": "createVolunteerInfo",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"appId\":  1,\r\n    \"school\": \"Harvard Medical School\",\r\n    \"isSupervisorApplying\": false,\r\n    \"isLegalAdult\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/learner_info/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "learner_info",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

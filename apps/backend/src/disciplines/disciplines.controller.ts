@@ -8,7 +8,6 @@ import {
   ParseIntPipe,
   Delete,
 } from '@nestjs/common';
-import { NotFoundException } from '@nestjs/common';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { DisciplinesService } from './disciplines.service';
 import { CreateDisciplineRequestDto } from './dto/create-discipline.request.dto';

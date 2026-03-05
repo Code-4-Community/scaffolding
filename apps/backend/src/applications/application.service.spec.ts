@@ -9,7 +9,6 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -69,7 +68,6 @@ describe('ApplicationsService', () => {
           license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
-          school: School.HARVARD_MEDICAL_SCHOOL,
           email: 'test@example.com',
           discipline: DISCIPLINE_VALUES.RN,
           referred: false,
@@ -83,6 +81,7 @@ describe('ApplicationsService', () => {
           emergencyContactName: 'Jane Doe',
           emergencyContactPhone: '111-111-1111',
           emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
         },
       ];
 
@@ -130,7 +129,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -144,6 +142,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -185,7 +184,6 @@ describe('ApplicationsService', () => {
         license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -199,6 +197,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -224,7 +223,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         weeklyHours: 20,
@@ -237,6 +235,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -273,7 +272,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -282,6 +280,8 @@ describe('ApplicationsService', () => {
         nonEnglishLangs: 'some chinese',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -320,13 +320,14 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         weeklyHours: 20,
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -352,7 +353,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -360,6 +360,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -391,7 +393,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-4562',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -399,6 +400,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -430,7 +433,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-8-90',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -438,6 +440,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -469,7 +473,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -477,6 +480,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
@@ -508,7 +513,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -516,6 +520,8 @@ describe('ApplicationsService', () => {
         pronouns: 'they/them',
         desiredExperience:
           'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
         elaborateOtherDiscipline: 'text',
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
@@ -551,7 +557,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -564,6 +569,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const updatedApplication: Application = {
@@ -603,7 +609,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -616,6 +621,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const updatedApplication: Application = {
@@ -690,7 +696,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -703,6 +708,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -730,7 +736,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -743,6 +748,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -772,7 +778,6 @@ describe('ApplicationsService', () => {
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
         discipline: DISCIPLINE_VALUES.RN,
         referred: false,
@@ -786,6 +791,7 @@ describe('ApplicationsService', () => {
         emergencyContactName: 'Jane Doe',
         emergencyContactPhone: '111-111-1111',
         emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -830,7 +836,6 @@ describe('ApplicationsService', () => {
           license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
-          school: School.HARVARD_MEDICAL_SCHOOL,
           email: 'test@example.com',
           discipline: DISCIPLINE_VALUES.RN,
           referred: false,
@@ -844,6 +849,7 @@ describe('ApplicationsService', () => {
           emergencyContactName: 'Jane Doe',
           emergencyContactPhone: '111-111-1111',
           emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
         },
         {
           appId: 2,
@@ -859,7 +865,6 @@ describe('ApplicationsService', () => {
           license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
-          school: School.HARVARD_MEDICAL_SCHOOL,
           email: 'test@example.com',
           discipline: DISCIPLINE_VALUES.RN,
           referred: false,
@@ -873,6 +878,7 @@ describe('ApplicationsService', () => {
           emergencyContactName: 'Jane Doe',
           emergencyContactPhone: '111-111-1111',
           emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
         },
       ];
 
