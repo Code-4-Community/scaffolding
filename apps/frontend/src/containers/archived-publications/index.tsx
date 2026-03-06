@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import './styles.css';
 import {
   STATIC_ARCHIVED,
@@ -19,7 +20,6 @@ import FilterModal from './filter-modal/FilterModal';
 // Import SVG icons
 import DocumentIcon from '../../assets/icons/document.svg';
 import SearchIcon from '../../assets/icons/search.svg';
-import ListIcon from '../../assets/icons/list.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
 import BookmarkIcon from '../../assets/icons/bookmark.svg';
@@ -120,31 +120,49 @@ function applyFiltersAndSort(
 }
 
 export default function ArchivedPublications() {
-  const [archived, setArchived] = useState<Anthology[]>(STATIC_ARCHIVED);
-  // const [selected, setSelected] = useState<Anthology | null>(null);
+  const [publications, setPublications] =
+    useState<Anthology[]>(STATIC_ARCHIVED);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedFilters, setAppliedFilters] =
     useState<FilterState>(DEFAULT_FILTER_STATE);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { tab } = useParams<{ tab: string }>();
+
+  const activeTab =
+    tab === 'archived' || tab === 'in-progress' || tab === 'all' ? tab : 'all';
 
   useEffect(() => {
     fetch('/api/anthologies')
       .then((res) => res.json())
       .then((data) => {
-        const archivedOnly = (data as Anthology[]).filter(
-          (item) => item.status === AnthologyStatus.ARCHIVED,
-        );
-        if (archivedOnly.length > 0) {
-          setArchived(archivedOnly);
+        if (Array.isArray(data) && data.length > 0) {
+          setPublications(data as Anthology[]);
         }
       })
       .catch(() => {
-        setArchived(STATIC_ARCHIVED);
+        setPublications(STATIC_ARCHIVED);
       });
   }, []);
 
+  const statusFilteredPublications = publications.filter((pub) => {
+    if (activeTab === 'archived') {
+      return pub.status === AnthologyStatus.ARCHIVED;
+    }
+
+    if (activeTab === 'in-progress') {
+      return (
+        pub.status === AnthologyStatus.NOT_STARTED ||
+        pub.status === AnthologyStatus.DRAFTING ||
+        pub.status === AnthologyStatus.CAN_BE_SHARED
+      );
+    }
+
+    return true;
+  });
+
   const filteredPublications = applyFiltersAndSort(
-    archived,
+    statusFilteredPublications,
     searchQuery,
     appliedFilters,
   );
@@ -193,7 +211,7 @@ export default function ArchivedPublications() {
         <div className="all-publications-content">
           {/* Search Header */}
           <div className="publication-search-header">
-            <h2 className="publication-search-title">All Publications</h2>
+            <h2 className="publication-search-title">Publications</h2>
             <div className="publication-search-controls">
               <div className="publication-search-input-wrapper">
                 <div className="publication-search-input-content">
@@ -211,16 +229,9 @@ export default function ArchivedPublications() {
                   />
                 </div>
               </div>
-              <button type="button" className="publication-filter-btn">
-                <img
-                  src={ListIcon}
-                  alt=""
-                  className="publication-filter-icon"
-                />
-              </button>
               <button
                 type="button"
-                className="publication-filter-btn"
+                className="publication-filter-btn publication-filter-btn--text"
                 onClick={() => setIsFilterModalOpen(true)}
                 aria-label="Open sort and filter"
               >
@@ -229,8 +240,42 @@ export default function ArchivedPublications() {
                   alt=""
                   className="publication-filter-icon"
                 />
+                <span>Filters</span>
+              </button>
+              <button
+                type="button"
+                className="publication-create-btn"
+                aria-label="Create project"
+              >
+                Create Project
               </button>
             </div>
+          </div>
+          <div className="publication-tabs">
+            <NavLink
+              to="/library/publication/all"
+              className={({ isActive }) =>
+                `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+              }
+            >
+              All
+            </NavLink>
+            <NavLink
+              to="/library/publication/in-progress"
+              className={({ isActive }) =>
+                `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+              }
+            >
+              In Progress
+            </NavLink>
+            <NavLink
+              to="/library/publication/archived"
+              className={({ isActive }) =>
+                `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+              }
+            >
+              Archived
+            </NavLink>
           </div>
 
           {/* Publication Cards Grid */}
@@ -240,14 +285,12 @@ export default function ArchivedPublications() {
                 key={pub.id}
                 type="button"
                 className="publication-card"
-                onClick={() =>
-                  (window.location.href = `/publication/${pub.id}`)
-                }
+                onClick={() => navigate(`/publication/${pub.id}`)}
               >
                 <div className="publication-card-image">
                   <img
                     src={
-                      pub.photo_url || 'src/assets/images/covers/booktemp.avif'
+                      pub.photo_url || '/src/assets/images/covers/booktemp.avif'
                     }
                     alt={pub.title}
                     className="publication-card-cover"

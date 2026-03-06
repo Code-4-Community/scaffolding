@@ -21,6 +21,7 @@ const Root: React.FC = () => {
 
   const isLibraryActive =
     location.pathname.startsWith('/library') || location.pathname === '/';
+  const isProjectsActive = location.pathname.startsWith('/library/publication');
 
   return (
     <div className="root-shell">
@@ -122,7 +123,7 @@ const Root: React.FC = () => {
                         (isActive ? ' sidebar-subnav-link--active' : '')
                       }
                     >
-                      Archive
+                      Archived
                     </NavLink>
                   </li>
                 </ul>
@@ -130,7 +131,13 @@ const Root: React.FC = () => {
             </div>
 
             {/* Projects */}
-            <div className="sidebar-nav-item">
+            <NavLink
+              to="/library/publication/all"
+              className={
+                'sidebar-nav-item' +
+                (isProjectsActive ? ' sidebar-nav-item--active' : '')
+              }
+            >
               <div className="sidebar-nav-item-content">
                 <div className="sidebar-nav-item-left">
                   <img src={ProjectsIcon} alt="" className="sidebar-nav-icon" />
@@ -139,7 +146,7 @@ const Root: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </NavLink>
 
             {/* Resources */}
             <div className="sidebar-nav-item">

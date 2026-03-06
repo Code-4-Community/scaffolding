@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 
 import './styles.css';
 import apiClient from '@api/apiClient';
@@ -17,10 +21,10 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ArchivedPublications />,
+        element: <Navigate to="/library/publication/all" replace />,
       },
       {
-        path: 'library/publication/archived',
+        path: 'library/publication/:tab',
         element: <ArchivedPublications />,
       },
       {
