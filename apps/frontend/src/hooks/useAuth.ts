@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { getCurrentUser } from 'aws-amplify/auth';
+import { useEffect } from 'react';
 import User from '@api/dtos/user.dto';
 import * as Sentry from '@sentry/react';
 import apiClient from '@api/apiClient';
