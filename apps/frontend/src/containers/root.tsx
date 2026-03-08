@@ -15,7 +15,6 @@ import CollapseArrowIcon from '../assets/icons/collapse-arrow.svg';
 import LogoutIcon from '../assets/icons/logout.svg';
 
 const Root: React.FC = () => {
-  const [libraryExpanded, setLibraryExpanded] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
@@ -61,9 +60,7 @@ const Root: React.FC = () => {
               <button
                 type="button"
                 className="sidebar-library-header"
-                onClick={() =>
-                  !collapsed && setLibraryExpanded(!libraryExpanded)
-                }
+                onClick={() => `/library/publication/archived`}
               >
                 <div className="sidebar-library-header-content">
                   <div className="sidebar-library-header-left">
@@ -74,59 +71,12 @@ const Root: React.FC = () => {
                     />
                     {!collapsed && (
                       <span className="sidebar-nav-label sidebar-nav-label--bold">
-                        Library
+                        Archive
                       </span>
                     )}
                   </div>
-                  {!collapsed && (
-                    <img
-                      src={ChevronRightIcon}
-                      alt=""
-                      className={`sidebar-nav-arrow ${
-                        libraryExpanded ? 'sidebar-nav-arrow--expanded' : ''
-                      }`}
-                    />
-                  )}
                 </div>
               </button>
-
-              {!collapsed && libraryExpanded && (
-                <ul className="sidebar-subnav">
-                  <li>
-                    <NavLink
-                      to="/archive"
-                      className={({ isActive }) =>
-                        'sidebar-subnav-link' +
-                        (isActive ? ' sidebar-subnav-link--active' : '')
-                      }
-                    >
-                      All Publications
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/archive"
-                      className={({ isActive }) =>
-                        'sidebar-subnav-link' +
-                        (isActive ? ' sidebar-subnav-link--active' : '')
-                      }
-                    >
-                      In Progress
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/archive"
-                      className={({ isActive }) =>
-                        'sidebar-subnav-link' +
-                        (isActive ? ' sidebar-subnav-link--active' : '')
-                      }
-                    >
-                      Archive
-                    </NavLink>
-                  </li>
-                </ul>
-              )}
             </div>
 
             {/* Projects */}

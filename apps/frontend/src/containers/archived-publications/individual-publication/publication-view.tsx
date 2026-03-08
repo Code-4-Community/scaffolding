@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
-import { STATIC_ARCHIVED, MOCK_STORIES, Story } from '@utils/mock-data';
-import { Anthology, AnthologyStatus, AnthologyPubLevel } from '../../../types';
+import {
+  STATIC_ARCHIVED,
+  MOCK_STORIES,
+  MOCK_AUTHORS,
+} from '../../../utils/mock-data';
+import {
+  Anthology,
+  AnthologyStatus,
+  AnthologyPubLevel,
+  Story,
+} from '../../../types';
 import './publication-view.css';
 
 import imgFrame69 from '../../../assets/images/frame-69.png';
@@ -172,8 +181,8 @@ const mockAnthology: Anthology = {
   status: AnthologyStatus.CAN_BE_SHARED,
   pub_level: AnthologyPubLevel.PERFECT_BOUND,
   photo_url: undefined,
-  genre: 'Fantasy, Science Fiction, Mystery',
-  theme: 'Short Stories, Creative Writing',
+  genres: ['Fantasy', 'Science Fiction', 'Mystery'],
+  themes: ['Short Stories', 'Creative Writing'],
   isbn: '979-8-88694-087-9',
   shopify_url: 'https://example.com',
   praise_quotes:
@@ -249,24 +258,46 @@ const PublicationView: React.FC = () => {
         apiClient
           .getStoriesByAnthology(anthology.id)
           .then((stories: Story[]) => {
-            const authorNames = [...new Set(stories.map((s) => s.author))];
+            const authorNames = [
+              ...new Set(
+                stories
+                  .map(
+                    (s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name,
+                  )
+                  .filter(Boolean),
+              ),
+            ] as string[];
             setAuthors(authorNames);
           })
           .catch(() => {
             // Fallback to mock stories on error
             const mockStories = MOCK_STORIES.filter(
-              (s) => s.anthology_id === anthology.id
+              (s) => s.anthologyId === anthology.id,
             );
-            const authorNames = [...new Set(mockStories.map((s) => s.author))];
-            setAuthors(authorNames);
+            const authorNames = [
+              ...new Set(
+                mockStories
+                  .map(
+                    (s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name,
+                  )
+                  .filter(Boolean),
+              ),
+            ];
+            setAuthors(authorNames as string[]);
           });
       } else {
         // API method doesn't exist yet, so use mock stories
         const mockStories = MOCK_STORIES.filter(
-          (s) => s.anthology_id === anthology.id
+          (s) => s.anthologyId === anthology.id,
         );
-        const authorNames = [...new Set(mockStories.map((s) => s.author))];
-        setAuthors(authorNames);
+        const authorNames = [
+          ...new Set(
+            mockStories
+              .map((s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name)
+              .filter(Boolean),
+          ),
+        ];
+        setAuthors(authorNames as string[]);
       }
     }
   }, [anthology?.id]);
@@ -276,7 +307,7 @@ const PublicationView: React.FC = () => {
   };
 
   const toggleAuthorsExpanded = () => {
-  setIsAuthorsExpanded(!isAuthorsExpanded);
+    setIsAuthorsExpanded(!isAuthorsExpanded);
   };
 
   if (loading) return <div className="publication-view">Loading...</div>;
@@ -284,13 +315,6 @@ const PublicationView: React.FC = () => {
     return <div className="publication-view">No anthology found</div>;
 
   const fullDescription = anthology.description || 'No description available.';
-
-  // Helper to parse comma separated strings or arrays
-  const parseTags = (value?: string | string[]) => {
-    if (Array.isArray(value)) return value;
-    if (typeof value === 'string') return value.split(',').map((s) => s.trim());
-    return [];
-  };
 
   const getTagClass = (label: string) => {
     switch (label) {
@@ -305,11 +329,11 @@ const PublicationView: React.FC = () => {
     }
   };
 
-  const genreTags = parseTags(anthology.genre).map((g) => ({
+  const genreTags = (anthology.genres ?? []).map((g) => ({
     label: g,
     className: getTagClass(g),
   }));
-  const themeTags = parseTags(anthology.theme).map((t) => ({
+  const themeTags = (anthology.themes ?? []).map((t) => ({
     label: t,
     className: 'tag-neutral',
   }));
@@ -328,7 +352,7 @@ const PublicationView: React.FC = () => {
     },
     {
       label: 'Theme',
-      value: anthology.theme || 'Empty',
+      value: anthology.themes?.join(', ') || 'Empty',
     },
     {
       label: 'Praise/Pull Quotes',
@@ -394,34 +418,43 @@ const PublicationView: React.FC = () => {
           <div className="publication-info">
             <div className="publication-title-section">
               <h1 className="publication-title">{anthology.title}</h1>
-                <div className="publication-authors">
-                  {authors.length > 0 ? (
-                    <>
-                      <p className="publication-author">
-                        {isAuthorsExpanded
-                          ? authors.join(', ')
-                          : authors.slice(0, 3).join(', ') +
-                            (authors.length > 3 ? '...' : '')}
-                      </p>
-                      {authors.length > 3 && (
-                        <div className="read-more-link" onClick={toggleAuthorsExpanded}>
-                          <p>{isAuthorsExpanded ? 'See Less' : `See All ${authors.length} Authors`}</p>
-                          <div
-                            className="read-more-arrow"
-                            style={{
-                              transform: isAuthorsExpanded ? 'rotate(90deg)' : 'rotate(270deg)',
-                            }}
-                          >
-                            <img src={imgFluentIosArrow24Filled} alt="" />
-                          </div>
+              <div className="publication-authors">
+                {authors.length > 0 ? (
+                  <>
+                    <p className="publication-author">
+                      {isAuthorsExpanded
+                        ? authors.join(', ')
+                        : authors.slice(0, 3).join(', ') +
+                          (authors.length > 3 ? '...' : '')}
+                    </p>
+                    {authors.length > 3 && (
+                      <div
+                        className="read-more-link"
+                        onClick={toggleAuthorsExpanded}
+                      >
+                        <p>
+                          {isAuthorsExpanded
+                            ? 'See Less'
+                            : `See All ${authors.length} Authors`}
+                        </p>
+                        <div
+                          className="read-more-arrow"
+                          style={{
+                            transform: isAuthorsExpanded
+                              ? 'rotate(90deg)'
+                              : 'rotate(270deg)',
+                          }}
+                        >
+                          <img src={imgFluentIosArrow24Filled} alt="" />
                         </div>
-                      )}
-                    </>
-                  ) : (
-                    <p className="publication-author">No authors available</p>
-                  )}
-                </div>              
-                <div className="publication-description">
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p className="publication-author">No authors available</p>
+                )}
+              </div>
+              <div className="publication-description">
                 <p className="description-text">
                   {isExpanded
                     ? fullDescription

@@ -1,5 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# nx cache
+.nx/cache/
+
 # compiled output
 dist
 tmp
@@ -34,6 +37,8 @@ yarn-error.log
 testem.log
 /typings
 
+
+
 # System Files
 .DS_Store
 Thumbs.db
@@ -43,5 +48,5 @@ Thumbs.db
 *.env.*
 !example.env
 
-# nx cache
-/.nx/cache
+# Cache
+.nx/cache

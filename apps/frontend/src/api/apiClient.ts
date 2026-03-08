@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
-import { Anthology } from '../types';
+import { Anthology, Story } from '../types';
 import User from './dtos/user.dto';
 
 const defaultBaseUrl =
@@ -23,6 +23,14 @@ export class ApiClient {
 
   public async getAnthology(id: string | number): Promise<Anthology> {
     return this.get(`/api/anthologies/${id}`) as Promise<Anthology>;
+  }
+
+  public async getStoriesByAnthology(
+    anthologyId: string | number,
+  ): Promise<Story[]> {
+    return this.get(`/api/anthologies/${anthologyId}/stories`) as Promise<
+      Story[]
+    >;
   }
 
   private async get(path: string): Promise<unknown> {
