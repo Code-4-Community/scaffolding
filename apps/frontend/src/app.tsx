@@ -5,9 +5,11 @@ import './styles.css';
 import apiClient from '@api/apiClient';
 import Root from '@containers/root';
 import NotFound from '@containers/404';
-import Test from '@containers/test';
 import ArchivedPublications from '@containers/archived-publications';
 import PublicationView from '@containers/archived-publications/individual-publication/publication-view';
+import Login from '@containers/auth/login';
+import AuthedApp from '@containers/auth/AuthedApp';
+import Role from '@api/dtos/role';
 
 const router = createBrowserRouter([
   {
@@ -15,24 +17,48 @@ const router = createBrowserRouter([
     element: <Root />,
     errorElement: <NotFound />,
     children: [
+      // public routes
+      { index: true, element: <ArchivedPublications /> },
       {
-        index: true,
-        element: <ArchivedPublications />,
+        // archive
+        path: 'archive',
+        children: [
+          { index: true, element: <ArchivedPublications /> },
+          {
+            path: 'publication/:id?',
+            element: <PublicationView />,
+          },
+        ],
       },
+      // admin and volunteer routes
       {
-        path: 'library/publication/archived',
-        element: <ArchivedPublications />,
+        element: <AuthedApp roles={[Role.ADMIN, Role.VOLUNTEER]} />,
+        children: [
+          {
+            path: 'test',
+            element: <NotFound />,
+          },
+          /*
+          TODO: set default page for admins/volunteers to projects page?
+          {index: true,
+            element: <Projects />
+          }*/
+        ],
       },
+
+      // TODO: admin routes (ex. adding admin/volunteers)
       {
-        path: '/publication/:id?',
-        element: <PublicationView />,
+        path: 'admin',
+        element: <AuthedApp roles={[Role.ADMIN]} />,
+        children: [
+          /*
+          TODO: set default page for admins
+          */
+        ],
       },
     ],
   },
-  {
-    path: '/test',
-    element: <Test />,
-  },
+  { path: 'login', element: <Login /> },
 ]);
 
 export const App: React.FC = () => {

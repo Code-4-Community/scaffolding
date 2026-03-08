@@ -396,7 +396,7 @@ const PublicationView: React.FC = () => {
     <div className="publication-view">
       {/* Breadcrumb Header */}
       <div className="breadcrumb-header">
-        <a href="library/publication/archived" className="breadcrumb-link">
+        <a href="/archive" className="breadcrumb-link">
           Archive
         </a>
         <div className="breadcrumb-separator">

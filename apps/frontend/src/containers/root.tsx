@@ -19,9 +19,7 @@ const Root: React.FC = () => {
   const location = useLocation();
 
   const isLibraryActive =
-    location.pathname.startsWith('/library') ||
-    location.pathname === '/' ||
-    location.pathname.startsWith('/publication');
+    location.pathname.startsWith('/archive') || location.pathname === '/';
 
   return (
     <div className="root-shell">

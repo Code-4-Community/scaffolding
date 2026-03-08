@@ -204,7 +204,7 @@ export default function ArchivedPublications() {
                 type="button"
                 className="publication-card"
                 onClick={() =>
-                  (window.location.href = `/publication/${pub.id}`)
+                  (window.location.href = `archive/publication/${pub.id}`)
                 }
               >
                 <div className="publication-card-image">
