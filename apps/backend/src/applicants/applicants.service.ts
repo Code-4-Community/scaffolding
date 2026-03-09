@@ -21,7 +21,7 @@ export class ApplicantsService {
    * Creates a applicant in the repository.
    * @param appId The corresponding application id of the applicant to create.
    * @param name The name of the applicant to create (generally in the format 'First Last').
-   * @param startDate The expected starting date of the applicant's commitment.
+   * @param proposedStartDate The expected starting date of the applicant's commitment.
    * @param endDate The expected ending date of the applicant's commitment.
    * @returns The created applicant.
    * @throws {BadRequestException} if any of the fields are invalid.
@@ -31,7 +31,7 @@ export class ApplicantsService {
     appId: number,
     firstName: string,
     lastName: string,
-    startDate: Date,
+    proposedStartDate: Date,
     endDate: Date,
   ) {
     if (!appId || appId <= 0) {
@@ -46,24 +46,28 @@ export class ApplicantsService {
       throw new BadRequestException('Applicant last name is required');
     }
 
-    if (!startDate || !endDate) {
-      throw new BadRequestException('Start date and end date are required');
-    }
-
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    if (!proposedStartDate || !endDate) {
       throw new BadRequestException(
-        'Start date and end date must be valid dates',
+        'proposed start date and end date are required',
       );
     }
-    if (startDate >= endDate) {
-      throw new BadRequestException('Start date must be before end date');
+
+    if (isNaN(proposedStartDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new BadRequestException(
+        'proposed start date and end date must be valid dates',
+      );
+    }
+    if (proposedStartDate >= endDate) {
+      throw new BadRequestException(
+        'proposed start date must be before end date',
+      );
     }
 
     const applicant: Applicant = this.repo.create({
       appId,
       firstName,
       lastName,
-      startDate,
+      proposedStartDate,
       endDate,
     });
 
@@ -104,24 +108,24 @@ export class ApplicantsService {
   /**
    * Updates a applicant's commitment starting date.
    * @param appId The appId of the applicant to update.
-   * @param startDate The new starting date for the applicant's commitment.
+   * @param proposedStartDate The new starting date for the applicant's commitment.
    * @returns The updated applicant object.
    * @throws {Error} If the repository throws an error.
    * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
    * @throws {NotFoundException} with message 'Applicant with ID <id> not found'
    *                             if the applicant with the specified appId does not exist.
    */
-  async updateStartDate(appId: number, startDate: Date) {
+  async updateproposedStartDate(appId: number, proposedStartDate: Date) {
     if (!appId) {
       throw new BadRequestException('Applicant ID is required');
     }
 
-    if (!startDate) {
-      throw new BadRequestException('Start date is required');
+    if (!proposedStartDate) {
+      throw new BadRequestException('proposed start date is required');
     }
 
-    if (isNaN(startDate.getTime())) {
-      throw new BadRequestException('Start date must be a valid date');
+    if (isNaN(proposedStartDate.getTime())) {
+      throw new BadRequestException('proposed start date must be a valid date');
     }
 
     const applicant = await this.repo.findOneBy({ appId });
@@ -129,11 +133,13 @@ export class ApplicantsService {
       throw new NotFoundException(`Applicant with ID ${appId} not found`);
     }
 
-    if (applicant.endDate && startDate >= applicant.endDate) {
-      throw new BadRequestException('Start date must be before end date');
+    if (applicant.endDate && proposedStartDate >= applicant.endDate) {
+      throw new BadRequestException(
+        'proposed start date must be before end date',
+      );
     }
 
-    applicant.startDate = startDate;
+    applicant.proposedStartDate = proposedStartDate;
     return this.repo.save(applicant);
   }
 
@@ -165,8 +171,10 @@ export class ApplicantsService {
       throw new NotFoundException(`Applicant with ID ${appId} not found`);
     }
 
-    if (applicant.startDate && applicant.startDate >= endDate) {
-      throw new BadRequestException('End date must be after start date');
+    if (applicant.proposedStartDate && applicant.proposedStartDate >= endDate) {
+      throw new BadRequestException(
+        'End date must be after proposed start date',
+      );
     }
 
     applicant.endDate = endDate;

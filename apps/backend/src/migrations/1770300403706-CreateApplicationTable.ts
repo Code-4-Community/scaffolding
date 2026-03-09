@@ -22,8 +22,6 @@ export class CreateApplicationTable1770300403706 implements MigrationInterface {
              "license" character varying NOT NULL,
              "phone" character varying NOT NULL,
              "applicantType" "public"."application_applicanttype_enum" NOT NULL,
-             "school" "public"."application_school_enum" NOT NULL,
-             "otherSchool" character varying,
              "referred" boolean DEFAULT false,
              "referredEmail" character varying,
              "weeklyHours" integer NOT NULL,

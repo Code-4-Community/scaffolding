@@ -4,7 +4,7 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
+  HeardAboutFrom,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -139,22 +139,6 @@ export class Application {
   applicantType!: ApplicantType;
 
   /**
-   * School of the applicant; includes well-known medical schools or an 'other' option.
-   *
-   * Example: School.STANFORD_MEDICINE.
-   */
-  @Column({ type: 'enum', enum: School })
-  school!: School;
-
-  /**
-   * Name of school if chose other
-   *
-   * Example: Northeastern University
-   */
-  @Column({ type: 'varchar', nullable: true })
-  otherSchool?: string;
-
-  /**
    * Whether or not the applicant was referred by someone else.
    *
    * Example: false.
@@ -261,4 +245,12 @@ export class Application {
    */
   @Column({ type: 'varchar' })
   emergencyContactRelationship!: string;
+
+  /**
+   * List of sources that the applicant heard about BHCHP from
+   *
+   * Example: [HeardAboutFrom.OTHER, HeardAboutFrom.SCHOOL]
+   */
+  @Column({ type: 'enum', enum: HeardAboutFrom, array: true, default: [] })
+  heardAboutFrom: HeardAboutFrom[];
 }

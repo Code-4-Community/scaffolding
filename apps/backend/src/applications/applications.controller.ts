@@ -134,14 +134,13 @@ export class ApplicationsController {
    * @throws {NotFoundException} with message 'Application with ID <id> not found'
    *         if the application does not exist.
    * @throws {Error} which is unchanged from what repository throws.
-   *
-   * Does not return a value.
+   * @returns {Application} The application object which has been deleted.
    */
   @Delete('/:appId')
   async deleteApplication(
     @Param('appId', ParseIntPipe) appId: number,
     @Request() req,
-  ): Promise<void> {
+  ): Promise<Application> {
     return await this.applicationsService.delete(appId);
   }
 }

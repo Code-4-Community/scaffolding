@@ -140,11 +140,11 @@ export class ApplicationsService {
     return await this.applicationRepository.save(application);
   }
 
-  async delete(appId: number): Promise<void> {
+  async delete(appId: number): Promise<Application> {
     const application = await this.findById(appId);
     if (!application) {
       throw new NotFoundException(`Application with ID ${appId} not found`);
     }
-    await this.applicationRepository.remove(application);
+    return await this.applicationRepository.remove(application);
   }
 }

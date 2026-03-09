@@ -7,7 +7,6 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -35,7 +34,6 @@ const mockApplication: Application = {
   license: 'n/a',
   applicantType: ApplicantType.LEARNER,
   phone: '123-456-7890',
-  school: School.HARVARD_MEDICAL_SCHOOL,
   email: 'test@example.com',
   discipline: DISCIPLINE_VALUES.RN,
   referred: false,
@@ -49,6 +47,7 @@ const mockApplication: Application = {
   emergencyContactName: 'Jane Doe',
   emergencyContactPhone: '111-111-1111',
   emergencyContactRelationship: 'Mother',
+  heardAboutFrom: [],
 };
 
 describe('ApplicationsController', () => {

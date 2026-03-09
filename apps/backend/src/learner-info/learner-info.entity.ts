@@ -21,6 +21,14 @@ export class LearnerInfo {
   school!: School;
 
   /**
+   * Name of school if chose other
+   *
+   * Example: Northeastern University
+   */
+  @Column({ type: 'varchar', nullable: true })
+  otherSchool?: string;
+
+  /**
    * Name of the department in the school studied in if relevent
    *
    * Example: Infectious Diseases
