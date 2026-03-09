@@ -17,6 +17,7 @@ export const RequirementsFrame: React.FC = () => {
         <Box
           borderColor="black"
           borderWidth="1px"
+          borderRadius="md"
           height="100px"
           p={3}
           overflow="auto"
@@ -32,6 +33,7 @@ export const RequirementsFrame: React.FC = () => {
         <Box
           borderColor="black"
           borderWidth="1px"
+          borderRadius="md"
           height="100px"
           p={3}
           overflow="auto"
