@@ -4,6 +4,7 @@ import {
   Delete,
   Param,
   ParseIntPipe,
+  Query,
   UseGuards,
   UseInterceptors,
   NotFoundException,
@@ -13,6 +14,11 @@ import { Anthology } from './anthology.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  FilterByAgeCategoryDto,
+  FilterByPubDateDto,
+  FilterByStringDto,
+} from './dtos/filter-anthology.dto';
 
 @ApiTags('Anthologies')
 @ApiBearerAuth()
@@ -21,6 +27,46 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @UseInterceptors(CurrentUserInterceptor)
 export class AnthologyController {
   constructor(private readonly anthologyService: AnthologyService) {}
+
+  @Get('sort/title')
+  getAllByTitle(): Promise<Anthology[]> {
+    return this.anthologyService.findAllSortedByTitle();
+  }
+
+  @Get('sort/date-recent')
+  getAllByDateRecent(): Promise<Anthology[]> {
+    return this.anthologyService.findAllSortedByDateRecent();
+  }
+
+  @Get('sort/date-oldest')
+  getAllByDateOldest(): Promise<Anthology[]> {
+    return this.anthologyService.findAllSortedByDateOldest();
+  }
+
+  @Get('filter/age-category')
+  getByAgeCategory(@Query() dto: FilterByAgeCategoryDto): Promise<Anthology[]> {
+    return this.anthologyService.findByAgeCategory(dto.value);
+  }
+
+  @Get('filter/pub-date')
+  getByPubDateRange(@Query() dto: FilterByPubDateDto): Promise<Anthology[]> {
+    return this.anthologyService.findByPubDateRange(dto.start, dto.end);
+  }
+
+  @Get('filter/genre')
+  getByGenre(@Query() dto: FilterByStringDto): Promise<Anthology[]> {
+    return this.anthologyService.findByGenre(dto.value);
+  }
+
+  @Get('filter/program')
+  getByProgram(@Query() dto: FilterByStringDto): Promise<Anthology[]> {
+    return this.anthologyService.findByProgram(dto.value);
+  }
+
+  @Get()
+  async getAllAnthologies(): Promise<Anthology[]> {
+    return this.anthologyService.findAll();
+  }
 
   @Get(':id')
   async getAnthology(
@@ -33,11 +79,6 @@ export class AnthologyController {
     }
 
     return anthology;
-  }
-
-  @Get()
-  async getAllAnthologies(): Promise<Anthology[]> {
-    return this.anthologyService.findAll();
   }
 
   @Delete('/:anthologyId')

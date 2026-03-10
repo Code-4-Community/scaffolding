@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, ILike, Repository } from 'typeorm';
 
 import { Anthology } from './anthology.entity';
-import { AnthologyStatus, AnthologyPubLevel } from './types';
+import { AgeCategory, AnthologyStatus, AnthologyPubLevel } from './types';
 
 @Injectable()
 export class AnthologyService {
@@ -94,5 +94,35 @@ export class AnthologyService {
 
     anthology.status = status;
     return this.repo.save(anthology);
+  }
+
+  findAllSortedByTitle(): Promise<Anthology[]> {
+    return this.repo.find({ order: { title: 'ASC' } });
+  }
+
+  findAllSortedByDateRecent(): Promise<Anthology[]> {
+    return this.repo.find({ order: { publishedDate: 'DESC' } });
+  }
+
+  findAllSortedByDateOldest(): Promise<Anthology[]> {
+    return this.repo.find({ order: { publishedDate: 'ASC' } });
+  }
+
+  findByAgeCategory(ageCategory: AgeCategory): Promise<Anthology[]> {
+    return this.repo.find({ where: { ageCategory } });
+  }
+
+  findByPubDateRange(start: string, end: string): Promise<Anthology[]> {
+    return this.repo.find({
+      where: { publishedDate: Between(new Date(start), new Date(end)) },
+    });
+  }
+
+  findByGenre(genre: string): Promise<Anthology[]> {
+    return this.repo.find({ where: { genres: ILike(`%${genre}%`) } });
+  }
+
+  findByProgram(program: string): Promise<Anthology[]> {
+    return this.repo.find({ where: { programs: ILike(`%${program}%`) } });
   }
 }
