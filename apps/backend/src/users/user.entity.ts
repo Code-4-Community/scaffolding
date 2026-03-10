@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, Relation } from 'typeorm';
 
 import { Status } from './types';
 import { Omchai } from 'src/omchai/omchai.entity';
@@ -27,5 +27,5 @@ export class User {
   name?: string;
 
   @OneToMany(() => Omchai, (omchai) => omchai.user)
-  omchaiAssignments: Omchai[];
+  omchaiAssignments: Relation<Omchai[]>;
 }
