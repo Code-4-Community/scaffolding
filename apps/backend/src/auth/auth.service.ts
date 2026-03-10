@@ -11,6 +11,7 @@ import {
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import CognitoAuthConfig from '../../../frontend/src/aws-exports';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
