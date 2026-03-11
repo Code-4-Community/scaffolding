@@ -7,6 +7,7 @@ import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
 import { Box } from '@chakra-ui/react';
 import ApplicationTable from '@components/ApplicationTable';
+import StatusPill from '@components/StatusPill/StatusPill';
 
 const Root: React.FC = () => {
   return (

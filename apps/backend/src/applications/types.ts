@@ -6,7 +6,10 @@ export enum AppStatus {
   IN_REVIEW = 'In review',
   FORMS_SENT = 'Forms sent',
   ACCEPTED = 'Accepted',
-  REJECTED = 'Rejected',
+  NO_AVAILABILITY = 'No Availability',
+  DECLINED = 'Declined',
+  ACTIVE = 'Active',
+  INACTIVE = 'Inactive',
 }
 
 /**

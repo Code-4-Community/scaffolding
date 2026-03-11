@@ -14,7 +14,7 @@ export class Init1754254886189 implements MigrationInterface {
     );
 
     await queryRunner.query(
-      `CREATE TYPE "public"."app_status_enum" AS ENUM('App submitted', 'In review', 'Forms sent', 'Accepted', 'Rejected')`,
+      `CREATE TYPE "public"."app_status_enum" AS ENUM('App submitted', 'In review', 'Forms sent', 'Accepted', 'Rejected', 'No Availability', 'Declined', 'Active', 'Inactive')`,
     );
 
     await queryRunner.query(
