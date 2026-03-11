@@ -3,7 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  ManyToOne,
+  Relation,
 } from 'typeorm';
 import { InventoryHolding } from '../inventory-holding/inventory-holding.entity';
 
@@ -15,6 +15,6 @@ export class Inventory {
   @Column()
   name: string;
 
-  @OneToMany(() => InventoryHolding, (ih) => ih.inventory)
-  holdings: InventoryHolding[];
+  @OneToMany(() => InventoryHolding, (holding) => holding.inventory)
+  holdings: Relation<InventoryHolding[]>;
 }

@@ -11,7 +11,7 @@ import {
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 
-import CognitoAuthConfig from './aws-exports';
+import CognitoAuthConfig from '../../../frontend/src/aws-exports';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignInResponseDto } from './dtos/sign-in-response.dto';
@@ -27,7 +27,7 @@ export class AuthService {
 
   constructor() {
     this.providerClient = new CognitoIdentityProviderClient({
-      region: CognitoAuthConfig.region,
+      region: CognitoAuthConfig.aws_cognito_region,
       credentials: {
         accessKeyId: process.env.NX_AWS_ACCESS_KEY,
         secretAccessKey: process.env.NX_AWS_SECRET_ACCESS_KEY,
@@ -43,13 +43,13 @@ export class AuthService {
   // (see https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash)
   calculateHash(username: string): string {
     const hmac = createHmac('sha256', this.clientSecret);
-    hmac.update(username + CognitoAuthConfig.clientId);
+    hmac.update(username + CognitoAuthConfig.aws_user_pools_web_client_id);
     return hmac.digest('base64');
   }
 
   async getUser(userSub: string): Promise<AttributeType[]> {
     const listUsersCommand = new ListUsersCommand({
-      UserPoolId: CognitoAuthConfig.userPoolId,
+      UserPoolId: CognitoAuthConfig.aws_user_pools_id,
       Filter: `sub = "${userSub}"`,
     });
 
@@ -64,7 +64,7 @@ export class AuthService {
   ): Promise<boolean> {
     // Needs error handling
     const signUpCommand = new SignUpCommand({
-      ClientId: CognitoAuthConfig.clientId,
+      ClientId: CognitoAuthConfig.aws_user_pools_web_client_id,
       SecretHash: this.calculateHash(email),
       Username: email,
       Password: password,
@@ -88,7 +88,7 @@ export class AuthService {
 
   async verifyUser(email: string, verificationCode: string): Promise<void> {
     const confirmCommand = new ConfirmSignUpCommand({
-      ClientId: CognitoAuthConfig.clientId,
+      ClientId: CognitoAuthConfig.aws_user_pools_web_client_id,
       SecretHash: this.calculateHash(email),
       Username: email,
       ConfirmationCode: verificationCode,
@@ -100,8 +100,8 @@ export class AuthService {
   async signin({ email, password }: SignInDto): Promise<SignInResponseDto> {
     const signInCommand = new AdminInitiateAuthCommand({
       AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
-      ClientId: CognitoAuthConfig.clientId,
-      UserPoolId: CognitoAuthConfig.userPoolId,
+      ClientId: CognitoAuthConfig.aws_user_pools_web_client_id,
+      UserPoolId: CognitoAuthConfig.aws_user_pools_id,
       AuthParameters: {
         USERNAME: email,
         PASSWORD: password,
@@ -125,8 +125,8 @@ export class AuthService {
   }: RefreshTokenDto): Promise<SignInResponseDto> {
     const refreshCommand = new AdminInitiateAuthCommand({
       AuthFlow: 'REFRESH_TOKEN_AUTH',
-      ClientId: CognitoAuthConfig.clientId,
-      UserPoolId: CognitoAuthConfig.userPoolId,
+      ClientId: CognitoAuthConfig.aws_user_pools_web_client_id,
+      UserPoolId: CognitoAuthConfig.aws_user_pools_id,
       AuthParameters: {
         REFRESH_TOKEN: refreshToken,
         SECRET_HASH: this.calculateHash(userSub),
@@ -144,7 +144,7 @@ export class AuthService {
 
   async forgotPassword(email: string) {
     const forgotCommand = new ForgotPasswordCommand({
-      ClientId: CognitoAuthConfig.clientId,
+      ClientId: CognitoAuthConfig.aws_user_pools_web_client_id,
       Username: email,
       SecretHash: this.calculateHash(email),
     });
@@ -158,7 +158,7 @@ export class AuthService {
     newPassword,
   }: ConfirmPasswordDto) {
     const confirmComamnd = new ConfirmForgotPasswordCommand({
-      ClientId: CognitoAuthConfig.clientId,
+      ClientId: CognitoAuthConfig.aws_user_pools_web_client_id,
       SecretHash: this.calculateHash(email),
       Username: email,
       ConfirmationCode: confirmationCode,
@@ -171,7 +171,7 @@ export class AuthService {
   async deleteUser(email: string): Promise<void> {
     const adminDeleteUserCommand = new AdminDeleteUserCommand({
       Username: email,
-      UserPoolId: CognitoAuthConfig.userPoolId,
+      UserPoolId: CognitoAuthConfig.aws_user_pools_id,
     });
 
     await this.providerClient.send(adminDeleteUserCommand);

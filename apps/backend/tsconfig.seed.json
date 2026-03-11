@@ -2,10 +2,15 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["./src/*"]
+    }
   },
   "ts-node": {
     "transpileOnly": true,
+    "require": ["tsconfig-paths/register"],
     "compilerOptions": {
       "module": "commonjs",
       "moduleResolution": "node"
