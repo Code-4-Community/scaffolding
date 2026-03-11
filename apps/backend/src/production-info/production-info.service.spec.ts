@@ -6,22 +6,53 @@ import { ProductionInfo } from './production-info.entity';
 import { Anthology } from '../anthology/anthology.entity';
 import { CreateProductionInfoDto } from './dtos/create-production-info.dto';
 import { UpdateProductionInfoDto } from './dtos/update-production-info.dto';
+import { Repository } from 'typeorm';
+import {
+  AnthologyStatus,
+  AgeCategory,
+  AnthologyPubLevel,
+} from 'src/anthology/types';
+
+export const mockAnthology: Anthology = {
+  id: 1,
+  title: 'Test Anthology',
+  byline: '',
+  subtitle: 'A College Essay Anthology',
+  description: '',
+  genres: [],
+  themes: [],
+  triggers: [],
+  publishedDate: undefined,
+  status: AnthologyStatus.ARCHIVED,
+  ageCategory: AgeCategory.YA,
+  pubLevel: AnthologyPubLevel.ZINE,
+  photoUrl: '',
+  isbn: '',
+  shopifyUrl: '',
+  stories: [],
+  inventoryHoldings: [],
+  productionInfo: new ProductionInfo(),
+  omchaiAssignments: [],
+};
+
+export const mockProductionInfo: ProductionInfo = {
+  id: 1,
+  anthology_id: 1,
+  design_files_link: 'http://example.com',
+  cover_image_file_link: '',
+  binding_type: '',
+  dimensions: '',
+  printing_cost: 0,
+  print_run: 0,
+  weight_in_grams: 0,
+  page_count: 0,
+  printed_by: '',
+};
 
 describe('ProductionInfoService', () => {
   let service: ProductionInfoService;
-  let productionInfoRepository: any;
-  let anthologyRepository: any;
-
-  const mockAnthology = {
-    id: 1,
-    title: 'Test Anthology',
-  } as Anthology;
-
-  const mockProductionInfo = {
-    id: 1,
-    anthology: mockAnthology,
-    design_files_link: 'http://example.com',
-  } as ProductionInfo;
+  let productionInfoRepository: Repository<ProductionInfo>;
+  let anthologyRepository: Repository<Anthology>;
 
   const mockProductionInfoRepository = {
     create: jest.fn(),
@@ -75,12 +106,13 @@ describe('ProductionInfoService', () => {
 
       const result = await service.create(dto);
 
-      expect(anthologyRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
-      expect(productionInfoRepository.create).toHaveBeenCalledWith({
-        ...dto,
-        anthology: mockAnthology,
+      expect(anthologyRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 1 },
       });
-      expect(productionInfoRepository.save).toHaveBeenCalledWith(mockProductionInfo);
+      expect(productionInfoRepository.create).toHaveBeenCalledWith(dto);
+      expect(productionInfoRepository.save).toHaveBeenCalledWith(
+        mockProductionInfo,
+      );
       expect(result).toEqual(mockProductionInfo);
     });
 
@@ -101,19 +133,23 @@ describe('ProductionInfoService', () => {
 
       const result = await service.findAll();
 
-      expect(productionInfoRepository.find).toHaveBeenCalledWith({ relations: ['anthology'] });
+      expect(productionInfoRepository.find).toHaveBeenCalledWith({
+        relations: ['anthology'],
+      });
       expect(result).toEqual([mockProductionInfo]);
     });
   });
 
   describe('findOneByAnthologyId', () => {
     it('should return production info for specific anthology', async () => {
-      mockProductionInfoRepository.findOne.mockResolvedValue(mockProductionInfo);
+      mockProductionInfoRepository.findOne.mockResolvedValue(
+        mockProductionInfo,
+      );
 
       const result = await service.findOneByAnthologyId(1);
 
       expect(productionInfoRepository.findOne).toHaveBeenCalledWith({
-        where: { anthology: { id: 1 } },
+        where: { anthology_id: 1 },
         relations: ['anthology'],
       });
       expect(result).toEqual(mockProductionInfo);
@@ -122,17 +158,25 @@ describe('ProductionInfoService', () => {
     it('should throw NotFoundException if production info not found', async () => {
       mockProductionInfoRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOneByAnthologyId(999)).rejects.toThrow(NotFoundException);
+      await expect(service.findOneByAnthologyId(999)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('update', () => {
     it('should update production info', async () => {
-      const dto: UpdateProductionInfoDto = { design_files_link: 'http://updated.com' };
+      const dto: UpdateProductionInfoDto = {
+        design_files_link: 'http://updated.com',
+      };
       const updatedProductionInfo = { ...mockProductionInfo, ...dto };
 
-      mockProductionInfoRepository.findOne.mockResolvedValue(mockProductionInfo);
-      mockProductionInfoRepository.save.mockResolvedValue(updatedProductionInfo);
+      mockProductionInfoRepository.findOne.mockResolvedValue(
+        mockProductionInfo,
+      );
+      mockProductionInfoRepository.save.mockResolvedValue(
+        updatedProductionInfo,
+      );
 
       const result = await service.update(1, dto);
 
@@ -151,17 +195,21 @@ describe('ProductionInfoService', () => {
     });
 
     it('should update anthology if anthology_id is provided', async () => {
-        const dto: UpdateProductionInfoDto = { anthology_id: 2 };
-        const newAnthology = { id: 2, title: 'New Anthology' } as Anthology;
-        
-        mockProductionInfoRepository.findOne.mockResolvedValue(mockProductionInfo);
-        mockAnthologyRepository.findOne.mockResolvedValue(newAnthology);
-        mockProductionInfoRepository.save.mockImplementation(val => val);
+      const dto: UpdateProductionInfoDto = { anthology_id: 2 };
+      const newAnthology = { id: 2, title: 'New Anthology' } as Anthology;
 
-        await service.update(1, dto);
+      mockProductionInfoRepository.findOne.mockResolvedValue(
+        mockProductionInfo,
+      );
+      mockAnthologyRepository.findOne.mockResolvedValue(newAnthology);
+      mockProductionInfoRepository.save.mockImplementation((val) => val);
 
-        expect(anthologyRepository.findOne).toHaveBeenCalledWith({ where: { id: 2 } });
-        expect(productionInfoRepository.save).toHaveBeenCalled();
+      await service.update(1, dto);
+
+      expect(anthologyRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 2 },
+      });
+      expect(productionInfoRepository.save).toHaveBeenCalled();
     });
   });
 });

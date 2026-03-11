@@ -1,4 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Anthology } from 'src/anthology/anthology.entity';
+import { User } from 'src/users/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 
 export enum OmchaiRole {
   OWNER = 'OWNER',
@@ -14,11 +23,11 @@ export class Omchai {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })
-  anthology_id: number;
+  @Column({ type: 'int', name: 'anthology_id' })
+  anthologyId: number;
 
-  @Column({ type: 'int' })
-  user_id: number;
+  @Column({ type: 'int', name: 'user_id' })
+  userId: number;
 
   @Column({
     type: 'enum',
@@ -26,6 +35,14 @@ export class Omchai {
   })
   role: OmchaiRole;
 
-  @Column({ type: 'date' })
-  datetime_assigned: Date;
+  @Column({ type: 'date', name: 'datetime_assigned' })
+  datetimeAssigned: Date;
+
+  @ManyToOne(() => User, (user) => user.omchaiAssignments)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Anthology, (anthology) => anthology.omchaiAssignments)
+  @JoinColumn({ name: 'anthology_id' })
+  anthology: Anthology;
 }

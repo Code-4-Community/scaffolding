@@ -1,14 +1,20 @@
 import axios, { type AxiosInstance } from 'axios';
-import { Anthology } from '../types';
+import { Anthology, Story } from '../types';
+import User from './dtos/user.dto';
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
 export class ApiClient {
+  
   private axiosInstance: AxiosInstance;
 
   constructor() {
     this.axiosInstance = axios.create({ baseURL: defaultBaseUrl });
+  }
+
+  public async getMe(): Promise<User>  {
+    return this.get('/auth/me') as Promise<User>;
   }
 
   public async getHello(): Promise<string> {
@@ -17,6 +23,14 @@ export class ApiClient {
 
   public async getAnthology(id: string | number): Promise<Anthology> {
     return this.get(`/api/anthologies/${id}`) as Promise<Anthology>;
+  }
+
+  public async getStoriesByAnthology(
+    anthologyId: string | number,
+  ): Promise<Story[]> {
+    return this.get(`/api/anthologies/${anthologyId}/stories`) as Promise<
+      Story[]
+    >;
   }
 
   private async get(path: string): Promise<unknown> {

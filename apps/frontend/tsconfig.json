@@ -6,6 +6,10 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "types": ["vite/client", "vitest"],
+    "baseUrl": "src",
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
     "paths": {
       "@api/*": ["api/*"],
       "@components/*": ["components/*"],

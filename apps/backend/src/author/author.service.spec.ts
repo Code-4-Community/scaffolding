@@ -80,6 +80,9 @@ describe('AuthorService', () => {
         name: 'Another Author',
         bio: 'Another bio',
         grade: 3,
+        classPeriod: '',
+        nameInBook: '',
+        stories: [],
       };
       const createdDto: CreateAuthorDto = {
         name: 'Another Author',

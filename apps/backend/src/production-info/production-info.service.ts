@@ -15,18 +15,22 @@ export class ProductionInfoService {
     private anthologyRepository: Repository<Anthology>,
   ) {}
 
-  async create(createProductionInfoDto: CreateProductionInfoDto): Promise<ProductionInfo> {
+  async create(
+    createProductionInfoDto: CreateProductionInfoDto,
+  ): Promise<ProductionInfo> {
     const anthology = await this.anthologyRepository.findOne({
       where: { id: createProductionInfoDto.anthology_id },
     });
 
     if (!anthology) {
-      throw new NotFoundException(`Anthology with ID ${createProductionInfoDto.anthology_id} not found`);
+      throw new NotFoundException(
+        `Anthology with ID ${createProductionInfoDto.anthology_id} not found`,
+      );
     }
 
     const productionInfo = this.productionInfoRepository.create({
       ...createProductionInfoDto,
-      anthology,
+      anthology_id: anthology.id,
     });
 
     return this.productionInfoRepository.save(productionInfo);
@@ -38,18 +42,23 @@ export class ProductionInfoService {
 
   async findOneByAnthologyId(anthologyId: number): Promise<ProductionInfo> {
     const productionInfo = await this.productionInfoRepository.findOne({
-      where: { anthology: { id: anthologyId } },
+      where: { anthology_id: anthologyId },
       relations: ['anthology'],
     });
 
     if (!productionInfo) {
-      throw new NotFoundException(`Production info for anthology ID ${anthologyId} not found`);
+      throw new NotFoundException(
+        `Production info for anthology ID ${anthologyId} not found`,
+      );
     }
 
     return productionInfo;
   }
 
-  async update(id: number, updateProductionInfoDto: UpdateProductionInfoDto): Promise<ProductionInfo> {
+  async update(
+    id: number,
+    updateProductionInfoDto: UpdateProductionInfoDto,
+  ): Promise<ProductionInfo> {
     const productionInfo = await this.productionInfoRepository.findOne({
       where: { id },
       relations: ['anthology'],
@@ -60,18 +69,20 @@ export class ProductionInfoService {
     }
 
     if (updateProductionInfoDto.anthology_id) {
-       const anthology = await this.anthologyRepository.findOne({
+      const anthology = await this.anthologyRepository.findOne({
         where: { id: updateProductionInfoDto.anthology_id },
       });
 
       if (!anthology) {
-        throw new NotFoundException(`Anthology with ID ${updateProductionInfoDto.anthology_id} not found`);
+        throw new NotFoundException(
+          `Anthology with ID ${updateProductionInfoDto.anthology_id} not found`,
+        );
       }
-      productionInfo.anthology = anthology;
+      productionInfo.anthology_id = anthology.id;
     }
 
     Object.assign(productionInfo, updateProductionInfoDto);
-    
+
     return this.productionInfoRepository.save(productionInfo);
   }
 }

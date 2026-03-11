@@ -44,7 +44,7 @@ export class StoryController {
     @Param('anthologyId', ParseIntPipe) anthologyId: number,
     @Param('storyId', ParseIntPipe) storyId: number,
   ): Promise<Story> {
-    return this.storyService.findOne(storyId);
+    return this.storyService.findByAnthologyAndId(anthologyId, storyId);
   }
 
   @Delete('/:storyId')
@@ -80,8 +80,6 @@ export class StoryController {
       createStoryDto.authorId,
       createStoryDto.studentBio,
       createStoryDto.description,
-      createStoryDto.genre,
-      createStoryDto.theme,
     );
   }
 }
