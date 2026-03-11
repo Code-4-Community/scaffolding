@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider';
-import { Status } from '../users/types';
+import { UserType } from '../users/types';
 
 // Mock the entire AWS SDK v3 module
 jest.mock('@aws-sdk/client-cognito-identity-provider');
@@ -105,7 +105,7 @@ describe('AuthService', () => {
         UserSub: 'admin-sub-123',
       });
 
-      const result = await service.signup(signUpDto, Status.ADMIN);
+      const result = await service.signup(signUpDto, UserType.ADMIN);
 
       expect(result).toBe(false);
       expect(mockSend).toHaveBeenCalledTimes(1);
