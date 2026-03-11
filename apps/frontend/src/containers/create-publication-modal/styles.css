@@ -1,0 +1,277 @@
+.modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 660px;
+  overflow: hidden;
+}
+
+.modal__header {
+  padding: 48px 48px 0;
+}
+
+.modal__title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 24px;
+  margin: 0;
+}
+
+/* body */
+.modal__body {
+  padding: 24px 48px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal__omchai-hint {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* footer */
+.modal__footer {
+  padding: 24px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal__footer-right {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* buttons */
+.btn {
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn--secondary {
+  border: 1px solid #E85100;
+  color: #E85100;
+  background: #fff;
+}
+
+.btn--primary {
+  border: none;
+  background: #E85100;
+  color: #fff;
+}
+
+.btn--primary:disabled {
+  background: #e851007f; /* chose a muted color for now */
+  cursor: not-allowed;
+}
+
+/* field */
+.field {
+  margin-bottom: 42px;
+}
+
+.field__label {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.field__required {
+  color: red;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #CAC3C0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+}
+
+.input--textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.multiselect__wrapper {
+  position: relative;
+}
+
+.multiselect__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.multiselect__tag {
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.multiselect__tag--theme {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.multiselect__tag--user {
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+.multiselect__tag-remove {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.multiselect__options-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.multiselect__option-pill {
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #374151;
+  background: #fff;
+  user-select: none;
+}
+
+.multiselect__option-pill:hover {
+  background: #f3f4f6;
+}
+
+.multiselect__option--selected-theme.multiselect__option-pill {
+  background: #e0e7ff;
+  border-color: #a5b4fc;
+}
+
+.multiselect__option--selected-user.multiselect__option-pill {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+}
+
+.multiselect__expand {
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #4f46e5;
+  border: 1px dashed #a5b4fc;
+  user-select: none;
+}
+
+.multiselect__expand:hover {
+  background: #e0e7ff;
+}
+
+.multiselect__option {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.multiselect__option--selected-theme {
+  background: #e0e7ff;
+}
+
+.multiselect__option--selected-user {
+  background: #d1fae5;
+}
+
+.field-row {
+  display: flex;
+  gap: 16px;
+}
+
+.field-row .field {
+  flex: 1;
+}
+
+.input-money {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-money__symbol {
+  position: absolute;
+  left: 10px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.input--money {
+  padding-left: 24px;
+}
+
+.taginput__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.modal__header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal__close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #6b7280;
+  line-height: 1;
+}
+
+.modal__close:hover {
+  color: #111;
+}
+
+.modal__back {
+  border: none;
+  color: #000;
+  font-weight: 600;
+  font-size: 16px;
+}
