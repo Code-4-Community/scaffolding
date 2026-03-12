@@ -1,8 +1,8 @@
 const CognitoAuthConfig = {
-  aws_project_region: 'us-east-1',
-  aws_cognito_region: 'us-east-1',
-  aws_user_pools_id: 'us-east-1_NMroTDphS',
-  aws_user_pools_web_client_id: '5k06bcorh2ui5rligbj3muj449',
+  aws_project_region: process.env.NX_AWS_REGION,
+  aws_cognito_region: process.env.AWS_COGNITO_REGION,
+  aws_user_pools_id: process.env.USER_POOL_ID,
+  aws_user_pools_web_client_id: process.env.NX_AWS_WEB_CLIENT_ID,
   oauth: {},
   aws_cognito_username_attributes: ['EMAIL'],
   aws_cognito_social_providers: [],

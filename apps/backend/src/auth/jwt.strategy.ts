@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import CognitoAuthConfig from '../../../frontend/src/aws-exports';
+import CognitoAuthConfig from '../../../shared/aws-exports';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
