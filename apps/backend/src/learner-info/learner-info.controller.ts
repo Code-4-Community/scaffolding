@@ -1,4 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { LearnerInfo } from './learner-info.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { LearnerInfoService } from './learner-info.service';
@@ -23,5 +31,19 @@ export class LearnerInfoController {
     @Body() createLearnerInfoDto: CreateLearnerInfoDto,
   ): Promise<LearnerInfo> {
     return await this.learnerInfoService.create(createLearnerInfoDto);
+  }
+
+  /**
+   * Exposes an endpoint to retrieve a learner info by appId.
+   * @param appId the appId of the learner info to be returned.
+   * @returns The learner info with the given appId
+   * @throws {Error} which is unchanged from what repository throws.
+   * @throws {NotFoundException} with message 'learner info with AppId <id> not found'
+   *         if an application with that id does not exist.
+   * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined)
+   */
+  @Get('/:appId')
+  async getLearnerInfo(@Param('appId') appId: number): Promise<LearnerInfo> {
+    return await this.learnerInfoService.findById(appId);
   }
 }

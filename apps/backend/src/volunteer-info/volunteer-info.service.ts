@@ -22,8 +22,9 @@ export class VolunteerInfoService {
    * Returns a volunteer info by appId from the repository.
    * @param appId The desired volunteer info appId to search for.
    * @returns A promise resolving to the volunteer info object with that appId.
-   * @throws {NotFoundException} with message 'volunteer Info with AppId <id> not found'
+   * @throws {NotFoundException} with message 'volunteer info with AppId <id> not found'
    *         if an application with that id does not exist.
+   * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined)
    * @throws {Error} which is unchanged from what repository throws.
    */
   async findById(appId: number): Promise<VolunteerInfo> {
@@ -31,6 +32,10 @@ export class VolunteerInfoService {
       await this.volunteerInfoRepository.findOne({
         where: { appId },
       });
+
+    if (!appId) {
+      throw new BadRequestException('Volunter info ID is required.');
+    }
 
     if (!volunteerInfo) {
       throw new NotFoundException(
