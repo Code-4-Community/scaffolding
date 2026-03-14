@@ -32,7 +32,7 @@ export class LearnerInfoService {
       where: { appId },
     });
 
-    if (!appId) {
+    if (!appId && appId !== 0) {
       throw new BadRequestException(`Learner info ID is required`);
     }
 

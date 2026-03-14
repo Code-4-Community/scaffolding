@@ -4,13 +4,15 @@ import { VolunteerInfoController } from './volunteer-info.controller';
 import { VolunteerInfoService } from './volunteer-info.service';
 import { VolunteerInfo } from './volunteer-info.entity';
 import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { find } from 'rxjs';
 
 describe('VolunteerInfoController', () => {
   let controller: VolunteerInfoController;
 
   const mockVolunteerInfoService = {
     create: jest.fn(),
+    findById: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -87,6 +89,20 @@ describe('VolunteerInfoController', () => {
       await expect(
         controller.createVolunteerInfo(createVolunteerInfoDto),
       ).rejects.toThrow(new BadRequestException(`appId must not be negative`));
+    });
+
+    it('should get the volunteer info by appId', async () => {
+      const volunteerInfo: VolunteerInfo = {
+        appId: 0,
+        license: 'example',
+      };
+
+      mockVolunteerInfoService.findById.mockResolvedValue(volunteerInfo);
+
+      const result = await controller.getVolunteerInfo(0);
+
+      expect(result).toEqual(volunteerInfo);
+      expect(mockVolunteerInfoService.findById).toHaveBeenCalledWith(0);
     });
   });
 });

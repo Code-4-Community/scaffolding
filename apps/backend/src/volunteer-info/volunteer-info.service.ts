@@ -33,8 +33,8 @@ export class VolunteerInfoService {
         where: { appId },
       });
 
-    if (!appId) {
-      throw new BadRequestException('Volunter info ID is required.');
+    if (!appId && appId !== 0) {
+      throw new BadRequestException('Volunteer info ID is required.');
     }
 
     if (!volunteerInfo) {
