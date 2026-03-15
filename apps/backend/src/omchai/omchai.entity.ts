@@ -40,9 +40,9 @@ export class Omchai {
 
   @ManyToOne(() => User, (user) => user.omchaiAssignments)
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: Relation<User>;
 
   @ManyToOne(() => Anthology, (anthology) => anthology.omchaiAssignments)
   @JoinColumn({ name: 'anthology_id' })
-  anthology: Anthology;
+  anthology: Relation<Anthology>;
 }
