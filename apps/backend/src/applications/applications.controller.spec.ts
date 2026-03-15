@@ -23,7 +23,6 @@ const mockApplicationsService: Partial<ApplicationsService> = {
 const mockApplication: Application = {
   appId: 1,
   appStatus: AppStatus.APP_SUBMITTED,
-  sundayAvailability: 'no availability',
   mondayAvailability: '12pm and on every other week',
   tuesdayAvailability: 'approximately 10am-3pm',
   wednesdayAvailability: 'no availability',
