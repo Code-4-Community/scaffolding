@@ -1,7 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 
 export interface AvailabilityFields {
-  sundayAvailability: string;
   mondayAvailability: string;
   tuesdayAvailability: string;
   wednesdayAvailability: string;

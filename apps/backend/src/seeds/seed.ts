@@ -35,7 +35,6 @@ const APPLICATION_SEED = [
   {
     appId: 1,
     appStatus: AppStatus.APP_SUBMITTED,
-    sundayAvailability: 'no availability',
     mondayAvailability: '12pm and on every other week',
     tuesdayAvailability: 'approximately 10am-3pm',
     wednesdayAvailability: 'no availability',
@@ -65,7 +64,6 @@ const APPLICATION_SEED = [
   {
     appId: 2,
     appStatus: AppStatus.APP_SUBMITTED,
-    sundayAvailability: '10am-2pm',
     mondayAvailability: '12pm and on every other week',
     tuesdayAvailability: 'approximately 10am-3pm',
     wednesdayAvailability: 'no availability',
@@ -95,7 +93,6 @@ const APPLICATION_SEED = [
   {
     appId: 3,
     appStatus: AppStatus.APP_SUBMITTED,
-    sundayAvailability: 'All day',
     mondayAvailability: '12pm and on every other week',
     tuesdayAvailability: 'approximately 10am-3pm',
     wednesdayAvailability: 'no availability',

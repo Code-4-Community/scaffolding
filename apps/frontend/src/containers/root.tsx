@@ -7,6 +7,7 @@ import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
 import { Box } from '@chakra-ui/react';
 import ApplicationTable from '@components/ApplicationTable';
+import AvailabilityTable from '@components/AvailabilityTable';
 
 const Root: React.FC = () => {
   return (
@@ -48,6 +49,21 @@ const Root: React.FC = () => {
         </Box>
 
         <ApplicationTable />
+
+        <Box>
+          <AvailabilityTable
+            appId={1}
+            availability={{
+              mondayAvailability: 'monday',
+              tuesdayAvailability: 'tuesday',
+              wednesdayAvailability: 'wednesday',
+              thursdayAvailability: 'thursday',
+              fridayAvailability: 'friday',
+              saturdayAvailability: 'saturday',
+            }}
+            isAdmin={true}
+          />
+        </Box>
       </Box>
     </div>
   );

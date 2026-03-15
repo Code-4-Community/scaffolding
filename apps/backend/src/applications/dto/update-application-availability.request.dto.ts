@@ -3,10 +3,6 @@ import { IsOptional, IsString } from 'class-validator';
 export class UpdateApplicationAvailabilityDto {
   @IsOptional()
   @IsString()
-  sundayAvailability?: string;
-
-  @IsOptional()
-  @IsString()
   mondayAvailability?: string;
 
   @IsOptional()
