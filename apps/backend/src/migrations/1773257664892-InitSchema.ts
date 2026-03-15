@@ -20,7 +20,7 @@ export class InitSchema1773257664892 implements MigrationInterface {
       `CREATE TABLE "productioninfos" ("id" SERIAL NOT NULL, "design_files_link" character varying, "cover_image_file_link" character varying, "binding_type" character varying, "dimensions" character varying, "printing_cost" double precision, "print_run" integer, "weight_in_grams" double precision, "page_count" integer, "printed_by" character varying, CONSTRAINT "PK_db86a9023b10f56d9120b67b637" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "users_status_enum" AS ENUM('ADMIN', 'STANDARD')`,
+      `CREATE TYPE "users_status_enum" AS ENUM('ADMIN', 'VOLUNTEER')`,
     );
     await queryRunner.query(
       `CREATE TABLE "users" ("id" integer NOT NULL, "status" "users_status_enum" NOT NULL, "firstName" character varying NOT NULL, "lastName" character varying NOT NULL DEFAULT '', "email" character varying NOT NULL DEFAULT '', "publishingName" character varying, "name" character varying, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
