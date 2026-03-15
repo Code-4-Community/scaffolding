@@ -1,17 +1,7 @@
 import { Box, Button, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
 
-const HEARD_ABOUT_OPTIONS = [
-  'Online Search',
-  'BHCHP Website',
-  // 'School',
-  // 'Staff Member',
-  // 'Other',
-] as const;
-
 // TODO: Add options from shared source, currently hardcoded
-export const HearFromFrame: React.FC<{ sources?: string[] }> = ({
-  sources = [...HEARD_ABOUT_OPTIONS],
-}) => {
+export const HearFromFrame: React.FC<{ sources: string[] }> = ({ sources }) => {
   return (
     <Box borderWidth="1px" borderRadius="lg" p={6} bg="white">
       <Flex gap={4} alignItems="center" flexWrap="wrap">
