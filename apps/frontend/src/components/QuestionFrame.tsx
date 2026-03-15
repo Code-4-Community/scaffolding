@@ -6,7 +6,7 @@ interface QuestionFrameProps {
 }
 
 // TODO: Add options from shared source, currently hardcoded
-export const HearFromFrame: React.FC<{ frameProps: QuestionFrameProps }> = ({
+export const QuestionFrame: React.FC<{ frameProps: QuestionFrameProps }> = ({
   frameProps,
 }) => {
   return (
@@ -38,4 +38,4 @@ export const HearFromFrame: React.FC<{ frameProps: QuestionFrameProps }> = ({
   );
 };
 
-export default HearFromFrame;
+export default QuestionFrame;
