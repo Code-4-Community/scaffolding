@@ -48,21 +48,6 @@ const Root: React.FC = () => {
           />
         </Box>
         <ApplicationTable />
-
-        <Box>
-          <AvailabilityTable
-            appId={1}
-            availability={{
-              mondayAvailability: 'monday',
-              tuesdayAvailability: 'tuesday',
-              wednesdayAvailability: 'wednesday',
-              thursdayAvailability: 'thursday',
-              fridayAvailability: 'friday',
-              saturdayAvailability: 'saturday',
-            }}
-            isAdmin={true}
-          />
-        </Box>
       </Box>
     </div>
   );

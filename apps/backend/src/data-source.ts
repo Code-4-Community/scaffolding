@@ -8,7 +8,6 @@ import { Applicant } from './applicants/applicant.entity';
 import { Discipline } from './disciplines/disciplines.entity';
 import { LearnerInfo } from './learner-info/learner-info.entity';
 import { VolunteerInfo } from './volunteer-info/volunteer-info.entity';
-import { Applicant } from './applicants/applicant.entity';
 
 dotenv.config();
 
