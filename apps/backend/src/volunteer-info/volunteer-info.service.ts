@@ -54,6 +54,17 @@ export class VolunteerInfoService {
     if (createvolunteerInfoDto.appId < 0) {
       throw new BadRequestException('appId must not be negative');
     }
+    // Prevent creating duplicate volunteer-info for the same appId
+    const existing = await this.volunteerInfoRepository.findOne({
+      where: { appId: createvolunteerInfoDto.appId },
+    });
+
+    if (existing) {
+      throw new BadRequestException(
+        `Volunteer Info with AppId ${createvolunteerInfoDto.appId} already exists`,
+      );
+    }
+
     const volunteerInfo = this.volunteerInfoRepository.create(
       createvolunteerInfoDto,
     );

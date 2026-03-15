@@ -1,5 +1,11 @@
-import { IsString, IsNotEmpty, IsDefined, Matches } from 'class-validator';
-import { PrimaryColumn } from 'typeorm';
+import {
+  IsString,
+  IsNotEmpty,
+  IsDefined,
+  Matches,
+  IsInt,
+  IsPositive,
+} from 'class-validator';
 
 /**
  * Defines the expected shape of data for creating a applicant.
@@ -10,7 +16,9 @@ export class CreateApplicantDto {
   /**
    * Corresponding application id number.
    */
-  @PrimaryColumn()
+  @IsInt()
+  @IsPositive()
+  @IsDefined()
   appId: number;
 
   /**
@@ -32,7 +40,7 @@ export class CreateApplicantDto {
   lastName: string;
 
   /**
-   * The expected start date for the applicant's commitment, stored in YYYY-MM-DD format.
+   * The expected proposed start date for the applicant's commitment, stored in YYYY-MM-DD format.
    *
    * Example: '2024-06-30'.
    */
@@ -41,7 +49,7 @@ export class CreateApplicantDto {
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
     message: 'Date must be in YYYY-MM-DD format',
   })
-  startDate: string;
+  proposedStartDate: string;
 
   /**
    * The expected end date for the applicant's commitment, stored in YYYY-MM-DD format.

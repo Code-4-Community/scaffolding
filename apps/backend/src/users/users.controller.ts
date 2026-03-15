@@ -38,14 +38,14 @@ export class UsersController {
 
   /**
    * Exposes an endpoint to delete a user by their id.
-   * @param id the id of the user to delete.
+   * @param appId the id of the user to delete.
    * @throws {Error} anything that the repository throws.
    * @throws {NotFoundException} if a user with the specified id does not exist.
    *
    * Does not return a value.
    */
-  @Delete('/:id')
-  removeUser(@Param('id') id: string) {
-    return this.usersService.remove(parseInt(id));
+  @Delete('/:appId')
+  removeUser(@Param('appId', ParseIntPipe) appId: number) {
+    return this.usersService.remove(appId);
   }
 }

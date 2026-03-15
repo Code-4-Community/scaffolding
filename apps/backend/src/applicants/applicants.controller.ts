@@ -21,7 +21,7 @@ import { CreateApplicantDto } from './dto/applicant.dto';
  * about the app's applicants, including start and end dates.
  */
 @Controller('applicants')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(CurrentUserInterceptor)
 export class ApplicantsController {
   constructor(private applicantsService: ApplicantsService) {}
@@ -43,7 +43,7 @@ export class ApplicantsController {
       createApplicantDto.appId,
       createApplicantDto.firstName,
       createApplicantDto.lastName,
-      new Date(createApplicantDto.startDate),
+      new Date(createApplicantDto.proposedStartDate),
       new Date(createApplicantDto.endDate),
     );
   }
@@ -77,18 +77,21 @@ export class ApplicantsController {
   /**
    * Exposes an endpoint to update a applicant's commitment starting date.
    * @param appId The appId of the applicant to update.
-   * @param startDate The new starting date for the applicant's commitment.
+   * @param proposedStartDate The new starting date for the applicant's commitment.
    * @throws {Error} If the repository throws an error.
    * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
    * @throws {NotFoundException} with message 'Applicant with ID <appId> not found'
    *                             if the applicant with the specified appId does not exist.
    */
   @Patch('/:appId/start-date')
-  async updateStartDate(
+  async updateproposedStartDate(
     @Param('appId', ParseIntPipe) appId: number,
-    @Body('startDate') startDate: string,
+    @Body('proposedStartDate') proposedStartDate: string,
   ): Promise<Applicant> {
-    return this.applicantsService.updateStartDate(appId, new Date(startDate));
+    return this.applicantsService.updateproposedStartDate(
+      appId,
+      new Date(proposedStartDate),
+    );
   }
 
   /**

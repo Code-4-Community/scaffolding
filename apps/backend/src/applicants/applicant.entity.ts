@@ -28,12 +28,21 @@ export class Applicant {
   lastName: string;
 
   /**
-   * The expected start date for the applicant's commitment, stored in YYYY-MM-DD format.
+   * The proposed start date for the applicant's commitment, stored in YYYY-MM-DD format.
    *
    * Example: new Date('2024-06-30').
    */
   @Column({ type: 'date' })
-  startDate: Date;
+  proposedStartDate: Date;
+
+  /**
+   * The actual start date for the applicant's commitment, set by the Admin
+   * stored in YYYY-MM-DD format.
+   *
+   * Example: new Date('2024-06-30').
+   */
+  @Column({ type: 'date', nullable: true })
+  actualStartDate?: Date;
 
   /**
    * The expected end date for the applicant's commitment, stored in YYYY-MM-DD format.

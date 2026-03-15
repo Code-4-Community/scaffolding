@@ -9,8 +9,6 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
-  DaysOfTheWeek,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -59,19 +57,31 @@ describe('ApplicationsService', () => {
         {
           appId: 1,
           appStatus: AppStatus.APP_SUBMITTED,
-          daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+          mondayAvailability: '12pm and on every other week',
+          tuesdayAvailability: 'approximately 10am-3pm',
+          wednesdayAvailability: 'no availability',
+          thursdayAvailability: 'maybe before 10am',
+          fridayAvailability: 'Sometime between 4-6',
+          saturdayAvailability: 'no availability',
           experienceType: ExperienceType.BS,
-          fileUploads: [],
-          interest: InterestArea.NURSING,
+          interest: [InterestArea.WOMENS_HEALTH],
           license: null,
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
-          school: School.HARVARD_MEDICAL_SCHOOL,
           email: 'test@example.com',
-          discipline: DISCIPLINE_VALUES.Nursing,
+          discipline: DISCIPLINE_VALUES.RN,
           referred: false,
-          referredEmail: null,
           weeklyHours: 20,
+          pronouns: 'they/them',
+          nonEnglishLangs: 'some french, native spanish speaker',
+          desiredExperience:
+            'I want to give back to the boston community and learn to talk better with patients',
+          resume: 'janedoe_resume_2_6_2026.pdf',
+          coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+          emergencyContactName: 'Jane Doe',
+          emergencyContactPhone: '111-111-1111',
+          emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
         },
       ];
 
@@ -108,19 +118,31 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
+        nonEnglishLangs: 'spoken chinese only',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -151,19 +173,31 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
-        license: null,
+        interest: [InterestArea.WOMENS_HEALTH],
+        license: 'n/a',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        nonEnglishLangs: 'some french, native spanish speaker',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -178,17 +212,30 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        nonEnglishLangs: 'none',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -214,24 +261,38 @@ describe('ApplicationsService', () => {
     it('should create and save a new application', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        nonEnglishLangs: 'some chinese',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -248,17 +309,29 @@ describe('ApplicationsService', () => {
       );
       const mockApplication: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       await expect(service.create(mockApplication)).rejects.toThrow(
@@ -269,24 +342,37 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is too long', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -296,24 +382,37 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is too short', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-4562',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -323,24 +422,37 @@ describe('ApplicationsService', () => {
     it('should not accept a phone number that is the right length but not in ###-###-#### format', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-8-90',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -350,24 +462,37 @@ describe('ApplicationsService', () => {
     it('should not accept 0 weekly hours', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 0,
+        pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -377,24 +502,38 @@ describe('ApplicationsService', () => {
     it('should not accept negative weekly hours', async () => {
       const createApplicationDto: CreateApplicationDto = {
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-78901231',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: -5,
+        pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        elaborateOtherDiscipline: 'text',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const savedApplication: Application = {
         appId: 1,
         ...createApplicationDto,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.save.mockResolvedValue(savedApplication);
@@ -407,24 +546,37 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const updatedApplication: Application = {
         ...mockApplication,
         appStatus: AppStatus.IN_REVIEW,
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -442,41 +594,52 @@ describe('ApplicationsService', () => {
       expect(result).toEqual(updatedApplication);
     });
 
-    it('should update application interest', async () => {
+    it('should update application discipline', async () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'they/them',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       const updatedApplication: Application = {
         ...mockApplication,
-        interest: InterestArea.HARM_REDUCTION,
+        interest: [InterestArea.STREET_MEDICINE],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
       mockRepository.save.mockResolvedValue(updatedApplication);
 
       const result = await service.update(1, {
-        interest: InterestArea.HARM_REDUCTION,
+        interest: [InterestArea.STREET_MEDICINE],
       });
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
       expect(repository.save).toHaveBeenCalledWith({
         ...mockApplication,
-        interest: InterestArea.HARM_REDUCTION,
+        interest: [InterestArea.STREET_MEDICINE],
       });
       expect(result).toEqual(updatedApplication);
     });
@@ -498,13 +661,13 @@ describe('ApplicationsService', () => {
       expect(repository.save).not.toHaveBeenCalled();
     });
 
-    it('should pass along any repo errors from retrieval without information loss when saving a new interest', async () => {
+    it('should pass along any repo errors from retrieval without information loss when saving a new discipline', async () => {
       mockRepository.findOne.mockRejectedValue(
         new Error('There was a problem retrieving the info'),
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+        service.update(1, { interest: [InterestArea.STREET_MEDICINE] }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -518,23 +681,34 @@ describe('ApplicationsService', () => {
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
-    it('should pass along any repo errors from saving the new info without information loss when saving a new interest', async () => {
+    it('should pass along any repo errors from saving the new info without information loss when saving a new discipline', async () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -543,7 +717,7 @@ describe('ApplicationsService', () => {
       );
 
       await expect(
-        service.update(1, { interest: InterestArea.HARM_REDUCTION }),
+        service.update(1, { interest: [InterestArea.STREET_MEDICINE] }),
       ).rejects.toThrow(new Error(`There was a problem retrieving the info`));
     });
 
@@ -551,19 +725,30 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -582,19 +767,31 @@ describe('ApplicationsService', () => {
       const mockApplication: Application = {
         appId: 1,
         appStatus: AppStatus.APP_SUBMITTED,
-        daysAvailable: [DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY],
+        mondayAvailability: '12pm and on every other week',
+        tuesdayAvailability: 'approximately 10am-3pm',
+        wednesdayAvailability: 'no availability',
+        thursdayAvailability: 'maybe before 10am',
+        fridayAvailability: 'Sometime between 4-6',
+        saturdayAvailability: 'no availability',
         experienceType: ExperienceType.BS,
-        fileUploads: [],
-        interest: InterestArea.NURSING,
+        interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
-        school: School.HARVARD_MEDICAL_SCHOOL,
         email: 'test@example.com',
-        discipline: DISCIPLINE_VALUES.Nursing,
+        discipline: DISCIPLINE_VALUES.RN,
         referred: false,
-        referredEmail: null,
         weeklyHours: 20,
+        pronouns: 'she/her',
+        desiredExperience:
+          'I want to give back to the boston community and learn to talk better with patients',
+        elaborateOtherDiscipline: 'text',
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        emergencyContactName: 'Jane Doe',
+        emergencyContactPhone: '111-111-1111',
+        emergencyContactRelationship: 'Mother',
+        heardAboutFrom: [],
       };
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
@@ -619,6 +816,150 @@ describe('ApplicationsService', () => {
         where: { appId: nonExistentId },
       });
       expect(repository.remove).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('findByDiscipline', () => {
+    it('should return applications with the specified discipline', async () => {
+      const mockApplications: Application[] = [
+        {
+          appId: 1,
+          appStatus: AppStatus.APP_SUBMITTED,
+          mondayAvailability: '12pm and on every other week',
+          tuesdayAvailability: 'approximately 10am-3pm',
+          wednesdayAvailability: 'no availability',
+          thursdayAvailability: 'maybe before 10am',
+          fridayAvailability: 'Sometime between 4-6',
+          saturdayAvailability: 'no availability',
+          experienceType: ExperienceType.BS,
+          interest: [InterestArea.WOMENS_HEALTH],
+          license: null,
+          applicantType: ApplicantType.LEARNER,
+          phone: '123-456-7890',
+          email: 'test@example.com',
+          discipline: DISCIPLINE_VALUES.RN,
+          referred: false,
+          weeklyHours: 20,
+          pronouns: 'they/them',
+          nonEnglishLangs: 'some french, native spanish speaker',
+          desiredExperience:
+            'I want to give back to the boston community and learn to talk better with patients',
+          resume: 'janedoe_resume_2_6_2026.pdf',
+          coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+          emergencyContactName: 'Jane Doe',
+          emergencyContactPhone: '111-111-1111',
+          emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
+        },
+        {
+          appId: 2,
+          appStatus: AppStatus.IN_REVIEW,
+          mondayAvailability: '12pm and on every other week',
+          tuesdayAvailability: 'approximately 10am-3pm',
+          wednesdayAvailability: 'no availability',
+          thursdayAvailability: 'maybe before 10am',
+          fridayAvailability: 'Sometime between 4-6',
+          saturdayAvailability: 'no availability',
+          experienceType: ExperienceType.MS,
+          interest: [InterestArea.WOMENS_HEALTH],
+          license: null,
+          applicantType: ApplicantType.LEARNER,
+          phone: '123-456-7890',
+          email: 'test@example.com',
+          discipline: DISCIPLINE_VALUES.RN,
+          referred: false,
+          weeklyHours: 20,
+          pronouns: 'they/them',
+          nonEnglishLangs: 'some french, native spanish speaker',
+          desiredExperience:
+            'I want to give back to the boston community and learn to talk better with patients',
+          resume: 'janedoe_resume_2_6_2026.pdf',
+          coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+          emergencyContactName: 'Jane Doe',
+          emergencyContactPhone: '111-111-1111',
+          emergencyContactRelationship: 'Mother',
+          heardAboutFrom: [],
+        },
+      ];
+
+      mockRepository.find.mockResolvedValue(mockApplications);
+
+      const result = await service.findByDiscipline(DISCIPLINE_VALUES.RN);
+
+      expect(repository.find).toHaveBeenCalledWith({
+        where: { discipline: DISCIPLINE_VALUES.RN },
+      });
+      expect(result).toEqual(mockApplications);
+    });
+
+    it('should return an empty array when no applications match the discipline', async () => {
+      mockRepository.find.mockResolvedValue([]);
+
+      const result = await service.findByDiscipline(DISCIPLINE_VALUES.RN);
+
+      expect(repository.find).toHaveBeenCalledWith({
+        where: { discipline: DISCIPLINE_VALUES.RN },
+      });
+      expect(result).toEqual([]);
+    });
+
+    it('should throw BadRequestException for invalid discipline', async () => {
+      const invalidDiscipline = 'InvalidDiscipline';
+
+      await expect(service.findByDiscipline(invalidDiscipline)).rejects.toThrow(
+        expect.objectContaining({
+          message: expect.stringContaining(
+            `Invalid discipline: ${invalidDiscipline}`,
+          ),
+        }),
+      );
+
+      expect(repository.find).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException with list of valid disciplines', async () => {
+      const invalidDiscipline = 'InvalidDiscipline';
+
+      try {
+        await service.findByDiscipline(invalidDiscipline);
+        fail('Expected BadRequestException to be thrown');
+      } catch (error) {
+        expect(error.message).toContain('Invalid discipline');
+        expect(error.message).toContain('Valid disciplines are:');
+        expect(error.message).toContain('MD/Medical Student/Pre-Med');
+        expect(error.message).toContain('Medical NP/PA');
+        expect(error.message).toContain('Psychiatry or Psychiatric NP/PA');
+        expect(error.message).toContain('Public Health');
+        expect(error.message).toContain('RN');
+        expect(error.message).toContain('Social Work');
+        expect(error.message).toContain('Other');
+      }
+
+      expect(repository.find).not.toHaveBeenCalled();
+    });
+
+    it('should pass along any repo errors without information loss', async () => {
+      mockRepository.find.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(
+        service.findByDiscipline(DISCIPLINE_VALUES.RN),
+      ).rejects.toThrow(`There was a problem retrieving the info`);
+    });
+
+    it('should work with all valid discipline values', async () => {
+      const allDisciplines = Object.values(DISCIPLINE_VALUES);
+
+      for (const discipline of allDisciplines) {
+        mockRepository.find.mockResolvedValue([]);
+
+        await service.findByDiscipline(discipline);
+
+        expect(repository.find).toHaveBeenCalledWith({
+          where: { discipline },
+        });
+      }
     });
   });
 });

@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import { User } from './user.entity';
 import { Status } from './types';
 
@@ -29,7 +28,7 @@ export class UsersService {
   ) {
     const userId = (await this.repo.count()) + 1;
     const user = this.repo.create({
-      id: userId,
+      appId: userId,
       status,
       firstName,
       lastName,
@@ -41,16 +40,16 @@ export class UsersService {
 
   /**
    * Returns the data of a user from the repository by id.
-   * @param id The id of the user to find.
+   * @param appId The application id of the user to find.
    * @returns The desired user if they exist.
    * @throws {Error} If the repository throws an error.
    */
-  findOne(id: number) {
-    if (!id) {
+  findOne(appId: number) {
+    if (!appId) {
       return null;
     }
 
-    return this.repo.findOneBy({ id });
+    return this.repo.findOneBy({ appId });
   }
 
   /**
@@ -65,14 +64,14 @@ export class UsersService {
 
   /**
    * Updates a user by id with any desired new field values.
-   * @param id The id of the user to update.
+   * @param appId The id of the user to update.
    * @param attrs Any desired new field values to apply.
    * @returns The updated user.
    * @throws {NotFoundException} if a user of the specified id doesn't exist in the repository.
    * @throws {Error} Also throws any error the repository throws.
    */
-  async update(id: number, attrs: Partial<User>) {
-    const user = await this.findOne(id);
+  async update(appId: number, attrs: Partial<User>) {
+    const user = await this.findOne(appId);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -85,14 +84,14 @@ export class UsersService {
 
   /**
    * Removes a user by id.
-   * @param id The id of the user to delete.
+   * @param appId The id of the user to delete.
    * @throws {NotFoundException} if a user of the specified id doesn't exist in the repository.
    * @throws {Error} Also throws any error the repository throws.
    *
    * Does not return a value.
    */
-  async remove(id: number) {
-    const user = await this.findOne(id);
+  async remove(appId: number) {
+    const user = await this.findOne(appId);
 
     if (!user) {
       throw new NotFoundException('User not found');

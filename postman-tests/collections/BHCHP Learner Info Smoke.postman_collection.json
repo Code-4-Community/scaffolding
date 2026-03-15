@@ -1,0 +1,40 @@
+{
+  "info": {
+    "_postman_id": "d7ee1e35-1a20-4930-81a1-38b4758960b3",
+    "name": "BHCHP Learner Info Smoke",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41801404"
+  },
+  "item": [
+    {
+      "name": "createLearnerInfo",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"appId\":  1,\r\n    \"school\": \"Harvard Medical School\",\r\n    \"isSupervisorApplying\": false,\r\n    \"isLegalAdult\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/learner_info/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "learner_info",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

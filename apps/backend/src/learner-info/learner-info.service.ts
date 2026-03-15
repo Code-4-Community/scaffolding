@@ -51,6 +51,16 @@ export class LearnerInfoService {
     if (createLearnerInfoDto.appId < 0) {
       throw new BadRequestException('appId must not be negative');
     }
+    // Prevent creating duplicate learner-info for the same appId
+    const existing = await this.learnerInfoRepository.findOne({
+      where: { appId: createLearnerInfoDto.appId },
+    });
+
+    if (existing) {
+      throw new BadRequestException(
+        `Learner Info with AppId ${createLearnerInfoDto.appId} already exists`,
+      );
+    }
     const learnerInfo = this.learnerInfoRepository.create(createLearnerInfoDto);
     return await this.learnerInfoRepository.save(learnerInfo);
   }

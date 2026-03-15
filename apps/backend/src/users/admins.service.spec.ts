@@ -6,7 +6,7 @@ import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dtos/create-admin.dto';
 import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
 import { Admin } from './admin.entity';
-import { Site } from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 describe('AdminsService', () => {
   let service: AdminsService;
@@ -22,9 +22,10 @@ describe('AdminsService', () => {
 
   const mockAdmin: Admin = {
     id: 1,
-    name: 'John Doe',
+    firstName: 'John',
+    lastName: 'Doe',
     email: 'john@example.com',
-    site: Site.FENWAY,
+    discipline: DISCIPLINE_VALUES.RN,
     createdAt: new Date('2025-01-01'),
     updatedAt: new Date('2025-01-01'),
   };
@@ -51,9 +52,10 @@ describe('AdminsService', () => {
   describe('create', () => {
     it('should create and save a new admin', async () => {
       const createAdminDto: CreateAdminDto = {
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
-        site: Site.FENWAY,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockReturnValue(mockAdmin);
@@ -68,9 +70,10 @@ describe('AdminsService', () => {
 
     it('should handle repository errors during creation', async () => {
       const createAdminDto: CreateAdminDto = {
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
-        site: Site.FENWAY,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockReturnValue(mockAdmin);
@@ -82,9 +85,10 @@ describe('AdminsService', () => {
     });
     it('should pass along any repo errors without information loss during create', async () => {
       const createAdminDto: CreateAdminDto = {
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
-        site: Site.FENWAY,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockImplementationOnce(() => {
@@ -98,9 +102,10 @@ describe('AdminsService', () => {
 
     it('should pass along any repo errors without information loss during save', async () => {
       const createAdminDto: CreateAdminDto = {
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
-        site: Site.FENWAY,
+        discipline: DISCIPLINE_VALUES.RN,
       };
 
       mockRepository.create.mockReturnValue(mockAdmin);
@@ -207,38 +212,6 @@ describe('AdminsService', () => {
     });
   });
 
-  describe('findBySite', () => {
-    it('should return admins filtered by site', async () => {
-      const mockAdmins = [mockAdmin];
-      mockRepository.find.mockResolvedValue(mockAdmins);
-
-      const result = await service.findBySite(Site.FENWAY);
-
-      expect(mockRepository.find).toHaveBeenCalledWith({
-        where: { site: Site.FENWAY },
-      });
-      expect(result).toEqual(mockAdmins);
-    });
-
-    it('should return empty array when no admins found for site', async () => {
-      mockRepository.find.mockResolvedValue([]);
-
-      const result = await service.findBySite(Site.SITE_A);
-
-      expect(result).toEqual([]);
-    });
-
-    it('should pass along error information from repo with no loss', async () => {
-      mockRepository.find.mockRejectedValueOnce(
-        new Error('error during retrieval'),
-      );
-
-      await expect(service.findBySite(Site.SITE_A)).rejects.toThrow(
-        'error during retrieval',
-      );
-    });
-  });
-
   describe('updateEmail', () => {
     it('should update admin email and return the admin', async () => {
       const updateEmailDto: UpdateAdminEmailDto = {
@@ -257,8 +230,8 @@ describe('AdminsService', () => {
         expect.objectContaining({ email: 'newemail@example.com' }),
       );
       expect(result.email).toBe('newemail@example.com');
-      expect(result.name).toBe(mockAdmin.name); // Should remain unchanged
-      expect(result.site).toBe(mockAdmin.site); // Should remain unchanged
+      expect(result.firstName).toBe(mockAdmin.firstName); // Should remain unchanged
+      expect(result.lastName).toBe(mockAdmin.lastName); // Should remain unchanged
     });
 
     it('should throw NotFoundException when admin not found for email update', async () => {
