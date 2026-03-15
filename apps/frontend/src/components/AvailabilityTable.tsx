@@ -15,7 +15,6 @@ import apiClient, { type AvailabilityFields } from '@api/apiClient';
 type DayKey = keyof AvailabilityFields;
 
 const DAYS: { label: string; key: DayKey }[] = [
-  { label: 'Sunday', key: 'sundayAvailability' },
   { label: 'Monday', key: 'mondayAvailability' },
   { label: 'Tuesday', key: 'tuesdayAvailability' },
   { label: 'Wednesday', key: 'wednesdayAvailability' },
@@ -59,7 +58,6 @@ export const AvailabilityTable: React.FC<AvailabilityTableProps> = ({
         [editingDay]: editValue,
       });
       onUpdate?.({
-        sundayAvailability: updated.sundayAvailability,
         mondayAvailability: updated.mondayAvailability,
         tuesdayAvailability: updated.tuesdayAvailability,
         wednesdayAvailability: updated.wednesdayAvailability,

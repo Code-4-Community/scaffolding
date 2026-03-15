@@ -65,7 +65,6 @@ const ApplicantView: React.FC = () => {
           <AvailabilityTable
             appId={application.appId}
             availability={{
-              sundayAvailability: application.sundayAvailability,
               mondayAvailability: application.mondayAvailability,
               tuesdayAvailability: application.tuesdayAvailability,
               wednesdayAvailability: application.wednesdayAvailability,

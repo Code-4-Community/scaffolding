@@ -51,14 +51,6 @@ export class Application {
   appStatus!: AppStatus;
 
   /**
-   * Applicant's Sunday availability as a free text string.
-   *
-   * Example: 12pm and on every other week
-   */
-  @Column({ type: 'varchar', default: '' })
-  sundayAvailability: string;
-
-  /**
    * Applicant's Monday availability as a free text string.
    *
    * Example: 12pm and on every other week

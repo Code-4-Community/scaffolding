@@ -37,14 +37,6 @@ export class CreateApplicationDto {
   appStatus: AppStatus;
 
   /**
-   * Applicant's Sunday availability as a free text string.
-   *
-   * Example: 12pm and on every other week
-   */
-  @IsString()
-  sundayAvailability: string;
-
-  /**
    * Applicant's Monday availability as a free text string.
    *
    * Example: 12pm and on every other week
