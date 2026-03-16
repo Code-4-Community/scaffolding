@@ -1,53 +1,10 @@
 import axios, { type AxiosInstance } from 'axios';
 import {
-  ApplicantType,
-  AppStatus,
-  DISCIPLINE_VALUES,
-  ExperienceType,
-  HeardAboutFrom,
-  InterestArea,
+  Application,
+  AvailabilityFields,
+  LearnerInfo,
+  VolunteerInfo,
 } from './types';
-
-export interface AvailabilityFields {
-  mondayAvailability: string;
-  tuesdayAvailability: string;
-  wednesdayAvailability: string;
-  thursdayAvailability: string;
-  fridayAvailability: string;
-  saturdayAvailability: string;
-}
-
-export interface Application extends AvailabilityFields {
-  appId: number;
-  email: string;
-  discipline: DISCIPLINE_VALUES;
-  otherDisciplineDescription?: string;
-  appStatus: AppStatus;
-  mondayAvailability: string;
-  tuesdayAvailability: string;
-  wednesdayAvailability: string;
-  thursdayAvailability: string;
-  fridayAvailability: string;
-  saturdayAvailability: string;
-  experienceType: ExperienceType;
-  interest: InterestArea[];
-  license: string;
-  phone: string;
-  applicantType: ApplicantType;
-  referred?: boolean;
-  referredEmail?: string;
-  weeklyHours: number;
-  pronouns: string;
-  nonEnglishLangs?: string;
-  desiredExperience: string;
-  elaborateOtherDiscipline?: string;
-  resume: string;
-  coverLetter: string;
-  emergencyContactName: string;
-  emergencyContactPhone: string;
-  emergencyContactRelationship: string;
-  heardAboutFrom: HeardAboutFrom[];
-}
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
@@ -65,6 +22,14 @@ export class ApiClient {
 
   public async getApplication(appId: number): Promise<Application> {
     return this.get(`/api/applications/${appId}`) as Promise<Application>;
+  }
+
+  public async getVolunteerInfo(appId: number): Promise<VolunteerInfo> {
+    return this.get(`/api/volunteer_info/${appId}`) as Promise<VolunteerInfo>;
+  }
+
+  public async getLearnerInfo(appId: number): Promise<LearnerInfo> {
+    return this.get(`/api/learner_info/${appId}`) as Promise<LearnerInfo>;
   }
 
   public async updateAvailability(

@@ -1,16 +1,22 @@
 import NavBar from '@components/NavBar/NavBar';
 import { useParams } from 'react-router-dom';
+import apiClient from '@api/apiClient';
 import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '@components/AvailabilityTable';
 import { useEffect, useState } from 'react';
-import apiClient, { Application, AvailabilityFields } from '@api/apiClient';
 import {
   ApplicantType,
+  Application,
   AppStatus,
+  AvailabilityFields,
   DISCIPLINE_VALUES,
   ExperienceType,
   InterestArea,
+  LearnerInfo,
+  School,
+  VolunteerInfo,
 } from '@api/types';
+import QuestionFrame from '@components/QuestionFrame';
 
 const dummyApplication: Application = {
   appId: 1,
@@ -42,12 +48,24 @@ const dummyApplication: Application = {
   heardAboutFrom: [],
 };
 
+const dummyLearnerInfo: LearnerInfo = {
+  appId: 1,
+  school: School.HARVARD_MEDICAL_SCHOOL,
+  schoolDepartment: 'Infectious Diseases',
+  isSupervisorApplying: true,
+  isLegalAdult: true,
+};
+
 const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
   console.log(appId);
   const [application, setApplication] = useState<Application | null>(
     dummyApplication,
   );
+  const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(
+    dummyLearnerInfo,
+  );
+  const [volunteerInfo, setVolunteerInfo] = useState<VolunteerInfo | null>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +77,20 @@ const AdminViewApplication: React.FC = () => {
     // setLoading(true);
     // apiClient
     //     .getApplication(Number(appId))
-    //     .then(setApplication)
+    //     .then((app) => {
+    //         setApplication(app);
+    //         if (app?.applicantType === ApplicantType.VOLUNTEER) {
+    //             apiClient
+    //                 .getVolunteerInfo(Number(appId))
+    //                 .then(setVolunteerInfo)
+    //                 .catch(() => setError('Failed to load volunteer info'));
+    //         } else if (app?.applicantType === ApplicantType.LEARNER) {
+    //             apiClient
+    //                 .getLearnerInfo(Number(appId))
+    //                 .then(setLearnerInfo)
+    //                 .catch(() => setError('Failed to load learner info'));
+    //         }
+    //     })
     //     .catch(() => setError('Failed to load application'))
     //     .finally(() => setLoading(false));
   }, [appId]);
@@ -79,12 +110,16 @@ const AdminViewApplication: React.FC = () => {
     );
   }
 
-  if (error || application === null) {
+  if (
+    error ||
+    application === null ||
+    (learnerInfo === null && volunteerInfo === null)
+  ) {
     return (
       <div className="flex flex-row">
         <NavBar logo="BHCHP" />
         <Box p="10" flex="1">
-          <Text color="red.500">{error ?? 'Application not found'}</Text>
+          <Text color="red.500">{error ?? 'Application data not found'}</Text>
         </Box>
       </div>
     );
@@ -93,7 +128,14 @@ const AdminViewApplication: React.FC = () => {
   return (
     <div className="flex flex-row">
       <NavBar logo="BHCHP" />
-      <Box id="main-content" p="10" flex="1">
+      <Box
+        id="main-content"
+        p="10"
+        flex="1"
+        display="flex"
+        flexDirection="column"
+        gap={6}
+      >
         <Heading size="lg" mb="6">
           Applicant Details
         </Heading>
@@ -113,6 +155,41 @@ const AdminViewApplication: React.FC = () => {
             onUpdate={handleAvailabilityUpdate}
           />
         </Box>
+
+        <QuestionFrame
+          frameProps={{
+            question: 'How did you hear about us?',
+            answers: application.heardAboutFrom,
+          }}
+        />
+        <QuestionFrame
+          frameProps={{
+            question: 'Other than English, what languages do you speak?',
+            answers: application.nonEnglishLangs
+              ? [application.nonEnglishLangs]
+              : [],
+          }}
+        />
+        {application.applicantType === ApplicantType.LEARNER &&
+        learnerInfo !== null ? (
+          <QuestionFrame
+            frameProps={{
+              question:
+                'Are you applying for yourself or are you a supervisor/instructor?',
+              answers: [
+                learnerInfo.isSupervisorApplying ? 'Supervisor' : 'Myself',
+              ],
+            }}
+          />
+        ) : (
+          <QuestionFrame
+            frameProps={{
+              question:
+                'Are you applying for yourself or are you a supervisor/instructor?',
+              answers: ['Myself'],
+            }}
+          />
+        )}
       </Box>
     </div>
   );

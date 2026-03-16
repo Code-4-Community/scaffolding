@@ -85,3 +85,73 @@ export enum DISCIPLINE_VALUES {
   SocialWork = 'Social Work',
   Other = 'Other',
 }
+
+export interface AvailabilityFields {
+  mondayAvailability: string;
+  tuesdayAvailability: string;
+  wednesdayAvailability: string;
+  thursdayAvailability: string;
+  fridayAvailability: string;
+  saturdayAvailability: string;
+}
+
+export interface Application extends AvailabilityFields {
+  appId: number;
+  email: string;
+  discipline: DISCIPLINE_VALUES;
+  otherDisciplineDescription?: string;
+  appStatus: AppStatus;
+  mondayAvailability: string;
+  tuesdayAvailability: string;
+  wednesdayAvailability: string;
+  thursdayAvailability: string;
+  fridayAvailability: string;
+  saturdayAvailability: string;
+  experienceType: ExperienceType;
+  interest: InterestArea[];
+  license: string;
+  phone: string;
+  applicantType: ApplicantType;
+  referred?: boolean;
+  referredEmail?: string;
+  weeklyHours: number;
+  pronouns: string;
+  nonEnglishLangs?: string;
+  desiredExperience: string;
+  elaborateOtherDiscipline?: string;
+  resume: string;
+  coverLetter: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  emergencyContactRelationship: string;
+  heardAboutFrom: HeardAboutFrom[];
+}
+
+/**
+ * School of the applicant, includes well-known medical schools, or an other option
+ */
+export enum School {
+  HARVARD_MEDICAL_SCHOOL = 'Harvard Medical School',
+  JOHNS_HOPKINS = 'Johns Hopkins',
+  STANFORD_MEDICINE = 'Stanford Medicine',
+  MAYO_CLINIC = 'Mayo Clinic',
+  OTHER = 'Other',
+}
+
+export interface LearnerInfo {
+  appId: number;
+  school: School;
+  otherSchool?: string;
+  schoolDepartment?: string;
+  isSupervisorApplying: boolean;
+  isLegalAdult: boolean;
+  dateOfBirth?: Date;
+  courseRequirements?: string;
+  instructorInfo?: string;
+  syllabus?: string;
+}
+
+export interface VolunteerInfo {
+  appId: number;
+  license: string;
+}
