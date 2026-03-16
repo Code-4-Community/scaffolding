@@ -21,6 +21,13 @@ export const App: React.FC = () => {
               path="/admin/view-application/:appId"
               element={<AdminViewApplication />}
             />
+            <Route path="/admin/profile" />
+            <Route path="/admin/settings" />
+          </Route>
+          <Route path="/candidate">
+            <Route path="/candidate/view-application" />
+            <Route path="/candidate/profile" />
+            <Route path="/candidate/settings" />
           </Route>
         </Routes>
       </BrowserRouter>
