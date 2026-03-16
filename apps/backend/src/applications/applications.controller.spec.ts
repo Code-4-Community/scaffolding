@@ -254,4 +254,30 @@ describe('ApplicationsController', () => {
       });
     });
   });
+
+  describe('updateApplicationAvailability', () => {
+    it("should successfully update an application's availability", async () => {
+      const appId = 42;
+      const updateAvailabilityDto = { mondayAvailability: 'not available' };
+      const updatedApplication: Application = {
+        ...mockApplication,
+        appId,
+        mondayAvailability: 'not available',
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'update')
+        .mockResolvedValue(updatedApplication);
+
+      await controller.updateApplicationAvailability(
+        appId,
+        updateAvailabilityDto,
+        {},
+      );
+
+      expect(mockApplicationsService.update).toHaveBeenCalledWith(appId, {
+        mondayAvailability: 'not available',
+      });
+    });
+  });
 });
