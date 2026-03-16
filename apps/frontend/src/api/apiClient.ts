@@ -1,4 +1,12 @@
 import axios, { type AxiosInstance } from 'axios';
+import {
+  ApplicantType,
+  AppStatus,
+  DISCIPLINE_VALUES,
+  ExperienceType,
+  HeardAboutFrom,
+  InterestArea,
+} from './types';
 
 export interface AvailabilityFields {
   mondayAvailability: string;
@@ -12,21 +20,33 @@ export interface AvailabilityFields {
 export interface Application extends AvailabilityFields {
   appId: number;
   email: string;
-  discipline: string;
-  appStatus: string;
-  experienceType: string;
-  interest: string[];
+  discipline: DISCIPLINE_VALUES;
+  otherDisciplineDescription?: string;
+  appStatus: AppStatus;
+  mondayAvailability: string;
+  tuesdayAvailability: string;
+  wednesdayAvailability: string;
+  thursdayAvailability: string;
+  fridayAvailability: string;
+  saturdayAvailability: string;
+  experienceType: ExperienceType;
+  interest: InterestArea[];
   license: string;
   phone: string;
-  applicantType: string;
-  school: string;
+  applicantType: ApplicantType;
+  referred?: boolean;
+  referredEmail?: string;
   weeklyHours: number;
   pronouns: string;
+  nonEnglishLangs?: string;
+  desiredExperience: string;
+  elaborateOtherDiscipline?: string;
   resume: string;
   coverLetter: string;
   emergencyContactName: string;
   emergencyContactPhone: string;
   emergencyContactRelationship: string;
+  heardAboutFrom: HeardAboutFrom[];
 }
 
 const defaultBaseUrl =
