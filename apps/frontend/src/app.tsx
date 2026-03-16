@@ -1,18 +1,10 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 
 import apiClient from '@api/apiClient';
-import Root from '@containers/root';
-import NotFound from '@containers/404';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root />,
-    errorElement: <NotFound />,
-  },
-]);
+import AdminLanding from '@containers/AdminLanding';
+import AdminViewApplication from '@containers/AdminViewApplication';
 
 export const App: React.FC = () => {
   useEffect(() => {
@@ -21,7 +13,17 @@ export const App: React.FC = () => {
 
   return (
     <ChakraProvider value={defaultSystem}>
-      <RouterProvider router={router} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/admin">
+            <Route path="/admin/landing" element={<AdminLanding />} />
+            <Route
+              path="/admin/view-application/:appId"
+              element={<AdminViewApplication />}
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </ChakraProvider>
   );
 };

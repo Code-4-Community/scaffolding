@@ -8,7 +8,7 @@ import checkmarkIcon from '../assets/icons/checkmark.svg';
 import { Box } from '@chakra-ui/react';
 import ApplicationTable from '@components/ApplicationTable';
 
-const Root: React.FC = () => {
+const AdminLanding: React.FC = () => {
   return (
     <div className="flex flex-row">
       <NavBar logo={'BHCHP'} />
@@ -52,4 +52,4 @@ const Root: React.FC = () => {
   );
 };
 
-export default Root;
+export default AdminLanding;
