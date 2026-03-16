@@ -4,11 +4,51 @@ import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '@components/AvailabilityTable';
 import { useEffect, useState } from 'react';
 import apiClient, { Application, AvailabilityFields } from '@api/apiClient';
+import {
+  ApplicantType,
+  AppStatus,
+  DISCIPLINE_VALUES,
+  ExperienceType,
+  InterestArea,
+} from '@api/types';
+
+const dummyApplication: Application = {
+  appId: 1,
+  appStatus: AppStatus.APP_SUBMITTED,
+  mondayAvailability: '12pm and on every other week',
+  tuesdayAvailability: 'approximately 10am-3pm',
+  wednesdayAvailability: 'no availability',
+  thursdayAvailability: 'maybe before 10am',
+  fridayAvailability: 'Sometime between 4-6',
+  saturdayAvailability: 'no availability',
+  experienceType: ExperienceType.BS,
+  interest: [InterestArea.WOMENS_HEALTH],
+  license: '',
+  applicantType: ApplicantType.LEARNER,
+  phone: '123-456-7890',
+  email: 'test@example.com',
+  discipline: DISCIPLINE_VALUES.RN,
+  referred: false,
+  weeklyHours: 20,
+  pronouns: 'they/them',
+  nonEnglishLangs: 'some french, native spanish speaker',
+  desiredExperience:
+    'I want to give back to the boston community and learn to talk better with patients',
+  resume: 'janedoe_resume_2_6_2026.pdf',
+  coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+  emergencyContactName: 'Jane Doe',
+  emergencyContactPhone: '111-111-1111',
+  emergencyContactRelationship: 'Mother',
+  heardAboutFrom: [],
+};
 
 const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
-  const [application, setApplication] = useState<Application | null>(null);
-  const [loading, setLoading] = useState(true);
+  console.log(appId);
+  const [application, setApplication] = useState<Application | null>(
+    dummyApplication,
+  );
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // TODO: derive from actual auth state once auth is wired up
@@ -16,12 +56,12 @@ const AdminViewApplication: React.FC = () => {
 
   useEffect(() => {
     if (!appId) return;
-    setLoading(true);
-    apiClient
-      .getApplication(Number(appId))
-      .then(setApplication)
-      .catch(() => setError('Failed to load application'))
-      .finally(() => setLoading(false));
+    // setLoading(true);
+    // apiClient
+    //     .getApplication(Number(appId))
+    //     .then(setApplication)
+    //     .catch(() => setError('Failed to load application'))
+    //     .finally(() => setLoading(false));
   }, [appId]);
 
   const handleAvailabilityUpdate = (updated: AvailabilityFields) => {
@@ -39,7 +79,7 @@ const AdminViewApplication: React.FC = () => {
     );
   }
 
-  if (error || !application) {
+  if (error || application === null) {
     return (
       <div className="flex flex-row">
         <NavBar logo="BHCHP" />
