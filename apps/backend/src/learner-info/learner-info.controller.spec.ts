@@ -5,8 +5,7 @@ import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
 import { CreateLearnerInfoDto } from './dto/create-learner-info.request.dto';
 import { School } from './types';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { Not } from 'typeorm';
+import { BadRequestException } from '@nestjs/common';
 
 describe('LearnerInfoController', () => {
   let controller: LearnerInfoController;
@@ -99,7 +98,9 @@ describe('LearnerInfoController', () => {
         controller.createLearnerInfo(createLearnerInfoDto),
       ).rejects.toThrow(new BadRequestException(`appId must not be negative`));
     });
+  });
 
+  describe('GET /app/:id', () => {
     it('should get the learner info by appId', async () => {
       const learnerInfo: LearnerInfo = {
         appId: 0,

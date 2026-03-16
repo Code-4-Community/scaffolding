@@ -4,8 +4,7 @@ import { VolunteerInfoController } from './volunteer-info.controller';
 import { VolunteerInfoService } from './volunteer-info.service';
 import { VolunteerInfo } from './volunteer-info.entity';
 import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { find } from 'rxjs';
+import { BadRequestException } from '@nestjs/common';
 
 describe('VolunteerInfoController', () => {
   let controller: VolunteerInfoController;
@@ -90,8 +89,10 @@ describe('VolunteerInfoController', () => {
         controller.createVolunteerInfo(createVolunteerInfoDto),
       ).rejects.toThrow(new BadRequestException(`appId must not be negative`));
     });
+  });
 
-    it('should get the volunteer info by appId', async () => {
+  describe('GET /app/:id', () => {
+    it('should return a volunteer info by appId', async () => {
       const volunteerInfo: VolunteerInfo = {
         appId: 0,
         license: 'example',
