@@ -100,7 +100,7 @@ describe('LearnerInfoController', () => {
     });
   });
 
-  describe('GET /app/:id', () => {
+  describe('GET /:id', () => {
     it('should get the learner info by appId', async () => {
       const learnerInfo: LearnerInfo = {
         appId: 0,

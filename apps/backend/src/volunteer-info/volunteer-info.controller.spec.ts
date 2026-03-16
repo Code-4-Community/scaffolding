@@ -91,7 +91,7 @@ describe('VolunteerInfoController', () => {
     });
   });
 
-  describe('GET /app/:id', () => {
+  describe('GET /:id', () => {
     it('should return a volunteer info by appId', async () => {
       const volunteerInfo: VolunteerInfo = {
         appId: 0,
