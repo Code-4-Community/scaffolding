@@ -17,6 +17,8 @@ import {
   VolunteerInfo,
 } from '@api/types';
 import QuestionFrame from '@components/QuestionFrame';
+import RequirementsFrame from '@components/RequirementsFrame';
+import UploadedMaterial from '@components/UploadedMaterial';
 
 const dummyApplication: Application = {
   appId: 1,
@@ -155,6 +157,24 @@ const AdminViewApplication: React.FC = () => {
             onUpdate={handleAvailabilityUpdate}
           />
         </Box>
+
+        {application.applicantType === ApplicantType.LEARNER &&
+        learnerInfo !== null &&
+        'syllabus' in learnerInfo ? (
+          <UploadedMaterial frameProps={{ hasSyllabus: true }} />
+        ) : (
+          <UploadedMaterial frameProps={{ hasSyllabus: false }} />
+        )}
+
+        {application.applicantType === ApplicantType.LEARNER &&
+          learnerInfo !== null && (
+            <RequirementsFrame
+              frameProps={{
+                course_requirements: learnerInfo.courseRequirements || '',
+                instructor_contact_info: learnerInfo.instructorInfo || '',
+              }}
+            />
+          )}
 
         <QuestionFrame
           frameProps={{
