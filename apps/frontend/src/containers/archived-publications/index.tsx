@@ -112,7 +112,7 @@ export default function ArchivedPublications() {
       .getAnthologies()
       .then((data) => {
         const archivedOnly = (data as Anthology[]).filter(
-          (item) => item.status === AnthologyStatus.CAN_BE_SHARED,
+          (item) => item.status === AnthologyStatus.ARCHIVED,
         );
         setArchived(archivedOnly);
       })
@@ -121,7 +121,11 @@ export default function ArchivedPublications() {
       });
   }, []);
 
-  const filteredPublications = archived;
+  const filteredPublications = applyFiltersAndSort(
+    archived,
+    searchQuery,
+    appliedFilters,
+  );
 
   return (
     <div className="archive-wrapper">
