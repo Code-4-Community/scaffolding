@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 
 import apiClient from '@api/apiClient';
@@ -11,10 +11,12 @@ export const App: React.FC = () => {
     apiClient.getHello().then((res) => console.log(res));
   }, []);
 
+  // Note: the / to /admin/landing redirect is temporary convenience for development
   return (
     <ChakraProvider value={defaultSystem}>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Navigate to="/admin/landing" replace />} />
           <Route path="/admin">
             <Route path="/admin/landing" element={<AdminLanding />} />
             <Route
