@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
-import { STATIC_ARCHIVED } from '../../../utils/mock-data';
 import { Anthology, Story } from '../../../types';
 import './publication-view.css';
 
@@ -179,10 +178,6 @@ const PublicationView: React.FC = () => {
         })
         .catch((err) => {
           console.error(err);
-          const fallback = STATIC_ARCHIVED.find(
-            (pub) => pub.id === parseInt(id, 10),
-          );
-          setAnthology(fallback ?? null);
           setLoading(false);
         });
     } else {

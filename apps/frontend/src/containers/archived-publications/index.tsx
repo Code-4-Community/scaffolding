@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './styles.css';
 import apiClient from '../../api/apiClient';
-import { STATIC_ARCHIVED, MOCK_LAST_MODIFIED } from '@utils/mock-data';
+import { MOCK_LAST_MODIFIED } from '@utils/mock-data';
 import {
   Anthology,
   AnthologyStatus,
@@ -101,7 +101,7 @@ function applyFiltersAndSort(
 }
 
 export default function ArchivedPublications() {
-  const [archived, setArchived] = useState<Anthology[]>(STATIC_ARCHIVED);
+  const [archived, setArchived] = useState<Anthology[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedFilters, setAppliedFilters] =
     useState<FilterState>(DEFAULT_FILTER_STATE);
@@ -111,23 +111,17 @@ export default function ArchivedPublications() {
     apiClient
       .getAnthologies()
       .then((data) => {
-        const archivedOnly = data.filter(
-          (item) => item.status === AnthologyStatus.ARCHIVED,
+        const archivedOnly = (data as Anthology[]).filter(
+          (item) => item.status === AnthologyStatus.CAN_BE_SHARED,
         );
-        if (archivedOnly.length > 0) {
-          setArchived(archivedOnly);
-        }
+        setArchived(archivedOnly);
       })
-      .catch(() => {
-        setArchived(STATIC_ARCHIVED);
+      .catch((err) => {
+        console.log(err);
       });
   }, []);
 
-  const filteredPublications = applyFiltersAndSort(
-    archived,
-    searchQuery,
-    appliedFilters,
-  );
+  const filteredPublications = archived;
 
   return (
     <div className="archive-wrapper">
