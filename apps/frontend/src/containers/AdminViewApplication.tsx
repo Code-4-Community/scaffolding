@@ -22,54 +22,13 @@ import RequirementsFrame from '@components/RequirementsFrame';
 import UploadedMaterial from '@components/UploadedMaterial';
 import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
 
-const dummyApplication: Application = {
-  appId: 1,
-  appStatus: AppStatus.APP_SUBMITTED,
-  mondayAvailability: '12pm and on every other week',
-  tuesdayAvailability: 'approximately 10am-3pm',
-  wednesdayAvailability: 'no availability',
-  thursdayAvailability: 'maybe before 10am',
-  fridayAvailability: 'Sometime between 4-6',
-  saturdayAvailability: 'no availability',
-  experienceType: ExperienceType.BS,
-  interest: [InterestArea.WOMENS_HEALTH],
-  license: '',
-  applicantType: ApplicantType.LEARNER,
-  phone: '123-456-7890',
-  email: 'test@example.com',
-  discipline: DISCIPLINE_VALUES.RN,
-  referred: false,
-  weeklyHours: 20,
-  pronouns: 'they/them',
-  nonEnglishLangs: 'some french, native spanish speaker',
-  desiredExperience:
-    'I want to give back to the boston community and learn to talk better with patients',
-  resume: 'janedoe_resume_2_6_2026.pdf',
-  coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
-  emergencyContactName: 'Jane Doe',
-  emergencyContactPhone: '111-111-1111',
-  emergencyContactRelationship: 'Mother',
-  heardAboutFrom: [],
-};
-
-const dummyLearnerInfo: LearnerInfo = {
-  appId: 1,
-  school: School.HARVARD_MEDICAL_SCHOOL,
-  schoolDepartment: 'Infectious Diseases',
-  isSupervisorApplying: true,
-  isLegalAdult: true,
-};
-
 const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
-  console.log(appId);
-  const [application, setApplication] = useState<Application | null>(
-    dummyApplication,
+  const [application, setApplication] = useState<Application | null>(null);
+  const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(null);
+  const [volunteerInfo, setVolunteerInfo] = useState<VolunteerInfo | null>(
+    null,
   );
-  const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(
-    dummyLearnerInfo,
-  );
-  const [volunteerInfo, setVolunteerInfo] = useState<VolunteerInfo | null>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -78,25 +37,25 @@ const AdminViewApplication: React.FC = () => {
 
   useEffect(() => {
     if (!appId) return;
-    // setLoading(true);
-    // apiClient
-    //     .getApplication(Number(appId))
-    //     .then((app) => {
-    //         setApplication(app);
-    //         if (app?.applicantType === ApplicantType.VOLUNTEER) {
-    //             apiClient
-    //                 .getVolunteerInfo(Number(appId))
-    //                 .then(setVolunteerInfo)
-    //                 .catch(() => setError('Failed to load volunteer info'));
-    //         } else if (app?.applicantType === ApplicantType.LEARNER) {
-    //             apiClient
-    //                 .getLearnerInfo(Number(appId))
-    //                 .then(setLearnerInfo)
-    //                 .catch(() => setError('Failed to load learner info'));
-    //         }
-    //     })
-    //     .catch(() => setError('Failed to load application'))
-    //     .finally(() => setLoading(false));
+    setLoading(true);
+    apiClient
+      .getApplication(Number(appId))
+      .then((app) => {
+        setApplication(app);
+        if (app?.applicantType === ApplicantType.VOLUNTEER) {
+          apiClient
+            .getVolunteerInfo(Number(appId))
+            .then(setVolunteerInfo)
+            .catch(() => setError('Failed to load volunteer info'));
+        } else if (app?.applicantType === ApplicantType.LEARNER) {
+          apiClient
+            .getLearnerInfo(Number(appId))
+            .then(setLearnerInfo)
+            .catch(() => setError('Failed to load learner info'));
+        }
+      })
+      .catch(() => setError('Failed to load application'))
+      .finally(() => setLoading(false));
   }, [appId]);
 
   const handleAvailabilityUpdate = (updated: AvailabilityFields) => {
