@@ -19,6 +19,7 @@ import {
 import QuestionFrame from '@components/QuestionFrame';
 import RequirementsFrame from '@components/RequirementsFrame';
 import UploadedMaterial from '@components/UploadedMaterial';
+import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
 
 const dummyApplication: Application = {
   appId: 1,
@@ -137,10 +138,25 @@ const AdminViewApplication: React.FC = () => {
         display="flex"
         flexDirection="column"
         gap={6}
+        overflowY="auto"
+        maxH="100vh"
       >
-        <Heading size="lg" mb="6">
-          Applicant Details
-        </Heading>
+        <SchoolAffiliationFrame
+          schoolName={learnerInfo ? learnerInfo.school : 'N/A'}
+          schoolDepartment={
+            (learnerInfo && learnerInfo.schoolDepartment) || 'N/A'
+          }
+          license={(volunteerInfo && volunteerInfo.license) || 'N/A'}
+          areaOfInterest={
+            Array.isArray(application.interest)
+              ? application.interest.join(', ')
+              : application.interest ?? ''
+          }
+          proposedStartDate={''}
+          actualStartDate={''}
+          endDate={''}
+          totalTimeRequested={application.weeklyHours + ' hours per week'}
+        />
 
         <Box>
           <AvailabilityTable

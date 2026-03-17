@@ -1,9 +1,7 @@
 import React from 'react';
 import { Box, Heading, Flex, Link, Text } from '@chakra-ui/react';
 import NavbarItem from './NavBarItem';
-import SearchBar from './SearchBar';
 import { FaHouse } from 'react-icons/fa6';
-import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import { CgProfile } from 'react-icons/cg';
 
@@ -30,14 +28,8 @@ export default function NavBar({ logo }: NavBarProps) {
             {logo}
           </Heading>
         </Flex>
-        <SearchBar />
         <Flex direction="column" width="100%" paddingTop="16px">
           <NavbarItem href="#dashboard" label="Dashboard" icon={<FaHouse />} />
-          <NavbarItem
-            href="#notifications"
-            label="Notifications"
-            icon={<FaBell />}
-          />
           <NavbarItem
             href="#settings"
             label="Settings"
