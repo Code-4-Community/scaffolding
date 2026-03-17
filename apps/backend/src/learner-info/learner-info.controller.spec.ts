@@ -13,6 +13,7 @@ describe('LearnerInfoController', () => {
   const mockLearnerInfoService = {
     create: jest.fn(),
     update: jest.fn(),
+    findById: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -96,6 +97,25 @@ describe('LearnerInfoController', () => {
       await expect(
         controller.createLearnerInfo(createLearnerInfoDto),
       ).rejects.toThrow(new BadRequestException(`appId must not be negative`));
+    });
+  });
+
+  describe('GET /:id', () => {
+    it('should get the learner info by appId', async () => {
+      const learnerInfo: LearnerInfo = {
+        appId: 0,
+        school: School.HARVARD_MEDICAL_SCHOOL,
+        schoolDepartment: 'Infectious Diseases',
+        isSupervisorApplying: false,
+        isLegalAdult: true,
+      };
+
+      mockLearnerInfoService.findById.mockResolvedValue(learnerInfo);
+
+      const result = await controller.getLearnerInfo(0);
+
+      expect(result).toEqual(learnerInfo);
+      expect(mockLearnerInfoService.findById).toHaveBeenCalledWith(0);
     });
   });
 });

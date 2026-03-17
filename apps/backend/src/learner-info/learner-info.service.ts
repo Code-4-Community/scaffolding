@@ -24,12 +24,17 @@ export class LearnerInfoService {
    * @returns A promise resolving to the learner info object with that appId.
    * @throws {NotFoundException} with message 'Learner Info with AppId <id> not found'
    *         if an application with that id does not exist.
+   * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined)
    * @throws {Error} which is unchanged from what repository throws.
    */
   async findById(appId: number): Promise<LearnerInfo> {
     const learnerInfo: LearnerInfo = await this.learnerInfoRepository.findOne({
       where: { appId },
     });
+
+    if (!appId && appId !== 0) {
+      throw new BadRequestException(`Learner info ID is required`);
+    }
 
     if (!learnerInfo) {
       throw new NotFoundException(`Learner Info with AppId ${appId} not found`);
