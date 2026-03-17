@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import './styles.css';
-import {
-  STATIC_ARCHIVED,
-  RECENTLY_EDITED,
-  MOCK_LAST_MODIFIED,
-  MOCK_STORIES,
-  MOCK_AUTHORS,
-} from '@utils/mock-data';
+import apiClient from '../../api/apiClient';
+import { STATIC_ARCHIVED, MOCK_LAST_MODIFIED } from '@utils/mock-data';
 import {
   Anthology,
   AnthologyStatus,
@@ -17,19 +12,11 @@ import {
 import FilterModal from './filter-modal/FilterModal';
 
 // Import SVG icons
-import DocumentIcon from '../../assets/icons/document.svg';
 import SearchIcon from '../../assets/icons/search.svg';
 import ListIcon from '../../assets/icons/list.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
 import BookmarkIcon from '../../assets/icons/bookmark.svg';
-
-/** Returns the author names for a given anthology id via the stories join. */
-function getAuthors(anthologyId: number): string[] {
-  return MOCK_STORIES.filter((s) => s.anthologyId === anthologyId)
-    .map((s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name)
-    .filter(Boolean) as string[];
-}
 
 /**
  * Applies search, filters, and sort to the publication list.
@@ -42,14 +29,10 @@ function applyFiltersAndSort(
 ): Anthology[] {
   let result = [...pubs];
 
-  // Search by title or author
+  // Search by title
   if (search) {
     const q = search.toLowerCase();
-    result = result.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        getAuthors(p.id).some((a) => a.toLowerCase().includes(q)),
-    );
+    result = result.filter((p) => p.title.toLowerCase().includes(q));
   }
 
   // Publication date year range
@@ -106,9 +89,7 @@ function applyFiltersAndSort(
       case SortOption.TITLE_ASC:
         return a.title.localeCompare(b.title);
       case SortOption.AUTHOR_ASC:
-        return (getAuthors(a.id)[0] ?? '').localeCompare(
-          getAuthors(b.id)[0] ?? '',
-        );
+        return a.title.localeCompare(b.title);
       case SortOption.DATE_NEWEST:
         return b.published_year - a.published_year;
       case SortOption.DATE_OLDEST:
@@ -121,17 +102,16 @@ function applyFiltersAndSort(
 
 export default function ArchivedPublications() {
   const [archived, setArchived] = useState<Anthology[]>(STATIC_ARCHIVED);
-  // const [selected, setSelected] = useState<Anthology | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedFilters, setAppliedFilters] =
     useState<FilterState>(DEFAULT_FILTER_STATE);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch('/api/anthologies')
-      .then((res) => res.json())
+    apiClient
+      .getAnthologies()
       .then((data) => {
-        const archivedOnly = (data as Anthology[]).filter(
+        const archivedOnly = data.filter(
           (item) => item.status === AnthologyStatus.ARCHIVED,
         );
         if (archivedOnly.length > 0) {
@@ -224,9 +204,6 @@ export default function ArchivedPublications() {
                 <div className="publication-card-info">
                   <div className="publication-card-details">
                     <h3 className="publication-card-title">{pub.title}</h3>
-                    <p className="publication-card-author">
-                      {getAuthors(pub.id).join(', ') || 'Author Name'}
-                    </p>
                     <div className="publication-card-meta">
                       <span className="publication-card-modified">
                         Last modified {MOCK_LAST_MODIFIED}
