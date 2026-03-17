@@ -14,6 +14,7 @@ import {
   InterestArea,
   LearnerInfo,
   School,
+  UserType,
   VolunteerInfo,
 } from '@api/types';
 import QuestionFrame from '@components/QuestionFrame';
@@ -105,7 +106,7 @@ const AdminViewApplication: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-row">
-        <NavBar logo="BHCHP" />
+        <NavBar logo="BHCHP" userType={UserType.ADMIN} />
         <Box p="10" flex="1" display="flex" justifyContent="center" mt="20">
           <Spinner size="xl" />
         </Box>
@@ -120,7 +121,7 @@ const AdminViewApplication: React.FC = () => {
   ) {
     return (
       <div className="flex flex-row">
-        <NavBar logo="BHCHP" />
+        <NavBar logo="BHCHP" userType={UserType.STANDARD} />
         <Box p="10" flex="1">
           <Text color="red.500">{error ?? 'Application data not found'}</Text>
         </Box>
@@ -130,7 +131,7 @@ const AdminViewApplication: React.FC = () => {
 
   return (
     <div className="flex flex-row">
-      <NavBar logo="BHCHP" />
+      <NavBar logo="BHCHP" userType={UserType.ADMIN} />
       <Box
         id="main-content"
         p="10"

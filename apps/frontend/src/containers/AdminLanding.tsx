@@ -11,6 +11,7 @@ import PageTransitionButton from '@components/PageTransitionButton';
 import Searchbar from '@components/TableSearchBar';
 import PageCounter from '@components/PageCounter';
 import ApplicationTable from '@components/ApplicationTable';
+import { UserType } from '@api/types';
 
 const AdminLanding: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,7 +22,7 @@ const AdminLanding: React.FC = () => {
   }
   return (
     <div className="flex flex-row h-screen">
-      <NavBar logo={'BHCHP'} />
+      <NavBar logo={'BHCHP'} userType={UserType.ADMIN} />
       <Box
         id="main-content"
         p="10"
