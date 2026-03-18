@@ -46,16 +46,9 @@ export enum InterestArea {
 }
 
 /**
- * School of the applicant, includes well-known medical schools, or an other option
+ * Type of the applicant, either learner (currently enrolled in school)
+ * or volunteer (graduated)
  */
-export enum School {
-  HARVARD_MEDICAL_SCHOOL = 'Harvard Medical School',
-  JOHNS_HOPKINS = 'Johns Hopkins',
-  STANFORD_MEDICINE = 'Stanford Medicine',
-  MAYO_CLINIC = 'Mayo Clinic',
-  OTHER = 'Other',
-}
-
 export enum ApplicantType {
   LEARNER = 'Learner',
   VOLUNTEER = 'Volunteer',

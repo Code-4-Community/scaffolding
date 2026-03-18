@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ApplicantsController } from './candidate-info.controller';
-import { ApplicantsService } from './candidate-info.service';
-import { Applicant } from './candidate-info.entity';
+import { CandidateInfoController } from './candidate-info.controller';
+import { CandidateInfoService } from './candidate-info.service';
+import { CandidateInfo } from './candidate-info.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { UsersModule } from '../users/users.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Applicant]), UsersModule, AuthModule],
-  controllers: [ApplicantsController],
-  providers: [ApplicantsService, CurrentUserInterceptor],
-  exports: [ApplicantsService],
+  imports: [TypeOrmModule.forFeature([CandidateInfo]), UsersModule, AuthModule],
+  controllers: [CandidateInfoController],
+  providers: [CandidateInfoService, CurrentUserInterceptor],
+  exports: [CandidateInfoService],
 })
-export class ApplicantsModule {}
+export class CandidateInfoModule {}

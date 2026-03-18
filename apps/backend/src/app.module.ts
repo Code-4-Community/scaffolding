@@ -7,14 +7,13 @@ import { AWSS3Module } from './aws-s3/aws-s3.module';
 import AppDataSource from './data-source';
 import { UtilModule } from './util/util.module';
 import { ApplicationsModule } from './applications/applications.module';
-import { ApplicantsModule } from './candidate-info/candidate-info.module';
 import { LearnerInfoModule } from './learner-info/learner-info.module';
 import { VolunteerInfoModule } from './volunteer-info/volunteer-info.module';
 import { Application } from './applications/application.entity';
-import { AdminsModule } from './admin-info/admin-info.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { DisciplinesModule } from './disciplines/disciplines.module';
+import { AdminInfoModule } from './admin-info/admin-info.module';
 
 @Module({
   imports: [
@@ -27,7 +26,7 @@ import { DisciplinesModule } from './disciplines/disciplines.module';
       migrations: [], // Don't load migrations when server starts - only load them when running migration commands (i had to add this to get the server to run without errors)
     }),
     UtilModule,
-    AdminsModule,
+    AdminInfoModule,
     UsersModule,
     AWSS3Module,
     TypeOrmModule.forFeature([Application]),
@@ -35,7 +34,7 @@ import { DisciplinesModule } from './disciplines/disciplines.module';
     LearnerInfoModule,
     VolunteerInfoModule,
     ApplicationsModule,
-    ApplicantsModule,
+    ApplicationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -49,7 +49,7 @@ export class Init1754254886189 implements MigrationInterface {
 
     // School
     await queryRunner.query(
-      `CREATE TYPE "public"."application_school_enum" AS ENUM(` +
+      `CREATE TYPE "public"."learner_info_school_enum" AS ENUM(` +
         `'Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', ` +
         `'Mayo Clinic', 'Other')`,
     );
@@ -57,7 +57,7 @@ export class Init1754254886189 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `DROP TYPE IF EXISTS "public"."application_school_enum"`,
+      `DROP TYPE IF EXISTS "public"."learner_info_school_enum"`,
     );
     await queryRunner.query(
       `DROP TYPE IF EXISTS "public"."application_applicanttype_enum"`,

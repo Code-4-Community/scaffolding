@@ -8,11 +8,11 @@ import {
 } from 'class-validator';
 
 /**
- * Defines the expected shape of data for creating an applicant (candidate info).
+ * Defines the expected shape of data for creating an CandidateInfo
  *
  * DTO - data transfer object (defines and validates the structure of data sent over the network).
  */
-export class CreateApplicantDto {
+export class CreateCandidateInfoDto {
   /**
    * Corresponding application id number.
    */
@@ -22,7 +22,7 @@ export class CreateApplicantDto {
   appId: number;
 
   /**
-   * The applicant's email (primary key for candidate info).
+   * The CandidateInfo's email (primary key for CandidateInfo info).
    *
    * Example: 'jane.doe@example.com'.
    */

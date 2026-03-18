@@ -4,7 +4,7 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
+  HeardAboutFrom,
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
@@ -29,12 +29,21 @@ export class Application {
   email!: string;
 
   /**
-   * The expected start date for the applicant's commitment, stored in YYYY-MM-DD format.
+   * The proposed start date for the applicant's commitment, stored in YYYY-MM-DD format.
+   *
+   * Example: new Date('2024-06-30').
+   */
+  @Column({ type: 'date' })
+  proposedStartDate: Date;
+
+  /**
+   * The actual start date for the applicant's commitment, set by the Admin
+   * stored in YYYY-MM-DD format.
    *
    * Example: new Date('2024-06-30').
    */
   @Column({ type: 'date', nullable: true })
-  startDate?: Date;
+  actualStartDate?: Date;
 
   /**
    * The expected end date for the applicant's commitment, stored in YYYY-MM-DD format.
@@ -155,22 +164,6 @@ export class Application {
   applicantType!: ApplicantType;
 
   /**
-   * School of the applicant; includes well-known medical schools or an 'other' option.
-   *
-   * Example: School.STANFORD_MEDICINE.
-   */
-  @Column({ type: 'enum', enum: School })
-  school!: School;
-
-  /**
-   * Name of school if chose other
-   *
-   * Example: Northeastern University
-   */
-  @Column({ type: 'varchar', nullable: true })
-  otherSchool?: string;
-
-  /**
    * Whether or not the applicant was referred by someone else.
    *
    * Example: false.
@@ -277,4 +270,12 @@ export class Application {
    */
   @Column({ type: 'varchar' })
   emergencyContactRelationship!: string;
+
+  /**
+   * List of sources that the applicant heard about BHCHP from
+   *
+   * Example: [HeardAboutFrom.OTHER, HeardAboutFrom.SCHOOL]
+   */
+  @Column({ type: 'enum', enum: HeardAboutFrom, array: true, default: [] })
+  heardAboutFrom: HeardAboutFrom[];
 }

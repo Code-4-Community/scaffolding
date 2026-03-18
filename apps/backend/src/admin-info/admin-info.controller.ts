@@ -8,11 +8,11 @@ import {
   Delete,
   UseInterceptors,
 } from '@nestjs/common';
-import { AdminsService } from './admin-info.service';
-import { Admin } from './admin-info.entity';
+import { AdminInfoService } from './admin-info.service';
+import { AdminInfo } from './admin-info.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminEmailDto } from './dto/update-admin-email.dto';
+import { CreateAdminInfoDto } from './dto/create-admin.dto';
+import { UpdateAdminInfoEmailDto } from './dto/update-admin-email.dto';
 
 /**
  * Controller to expose callable HTTP endpoints to interface
@@ -20,18 +20,20 @@ import { UpdateAdminEmailDto } from './dto/update-admin-email.dto';
  */
 @Controller('admins')
 @UseInterceptors(CurrentUserInterceptor) // Apply authentication to all routes
-export class AdminsController {
-  constructor(private readonly adminsService: AdminsService) {}
+export class AdminInfoController {
+  constructor(private readonly adminsService: AdminInfoService) {}
 
   /**
    * Exposes an endpoint to create an admin in the system.
-   * @param createAdminDto object containing all of the necessary fields to create an admin.
+   * @param createAdminInfoDto object containing all of the necessary fields to create an admin.
    * @returns the new admin object.
    * @throws {Error} anything that the repository throws.
    */
   @Post()
-  async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
-    return await this.adminsService.create(createAdminDto);
+  async create(
+    @Body() createAdminInfoDto: CreateAdminInfoDto,
+  ): Promise<AdminInfo> {
+    return await this.adminsService.create(createAdminInfoDto);
   }
 
   /**
@@ -42,7 +44,7 @@ export class AdminsController {
    * @throws {Error} anything that the repository throws.
    */
   @Get('email/:email')
-  async findOne(@Param('email') email: string): Promise<Admin> {
+  async findOne(@Param('email') email: string): Promise<AdminInfo> {
     return await this.adminsService.findOne(email);
   }
 
@@ -53,7 +55,7 @@ export class AdminsController {
    * @throws {Error} anything that the repository throws.
    */
   @Get('by-email/:email')
-  async findByEmail(@Param('email') email: string): Promise<Admin | null> {
+  async findByEmail(@Param('email') email: string): Promise<AdminInfo | null> {
     return await this.adminsService.findByEmail(email);
   }
 
@@ -67,8 +69,8 @@ export class AdminsController {
   @Patch('email/:email')
   async updateEmail(
     @Param('email') email: string,
-    @Body() updateEmailDto: UpdateAdminEmailDto,
-  ): Promise<Admin> {
+    @Body() updateEmailDto: UpdateAdminInfoEmailDto,
+  ): Promise<AdminInfo> {
     return await this.adminsService.updateEmail(email, updateEmailDto);
   }
 
@@ -81,6 +83,6 @@ export class AdminsController {
   @Delete('email/:email')
   async remove(@Param('email') email: string): Promise<{ message: string }> {
     await this.adminsService.remove(email);
-    return { message: `Admin with email ${email} has been deleted` };
+    return { message: `AdminInfo with email ${email} has been deleted` };
   }
 }

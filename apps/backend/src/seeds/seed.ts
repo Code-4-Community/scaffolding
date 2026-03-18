@@ -7,27 +7,47 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
   ApplicantType,
 } from '../applications/types';
 import { LearnerInfo } from '../learner-info/learner-info.entity';
+import { School } from '../learner-info/types';
 import { VolunteerInfo } from '../volunteer-info/volunteer-info.entity';
-import { Applicant } from '../candidate-info/candidate-info.entity';
+import { CandidateInfo } from '../candidate-info/candidate-info.entity';
+import { AdminInfo } from '../admin-info/admin-info.entity';
 
-const APPLICANT_SEED = [
+const ADMIN_SEED = [
   {
-    appId: 1,
-    firstName: 'Jane',
-    lastName: 'Doe',
+    firstName: 'Indie',
+    lastName: 'Kitt',
+    email: 'indie.kitt@northeastern.edu',
+    discipline: DISCIPLINE_VALUES.RN,
   },
   {
-    appId: 2,
-    firstName: 'John',
-    lastName: 'Smith',
+    firstName: 'Linda',
+    lastName: 'Johnson',
+    email: 'linda.johnson@northeastern.edu',
+    discipline: DISCIPLINE_VALUES.PublicHealth,
+  },
+  {
+    firstName: 'Lucine',
+    lastName: 'Armen',
+    email: 'lucine.armen@northeastern.edu',
+    discipline: DISCIPLINE_VALUES.SocialWork,
   },
 ];
 
-const APPLICATION_SEED = [
+const APPLICANT_SEED: CandidateInfo[] = [
+  {
+    appId: 1,
+    email: 'johndoe@gmail.com',
+  },
+  {
+    appId: 2,
+    email: 'janedoe@gmail.com',
+  },
+];
+
+const APPLICATION_SEED: Application[] = [
   {
     appId: 1,
     appStatus: AppStatus.APP_SUBMITTED,
@@ -38,11 +58,13 @@ const APPLICATION_SEED = [
     fridayAvailability: 'Sometime between 4-6',
     saturdayAvailability: 'no availability',
     experienceType: ExperienceType.BS,
-    interest: [InterestArea.MEDICAL_RESPITE_INPATIENT],
-    license: 'n/a',
-    applicantType: ApplicantType.LEARNER,
+    interest: [
+      InterestArea.MEDICAL_RESPITE_INPATIENT,
+      InterestArea.FAMILY_AND_YOUTH_SERVICES,
+    ],
+    license: 'nursing license',
+    applicantType: ApplicantType.VOLUNTEER,
     phone: '123-456-7890',
-    school: School.HARVARD_MEDICAL_SCHOOL,
     email: 'test@example.com',
     discipline: DISCIPLINE_VALUES.RN,
     referred: false,
@@ -53,15 +75,16 @@ const APPLICATION_SEED = [
       'I want to give back to the boston community and learn to talk better with patients',
     resume: 'janedoe_resume_2_6_2026.pdf',
     coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
-    emergencyContactName: 'Jane Doe',
+    emergencyContactName: 'Bob Doe',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
-    startDate: new Date('2024-01-01'),
+    proposedStartDate: new Date('2024-01-01'),
     endDate: new Date('2024-06-30'),
+    heardAboutFrom: [],
   },
   {
     appId: 2,
-    appStatus: AppStatus.APP_SUBMITTED,
+    appStatus: AppStatus.IN_REVIEW,
     mondayAvailability: '12pm and on every other week',
     tuesdayAvailability: 'approximately 10am-3pm',
     wednesdayAvailability: 'no availability',
@@ -69,30 +92,30 @@ const APPLICATION_SEED = [
     fridayAvailability: 'Sometime between 4-6',
     saturdayAvailability: 'no availability',
     experienceType: ExperienceType.BS,
-    interest: [InterestArea.MEDICAL_RESPITE_INPATIENT],
+    interest: [InterestArea.HEP_C_CARE],
     license: 'n/a',
     applicantType: ApplicantType.LEARNER,
     phone: '123-456-7890',
-    school: School.HARVARD_MEDICAL_SCHOOL,
     email: 'test@example.com',
     discipline: DISCIPLINE_VALUES.RN,
     referred: false,
     weeklyHours: 20,
-    pronouns: 'she/her',
+    pronouns: 'he/him',
     nonEnglishLangs: 'spoken chinese only',
     desiredExperience:
       'I want to give back to the boston community and learn to talk better with patients',
-    resume: 'janedoe_resume_2_6_2026.pdf',
-    coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
-    emergencyContactName: 'Jane Doe',
+    resume: 'johndoe_resume_2_6_2026.pdf',
+    coverLetter: 'johndoe_coverLetter_2_6_2026.pdf',
+    emergencyContactName: 'Bob Doe',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
-    startDate: new Date('2026-01-01'),
+    proposedStartDate: new Date('2026-01-01'),
     endDate: new Date('2026-06-30'),
+    heardAboutFrom: [],
   },
   {
     appId: 3,
-    appStatus: AppStatus.APP_SUBMITTED,
+    appStatus: AppStatus.INACTIVE,
     mondayAvailability: '12pm and on every other week',
     tuesdayAvailability: 'approximately 10am-3pm',
     wednesdayAvailability: 'no availability',
@@ -100,26 +123,45 @@ const APPLICATION_SEED = [
     fridayAvailability: 'Sometime between 4-6',
     saturdayAvailability: 'no availability',
     experienceType: ExperienceType.BS,
-    interest: [InterestArea.MEDICAL_RESPITE_INPATIENT],
+    interest: [InterestArea.WOMENS_HEALTH],
     license: 'n/a',
-    applicantType: ApplicantType.LEARNER,
+    applicantType: ApplicantType.VOLUNTEER,
     phone: '123-456-7890',
-    school: School.HARVARD_MEDICAL_SCHOOL,
     email: 'test@example.com',
     discipline: DISCIPLINE_VALUES.RN,
     referred: false,
     weeklyHours: 20,
-    pronouns: 'she/her',
+    pronouns: 'they/them',
     nonEnglishLangs: 'spoken chinese only',
     desiredExperience:
       'I want to give back to the boston community and learn to talk better with patients',
-    resume: 'janedoe_resume_2_6_2026.pdf',
-    coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
-    emergencyContactName: 'Jane Doe',
+    resume: 'sam_resume_2_6_2026.pdf',
+    coverLetter: 'sam_coverLetter_2_6_2026.pdf',
+    emergencyContactName: 'sam senior',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
-    startDate: new Date('2024-01-01'),
+    proposedStartDate: new Date('2024-01-01'),
     endDate: new Date('2024-06-30'),
+    heardAboutFrom: [],
+  },
+];
+
+const LEARNER_INFO_SEED: LearnerInfo[] = [
+  {
+    appId: 1,
+    school: School.HARVARD_MEDICAL_SCHOOL,
+    isSupervisorApplying: false,
+    isLegalAdult: true,
+  },
+];
+const VOLUNTEER_INFO_SEED: VolunteerInfo[] = [
+  {
+    appId: 2,
+    license: '1234567890',
+  },
+  {
+    appId: 3,
+    license: '1234567890',
   },
 ];
 
@@ -131,9 +173,6 @@ async function seed() {
     await dataSource.initialize();
     console.log('✅ Database connection established');
 
-    // Note: We're NOT dropping the schema here since we want to keep migrations
-    // Just ensure migrations are run first before seeding
-
     // Create disciplines
     console.log('📚 Creating disciplines...');
     await dataSource.getRepository(Discipline).save(
@@ -144,6 +183,13 @@ async function seed() {
     );
     console.log('✅ Disciplines created');
 
+    // Create admin test data
+    console.log('📋 Creating applicants...');
+    const adminRepo: Repository<AdminInfo> =
+      dataSource.getRepository(AdminInfo);
+    const admins = await adminRepo.save(ADMIN_SEED as DeepPartial<AdminInfo>[]);
+    console.log(`✅ Created ${admins.length} admins`);
+
     // Create application test data
     console.log('📋 Creating applications...');
     const applicationRepo: Repository<Application> =
@@ -153,133 +199,34 @@ async function seed() {
     );
     console.log(`✅ Created ${applications.length} applications`);
 
-    // Create learner_info for the learner application (john.smith)
-    console.log('📋 Creating learner infos...');
-    const learnerApp = applications.find(
-      (a) => a.email === 'john.smith@example.com',
-    );
-    if (learnerApp) {
-      await dataSource.getRepository(LearnerInfo).save({
-        appId: learnerApp.appId,
-        school: School.HARVARD_MEDICAL_SCHOOL,
-      });
-      console.log('✅ Created learner_info for 1 application');
-    }
-
-    // Create volunteer_info for volunteer applications
-    console.log('📋 Creating volunteer infos...');
-    const volunteerAppIds = applications
-      .filter((a) => a.applicantType === ApplicantType.VOLUNTEER)
-      .map((a) => a.appId);
-    if (volunteerAppIds.length > 0) {
-      await dataSource.getRepository(VolunteerInfo).save(
-        volunteerAppIds.map((appId) => ({
-          appId,
-          license: 'Volunteer-License',
-        })),
-      );
-      console.log(
-        `✅ Created volunteer_info for ${volunteerAppIds.length} applications`,
-      );
-    }
-
     // Create applicant test data
     console.log('📋 Creating applicants...');
-    const applicantRepo: Repository<Applicant> =
-      dataSource.getRepository(Applicant);
+    const applicantRepo: Repository<CandidateInfo> =
+      dataSource.getRepository(CandidateInfo);
     const applicants = await applicantRepo.save(
-      APPLICANT_SEED as DeepPartial<Applicant>[],
+      APPLICANT_SEED as DeepPartial<CandidateInfo>[],
     );
     console.log(`✅ Created ${applicants.length} applicants`);
 
-    // TODO: UNcomment after the migration shape is updated.
-    // Create test applications
-    // console.log('📝 Creating test applications...');
-    // const applications = await dataSource.getRepository(Application).save([
-    //   {
-    //     email: 'john.doe@example.com',
-    //     discipline: DISCIPLINE_VALUES.RN,
-    //     appStatus: AppStatus.APP_SUBMITTED,
-    //     mondayAvailability: '9am-5pm',
-    //     tuesdayAvailability: 'Not available',
-    //     wednesdayAvailability: '9am-5pm',
-    //     thursdayAvailability: 'Not available',
-    //     fridayAvailability: '9am-5pm',
-    //     saturdayAvailability: 'Not available',
-    //     experienceType: ExperienceType.BS,
-    //     resume: 'john_doe_resume.pdf',
-    //     coverLetter: 'john_doe_cover_letter.pdf',
-    //     interest: InterestArea.PRIMARY_CARE,
-    //     license: 'RN-12345',
-    //     phone: '555-123-4567',
-    //     applicantType: ApplicantType.LEARNER,
-    //     school: School.HARVARD_MEDICAL_SCHOOL,
-    //     referred: false,
-    //     weeklyHours: 20,
-    //     pronouns: 'he/him',
-    //     desiredExperience: 'I want to gain clinical experience in primary care settings',
-    //     emergencyContactName: 'Jane Doe',
-    //     emergencyContactPhone: '555-123-4568',
-    //     emergencyContactRelationship: 'Spouse',
-    //   },
-    //   {
-    //     email: 'jane.smith@example.com',
-    //     discipline: DISCIPLINE_VALUES.MD_MedicalStudent_PreMed,
-    //     appStatus: AppStatus.IN_REVIEW,
-    //     mondayAvailability: 'Not available',
-    //     tuesdayAvailability: '10am-2pm',
-    //     wednesdayAvailability: 'Not available',
-    //     thursdayAvailability: '10am-2pm',
-    //     fridayAvailability: 'Not available',
-    //     saturdayAvailability: 'Not available',
-    //     experienceType: ExperienceType.MD,
-    //     resume: 'jane_smith_resume.pdf',
-    //     coverLetter: 'jane_smith_cover_letter.pdf',
-    //     interest: InterestArea.MEDICAL_RESPITE_INPATIENT,
-    //     license: 'MD-67890',
-    //     phone: '555-987-6543',
-    //     applicantType: ApplicantType.VOLUNTEER,
-    //     school: School.STANFORD_MEDICINE,
-    //     referred: true,
-    //     referredEmail: 'referrer@example.com',
-    //     weeklyHours: 15,
-    //     pronouns: 'she/her',
-    //     desiredExperience: 'I want to provide healthcare services to underserved women',
-    //     emergencyContactName: 'John Smith',
-    //     emergencyContactPhone: '555-987-6544',
-    //     emergencyContactRelationship: 'Partner',
-    //   },
-    //   {
-    //     email: 'bob.wilson@example.com',
-    //     discipline: DISCIPLINE_VALUES.PublicHealth,
-    //     appStatus: AppStatus.ACCEPTED,
-    //     mondayAvailability: '8am-6pm',
-    //     tuesdayAvailability: '8am-6pm',
-    //     wednesdayAvailability: '8am-6pm',
-    //     thursdayAvailability: '8am-6pm',
-    //     fridayAvailability: '8am-6pm',
-    //     saturdayAvailability: 'Not available',
-    //     experienceType: ExperienceType.MS,
-    //     resume: 'bob_wilson_resume.pdf',
-    //     coverLetter: 'bob_wilson_cover_letter.pdf',
-    //     interest: InterestArea.ADDICTION_MEDICINE,
-    //     license: 'PH-11111',
-    //     phone: '555-555-5555',
-    //     applicantType: ApplicantType.VOLUNTEER,
-    //     school: School.OTHER,
-    //     otherSchool: 'Boston University',
-    //     referred: false,
-    //     weeklyHours: 25,
-    //     pronouns: 'they/them',
-    //     desiredExperience: 'I want to work in harm reduction and addiction medicine',
-    //     emergencyContactName: 'Alice Wilson',
-    //     emergencyContactPhone: '555-555-5556',
-    //     emergencyContactRelationship: 'Sibling',
-    //   },
-    // ]);
-    // console.log(`✅ Created ${applications.length} test applications`);
+    // Create learner info test data
+    console.log('📋 Creating applicants...');
+    const learnerInfoRepo: Repository<LearnerInfo> =
+      dataSource.getRepository(LearnerInfo);
+    const learnerInfos = await learnerInfoRepo.save(
+      LEARNER_INFO_SEED as DeepPartial<LearnerInfo>[],
+    );
+    console.log(`✅ Created ${learnerInfos.length} learner infos`);
 
-    // console.log('🎉 Database seed completed successfully!');
+    // Create learner info test data
+    console.log('📋 Creating applicants...');
+    const volunteerInfoRepo: Repository<VolunteerInfo> =
+      dataSource.getRepository(VolunteerInfo);
+    const volunteerInfos = await volunteerInfoRepo.save(
+      VOLUNTEER_INFO_SEED as DeepPartial<VolunteerInfo>[],
+    );
+    console.log(`✅ Created ${volunteerInfos.length} volunteer infos`);
+
+    console.log('🎉 Database seed completed successfully!');
   } catch (error) {
     console.error('❌ Seed failed:', error);
     throw error;

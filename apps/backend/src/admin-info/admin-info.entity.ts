@@ -12,7 +12,7 @@ import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
  * in the repository for the system's admins.
  */
 @Entity('admins')
-export class Admin {
+export class AdminInfo {
   /**
    * Email of the admin.
    *

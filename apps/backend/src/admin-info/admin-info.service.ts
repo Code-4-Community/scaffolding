@@ -1,30 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Admin } from './admin-info.entity';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminEmailDto } from './dto/update-admin-email.dto';
+import { AdminInfo } from './admin-info.entity';
+import { CreateAdminInfoDto } from './dto/create-admin.dto';
+import { UpdateAdminInfoEmailDto } from './dto/update-admin-email.dto';
 
 /**
  * Service to interface with the admin repository.
  */
 @Injectable()
-export class AdminsService {
+export class AdminInfoService {
   constructor(
-    @InjectRepository(Admin)
-    private readonly adminRepository: Repository<Admin>,
+    @InjectRepository(AdminInfo)
+    private readonly adminRepository: Repository<AdminInfo>,
   ) {}
 
   /**
    * Creates an admin in the system.
-   * @param createAdminDto object containing all of the necessary fields to create an admin.
+   * @param createAdminInfoDto object containing all of the necessary fields to create an admin.
    * @returns the new admin object.
    * @throws {Error} anything that the repository throws.
    */
-  async create(createAdminDto: CreateAdminDto): Promise<Admin> {
+  async create(createAdminInfoDto: CreateAdminInfoDto): Promise<AdminInfo> {
     const admin = this.adminRepository.create({
-      email: createAdminDto.email,
-      discipline: createAdminDto.discipline,
+      email: createAdminInfoDto.email,
+      discipline: createAdminInfoDto.discipline,
     });
     return await this.adminRepository.save(admin);
   }
@@ -34,7 +34,7 @@ export class AdminsService {
    * @returns a list of admin objects.
    * @throws {Error} anything that the repository throws.
    */
-  async findAll(): Promise<Admin[]> {
+  async findAll(): Promise<AdminInfo[]> {
     return await this.adminRepository.find();
   }
 
@@ -45,10 +45,10 @@ export class AdminsService {
    * @throws {NotFoundException} if an admin with the desired email does not exist in the system.
    * @throws {Error} anything that the repository throws.
    */
-  async findOne(email: string): Promise<Admin> {
+  async findOne(email: string): Promise<AdminInfo> {
     const admin = await this.adminRepository.findOne({ where: { email } });
     if (!admin) {
-      throw new NotFoundException(`Admin with email ${email} not found`);
+      throw new NotFoundException(`AdminInfo with email ${email} not found`);
     }
     return admin;
   }
@@ -60,7 +60,7 @@ export class AdminsService {
    *          or null if an admin with the specified email does not exist in the system.
    * @throws {Error} anything that the repository throws.
    */
-  async findByEmail(email: string): Promise<Admin | null> {
+  async findByEmail(email: string): Promise<AdminInfo | null> {
     return await this.adminRepository.findOne({ where: { email } });
   }
 
@@ -73,8 +73,8 @@ export class AdminsService {
    */
   async updateEmail(
     email: string,
-    updateEmailDto: UpdateAdminEmailDto,
-  ): Promise<Admin> {
+    updateEmailDto: UpdateAdminInfoEmailDto,
+  ): Promise<AdminInfo> {
     const admin = await this.findOne(email);
     admin.email = updateEmailDto.email;
     return await this.adminRepository.save(admin);

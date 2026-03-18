@@ -6,7 +6,7 @@ import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 /**
  * Defines the expected shape of data for creating a new admin.
  */
-export class CreateAdminDto {
+export class CreateAdminInfoDto {
   /**
    * The first name of the admin to create.
    *

@@ -16,6 +16,7 @@ import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
+import { UpdateApplicationAvailabilityDto } from './dto/update-application-availability.request.dto';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
@@ -128,6 +129,23 @@ export class ApplicationsController {
   }
 
   /**
+   * Exposes an endpoint to update the availability fields of an application.
+   * @param appId The id of the application to update.
+   * @param updateAvailabilityDto Object containing one or more day availability strings.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns The updated application object.
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  @Patch('/:appId/availability')
+  async updateApplicationAvailability(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body() updateAvailabilityDto: UpdateApplicationAvailabilityDto,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.update(appId, updateAvailabilityDto);
+  }
+
+  /**
    * Exposes an endpoint to update an application's commitment starting date.
    * @param appId The id of the application to update.
    * @param startDate The new starting date for the application's commitment.
@@ -137,12 +155,33 @@ export class ApplicationsController {
    *         if the application does not exist.
    */
   @Patch('/:appId/start-date')
-  async updateApplicationStartDate(
+  async updateApplicationProposedStartDate(
     @Param('appId', ParseIntPipe) appId: number,
-    @Body('startDate') startDate: string,
+    @Body('proposedStartDate') startDate: string,
     @Request() req,
   ): Promise<Application> {
-    return await this.applicationsService.updateStartDate(
+    return await this.applicationsService.updateProposedStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's actual commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new actual starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationActualStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('actualStartDate') startDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateActualStartDate(
       appId,
       new Date(startDate),
     );
@@ -176,14 +215,13 @@ export class ApplicationsController {
    * @throws {NotFoundException} with message 'Application with ID <id> not found'
    *         if the application does not exist.
    * @throws {Error} which is unchanged from what repository throws.
-   *
-   * Does not return a value.
+   * @returns {Application} The application object which has been deleted.
    */
   @Delete('/:appId')
   async deleteApplication(
     @Param('appId', ParseIntPipe) appId: number,
     @Request() req,
   ): Promise<void> {
-    return await this.applicationsService.delete(appId);
+    await this.applicationsService.delete(appId);
   }
 }

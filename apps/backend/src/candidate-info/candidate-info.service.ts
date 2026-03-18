@@ -5,70 +5,70 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Applicant } from './candidate-info.entity';
+import { CandidateInfo } from './candidate-info.entity';
 
 /**
- * Service to interface with the applicant repository.
+ * Service to interface with the candidate repository.
  */
 @Injectable()
-export class ApplicantsService {
+export class CandidateInfoService {
   constructor(
-    @InjectRepository(Applicant)
-    private readonly repo: Repository<Applicant>,
+    @InjectRepository(CandidateInfo)
+    private readonly repo: Repository<CandidateInfo>,
   ) {}
 
   /**
-   * Creates an applicant (candidate info) in the repository.
-   * @param appId The corresponding application id of the applicant to create.
-   * @param email The email of the applicant (primary key).
-   * @returns The created applicant.
+   * Creates an candidate (candidate info) in the repository.
+   * @param appId The corresponding application id of the candidate to create.
+   * @param email The email of the candidate (primary key).
+   * @returns The created candidate.
    * @throws {BadRequestException} if any of the fields are invalid.
    * @throws {Error} If the repository throws an error.
    */
-  async create(appId: number, email: string): Promise<Applicant> {
+  async create(appId: number, email: string): Promise<CandidateInfo> {
     if (!appId || appId <= 0) {
       throw new BadRequestException('Valid app ID is required');
     }
 
     if (!email || email.trim().length === 0) {
-      throw new BadRequestException('Applicant email is required');
+      throw new BadRequestException('candidate email is required');
     }
 
-    const applicant: Applicant = this.repo.create({
+    const candidate: CandidateInfo = this.repo.create({
       appId,
       email: email.trim(),
     });
 
-    return await this.repo.save(applicant);
+    return await this.repo.save(candidate);
   }
 
   /**
-   * Returns a specific applicant by email.
-   * @param email The email of the desired applicant (primary key).
-   * @returns The applicant with the desired email.
+   * Returns a specific candidate by email.
+   * @param email The email of the desired candidate (primary key).
+   * @returns The candidate with the desired email.
    * @throws {BadRequestException} if email is invalid.
-   * @throws {NotFoundException} if the applicant with the specified email does not exist.
+   * @throws {NotFoundException} if the candidate with the specified email does not exist.
    * @throws {Error} If the repository throws an error.
    */
-  async findOne(email: string): Promise<Applicant> {
+  async findOne(email: string): Promise<CandidateInfo> {
     if (!email || email.trim().length === 0) {
-      throw new BadRequestException('Applicant email is required');
+      throw new BadRequestException('candidate email is required');
     }
 
-    const applicant = await this.repo.findOneBy({ email: email.trim() });
-    if (!applicant) {
-      throw new NotFoundException(`Applicant with email ${email} not found`);
+    const candidate = await this.repo.findOneBy({ email: email.trim() });
+    if (!candidate) {
+      throw new NotFoundException(`candidate with email ${email} not found`);
     }
 
-    return applicant;
+    return candidate;
   }
 
   /**
-   * Returns all applicants in the repository.
-   * @returns All applicants in the repository.
+   * Returns all candidates in the repository.
+   * @returns All candidates in the repository.
    * @throws {Error} If the repository throws an error.
    */
-  findAll() {
+  async findAll(): Promise<CandidateInfo[]> {
     return this.repo.find();
   }
 
@@ -77,25 +77,25 @@ export class ApplicantsService {
       throw new BadRequestException('Valid app ID is required');
     }
 
-    const applicants = await this.repo.find({ where: { appId } });
+    const candidates = await this.repo.find({ where: { appId } });
 
     // If we want to error out instead of returning an empty array:
-    // if (applicants.length === 0) {
-    //   throw new NotFoundException(`No applicants found for app ID ${appId}`);
+    // if (candidates.length === 0) {
+    //   throw new NotFoundException(`No candidates found for app ID ${appId}`);
     // }
 
-    return applicants;
+    return candidates;
   }
 
   /**
-   * Deletes an applicant by email.
-   * @param email The email of the applicant to delete (primary key).
-   * @returns The deleted applicant.
+   * Deletes an candidate by email.
+   * @param email The email of the candidate to delete (primary key).
+   * @returns The deleted candidate.
    * @throws {Error} If the repository throws an error.
-   * @throws {NotFoundException} if the applicant with the specified email does not exist.
+   * @throws {NotFoundException} if the candidate with the specified email does not exist.
    */
-  async delete(email: string): Promise<Applicant> {
-    const applicant = await this.findOne(email);
-    return this.repo.remove(applicant);
+  async delete(email: string): Promise<CandidateInfo> {
+    const candidate = await this.findOne(email);
+    return this.repo.remove(candidate);
   }
 }
