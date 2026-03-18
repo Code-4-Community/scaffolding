@@ -76,7 +76,7 @@ const Root: React.FC = () => {
                     />
                     {!collapsed && (
                       <span className="sidebar-nav-label sidebar-nav-label--bold">
-                        Library
+                        Archive
                       </span>
                     )}
                   </div>

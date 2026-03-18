@@ -238,7 +238,6 @@ export default function ArchivedPublications({
           </div>
         </section>
       )}
-
       {/* All Publications Section */}
       <section className="all-publications-section">
         <div className="all-publications-content">

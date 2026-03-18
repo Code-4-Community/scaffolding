@@ -3,17 +3,17 @@ import { PassportStrategy } from '@nestjs/passport';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import CognitoAuthConfig from './aws-exports';
+import CognitoAuthConfig from '../../../shared/aws-exports';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
-    const cognitoAuthority = `https://cognito-idp.${CognitoAuthConfig.region}.amazonaws.com/${CognitoAuthConfig.userPoolId}`;
+    const cognitoAuthority = `https://cognito-idp.${CognitoAuthConfig.aws_cognito_region}.amazonaws.com/${CognitoAuthConfig.aws_user_pools_id}`;
 
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      _audience: CognitoAuthConfig.clientId,
+      audience: CognitoAuthConfig.aws_user_pools_web_client_id,
       issuer: cognitoAuthority,
       algorithms: ['RS256'],
       secretOrKeyProvider: passportJwtSecret({

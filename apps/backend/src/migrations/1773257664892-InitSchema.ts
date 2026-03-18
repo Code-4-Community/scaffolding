@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class InitSchema1771997808749 implements MigrationInterface {
-  name = 'InitSchema1771997808749';
+export class InitSchema1773257664892 implements MigrationInterface {
+  name = 'InitSchema1773257664892';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -20,37 +20,37 @@ export class InitSchema1771997808749 implements MigrationInterface {
       `CREATE TABLE "productioninfos" ("id" SERIAL NOT NULL, "design_files_link" character varying, "cover_image_file_link" character varying, "binding_type" character varying, "dimensions" character varying, "printing_cost" double precision, "print_run" integer, "weight_in_grams" double precision, "page_count" integer, "printed_by" character varying, CONSTRAINT "PK_db86a9023b10f56d9120b67b637" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."users_status_enum" AS ENUM('ADMIN', 'STANDARD')`,
+      `CREATE TYPE "users_status_enum" AS ENUM('ADMIN', 'VOLUNTEER')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "users" ("id" integer NOT NULL, "status" "public"."users_status_enum" NOT NULL, "firstName" character varying NOT NULL, "lastName" character varying NOT NULL DEFAULT '', "email" character varying NOT NULL DEFAULT '', "publishingName" character varying, "name" character varying, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "users" ("id" integer NOT NULL, "status" "users_status_enum" NOT NULL, "firstName" character varying NOT NULL, "lastName" character varying NOT NULL DEFAULT '', "email" character varying NOT NULL DEFAULT '', "publishingName" character varying, "name" character varying, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."omchais_role_enum" AS ENUM('OWNER', 'MANAGER', 'CONSULTED', 'HELPER', 'APPROVER', 'INFORMED')`,
+      `CREATE TYPE "omchais_role_enum" AS ENUM('OWNER', 'MANAGER', 'CONSULTED', 'HELPER', 'APPROVER', 'INFORMED')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "omchais" ("id" SERIAL NOT NULL, "anthologyId" integer NOT NULL, "userId" integer NOT NULL, "role" "public"."omchais_role_enum" NOT NULL, "datetimeAssigned" date NOT NULL, "user" integer, "anthology" integer, CONSTRAINT "PK_84d53f60fa19cddfc4ed371c9bd" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "omchais" ("id" SERIAL NOT NULL, "anthologyId" integer NOT NULL, "userId" integer NOT NULL, "role" "omchais_role_enum" NOT NULL, "datetimeAssigned" date NOT NULL, "user" integer, "anthology" integer, CONSTRAINT "PK_84d53f60fa19cddfc4ed371c9bd" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."anthologys_status_enum" AS ENUM('Archived', 'NotStarted', 'Drafting', 'CanBeShared')`,
+      `CREATE TYPE "anthologys_status_enum" AS ENUM('Archived', 'NotStarted', 'Drafting', 'CanBeShared')`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."anthologys_agecategory_enum" AS ENUM('Young Adult Books (Ages 13-18)')`,
+      `CREATE TYPE "anthologys_agecategory_enum" AS ENUM('Young Adult Books (Ages 13-18)')`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."anthologys_publevel_enum" AS ENUM('Zine', 'Chapbook', 'PerfectBound', 'Signature')`,
+      `CREATE TYPE "anthologys_publevel_enum" AS ENUM('Zine', 'Chapbook', 'PerfectBound', 'Signature')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "anthologys" ("id" SERIAL NOT NULL, "title" character varying NOT NULL, "byline" character varying NOT NULL DEFAULT '', "subtitle" character varying, "description" character varying NOT NULL, "genres" text NOT NULL DEFAULT '[]', "themes" text NOT NULL DEFAULT '[]', "triggers" text NOT NULL DEFAULT '[]', "publishedDate" date NOT NULL, "programs" text, "sponsors" text, "status" "public"."anthologys_status_enum" NOT NULL, "ageCategory" "public"."anthologys_agecategory_enum", "pubLevel" "public"."anthologys_publevel_enum" NOT NULL, "photoUrl" character varying DEFAULT '', "isbn" character varying, "shopifyUrl" character varying DEFAULT '', CONSTRAINT "PK_bb0c9f592636d271b46e6af1ee8" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "anthologys" ("id" SERIAL NOT NULL, "title" character varying NOT NULL, "byline" character varying NOT NULL DEFAULT '', "subtitle" character varying, "description" character varying NOT NULL, "genres" text NOT NULL DEFAULT '[]', "themes" text NOT NULL DEFAULT '[]', "triggers" text NOT NULL DEFAULT '[]', "publishedDate" date NOT NULL, "programs" text, "sponsors" text, "status" "anthologys_status_enum" NOT NULL, "ageCategory" "anthologys_agecategory_enum", "pubLevel" "anthologys_publevel_enum" NOT NULL, "photoUrl" character varying DEFAULT '', "isbn" character varying, "shopifyUrl" character varying DEFAULT '', CONSTRAINT "PK_bb0c9f592636d271b46e6af1ee8" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."storydrafts_submissionround_enum" AS ENUM('0', '1', '2')`,
+      `CREATE TYPE "storydrafts_submissionround_enum" AS ENUM('0', '1', '2')`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."storydrafts_editround_enum" AS ENUM('0', '1')`,
+      `CREATE TYPE "storydrafts_editround_enum" AS ENUM('0', '1')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "storydrafts" ("id" SERIAL NOT NULL, "authorId" integer NOT NULL, "docLink" character varying NOT NULL, "submissionRound" "public"."storydrafts_submissionround_enum" NOT NULL, "studentConsent" boolean NOT NULL, "inManuscript" boolean NOT NULL, "editRound" "public"."storydrafts_editround_enum" NOT NULL, "proofread" boolean NOT NULL, "notes" text array NOT NULL, CONSTRAINT "PK_39aaf376a55cf146f7e817faccc" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "storydrafts" ("id" SERIAL NOT NULL, "authorId" integer NOT NULL, "docLink" character varying NOT NULL, "submissionRound" "storydrafts_submissionround_enum" NOT NULL, "studentConsent" boolean NOT NULL, "inManuscript" boolean NOT NULL, "editRound" "storydrafts_editround_enum" NOT NULL, "proofread" boolean NOT NULL, "notes" text array NOT NULL, CONSTRAINT "PK_39aaf376a55cf146f7e817faccc" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `ALTER TABLE "storys" ADD CONSTRAINT "FK_6dc59aeaa8e7cf1a8b1b784a242" FOREIGN KEY ("anthology") REFERENCES "anthologys"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -92,18 +92,16 @@ export class InitSchema1771997808749 implements MigrationInterface {
       `ALTER TABLE "storys" DROP CONSTRAINT "FK_6dc59aeaa8e7cf1a8b1b784a242"`,
     );
     await queryRunner.query(`DROP TABLE "storydrafts"`);
-    await queryRunner.query(`DROP TYPE "public"."storydrafts_editround_enum"`);
-    await queryRunner.query(
-      `DROP TYPE "public"."storydrafts_submissionround_enum"`,
-    );
+    await queryRunner.query(`DROP TYPE "storydrafts_editround_enum"`);
+    await queryRunner.query(`DROP TYPE "storydrafts_submissionround_enum"`);
     await queryRunner.query(`DROP TABLE "anthologys"`);
-    await queryRunner.query(`DROP TYPE "public"."anthologys_publevel_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."anthologys_agecategory_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."anthologys_status_enum"`);
+    await queryRunner.query(`DROP TYPE "anthologys_publevel_enum"`);
+    await queryRunner.query(`DROP TYPE "anthologys_agecategory_enum"`);
+    await queryRunner.query(`DROP TYPE "anthologys_status_enum"`);
     await queryRunner.query(`DROP TABLE "omchais"`);
-    await queryRunner.query(`DROP TYPE "public"."omchais_role_enum"`);
+    await queryRunner.query(`DROP TYPE "omchais_role_enum"`);
     await queryRunner.query(`DROP TABLE "users"`);
-    await queryRunner.query(`DROP TYPE "public"."users_status_enum"`);
+    await queryRunner.query(`DROP TYPE "users_status_enum"`);
     await queryRunner.query(`DROP TABLE "productioninfos"`);
     await queryRunner.query(`DROP TABLE "inventoryholdings"`);
     await queryRunner.query(`DROP TABLE "inventorys"`);
