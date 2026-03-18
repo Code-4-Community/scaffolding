@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
-import { AdminsService } from './admins.service';
-import { CreateAdminDto } from './dtos/create-admin.dto';
-import { UpdateAdminEmailDto } from './dtos/update-admin-email.dto';
-import { Admin } from './admin.entity';
+import { AdminInfoService } from './admin-info.service';
+import { CreateAdminInfoDto } from './dto/create-admin.dto';
+import { UpdateAdminInfoEmailDto } from './dto/update-admin-email.dto';
+import { AdminInfo } from './admin-info.entity';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
-describe('AdminsService', () => {
-  let service: AdminsService;
-  let repository: Repository<Admin>;
+describe('AdminInfoService', () => {
+  let service: AdminInfoService;
+  let repository: Repository<AdminInfo>;
 
   const mockRepository = {
     create: jest.fn(),
@@ -20,10 +20,7 @@ describe('AdminsService', () => {
     remove: jest.fn(),
   };
 
-  const mockAdmin: Admin = {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
+  const mockAdminInfo: AdminInfo = {
     email: 'john@example.com',
     discipline: DISCIPLINE_VALUES.RN,
     createdAt: new Date('2025-01-01'),
@@ -33,16 +30,18 @@ describe('AdminsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AdminsService,
+        AdminInfoService,
         {
-          provide: getRepositoryToken(Admin),
+          provide: getRepositoryToken(AdminInfo),
           useValue: mockRepository,
         },
       ],
     }).compile();
 
-    service = module.get<AdminsService>(AdminsService);
-    repository = module.get<Repository<Admin>>(getRepositoryToken(Admin));
+    service = module.get<AdminInfoService>(AdminInfoService);
+    repository = module.get<Repository<AdminInfo>>(
+      getRepositoryToken(AdminInfo),
+    );
   });
 
   afterEach(() => {
@@ -51,40 +50,43 @@ describe('AdminsService', () => {
 
   describe('create', () => {
     it('should create and save a new admin', async () => {
-      const createAdminDto: CreateAdminDto = {
+      const createAdminInfoDto: CreateAdminInfoDto = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
         discipline: DISCIPLINE_VALUES.RN,
       };
 
-      mockRepository.create.mockReturnValue(mockAdmin);
-      mockRepository.save.mockResolvedValue(mockAdmin);
+      mockRepository.create.mockReturnValue(mockAdminInfo);
+      mockRepository.save.mockResolvedValue(mockAdminInfo);
 
-      const result = await service.create(createAdminDto);
+      const result = await service.create(createAdminInfoDto);
 
-      expect(mockRepository.create).toHaveBeenCalledWith(createAdminDto);
-      expect(mockRepository.save).toHaveBeenCalledWith(mockAdmin);
-      expect(result).toEqual(mockAdmin);
+      expect(mockRepository.create).toHaveBeenCalledWith({
+        email: createAdminInfoDto.email,
+        discipline: createAdminInfoDto.discipline,
+      });
+      expect(mockRepository.save).toHaveBeenCalledWith(mockAdminInfo);
+      expect(result).toEqual(mockAdminInfo);
     });
 
     it('should handle repository errors during creation', async () => {
-      const createAdminDto: CreateAdminDto = {
+      const createAdminInfoDto: CreateAdminInfoDto = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
         discipline: DISCIPLINE_VALUES.RN,
       };
 
-      mockRepository.create.mockReturnValue(mockAdmin);
+      mockRepository.create.mockReturnValue(mockAdminInfo);
       mockRepository.save.mockRejectedValueOnce(new Error('Database error'));
 
-      await expect(service.create(createAdminDto)).rejects.toThrow(
+      await expect(service.create(createAdminInfoDto)).rejects.toThrow(
         'Database error',
       );
     });
     it('should pass along any repo errors without information loss during create', async () => {
-      const createAdminDto: CreateAdminDto = {
+      const createAdminInfoDto: CreateAdminInfoDto = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
@@ -95,25 +97,25 @@ describe('AdminsService', () => {
         throw new Error('There was a problem creating the entry');
       });
 
-      await expect(service.create(createAdminDto)).rejects.toThrow(
+      await expect(service.create(createAdminInfoDto)).rejects.toThrow(
         'There was a problem creating the entry',
       );
     });
 
     it('should pass along any repo errors without information loss during save', async () => {
-      const createAdminDto: CreateAdminDto = {
+      const createAdminInfoDto: CreateAdminInfoDto = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
         discipline: DISCIPLINE_VALUES.RN,
       };
 
-      mockRepository.create.mockReturnValue(mockAdmin);
+      mockRepository.create.mockReturnValue(mockAdminInfo);
       mockRepository.save.mockRejectedValueOnce(
         new Error('There was a problem saving the entry'),
       );
 
-      await expect(service.create(createAdminDto)).rejects.toThrow(
+      await expect(service.create(createAdminInfoDto)).rejects.toThrow(
         'There was a problem saving the entry',
       );
     });
@@ -121,16 +123,16 @@ describe('AdminsService', () => {
 
   describe('findAll', () => {
     it('should return an array of admins', async () => {
-      const mockAdmins = [
-        mockAdmin,
-        { ...mockAdmin, id: 2, email: 'jane@example.com' },
+      const mockAdminInfos = [
+        mockAdminInfo,
+        { ...mockAdminInfo, email: 'jane@example.com' },
       ];
-      mockRepository.find.mockResolvedValueOnce(mockAdmins);
+      mockRepository.find.mockResolvedValueOnce(mockAdminInfos);
 
       const result = await service.findAll();
 
       expect(mockRepository.find).toHaveBeenCalled();
-      expect(result).toEqual(mockAdmins);
+      expect(result).toEqual(mockAdminInfos);
     });
 
     it('should return empty array when no admins exist', async () => {
@@ -153,20 +155,24 @@ describe('AdminsService', () => {
   });
 
   describe('findOne', () => {
-    it('should return an admin by id', async () => {
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
+    it('should return an admin by email', async () => {
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
 
-      const result = await service.findOne(1);
+      const result = await service.findOne('john@example.com');
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
-      expect(result).toEqual(mockAdmin);
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { email: 'john@example.com' },
+      });
+      expect(result).toEqual(mockAdminInfo);
     });
 
     it('should throw NotFoundException when admin not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne(999)).rejects.toThrow(
-        new NotFoundException('Admin with ID 999 not found'),
+      await expect(service.findOne('notfound@example.com')).rejects.toThrow(
+        new NotFoundException(
+          'AdminInfo with email notfound@example.com not found',
+        ),
       );
     });
 
@@ -175,7 +181,7 @@ describe('AdminsService', () => {
         new Error('There was a problem retrieving the entry'),
       );
 
-      await expect(service.findOne(1)).rejects.toThrow(
+      await expect(service.findOne('john@example.com')).rejects.toThrow(
         'There was a problem retrieving the entry',
       );
     });
@@ -183,14 +189,14 @@ describe('AdminsService', () => {
 
   describe('findByEmail', () => {
     it('should return an admin by email', async () => {
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
 
       const result = await service.findByEmail('john@example.com');
 
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { email: 'john@example.com' },
       });
-      expect(result).toEqual(mockAdmin);
+      expect(result).toEqual(mockAdminInfo);
     });
 
     it('should return null when admin not found by email', async () => {
@@ -214,55 +220,69 @@ describe('AdminsService', () => {
 
   describe('updateEmail', () => {
     it('should update admin email and return the admin', async () => {
-      const updateEmailDto: UpdateAdminEmailDto = {
+      const updateEmailDto: UpdateAdminInfoEmailDto = {
         email: 'newemail@example.com',
       };
 
-      const updatedAdmin = { ...mockAdmin, email: 'newemail@example.com' };
+      const updatedAdminInfo = {
+        ...mockAdminInfo,
+        email: 'newemail@example.com',
+      };
 
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
-      mockRepository.save.mockResolvedValue(updatedAdmin);
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
+      mockRepository.save.mockResolvedValue(updatedAdminInfo);
 
-      const result = await service.updateEmail(1, updateEmailDto);
+      const result = await service.updateEmail(
+        'john@example.com',
+        updateEmailDto,
+      );
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { email: 'john@example.com' },
+      });
       expect(mockRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({ email: 'newemail@example.com' }),
       );
       expect(result.email).toBe('newemail@example.com');
-      expect(result.firstName).toBe(mockAdmin.firstName); // Should remain unchanged
-      expect(result.lastName).toBe(mockAdmin.lastName); // Should remain unchanged
+      expect(result.discipline).toBe(mockAdminInfo.discipline);
     });
 
     it('should throw NotFoundException when admin not found for email update', async () => {
-      const updateEmailDto: UpdateAdminEmailDto = {
+      const updateEmailDto: UpdateAdminInfoEmailDto = {
         email: 'newemail@example.com',
       };
 
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.updateEmail(999, updateEmailDto)).rejects.toThrow(
-        new NotFoundException('Admin with ID 999 not found'),
+      await expect(
+        service.updateEmail('notfound@example.com', updateEmailDto),
+      ).rejects.toThrow(
+        new NotFoundException(
+          'AdminInfo with email notfound@example.com not found',
+        ),
       );
     });
 
     it('should handle email validation', async () => {
-      const updateEmailDto: UpdateAdminEmailDto = {
+      const updateEmailDto: UpdateAdminInfoEmailDto = {
         email: 'valid@example.com',
       };
 
-      const updatedAdmin = { ...mockAdmin, email: 'valid@example.com' };
+      const updatedAdminInfo = { ...mockAdminInfo, email: 'valid@example.com' };
 
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
-      mockRepository.save.mockResolvedValue(updatedAdmin);
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
+      mockRepository.save.mockResolvedValue(updatedAdminInfo);
 
-      const result = await service.updateEmail(1, updateEmailDto);
+      const result = await service.updateEmail(
+        'john@example.com',
+        updateEmailDto,
+      );
 
       expect(result.email).toBe('valid@example.com');
     });
 
     it('should pass along any repo errors without information loss during retrieval', async () => {
-      const updateEmailDto: UpdateAdminEmailDto = {
+      const updateEmailDto: UpdateAdminInfoEmailDto = {
         email: 'valid@example.com',
       };
 
@@ -270,41 +290,45 @@ describe('AdminsService', () => {
         new Error('There was a problem retrieving the entry'),
       );
 
-      await expect(service.updateEmail(1, updateEmailDto)).rejects.toThrow(
-        'There was a problem retrieving the entry',
-      );
+      await expect(
+        service.updateEmail('john@example.com', updateEmailDto),
+      ).rejects.toThrow('There was a problem retrieving the entry');
     });
 
     it('should pass along any repo errors without information loss during saving', async () => {
-      const updateEmailDto: UpdateAdminEmailDto = {
+      const updateEmailDto: UpdateAdminInfoEmailDto = {
         email: 'valid@example.com',
       };
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
       mockRepository.save.mockRejectedValueOnce(
         new Error('There was a problem saving the entry'),
       );
-      await expect(service.updateEmail(1, updateEmailDto)).rejects.toThrow(
-        'There was a problem saving the entry',
-      );
+      await expect(
+        service.updateEmail('john@example.com', updateEmailDto),
+      ).rejects.toThrow('There was a problem saving the entry');
     });
   });
 
   describe('remove', () => {
     it('should remove an admin', async () => {
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
-      mockRepository.remove.mockResolvedValue(mockAdmin);
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
+      mockRepository.remove.mockResolvedValue(mockAdminInfo);
 
-      await service.remove(1);
+      await service.remove('john@example.com');
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
-      expect(mockRepository.remove).toHaveBeenCalledWith(mockAdmin);
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { email: 'john@example.com' },
+      });
+      expect(mockRepository.remove).toHaveBeenCalledWith(mockAdminInfo);
     });
 
     it('should throw NotFoundException when admin not found for removal', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove(999)).rejects.toThrow(
-        new NotFoundException('Admin with ID 999 not found'),
+      await expect(service.remove('notfound@example.com')).rejects.toThrow(
+        new NotFoundException(
+          'AdminInfo with email notfound@example.com not found',
+        ),
       );
     });
 
@@ -313,17 +337,17 @@ describe('AdminsService', () => {
         new Error('There was a problem retrieving the entry'),
       );
 
-      await expect(service.remove(1)).rejects.toThrow(
+      await expect(service.remove('john@example.com')).rejects.toThrow(
         'There was a problem retrieving the entry',
       );
     });
 
-    it('should pass along any repo errors without information loss during saving', async () => {
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
+    it('should pass along any repo errors without information loss during removal', async () => {
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
       mockRepository.remove.mockRejectedValueOnce(
         new Error('There was a problem saving the entry'),
       );
-      await expect(service.remove(1)).rejects.toThrow(
+      await expect(service.remove('john@example.com')).rejects.toThrow(
         'There was a problem saving the entry',
       );
     });
@@ -345,14 +369,17 @@ describe('AdminsService', () => {
     });
 
     it('should handle email update with same email', async () => {
-      const updateEmailDto: UpdateAdminEmailDto = {
+      const updateEmailDto: UpdateAdminInfoEmailDto = {
         email: 'john@example.com',
       };
 
-      mockRepository.findOne.mockResolvedValue(mockAdmin);
-      mockRepository.save.mockResolvedValue(mockAdmin);
+      mockRepository.findOne.mockResolvedValue(mockAdminInfo);
+      mockRepository.save.mockResolvedValue(mockAdminInfo);
 
-      const result = await service.updateEmail(1, updateEmailDto);
+      const result = await service.updateEmail(
+        'john@example.com',
+        updateEmailDto,
+      );
 
       expect(result.email).toBe('john@example.com');
     });
