@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
-import type { UserType } from './types';
+import { UserType } from './types';
 
 /**
  * Represents the desired columns for the database table
@@ -37,6 +37,6 @@ export class User {
    *
    * Example: UserType.STANDARD.
    */
-  @Column({ type: 'varchar' })
+  @Column({ type: 'enum', enum: UserType, default: UserType.STANDARD })
   userType: UserType;
 }
