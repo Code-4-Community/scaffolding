@@ -12,8 +12,8 @@ import {
 import { LearnerInfo } from '../learner-info/learner-info.entity';
 import { School } from '../learner-info/types';
 import { VolunteerInfo } from '../volunteer-info/volunteer-info.entity';
-import { Applicant } from '../applicants/applicant.entity';
-import { Admin } from '../users/admin.entity';
+import { CandidateInfo } from '../candidate-info/candidate-info.entity';
+import { AdminInfo } from '../admin-info/admin-info.entity';
 
 const ADMIN_SEED = [
   {
@@ -36,20 +36,14 @@ const ADMIN_SEED = [
   },
 ];
 
-const APPLICANT_SEED: Applicant[] = [
+const APPLICANT_SEED: CandidateInfo[] = [
   {
     appId: 1,
-    firstName: 'Jane',
-    lastName: 'Doe',
-    proposedStartDate: new Date('2024-01-01'),
-    endDate: new Date('2024-06-30'),
+    email: 'johndoe@gmail.com',
   },
   {
     appId: 2,
-    firstName: 'John',
-    lastName: 'Smith',
-    proposedStartDate: new Date('2026-01-01'),
-    endDate: new Date('2026-06-30'),
+    email: 'janedoe@gmail.com',
   },
 ];
 
@@ -84,6 +78,8 @@ const APPLICATION_SEED: Application[] = [
     emergencyContactName: 'Bob Doe',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
+    proposedStartDate: new Date('2024-01-01'),
+    endDate: new Date('2024-06-30'),
     heardAboutFrom: [],
   },
   {
@@ -113,6 +109,8 @@ const APPLICATION_SEED: Application[] = [
     emergencyContactName: 'Bob Doe',
     emergencyContactPhone: '111-111-1111',
     emergencyContactRelationship: 'Mother',
+    proposedStartDate: new Date('2026-01-01'),
+    endDate: new Date('2026-06-30'),
     heardAboutFrom: [],
   },
   {
@@ -141,7 +139,9 @@ const APPLICATION_SEED: Application[] = [
     coverLetter: 'sam_coverLetter_2_6_2026.pdf',
     emergencyContactName: 'sam senior',
     emergencyContactPhone: '111-111-1111',
-    emergencyContactRelationship: 'Parent',
+    emergencyContactRelationship: 'Mother',
+    proposedStartDate: new Date('2024-01-01'),
+    endDate: new Date('2024-06-30'),
     heardAboutFrom: [],
   },
 ];
@@ -185,8 +185,9 @@ async function seed() {
 
     // Create admin test data
     console.log('📋 Creating applicants...');
-    const adminRepo: Repository<Admin> = dataSource.getRepository(Admin);
-    const admins = await adminRepo.save(ADMIN_SEED as DeepPartial<Admin>[]);
+    const adminRepo: Repository<AdminInfo> =
+      dataSource.getRepository(AdminInfo);
+    const admins = await adminRepo.save(ADMIN_SEED as DeepPartial<AdminInfo>[]);
     console.log(`✅ Created ${admins.length} admins`);
 
     // Create application test data
@@ -200,10 +201,10 @@ async function seed() {
 
     // Create applicant test data
     console.log('📋 Creating applicants...');
-    const applicantRepo: Repository<Applicant> =
-      dataSource.getRepository(Applicant);
+    const applicantRepo: Repository<CandidateInfo> =
+      dataSource.getRepository(CandidateInfo);
     const applicants = await applicantRepo.save(
-      APPLICANT_SEED as DeepPartial<Applicant>[],
+      APPLICANT_SEED as DeepPartial<CandidateInfo>[],
     );
     console.log(`✅ Created ${applicants.length} applicants`);
 

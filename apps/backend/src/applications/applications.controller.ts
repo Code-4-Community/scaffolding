@@ -16,6 +16,7 @@ import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
+import { UpdateApplicationAvailabilityDto } from './dto/update-application-availability.request.dto';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
@@ -128,6 +129,86 @@ export class ApplicationsController {
   }
 
   /**
+   * Exposes an endpoint to update the availability fields of an application.
+   * @param appId The id of the application to update.
+   * @param updateAvailabilityDto Object containing one or more day availability strings.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns The updated application object.
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  @Patch('/:appId/availability')
+  async updateApplicationAvailability(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body() updateAvailabilityDto: UpdateApplicationAvailabilityDto,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.update(appId, updateAvailabilityDto);
+  }
+
+  /**
+   * Exposes an endpoint to update an application's commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationProposedStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('proposedStartDate') startDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateProposedStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's actual commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new actual starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationActualStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('actualStartDate') startDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateActualStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's commitment ending date.
+   * @param appId The id of the application to update.
+   * @param endDate The new ending date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/end-date')
+  async updateApplicationEndDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('endDate') endDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateEndDate(
+      appId,
+      new Date(endDate),
+    );
+  }
+
+  /**
    * Exposes an endpoint to delete an application from the system.
    * @param appId The id of the application to delete.
    * @param req The request object from the caller (frontend). Currently not used.
@@ -140,7 +221,7 @@ export class ApplicationsController {
   async deleteApplication(
     @Param('appId', ParseIntPipe) appId: number,
     @Request() req,
-  ): Promise<Application> {
-    return await this.applicationsService.delete(appId);
+  ): Promise<void> {
+    await this.applicationsService.delete(appId);
   }
 }
