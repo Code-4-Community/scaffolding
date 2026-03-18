@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
 import {
   STATIC_ARCHIVED,
@@ -207,6 +207,7 @@ const mockAnthology: Anthology = {
 
 const PublicationView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<TabType>('publications');
   const [isExpanded, setIsExpanded] = useState(false);
   const [anthology, setAnthology] = useState<Anthology | null>(null);
@@ -392,12 +393,18 @@ const PublicationView: React.FC = () => {
     ),
   ];
 
+  const isProjectsView = location.pathname.startsWith('/projects/');
+  const breadcrumbHref = isProjectsView
+    ? '/projects/publication/drafts'
+    : '/archive';
+  const breadcrumbLabel = isProjectsView ? 'Projects' : 'Archive';
+
   return (
     <div className="publication-view">
       {/* Breadcrumb Header */}
       <div className="breadcrumb-header">
-        <a href="/library/publication/all" className="breadcrumb-link">
-          Publications
+        <a href={breadcrumbHref} className="breadcrumb-link">
+          {breadcrumbLabel}
         </a>
         <div className="breadcrumb-separator">
           <img src={imgVector3} alt="" />

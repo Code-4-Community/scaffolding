@@ -176,11 +176,13 @@
 .sidebar-library-header {
   display: flex;
   flex-direction: column;
+  width: 100%;
   padding: 12px 12px 12px 38px;
   cursor: pointer;
   background-color: var(--neutral-100);
   border: none;
   text-align: left;
+  text-decoration: none;
   transition: background-color 0.15s ease;
 }
 

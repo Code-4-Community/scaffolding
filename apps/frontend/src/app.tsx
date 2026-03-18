@@ -21,14 +21,22 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/library/publication/all" replace />,
+        element: <Navigate to="/archive" replace />,
       },
       {
-        path: 'library/publication/:tab',
-        element: <ArchivedPublications />,
+        path: 'archive',
+        element: <ArchivedPublications mode="archive" />,
       },
       {
-        path: '/publication/:id?',
+        path: 'archive/publication/:id?',
+        element: <PublicationView />,
+      },
+      {
+        path: 'projects/publication/:tab',
+        element: <ArchivedPublications mode="projects" />,
+      },
+      {
+        path: 'projects/publication/details/:id?',
         element: <PublicationView />,
       },
     ],
