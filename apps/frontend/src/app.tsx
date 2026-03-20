@@ -9,6 +9,8 @@ import ArchivedPublications from '@containers/archived-publications';
 import PublicationView from '@containers/archived-publications/individual-publication/publication-view';
 import Login from '@containers/auth/login';
 import AuthedApp from '@containers/auth/AuthedApp';
+import ProtectedRoute from '@containers/auth/ProtectedRoute';
+import People from '@containers/people';
 import Role from '@api/dtos/role';
 
 const router = createBrowserRouter([
@@ -31,6 +33,10 @@ const router = createBrowserRouter([
         ],
       },
       // admin and volunteer routes
+      {
+        element: <ProtectedRoute roles={[Role.ADMIN, Role.VOLUNTEER]} />,
+        children: [{ path: 'people', element: <People /> }],
+      },
       {
         element: <AuthedApp roles={[Role.ADMIN, Role.VOLUNTEER]} />,
         children: [

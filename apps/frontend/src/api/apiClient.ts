@@ -6,15 +6,18 @@ const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
 export class ApiClient {
-  
   private axiosInstance: AxiosInstance;
 
   constructor() {
     this.axiosInstance = axios.create({ baseURL: defaultBaseUrl });
   }
 
-  public async getMe(): Promise<User>  {
+  public async getMe(): Promise<User> {
     return this.get('/auth/me') as Promise<User>;
+  }
+
+  public async getUsers(): Promise<User[]> {
+    return this.get('/api/users') as Promise<User[]>;
   }
 
   public async getHello(): Promise<string> {
