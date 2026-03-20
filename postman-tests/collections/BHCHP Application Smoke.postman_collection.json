@@ -1,0 +1,229 @@
+{
+  "info": {
+    "_postman_id": "2fd2313b-e6d9-446f-b809-4e9fdb275a69",
+    "name": "BHCHP Application Smoke",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41801404"
+  },
+  "item": [
+    {
+      "name": "getAllApplications",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/applications/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "applications",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getApplicationsByDiscipline",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"appId\": 1,\r\n  \"appStatus\": \"App submitted\",\r\n  \"mondayAvailability\": \"12pm and on every other week\",\r\n  \"tuesdayAvailability\": \"approximately 10am-3pm\",\r\n  \"wednesdayAvailability\": \"no availability\",\r\n  \"thursdayAvailability\": \"maybe before 10am\",\r\n  \"fridayAvailability\": \"Sometime between 4-6\",\r\n  \"saturdayAvailability\": \"no availability\",\r\n  \"experienceType\": \"BS\",\r\n  \"interest\": [\"Women's Health\"],\r\n  \"license\": \"n/a\",\r\n  \"applicantType\": \"Learner\",\r\n  \"phone\": \"123-456-7890\",\r\n  \"email\": \"test@example.com\",\r\n  \"discipline\": \"RN\",\r\n  \"referred\": false,\r\n  \"weeklyHours\": 20,\r\n  \"pronouns\": \"they/them\",\r\n  \"nonEnglishLangs\": \"some french, native spanish speaker\",\r\n  \"desiredExperience\":\r\n    \"I want to give back to the boston community and learn to talk better with patients\",\r\n  \"resume\": \"janedoe_resume_2_6_2026.pdf\",\r\n  \"coverLetter\": \"janedoe_coverLetter_2_6_2026.pdf\",\r\n  \"emergencyContactName\": \"Jane Doe\",\r\n  \"emergencyContactPhone\": \"111-111-1111\",\r\n  \"emergencyContactRelationship\": \"Mother\",\r\n  \"heardAboutFrom\": []\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/applications/by-discipline?discipline=RN",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "applications",
+            "by-discipline"
+          ],
+          "query": [
+            {
+              "key": "discipline",
+              "value": "RN",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getApplicationById",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"appId\": 1,\r\n  \"appStatus\": \"App submitted\",\r\n  \"mondayAvailability\": \"12pm and on every other week\",\r\n  \"tuesdayAvailability\": \"approximately 10am-3pm\",\r\n  \"wednesdayAvailability\": \"no availability\",\r\n  \"thursdayAvailability\": \"maybe before 10am\",\r\n  \"fridayAvailability\": \"Sometime between 4-6\",\r\n  \"saturdayAvailability\": \"no availability\",\r\n  \"experienceType\": \"BS\",\r\n  \"interest\": [\"Women's Health\"],\r\n  \"license\": \"n/a\",\r\n  \"applicantType\": \"Learner\",\r\n  \"phone\": \"123-456-7890\",\r\n  \"email\": \"test@example.com\",\r\n  \"discipline\": \"RN\",\r\n  \"referred\": false,\r\n  \"weeklyHours\": 20,\r\n  \"pronouns\": \"they/them\",\r\n  \"nonEnglishLangs\": \"some french, native spanish speaker\",\r\n  \"desiredExperience\":\r\n    \"I want to give back to the boston community and learn to talk better with patients\",\r\n  \"resume\": \"janedoe_resume_2_6_2026.pdf\",\r\n  \"coverLetter\": \"janedoe_coverLetter_2_6_2026.pdf\",\r\n  \"emergencyContactName\": \"Jane Doe\",\r\n  \"emergencyContactPhone\": \"111-111-1111\",\r\n  \"emergencyContactRelationship\": \"Mother\",\r\n  \"heardAboutFrom\": []\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/applications/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "applications",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "createApplication",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"rexjeff@gmail.com\",\r\n    \"proposedStartDate\": \"2023-12-31\",\r\n    \"actualStartDate\": null,\r\n    \"endDate\": \"2024-06-29\",\r\n    \"discipline\": \"Psychiatry or Psychiatric NP/PA\",\r\n    \"otherDisciplineDescription\": null,\r\n    \"appStatus\": \"App submitted\",\r\n    \"mondayAvailability\": \"12pm and on every other week\",\r\n    \"tuesdayAvailability\": \"approximately 10am-3pm\",\r\n    \"wednesdayAvailability\": \"no availability\",\r\n    \"thursdayAvailability\": \"maybe before 10am\",\r\n    \"fridayAvailability\": \"Sometime between 4-6\",\r\n    \"saturdayAvailability\": \"no availability\",\r\n    \"experienceType\": \"BS\",\r\n    \"interest\": [\r\n        \"Medical Respite/Inpatient\",\r\n        \"Family and Youth Services\"\r\n    ],\r\n    \"license\": \"nursing license\",\r\n    \"phone\": \"123-456-7890\",\r\n    \"applicantType\": \"Volunteer\",\r\n    \"referred\": false,\r\n    \"referredEmail\": null,\r\n    \"weeklyHours\": 20,\r\n    \"pronouns\": \"she/her\",\r\n    \"nonEnglishLangs\": \"spoken chinese only\",\r\n    \"desiredExperience\": \"I want to give back to the boston community and learn to talk better with patients\",\r\n    \"elaborateOtherDiscipline\": null,\r\n    \"resume\": \"rexjeff_resume_2_6_2026.pdf\",\r\n    \"coverLetter\": \"rexjeff_coverLetter_2_6_2026.pdf\",\r\n    \"emergencyContactName\": \"Bob Doe\",\r\n    \"emergencyContactPhone\": \"111-111-1111\",\r\n    \"emergencyContactRelationship\": \"Mother\",\r\n    \"heardAboutFrom\": []\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/applications/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "applications",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "updateApplicationStatus",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"appStatus\": \"In review\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/applications/1/status",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "applications",
+            "1",
+            "status"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "updateApplicationDiscipline",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"discipline\": \"Public Health\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/applications/1/discipline",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "applications",
+            "1",
+            "discipline"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deleteApplication",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"discipline\": \"Public Health\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/applications/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "applications",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { LearnerInfoController } from './learner-info.controller';
 import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
 import { CreateLearnerInfoDto } from './dto/create-learner-info.request.dto';
-import { ExperienceType, InterestArea, School } from './types';
+import { School } from './types';
 import { BadRequestException } from '@nestjs/common';
 
 describe('LearnerInfoController', () => {
@@ -13,6 +13,7 @@ describe('LearnerInfoController', () => {
   const mockLearnerInfoService = {
     create: jest.fn(),
     update: jest.fn(),
+    findById: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -46,9 +47,9 @@ describe('LearnerInfoController', () => {
       const createLearnerInfo: CreateLearnerInfoDto = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
+        schoolDepartment: 'Infectious Diseases',
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       mockLearnerInfoService.create.mockResolvedValue(
@@ -72,9 +73,8 @@ describe('LearnerInfoController', () => {
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       await expect(
@@ -86,9 +86,8 @@ describe('LearnerInfoController', () => {
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: -1,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
       mockLearnerInfoService.create.mockRejectedValue(
@@ -101,49 +100,22 @@ describe('LearnerInfoController', () => {
     });
   });
 
-  describe('PATCH /:appId/interest', () => {
-    it('should update learner info interest', async () => {
-      const createLearnerInfo: CreateLearnerInfoDto = {
-        appId: 1,
+  describe('GET /:id', () => {
+    it('should get the learner info by appId', async () => {
+      const learnerInfo: LearnerInfo = {
+        appId: 0,
         school: School.HARVARD_MEDICAL_SCHOOL,
-        interest: InterestArea.NURSING,
-        experienceType: ExperienceType.BS,
-        isInternational: false,
+        schoolDepartment: 'Infectious Diseases',
+        isSupervisorApplying: false,
+        isLegalAdult: true,
       };
 
-      mockLearnerInfoService.update.mockResolvedValue(
-        createLearnerInfo as LearnerInfo,
-      );
+      mockLearnerInfoService.findById.mockResolvedValue(learnerInfo);
 
-      // Call controller method
-      const result = await controller.updateApplicationInterest(1, {
-        interest: InterestArea.HARM_REDUCTION,
-      });
+      const result = await controller.getLearnerInfo(0);
 
-      // Verify results
-      expect(result).toEqual(createLearnerInfo as LearnerInfo);
-      expect(mockLearnerInfoService.update).toHaveBeenCalledWith(1, {
-        interest: InterestArea.HARM_REDUCTION,
-      });
-    });
-
-    it('should throw NotFoundException with no information loss when updating non-existent application', async () => {
-      const nonExistentId = 999;
-
-      mockLearnerInfoService.update.mockRejectedValue(
-        new BadRequestException(
-          `Application with ID ${nonExistentId} not found`,
-        ),
-      );
-      await expect(
-        controller.updateApplicationInterest(999, {
-          interest: InterestArea.HARM_REDUCTION,
-        }),
-      ).rejects.toThrow(
-        new BadRequestException(
-          `Application with ID ${nonExistentId} not found`,
-        ),
-      );
+      expect(result).toEqual(learnerInfo);
+      expect(mockLearnerInfoService.findById).toHaveBeenCalledWith(0);
     });
   });
 });

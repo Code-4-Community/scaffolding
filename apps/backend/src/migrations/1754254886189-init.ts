@@ -1,117 +1,84 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { Site } from '../users/types';
 
 export class Init1754254886189 implements MigrationInterface {
   name = 'Init1754254886189';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    const disciplineEnum =
+      `('MD/Medical Student/Pre-Med', 'Medical NP/PA', ` +
+      `'Psychiatry or Psychiatric NP/PA', 'Public Health', 'RN', 'Social Work', 'Other')`;
+
+    // DISCIPLINE_VALUES - used by application, admins, discipline
     await queryRunner.query(
-      `CREATE TYPE "public"."commit_length_enum" AS ENUM('Semester', 'Month', 'Year')`,
+      `CREATE TYPE "public"."application_discipline_enum" AS ENUM${disciplineEnum}`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."admins_discipline_enum" AS ENUM${disciplineEnum}`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."discipline_name_enum" AS ENUM${disciplineEnum}`,
     );
 
+    // AppStatus
     await queryRunner.query(
-      `CREATE TYPE "public"."site_enum" AS ENUM('Downtown Campus', 'North Campus', 'West Campus', 'East Campus')`,
+      `CREATE TYPE "public"."application_appstatus_enum" AS ENUM(` +
+        `'App submitted', 'In review', 'Forms sent', 'Accepted', ` +
+        `'No Availability', 'Declined', 'Active', 'Inactive')`,
     );
 
+    // ExperienceType
     await queryRunner.query(
-      `CREATE TYPE "public"."app_status_enum" AS ENUM('App submitted', 'In review', 'Forms sent', 'Accepted', 'Rejected', 'No Availability', 'Declined', 'Active', 'Inactive')`,
+      `CREATE TYPE "public"."application_experiencetype_enum" AS ENUM(` +
+        `'BS', 'MS', 'PhD', 'MD', 'MD PhD', 'RN', 'NP', 'PA', 'Other')`,
     );
 
+    // InterestArea
     await queryRunner.query(
-      `CREATE TYPE "public"."school_enum" AS ENUM('Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', 'Mayo Clinic', 'Other')`,
+      `CREATE TYPE "public"."application_interest_enum" AS ENUM(` +
+        `'Women''s Health', 'Medical Respite/Inpatient', 'Street Medicine', ` +
+        `'Addiction Medicine', 'Primary Care', 'Behavioral Health', ` +
+        `'Veterans Services', 'Family and Youth Services', ` +
+        `'Hep C Care', 'HIV Services', 'Case Management', 'Dental')`,
     );
 
+    // ApplicantType
     await queryRunner.query(
-      `CREATE TYPE "public"."experience_type_enum" AS ENUM('BS', 'MS', 'PhD', 'MD', 'MD PhD', 'RN', 'NP', 'PA', 'Other')`,
+      `CREATE TYPE "public"."application_applicanttype_enum" AS ENUM(` +
+        `'Learner', 'Volunteer')`,
     );
 
+    // School
     await queryRunner.query(
-      `CREATE TYPE "public"."interest_area_enum" AS ENUM('Nursing', 'HarmReduction', 'WomensHealth')`,
-    );
-
-    // Use Site enum values dynamically
-    const siteValues = Object.values(Site)
-      .map((site) => `'${site}'`)
-      .join(', ');
-    await queryRunner.query(
-      `CREATE TYPE "public"."admins_site_enum" AS ENUM(${siteValues})`,
-    );
-
-    await queryRunner.query(
-      `CREATE TABLE "admin" (
-                "id" SERIAL NOT NULL, 
-                "name" character varying NOT NULL, 
-                "email" character varying NOT NULL UNIQUE, 
-                CONSTRAINT "PK_admin_id" PRIMARY KEY ("id")
-            )`,
-    );
-
-    await queryRunner.query(
-      `CREATE TABLE "admins" (
-            "id" SERIAL NOT NULL, 
-            "name" character varying NOT NULL, 
-            "email" character varying NOT NULL UNIQUE,
-            "site" "public"."admins_site_enum" NOT NULL,
-            "createdAt" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            "updatedAt" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            CONSTRAINT "PK_admins_id" PRIMARY KEY ("id")
-        )`,
-    );
-
-    await queryRunner.query(
-      `CREATE TABLE "discipline" (
-                "id" SERIAL NOT NULL, 
-                "name" character varying NOT NULL, 
-                "admin_ids" integer[] NOT NULL DEFAULT '{}', 
-                CONSTRAINT "PK_discipline_id" PRIMARY KEY ("id")
-            )`,
-    );
-
-    await queryRunner.query(
-      `CREATE TABLE "application" (
-                "appId" SERIAL NOT NULL, 
-                "phone" character varying NOT NULL, 
-                "school" "public"."school_enum" NOT NULL, 
-                "daysAvailable" character varying NOT NULL, 
-                "weeklyHours" integer NOT NULL, 
-                "experienceType" "public"."experience_type_enum" NOT NULL, 
-                "interest" "public"."interest_area_enum" NOT NULL, 
-                "license" character varying NOT NULL, 
-                "appStatus" "public"."app_status_enum" NOT NULL DEFAULT 'App submitted', 
-                "isInternational" boolean NOT NULL DEFAULT false, 
-                "isLearner" boolean NOT NULL DEFAULT false, 
-                "referredEmail" character varying, 
-                "referred" boolean DEFAULT false, 
-                "fileUploads" text[] NOT NULL DEFAULT '{}', 
-                CONSTRAINT "PK_application_appId" PRIMARY KEY ("appId")
-            )`,
-    );
-
-    await queryRunner.query(
-      `CREATE TABLE "learner" (
-                "id" SERIAL NOT NULL, 
-                "app_id" integer NOT NULL, 
-                "name" character varying NOT NULL, 
-                "startDate" DATE NOT NULL, 
-                "endDate" DATE NOT NULL, 
-                CONSTRAINT "PK_learner_id" PRIMARY KEY ("id"),
-                CONSTRAINT "FK_learner_app_id" FOREIGN KEY ("app_id") REFERENCES "application"("appId") ON DELETE CASCADE
-            )`,
+      `CREATE TYPE "public"."learner_info_school_enum" AS ENUM(` +
+        `'Harvard Medical School', 'Johns Hopkins', 'Stanford Medicine', ` +
+        `'Mayo Clinic', 'Other')`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE "learner"`);
-    await queryRunner.query(`DROP TABLE "application"`);
-    await queryRunner.query(`DROP TABLE "discipline"`);
-    await queryRunner.query(`DROP TABLE "admins"`);
-    await queryRunner.query(`DROP TABLE "admin"`);
-    await queryRunner.query(`DROP TYPE "public"."interest_area_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."experience_type_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."school_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."app_status_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."site_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."admins_site_enum"`);
-    await queryRunner.query(`DROP TYPE "public"."commit_length_enum"`);
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."learner_info_school_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."application_applicanttype_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."application_interest_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."application_experiencetype_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."application_appstatus_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."discipline_name_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."admins_discipline_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."application_discipline_enum"`,
+    );
   }
 }

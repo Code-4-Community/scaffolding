@@ -12,5 +12,6 @@ import { AuthModule } from '../auth/auth.module'; // Add this import
   imports: [AuthModule, TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
   providers: [UsersService, AuthService, JwtStrategy, CurrentUserInterceptor],
+  exports: [UsersService],
 })
 export class UsersModule {}

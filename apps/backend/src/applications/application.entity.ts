@@ -4,10 +4,10 @@ import {
   AppStatus,
   ExperienceType,
   InterestArea,
-  School,
-  DaysOfTheWeek,
+  HeardAboutFrom,
   ApplicantType,
 } from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
  * Represents the desired columns for the database table in the repository for the system's applications.
@@ -29,12 +29,43 @@ export class Application {
   email!: string;
 
   /**
+   * The proposed start date for the applicant's commitment, stored in YYYY-MM-DD format.
+   *
+   * Example: new Date('2024-06-30').
+   */
+  @Column({ type: 'date' })
+  proposedStartDate: Date;
+
+  /**
+   * The actual start date for the applicant's commitment, set by the Admin
+   * stored in YYYY-MM-DD format.
+   *
+   * Example: new Date('2024-06-30').
+   */
+  @Column({ type: 'date', nullable: true })
+  actualStartDate?: Date;
+
+  /**
+   * The expected end date for the applicant's commitment, stored in YYYY-MM-DD format.
+   *
+   * Example: new Date('2024-06-30').
+   */
+  @Column({ type: 'date', nullable: true })
+  endDate?: Date;
+
+  /**
    * Discipline associated with the applicant.
    *
    * Example: "Nursing"
    */
-  @Column({ type: 'varchar' })
-  discipline!: string;
+  @Column({ type: 'enum', enum: DISCIPLINE_VALUES })
+  discipline!: DISCIPLINE_VALUES;
+
+  /**
+   * Discipline or area of interest description of applicant clicked other
+   */
+  @Column({ type: 'varchar', nullable: true })
+  otherDisciplineDescription?: string;
 
   /**
    * Status of the application in the review process.
@@ -45,12 +76,52 @@ export class Application {
   appStatus!: AppStatus;
 
   /**
-   * Availability of the applicant in terms of days of the week.
+   * Applicant's Monday availability as a free text string.
    *
-   * Example: 'Monday, Tuesday'.
+   * Example: 12pm and on every other week
    */
   @Column({ type: 'varchar' })
-  daysAvailable!: DaysOfTheWeek[];
+  mondayAvailability: string;
+
+  /**
+   * Applicant's Tuesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  tuesdayAvailability: string;
+
+  /**
+   * Applicant's Wednesday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  wednesdayAvailability: string;
+
+  /**
+   * Applicant's Thursday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  thursdayAvailability: string;
+
+  /**
+   * Applicant's Friday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  fridayAvailability: string;
+
+  /**
+   * Applicant's Saturday availability as a free text string.
+   *
+   * Example: 12pm and on every other week
+   */
+  @Column({ type: 'varchar' })
+  saturdayAvailability: string;
 
   /**
    * Experience type/ level of the applicant, generally in terms of medical experience or degree.
@@ -60,32 +131,21 @@ export class Application {
   @Column({ type: 'enum', enum: ExperienceType })
   experienceType!: ExperienceType;
 
-  // TODO: clarify what format these strings are in and an example of what type of file
-  @Column('text', { array: true, default: [] })
-  fileUploads!: string[];
-
   /**
    * Applicant's area of interest for the commitment.
    *
-   * Example: InterestArea.NURSING.
+   * Example: [InterestArea.NURSING, InterestArea.HARM_REDUCTION].
    */
-  @Column({ type: 'enum', enum: InterestArea })
-  interest!: InterestArea;
-
-  // TODO: clarify what format this string is in, and why it's not an array
-  // if people can hold multiple licenses in real life
-  @Column({ type: 'varchar' })
-  license!: string;
+  @Column({ type: 'enum', enum: InterestArea, array: true, default: [] })
+  interest!: InterestArea[];
 
   /**
-   * TODO: clarify what international means exactly in business context.
+   * Any licenses that the applicant holds
    *
-   * Whether or not the applicant is international.
-   *
-   * Example: true.
+   * Example:  PHYSICIAN LICENSE
    */
-  @Column({ type: 'boolean', default: false })
-  isInternational!: boolean;
+  @Column({ type: 'varchar' })
+  license!: string;
 
   /**
    * Phone number of the applicant in ###-###-#### format.
@@ -102,14 +162,6 @@ export class Application {
    */
   @Column({ type: 'enum', enum: ApplicantType })
   applicantType!: ApplicantType;
-
-  /**
-   * School of the applicant; includes well-known medical schools or an 'other' option.
-   *
-   * Example: School.STANFORD_MEDICINE.
-   */
-  @Column({ type: 'enum', enum: School })
-  school!: School;
 
   /**
    * Whether or not the applicant was referred by someone else.
@@ -134,4 +186,96 @@ export class Application {
    */
   @Column({ type: 'int' })
   weeklyHours!: number;
+
+  /**
+   * Application's pronouns
+   *
+   * Example: they/them
+   */
+  @Column({ type: 'varchar' })
+  pronouns: string;
+
+  /**
+   * Applicant's languages spoken other than English
+   *
+   * Example: some german
+   */
+  @Column({ type: 'varchar', nullable: true })
+  nonEnglishLangs?: string;
+
+  /**
+   * Description of the type of experience the applicant is looking for
+   *
+   * Example: I want to give back to the boston community and learn to talk better with patients
+   */
+  @Column({ type: 'varchar' })
+  desiredExperience: string;
+
+  /**
+   * Field for someone to elaborate on their discipline if they chose other for discipline dropdown
+   *
+   * Example:
+   */
+  @Column({ type: 'varchar', nullable: true })
+  elaborateOtherDiscipline?: string;
+
+  /**
+   * Name of the resume file stored in S3 with its extension
+   *
+   * Example:  janedoe_resume_2_6_2026.pdf
+   *
+   * Note: In the code when accessing the files we would prepend the s3 address, e.g.
+   * a full link looks like this:
+   * https://shelter-link-shelters.s3.us-east-2.amazonaws.com/test_photo.webp
+   * But since "https://shelter-link-shelters.s3.us-east-2.amazonaws.com/" would look the same
+   * for every single file we can just store the file with its extension e.g. "test_photo.webp"
+   */
+  @Column({ type: 'varchar' })
+  resume: string;
+
+  /**
+   * Name of the cover letter file stored in S3 with its extension
+   *
+   * Example:  jane_doe_coverLetter_2_6_2026.pdf
+   *
+   * Note: In the code when accessing the files we would prepend the s3 address, e.g.
+   * a full link looks like this:
+   * https://shelter-link-shelters.s3.us-east-2.amazonaws.com/test_photo.webp
+   * But since "https://shelter-link-shelters.s3.us-east-2.amazonaws.com/" would look the same
+   * for every single file we can just store the file with its extension e.g. "test_photo.webp"
+   */
+  @Column({ type: 'varchar' })
+  coverLetter: string;
+
+  /**
+   * Name of the applicant's emergency contact
+   *
+   * Example:  Jane Doe
+   */
+  @Column({ type: 'varchar' })
+  emergencyContactName!: string;
+
+  /**
+   * Phone number of the applicant's emergency contact
+   *
+   * Example: 111-111-1111
+   */
+  @Column({ type: 'varchar' })
+  emergencyContactPhone!: string;
+
+  /**
+   * Relationship between the applicant and their emergency contact
+   *
+   * Example: Mother
+   */
+  @Column({ type: 'varchar' })
+  emergencyContactRelationship!: string;
+
+  /**
+   * List of sources that the applicant heard about BHCHP from
+   *
+   * Example: [HeardAboutFrom.OTHER, HeardAboutFrom.SCHOOL]
+   */
+  @Column({ type: 'enum', enum: HeardAboutFrom, array: true, default: [] })
+  heardAboutFrom: HeardAboutFrom[];
 }

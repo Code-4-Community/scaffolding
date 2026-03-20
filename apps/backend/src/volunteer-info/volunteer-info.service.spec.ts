@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VolunteerInfoService } from './volunteer-info.service';
 import { VolunteerInfo } from './volunteer-info.entity';
+import { BadRequestException } from '@nestjs/common';
 
 describe('volunteerInfoService', () => {
   let service: VolunteerInfoService;
@@ -79,6 +80,26 @@ describe('volunteerInfoService', () => {
 
       mockRepository.save.mockResolvedValue(volunteerInfo);
       await expect(service.create(volunteerInfo)).rejects.toThrow();
+    });
+
+    it('should reject duplicate appId', async () => {
+      const volunteerInfo: VolunteerInfo = {
+        appId: 2,
+        license: 'example',
+      };
+
+      mockRepository.findOne.mockResolvedValue(volunteerInfo);
+
+      await expect(service.create(volunteerInfo)).rejects.toThrow(
+        new BadRequestException(
+          `Volunteer Info with AppId ${volunteerInfo.appId} already exists`,
+        ),
+      );
+
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { appId: volunteerInfo.appId },
+      });
+      expect(repository.save).not.toHaveBeenCalled();
     });
   });
 });

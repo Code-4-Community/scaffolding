@@ -7,5 +7,5 @@ export class CreateDisciplineRequestDto {
   name: DISCIPLINE_VALUES;
 
   @IsArray()
-  admin_ids: number[];
+  admin_emails: string[];
 }

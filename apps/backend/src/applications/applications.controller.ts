@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Request,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
@@ -14,8 +15,8 @@ import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
-import { UpdateApplicationInterestDto } from './dto/update-application-interest.request.dto';
-import { NotFoundException } from '@nestjs/common';
+import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
+import { UpdateApplicationAvailabilityDto } from './dto/update-application-availability.request.dto';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
@@ -34,6 +35,23 @@ export class ApplicationsController {
   @Get()
   async getAllApplications(@Request() req): Promise<Application[]> {
     return await this.applicationsService.findAll();
+  }
+
+  /**
+   * Exposes an endpoint to return all applications filtered by discipline.
+   * @param discipline The discipline to filter applications by.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns A promise of the list of applications with the specified discipline.
+   *          Returns an empty array if no applications match the discipline.
+   * @throws {BadRequestException} if the discipline is not a valid DISCIPLINE_VALUES enum value.
+   * @throws {Error} which is unchanged from what repository throws.
+   */
+  @Get('by-discipline')
+  async getApplicationsByDiscipline(
+    @Query('discipline') discipline: string,
+    @Request() req,
+  ): Promise<Application[]> {
+    return await this.applicationsService.findByDiscipline(discipline);
   }
 
   /**
@@ -90,23 +108,104 @@ export class ApplicationsController {
   }
 
   /**
-   * Exposes an endpoint to update the applicant's interest in their application.
+   * Exposes an endpoint to update the application's discipline.
    * @param appId The id of the application to modify.
-   * @param updateInterestDto Object containing the desired new interest.
+   * @param updateDisciplineDto Object containing the desired new discipline (must be a valid DISCIPLINE_VALUES enum value).
+   * @param req The request object from the caller (frontend). Currently not used.
    * @returns The updated application object.
    * @throws {NotFoundException} with message 'Application with ID <id> not found'
    *         if the application does not exist.
    * @throws {Error} which is unchanged from what repository throws.
    */
-  @Patch('/:appId/interest')
-  async updateApplicationInterest(
+  @Patch('/:appId/discipline')
+  async updateApplicationDiscipline(
     @Param('appId', ParseIntPipe) appId: number,
-    @Body() updateInterestDto: UpdateApplicationInterestDto,
+    @Body() updateDisciplineDto: UpdateApplicationDisciplineDto,
     @Request() req,
   ): Promise<Application> {
     return await this.applicationsService.update(appId, {
-      interest: updateInterestDto.interest,
+      discipline: updateDisciplineDto.discipline,
     });
+  }
+
+  /**
+   * Exposes an endpoint to update the availability fields of an application.
+   * @param appId The id of the application to update.
+   * @param updateAvailabilityDto Object containing one or more day availability strings.
+   * @param req The request object from the caller (frontend). Currently not used.
+   * @returns The updated application object.
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  @Patch('/:appId/availability')
+  async updateApplicationAvailability(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body() updateAvailabilityDto: UpdateApplicationAvailabilityDto,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.update(appId, updateAvailabilityDto);
+  }
+
+  /**
+   * Exposes an endpoint to update an application's commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationProposedStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('proposedStartDate') startDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateProposedStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's actual commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new actual starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationActualStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('actualStartDate') startDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateActualStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's commitment ending date.
+   * @param appId The id of the application to update.
+   * @param endDate The new ending date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/end-date')
+  async updateApplicationEndDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('endDate') endDate: string,
+    @Request() req,
+  ): Promise<Application> {
+    return await this.applicationsService.updateEndDate(
+      appId,
+      new Date(endDate),
+    );
   }
 
   /**
@@ -116,14 +215,13 @@ export class ApplicationsController {
    * @throws {NotFoundException} with message 'Application with ID <id> not found'
    *         if the application does not exist.
    * @throws {Error} which is unchanged from what repository throws.
-   *
-   * Does not return a value.
+   * @returns {Application} The application object which has been deleted.
    */
   @Delete('/:appId')
   async deleteApplication(
     @Param('appId', ParseIntPipe) appId: number,
     @Request() req,
   ): Promise<void> {
-    return await this.applicationsService.delete(appId);
+    await this.applicationsService.delete(appId);
   }
 }

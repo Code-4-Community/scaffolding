@@ -1,21 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { volunteerInfoController } from './volunteer-info.controller';
+import { VolunteerInfoController } from './volunteer-info.controller';
 import { VolunteerInfoService } from './volunteer-info.service';
 import { VolunteerInfo } from './volunteer-info.entity';
 import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto';
 import { BadRequestException } from '@nestjs/common';
 
-describe('volunteerInfoController', () => {
-  let controller: volunteerInfoController;
+describe('VolunteerInfoController', () => {
+  let controller: VolunteerInfoController;
 
   const mockVolunteerInfoService = {
     create: jest.fn(),
+    findById: jest.fn(),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [volunteerInfoController],
+      controllers: [VolunteerInfoController],
       providers: [
         {
           provide: VolunteerInfoService,
@@ -28,7 +29,7 @@ describe('volunteerInfoController', () => {
       ],
     }).compile();
 
-    controller = module.get<volunteerInfoController>(volunteerInfoController);
+    controller = module.get<VolunteerInfoController>(VolunteerInfoController);
   });
 
   afterEach(() => {
@@ -87,6 +88,22 @@ describe('volunteerInfoController', () => {
       await expect(
         controller.createVolunteerInfo(createVolunteerInfoDto),
       ).rejects.toThrow(new BadRequestException(`appId must not be negative`));
+    });
+  });
+
+  describe('GET /:id', () => {
+    it('should return a volunteer info by appId', async () => {
+      const volunteerInfo: VolunteerInfo = {
+        appId: 0,
+        license: 'example',
+      };
+
+      mockVolunteerInfoService.findById.mockResolvedValue(volunteerInfo);
+
+      const result = await controller.getVolunteerInfo(0);
+
+      expect(result).toEqual(volunteerInfo);
+      expect(mockVolunteerInfoService.findById).toHaveBeenCalledWith(0);
     });
   });
 });

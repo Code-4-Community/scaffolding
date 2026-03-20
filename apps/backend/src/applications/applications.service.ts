@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { PHONE_REGEX } from './types';
+import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
  * Service for applications that interfaces with the application repository.
@@ -70,6 +71,40 @@ export class ApplicationsService {
   }
 
   /**
+   * Validates that the provided discipline is a valid DISCIPLINE_VALUES enum value.
+   * @param discipline The discipline value to validate.
+   * @throws {BadRequestException} if the discipline is not a valid DISCIPLINE_VALUES enum value.
+   */
+  private validateDiscipline(discipline: string): void {
+    if (
+      !Object.values(DISCIPLINE_VALUES).includes(
+        discipline as DISCIPLINE_VALUES,
+      )
+    ) {
+      throw new BadRequestException(
+        `Invalid discipline: ${discipline}. Valid disciplines are: ${Object.values(
+          DISCIPLINE_VALUES,
+        ).join(', ')}`,
+      );
+    }
+  }
+
+  /**
+   * Returns all applications that have the specified discipline.
+   * @param discipline The discipline to filter applications by.
+   * @returns A promise resolving to an array of applications with the specified discipline.
+   *          Returns an empty array if no applications match the discipline.
+   * @throws {BadRequestException} if the discipline is not a valid DISCIPLINE_VALUES enum value.
+   * @throws {Error} which is unchanged from what repository throws.
+   */
+  async findByDiscipline(discipline: string): Promise<Application[]> {
+    this.validateDiscipline(discipline);
+    return await this.applicationRepository.find({
+      where: { discipline: discipline as DISCIPLINE_VALUES },
+    });
+  }
+
+  /**
    * Creates an application in the repository.
    * @param createApplicationDto The expected data required to create an application (applicant's info).
    * @returns The newly created application.
@@ -102,6 +137,108 @@ export class ApplicationsService {
       throw new NotFoundException(`Application with ID ${appId} not found`);
     }
     Object.assign(application, updateData);
+    return await this.applicationRepository.save(application);
+  }
+
+  /**
+   * Updates an application's commitment starting date with validation.
+   * @param appId The id of the application to update.
+   * @param proposedStartDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not before endDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateProposedStartDate(
+    appId: number,
+    proposedStartDate: Date,
+  ): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!proposedStartDate) {
+      throw new BadRequestException('Start date is required');
+    }
+
+    if (isNaN(proposedStartDate.getTime())) {
+      throw new BadRequestException('Start date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (application.endDate && proposedStartDate >= application.endDate) {
+      throw new BadRequestException('Start date must be before end date');
+    }
+
+    application.proposedStartDate = proposedStartDate;
+    return await this.applicationRepository.save(application);
+  }
+
+  /**
+   * Updates an application's actual commitment starting date with validation.
+   * @param appId The id of the application to update.
+   * @param actualStartDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not before endDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateActualStartDate(
+    appId: number,
+    actualStartDate: Date,
+  ): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!actualStartDate) {
+      throw new BadRequestException('Start date is required');
+    }
+
+    if (isNaN(actualStartDate.getTime())) {
+      throw new BadRequestException('Start date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (application.endDate && actualStartDate >= application.endDate) {
+      throw new BadRequestException('Start date must be before end date');
+    }
+
+    application.proposedStartDate = actualStartDate;
+    return await this.applicationRepository.save(application);
+  }
+
+  /**
+   * Updates an application's commitment ending date with validation.
+   * @param appId The id of the application to update.
+   * @param endDate The new ending date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not after proposedStartDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateEndDate(appId: number, endDate: Date): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!endDate) {
+      throw new BadRequestException('End date is required');
+    }
+
+    if (isNaN(endDate.getTime())) {
+      throw new BadRequestException('End date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (
+      application.proposedStartDate &&
+      application.proposedStartDate >= endDate
+    ) {
+      throw new BadRequestException('End date must be after start date');
+    }
+
+    application.endDate = endDate;
     return await this.applicationRepository.save(application);
   }
 

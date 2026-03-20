@@ -27,11 +27,9 @@ export class CurrentUserInterceptor implements NestInterceptor {
     const userEmail = cognitoUserAttributes.find(
       (attribute) => attribute.Name === 'email',
     ).Value;
-    const users = await this.usersService.find(userEmail);
+    const user = await this.usersService.findOne(userEmail);
 
-    if (users.length > 0) {
-      const user = users[0];
-
+    if (user) {
       request.user = user;
     }
 

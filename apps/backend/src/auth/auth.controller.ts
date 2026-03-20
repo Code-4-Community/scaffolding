@@ -126,8 +126,8 @@ export class AuthController {
   }
 
   /**
-   * Exposes an endpoint to delete a user by id.
-   * @param body Object containing the necessary fields to delete a user, including id.
+   * Exposes an endpoint to delete a user by email.
+   * @param body Object containing the email of the user to delete.
    * @throws {Error} If the repository or external auth provider throws an error.
    * @throws {BadRequestException} with a message from the external auth provider.
    *
@@ -135,7 +135,10 @@ export class AuthController {
    */
   @Post('/delete')
   async delete(@Body() body: DeleteUserDto): Promise<void> {
-    const user = await this.usersService.findOne(body.userId);
+    const user = await this.usersService.findOne(body.email);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
 
     try {
       await this.authService.deleteUser(user.email);
@@ -143,6 +146,6 @@ export class AuthController {
       throw new BadRequestException(e.message);
     }
 
-    this.usersService.remove(user.id);
+    await this.usersService.remove(user.email);
   }
 }

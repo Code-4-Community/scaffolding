@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { VolunteerInfo } from './volunteer-info.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { VolunteerInfoService } from './volunteer-info.service';
@@ -9,7 +16,7 @@ import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto'
  */
 @ApiTags('volunteerInfo')
 @Controller('volunteer_info')
-export class volunteerInfoController {
+export class VolunteerInfoController {
   constructor(private volunteerInfoService: VolunteerInfoService) {}
 
   /**
@@ -23,5 +30,21 @@ export class volunteerInfoController {
     @Body() createvolunteerInfoDto: CreateVolunteerInfoDto,
   ): Promise<VolunteerInfo> {
     return await this.volunteerInfoService.create(createvolunteerInfoDto);
+  }
+
+  /**
+   * Exposes an endpoint to retrieve a volunteer info by appId.
+   * @param appId The appId of the volunteer info to be returned.
+   * @returns The volunteer info with the given appId.
+   * @throws {Error} If the repository throws an error.
+   * @throws {NotFoundException} with message 'volunteer Info with AppId <id> not found'
+   *         if an application with that id does not exist.
+   * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined)
+   */
+  @Get('/:appId')
+  async getVolunteerInfo(
+    @Param('appId') appId: number,
+  ): Promise<VolunteerInfo> {
+    return await this.volunteerInfoService.findById(appId);
   }
 }
