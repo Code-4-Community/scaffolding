@@ -23,6 +23,7 @@ const mockAuthService = {
 
 const mockUsersService = {
   find: jest.fn(),
+  findOne: jest.fn(),
 };
 
 const defaultDiscipline: Discipline = {
