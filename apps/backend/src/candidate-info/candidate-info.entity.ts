@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 /**
  * Represents the desired columns for the database table in the repository for the system's candidates.
  */
-@Entity()
+@Entity('candidate_info')
 export class CandidateInfo {
   /**
    * The candidate's email.
