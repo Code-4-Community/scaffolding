@@ -307,7 +307,7 @@ describe('DisciplinesService', () => {
       mockRepository.findOneBy.mockResolvedValue({ ...discipline });
       mockRepository.save.mockResolvedValue(discipline);
 
-      const result = await service.removeAdmin(1, 999); // 999 doesn't exist
+      await service.removeAdmin(1, 999); // 999 doesn't exist
 
       expect(repository.save).toHaveBeenCalledWith(
         expect.objectContaining({ admin_ids: [1, 2] }),
@@ -324,7 +324,7 @@ describe('DisciplinesService', () => {
       mockRepository.findOneBy.mockResolvedValue({ ...disciplineEmpty });
       mockRepository.save.mockResolvedValue(disciplineEmpty);
 
-      const result = await service.removeAdmin(1, 5);
+      await service.removeAdmin(1, 5);
 
       expect(repository.save).toHaveBeenCalledWith(
         expect.objectContaining({ admin_ids: [] }),

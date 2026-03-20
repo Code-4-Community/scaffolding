@@ -1,13 +1,7 @@
 import React from 'react';
 import { Box, Heading, Flex, Link, Text } from '@chakra-ui/react';
 import NavbarItem from './NavBarItem';
-import {
-  FaHouse,
-  FaLaptopFile,
-  FaPeopleGroup,
-  FaPerson,
-  FaRegFile,
-} from 'react-icons/fa6';
+import { FaHouse, FaPerson, FaRegFile } from 'react-icons/fa6';
 import { IoIosSettings } from 'react-icons/io';
 import { CgProfile } from 'react-icons/cg';
 import { UserType } from '@api/types';

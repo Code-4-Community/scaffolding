@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import { Box, Flex, Heading } from '@chakra-ui/react';
 import DocumentDownloadCard from './DocumentDownloadCard';
 
 interface UploadedMaterialProps {

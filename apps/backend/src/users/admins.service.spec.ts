@@ -10,7 +10,6 @@ import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 describe('AdminsService', () => {
   let service: AdminsService;
-  let repository: Repository<Admin>;
 
   const mockRepository = {
     create: jest.fn(),

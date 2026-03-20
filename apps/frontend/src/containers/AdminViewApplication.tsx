@@ -1,19 +1,14 @@
 import NavBar from '@components/NavBar/NavBar';
 import { useParams } from 'react-router-dom';
 import apiClient from '@api/apiClient';
-import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '@components/AvailabilityTable';
 import { useEffect, useState } from 'react';
 import {
   ApplicantType,
   Application,
-  AppStatus,
   AvailabilityFields,
-  DISCIPLINE_VALUES,
-  ExperienceType,
-  InterestArea,
   LearnerInfo,
-  School,
   UserType,
   VolunteerInfo,
 } from '@api/types';

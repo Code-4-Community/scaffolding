@@ -202,7 +202,7 @@ describe('ApplicationsService', () => {
 
       mockRepository.findOne.mockResolvedValue(mockApplication);
 
-      const result = await service.findById(10);
+      await service.findById(10);
 
       expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 10 } });
       expect(repository.findOne).toThrow();

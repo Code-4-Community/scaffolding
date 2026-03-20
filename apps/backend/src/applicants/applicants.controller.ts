@@ -6,12 +6,10 @@ import {
   Body,
   Param,
   ParseIntPipe,
-  UseGuards,
   UseInterceptors,
   Delete,
 } from '@nestjs/common';
 import { ApplicantsService } from './applicants.service';
-import { AuthGuard } from '@nestjs/passport';
 import { Applicant } from './applicant.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { CreateApplicantDto } from './dto/applicant.dto';

@@ -1,10 +1,4 @@
-import {
-  IsDefined,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { DISCIPLINE_VALUES } from '../../disciplines/disciplines.constants';
 
 // TODO: Add class validators
