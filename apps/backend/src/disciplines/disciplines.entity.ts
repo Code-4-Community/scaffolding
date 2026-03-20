@@ -4,9 +4,9 @@ import { DISCIPLINE_VALUES } from './disciplines.constants';
 /**
  * Represents the desired columns for the database table
  * in the repository for the system's medical disciplines
- * (BHCHP medical discipline) and their admin Ids.
+ * (BHCHP medical discipline) and their admin emails.
  *
- * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,
+ * e.g.: Volunteers, Nursing, Public Health, MD, PA, NP,.
  * Research, Social work, Psychiatry, Pharmacy, IT.
  */
 @Entity('discipline')
@@ -28,11 +28,11 @@ export class Discipline {
   name: DISCIPLINE_VALUES;
 
   /**
-   * Ids of admins in charge of reviewing the discipline,
+   * emails of admins in charge of reviewing the discipline,
    * in no particular order.
    *
-   * E.g. [4, 1]
+   * E.g. [nie.sa@northeastern.edu, nie.sa2@northeastern.edu]
    */
-  @Column({ type: 'int', array: true, default: () => "'{}'" })
-  admin_ids: number[];
+  @Column({ type: 'varchar', array: true, default: [] })
+  admin_emails: string[];
 }

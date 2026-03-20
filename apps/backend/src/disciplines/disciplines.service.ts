@@ -23,9 +23,9 @@ export class DisciplinesService {
   }
 
   /**
-   * Returns a discipline from the repository with the respective id
-   * @param id the id corresponding to the desired discipline
-   * @returns a discipline from the repository with the respective id
+   * Returns a discipline from the repository with the respective email
+   * @param email the email corresponding to the desired discipline
+   * @returns a discipline from the repository with the respective email
    */
   async findOne(id: number): Promise<Discipline | null> {
     return this.disciplinesRepository.findOneBy({ id });
@@ -42,56 +42,56 @@ export class DisciplinesService {
   }
 
   /**
-   * Deletes a discipline by id
-   * @param id the id of the discipline to delete
+   * Deletes a discipline by email
+   * @param email the email of the discipline to delete
    * @returns the deleted discipline
-   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {NotFoundException} if a discipline of the specified email doesn't exist in the repository.
    * @throws {Error} if the repository throws an error.
    */
   async remove(id: number): Promise<Discipline> {
     const discipline = await this.findOne(id);
     if (!discipline) {
-      throw new NotFoundException(`Discipline with ID ${id} not found`);
+      throw new NotFoundException(`Discipline with id ${id} not found`);
     }
     return this.disciplinesRepository.remove(discipline);
   }
   /**
-   * Adds an admin ID to a discipline's admin_ids array
+   * Adds an admin email to a discipline's admin_emails array
    * @param id the discipline id
-   * @param adminId the admin id to add
-   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @param adminEmail the admin email to add
+   * @throws {NotFoundException} if a discipline of the specified email doesn't exist in the repository.
    * @throws {Error} if the repository throws an error.
    * @returns the updated discipline
    */
-  async addAdmin(id: number, adminId: number): Promise<Discipline> {
+  async addAdmin(id: number, adminEmail: string): Promise<Discipline> {
     const discipline = await this.findOne(id);
     if (!discipline) {
-      throw new NotFoundException(`Discipline with ID ${id} not found`);
+      throw new NotFoundException(`Discipline with id ${id} not found`);
     }
 
-    if (!discipline.admin_ids.includes(adminId)) {
-      discipline.admin_ids = [...discipline.admin_ids, adminId];
+    if (!discipline.admin_emails.includes(adminEmail)) {
+      discipline.admin_emails = [...discipline.admin_emails, adminEmail];
     }
 
     return this.disciplinesRepository.save(discipline);
   }
 
   /**
-   * Removes an admin ID from a discipline's admin_ids array
+   * Removes an admin email from a discipline's admin_emails array
    * @param id the discipline id
-   * @param adminId the admin id to remove
+   * @param adminEmail the admin email to remove
    * @returns the updated discipline
-   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {NotFoundException} if a discipline of the specified email doesn't exist in the repository.
    * @throws {Error} if the repository throws an error.
    */
-  async removeAdmin(id: number, adminId: number): Promise<Discipline> {
+  async removeAdmin(id: number, adminEmail: string): Promise<Discipline> {
     const discipline = await this.findOne(id);
     if (!discipline) {
-      throw new NotFoundException(`Discipline with ID ${id} not found`);
+      throw new NotFoundException(`Discipline with id ${id} not found`);
     }
 
-    discipline.admin_ids = discipline.admin_ids.filter(
-      (aid) => aid !== adminId,
+    discipline.admin_emails = discipline.admin_emails.filter(
+      (aid) => aid !== adminEmail,
     );
 
     return this.disciplinesRepository.save(discipline);

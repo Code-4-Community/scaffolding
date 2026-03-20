@@ -23,12 +23,13 @@ const mockAuthService = {
 
 const mockUsersService = {
   find: jest.fn(),
+  findOne: jest.fn(),
 };
 
 const defaultDiscipline: Discipline = {
   id: 1,
   name: DISCIPLINE_VALUES.RN,
-  admin_ids: [1, 2],
+  admin_emails: ['janedoe@gmail.com', 'rexjeff@gmail.com'],
 };
 
 describe('DisciplinesController', () => {
@@ -75,7 +76,7 @@ describe('DisciplinesController', () => {
         {
           id: 2,
           name: DISCIPLINE_VALUES.RN,
-          admin_ids: [3],
+          admin_emails: ['janedoe@gmail.com', 'rexjeff@gmail.com'],
         },
       ];
       jest
@@ -156,7 +157,7 @@ describe('DisciplinesController', () => {
     it('should create a new discipline', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [1, 2],
+        admin_emails: ['janedoe@gmail.com', 'rexjeff@gmail.com'],
       };
 
       jest
@@ -171,16 +172,16 @@ describe('DisciplinesController', () => {
       );
     });
 
-    it('should create a discipline with empty admin_ids array', async () => {
+    it('should create a discipline with empty admin_emails array', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [],
+        admin_emails: [],
       };
 
       const disciplineWithEmptyAdmins: Discipline = {
         id: 3,
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [],
+        admin_emails: [],
       };
 
       jest
@@ -198,7 +199,7 @@ describe('DisciplinesController', () => {
     it('should handle service errors when creating discipline', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [1, 2],
+        admin_emails: ['janedoe@gmail.com', 'rexjeff@gmail.com'],
       };
 
       const errorMessage = 'Failed to create discipline';
@@ -214,13 +215,13 @@ describe('DisciplinesController', () => {
     it('should create discipline with different discipline values', async () => {
       const createDisciplineDto: CreateDisciplineRequestDto = {
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [5],
+        admin_emails: ['nie.sa@northeastern.edu'],
       };
 
       const RNDiscipline: Discipline = {
         id: 4,
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [5],
+        admin_emails: ['nie.sa@northeastern.edu'],
       };
 
       jest
@@ -273,17 +274,24 @@ describe('DisciplinesController', () => {
       const updatedDiscipline: Discipline = {
         id: 1,
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [1, 2, 3],
+        admin_emails: [
+          'janedoe@gmail.com',
+          'johndoe@gmail.com',
+          'rexjeff@gmail.com',
+        ],
       };
 
       jest
         .spyOn(mockDisciplinesService, 'addAdmin')
         .mockResolvedValue(updatedDiscipline);
 
-      const result = await controller.addAdmin(1, 3);
+      const result = await controller.addAdmin(1, 'johndoe@gmail.com');
 
       expect(result).toEqual(updatedDiscipline);
-      expect(mockDisciplinesService.addAdmin).toHaveBeenCalledWith(1, 3);
+      expect(mockDisciplinesService.addAdmin).toHaveBeenCalledWith(
+        1,
+        'johndoe@gmail.com',
+      );
     });
 
     it('should throw NotFoundException when discipline does not exist', async () => {
@@ -291,9 +299,9 @@ describe('DisciplinesController', () => {
         .spyOn(mockDisciplinesService, 'addAdmin')
         .mockRejectedValue(new Error('Discipline with ID 999 not found'));
 
-      await expect(controller.addAdmin(999, 1)).rejects.toThrow(
-        'Discipline with ID 999 not found',
-      );
+      await expect(
+        controller.addAdmin(999, 'johndoe@gmail.com'),
+      ).rejects.toThrow('Discipline with ID 999 not found');
     });
 
     it('should handle service errors when adding admin', async () => {
@@ -302,7 +310,9 @@ describe('DisciplinesController', () => {
         .spyOn(mockDisciplinesService, 'addAdmin')
         .mockRejectedValue(new Error(errorMessage));
 
-      await expect(controller.addAdmin(1, 5)).rejects.toThrow(errorMessage);
+      await expect(controller.addAdmin(1, 'johndoe@gmail.com')).rejects.toThrow(
+        errorMessage,
+      );
     });
 
     it('should handle adding duplicate admin gracefully', async () => {
@@ -311,10 +321,13 @@ describe('DisciplinesController', () => {
         .spyOn(mockDisciplinesService, 'addAdmin')
         .mockResolvedValue(defaultDiscipline);
 
-      const result = await controller.addAdmin(1, 2); // 2 already in defaultDiscipline
+      const result = await controller.addAdmin(2, 'rexjeff@gmail.com'); // already in defaultDiscipline
 
       expect(result).toEqual(defaultDiscipline);
-      expect(mockDisciplinesService.addAdmin).toHaveBeenCalledWith(1, 2);
+      expect(mockDisciplinesService.addAdmin).toHaveBeenCalledWith(
+        2,
+        'rexjeff@gmail.com',
+      );
     });
   });
 
@@ -323,17 +336,20 @@ describe('DisciplinesController', () => {
       const updatedDiscipline: Discipline = {
         id: 1,
         name: DISCIPLINE_VALUES.RN,
-        admin_ids: [1], // 2 was removed
+        admin_emails: ['janedoe@gmail.com'], // 2 was removed
       };
 
       jest
         .spyOn(mockDisciplinesService, 'removeAdmin')
         .mockResolvedValue(updatedDiscipline);
 
-      const result = await controller.removeAdmin(1, 2);
+      const result = await controller.removeAdmin(1, 'rexjeff@gmail.com');
 
       expect(result).toEqual(updatedDiscipline);
-      expect(mockDisciplinesService.removeAdmin).toHaveBeenCalledWith(1, 2);
+      expect(mockDisciplinesService.removeAdmin).toHaveBeenCalledWith(
+        1,
+        'rexjeff@gmail.com',
+      );
     });
 
     it('should throw NotFoundException when discipline does not exist', async () => {
@@ -341,9 +357,9 @@ describe('DisciplinesController', () => {
         .spyOn(mockDisciplinesService, 'removeAdmin')
         .mockRejectedValue(new Error('Discipline with ID 999 not found'));
 
-      await expect(controller.removeAdmin(999, 1)).rejects.toThrow(
-        'Discipline with ID 999 not found',
-      );
+      await expect(
+        controller.removeAdmin(999, 'rexjeff@gmail.com'),
+      ).rejects.toThrow('Discipline with ID 999 not found');
     });
 
     it('should handle service errors when removing admin', async () => {
@@ -352,7 +368,9 @@ describe('DisciplinesController', () => {
         .spyOn(mockDisciplinesService, 'removeAdmin')
         .mockRejectedValue(new Error(errorMessage));
 
-      await expect(controller.removeAdmin(1, 1)).rejects.toThrow(errorMessage);
+      await expect(
+        controller.removeAdmin(1, 'rexjeff@gmail.com'),
+      ).rejects.toThrow(errorMessage);
     });
 
     it('should handle removing non-existent admin gracefully', async () => {
@@ -361,10 +379,13 @@ describe('DisciplinesController', () => {
         .spyOn(mockDisciplinesService, 'removeAdmin')
         .mockResolvedValue(defaultDiscipline);
 
-      const result = await controller.removeAdmin(1, 999);
+      const result = await controller.removeAdmin(1, 'rexjeff@gmail.com');
 
       expect(result).toEqual(defaultDiscipline);
-      expect(mockDisciplinesService.removeAdmin).toHaveBeenCalledWith(1, 999);
+      expect(mockDisciplinesService.removeAdmin).toHaveBeenCalledWith(
+        1,
+        'rexjeff@gmail.com',
+      );
     });
   });
 });

@@ -1,7 +1,7 @@
 /**
- * Status or level of the user (currently admin or standard).
+ * Type of the user (admin or standard).
  */
-export enum Status {
+export enum UserType {
   ADMIN = 'ADMIN',
   STANDARD = 'STANDARD',
 }

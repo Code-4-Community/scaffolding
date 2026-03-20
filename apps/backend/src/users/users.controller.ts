@@ -3,7 +3,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,6 +15,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 /**
  * Controller to expose callable HTTP endpoints to
  * extract information about the app's users or delete them.
+ * Email is the primary key; use encoded email in path (e.g. user%40example.com).
  */
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -26,26 +26,23 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   /**
-   * Exposes an endpoint to get a user's information by their id.
-   * @param userId the id of the desired user to get information about.
-   * @returns the user with the corresponding id or null if the user was not found.
-   * @throws {Error} anything that the repository throws.
+   * Exposes an endpoint to get a user's information by their email.
+   * @param email The email of the desired user (URL-encoded).
+   * @returns The user with the corresponding email or null if not found.
    */
-  @Get('/:userId')
-  async getUser(@Param('userId', ParseIntPipe) userId: number): Promise<User> {
-    return this.usersService.findOne(userId);
+  @Get('email/:email')
+  async getUser(@Param('email') email: string): Promise<User | null> {
+    const decoded = decodeURIComponent(email);
+    return this.usersService.findOne(decoded);
   }
 
   /**
-   * Exposes an endpoint to delete a user by their id.
-   * @param appId the id of the user to delete.
-   * @throws {Error} anything that the repository throws.
-   * @throws {NotFoundException} if a user with the specified id does not exist.
-   *
-   * Does not return a value.
+   * Exposes an endpoint to delete a user by their email.
+   * @param email The email of the user to delete (URL-encoded).
    */
-  @Delete('/:appId')
-  removeUser(@Param('appId', ParseIntPipe) appId: number) {
-    return this.usersService.remove(appId);
+  @Delete('email/:email')
+  async removeUser(@Param('email') email: string): Promise<void> {
+    const decoded = decodeURIComponent(email);
+    await this.usersService.remove(decoded);
   }
 }
