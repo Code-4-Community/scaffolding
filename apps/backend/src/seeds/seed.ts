@@ -218,7 +218,7 @@ async function seed() {
     await dataSource.getRepository(Discipline).save(
       Object.values(DISCIPLINE_VALUES).map((name) => ({
         name,
-        admin_ids: [],
+        admin_emails: [],
       })),
     );
     console.log('✅ Disciplines created');

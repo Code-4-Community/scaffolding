@@ -46,6 +46,15 @@ export class FinishRefactor1773877991948 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "application" ALTER COLUMN "interest" SET DEFAULT '{}'`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "discipline" RENAME COLUMN "admin_ids" TO "admin_emails"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "discipline" DROP COLUMN "admin_emails"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "discipline" ADD "admin_emails" character varying array NOT NULL DEFAULT '{}'`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -96,6 +105,15 @@ export class FinishRefactor1773877991948 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE TABLE "admins" ("id" SERIAL NOT NULL, "firstName" character varying NOT NULL, "lastName" character varying NOT NULL, "email" character varying NOT NULL, "discipline" "public"."admins_discipline_enum" NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_051db7d37d478a69a7432df1479" UNIQUE ("email"), CONSTRAINT "PK_e3b38270c97a854c48d2e80874e" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "discipline" DROP COLUMN "admin_emails"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "discipline" ADD "admin_emails" integer array NOT NULL DEFAULT '{}'`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "discipline" RENAME COLUMN "admin_emails" TO "admin_ids"`,
     );
   }
 }

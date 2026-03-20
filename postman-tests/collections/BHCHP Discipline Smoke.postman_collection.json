@@ -64,7 +64,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"name\": \"RN\",\r\n    \"admin_ids\": [1, 2]\r\n}",
+          "raw": "{\r\n    \"name\": \"RN\",\r\n    \"admin_emails\": [\"nie.sa@northeastern.edu\", \"jane.doe@northeastern.edu\"]\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -118,7 +118,7 @@
         "method": "POST",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/api/disciplines/7/admins/1",
+          "raw": "http://localhost:3000/api/disciplines/7/admins/nie.sa@northeastern.edu",
           "protocol": "http",
           "host": [
             "localhost"
@@ -129,7 +129,7 @@
             "disciplines",
             "7",
             "admins",
-            "1"
+            "nie.sa@northeastern.edu"
           ]
         }
       },

@@ -33,6 +33,6 @@ export class Discipline {
    *
    * E.g. [nie.sa@northeastern.edu, nie.sa2@northeastern.edu]
    */
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', array: true, default: [] })
   admin_emails: string[];
 }
