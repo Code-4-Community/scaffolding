@@ -18,7 +18,7 @@ import { UpdateAdminInfoEmailDto } from './dto/update-admin-email.dto';
  * Controller to expose callable HTTP endpoints to interface
  * extract, and change information about the app's admins.
  */
-@Controller('admins')
+@Controller('admin-info')
 @UseInterceptors(CurrentUserInterceptor) // Apply authentication to all routes
 export class AdminInfoController {
   constructor(private readonly adminsService: AdminInfoService) {}

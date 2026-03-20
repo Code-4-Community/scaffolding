@@ -34,13 +34,13 @@ export class DisciplinesController {
   }
 
   /**
-   * Exposes an endpoint to return a discipline by id
-   * @param id the id of the discipline to return
-   * @returns the discipline with the corresponding id
+   * Exposes an endpoint to return a discipline by email
+   * @param email the email of the discipline to return
+   * @returns the discipline with the corresponding email
    */
-  @Get(':id')
-  async getOne(@Param('id') id: string): Promise<Discipline> {
-    return this.disciplinesService.findOne(Number(id));
+  @Get(':email')
+  async getOne(@Param('email') email: string): Promise<Discipline> {
+    return this.disciplinesService.findOne(Number(email));
   }
 
   /**
@@ -56,46 +56,48 @@ export class DisciplinesController {
   }
 
   /**
-   * Deletes a discipline by id
-   * @param id the id of the discipline to delete
+   * Deletes a discipline by email
+   * @param email the email of the discipline to delete
    * @returns the deleted discipline
-   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {NotFoundException} if a discipline of the specified email doesn't exist in the repository.
    * @throws {Error} if the repository throws an error.
    */
-  @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<Discipline> {
-    return this.disciplinesService.remove(id);
+  @Delete(':email')
+  async remove(
+    @Param('email', ParseIntPipe) email: number,
+  ): Promise<Discipline> {
+    return this.disciplinesService.remove(email);
   }
 
   /**
-   * Adds an admin ID to a discipline
-   * @param id the discipline id
-   * @param adminId the admin id to add
+   * Adds an admin email to a discipline
+   * @param email the discipline id
+   * @param adminemail the admin email to add
    * @returns the updated discipline
-   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {NotFoundException} if a discipline of the specified email doesn't exist in the repository.
    * @throws {Error} if the repository throws an error.
    */
-  @Post(':id/admins/:adminId')
+  @Post(':email/admins/:adminEmail')
   async addAdmin(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('adminId', ParseIntPipe) adminId: number,
+    @Param('email', ParseIntPipe) email: number,
+    @Param('adminEmail') adminEmail: string,
   ): Promise<Discipline> {
-    return this.disciplinesService.addAdmin(id, adminId);
+    return this.disciplinesService.addAdmin(email, adminEmail);
   }
 
   /**
-   * Removes an admin ID from a discipline
-   * @param id the discipline id
-   * @param adminId the admin id to remove
+   * Removes an admin email from a discipline
+   * @param email the discipline id
+   * @param adminemail the admin email to remove
    * @returns the updated discipline
-   * @throws {NotFoundException} if a discipline of the specified id doesn't exist in the repository.
+   * @throws {NotFoundException} if a discipline of the specified email doesn't exist in the repository.
    * @throws {Error} if the repository throws an error.
    */
-  @Delete(':id/admins/:adminId')
+  @Delete(':email/admins/:adminEmail')
   async removeAdmin(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('adminId', ParseIntPipe) adminId: number,
+    @Param('email', ParseIntPipe) email: number,
+    @Param('admiEemail') adminEmail: string,
   ): Promise<Discipline> {
-    return this.disciplinesService.removeAdmin(id, adminId);
+    return this.disciplinesService.removeAdmin(email, adminEmail);
   }
 }
