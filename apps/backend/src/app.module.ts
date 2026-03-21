@@ -15,7 +15,10 @@ import { StoryDraftModule } from './story-draft/story-draft.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(AppDataSource.options),
+    TypeOrmModule.forRoot({
+      ...AppDataSource.options,
+      migrations: [], // ensures migrations not run on app startup
+    }),
     AuthorModule,
     InventoryModule,
     InventoryHoldingModule,
