@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  AdminCreateUserCommand,
   AdminDeleteUserCommand,
   AttributeType,
   CognitoIdentityProviderClient,
@@ -33,10 +34,32 @@ export class AuthService {
     return Users[0].Attributes;
   }
 
+  async createManagedUser(
+    email: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<void> {
+    // user pool is configured with email aliases, so Username can't be an email value.
+    const generatedUsername = `managed-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
 
-  // TODO: add create user function for admin members
+    const adminCreateUserCommand = new AdminCreateUserCommand({
+      UserPoolId: CognitoAuthConfig.aws_user_pools_id,
+      Username: generatedUsername,
+      DesiredDeliveryMediums: ['EMAIL'],
+      UserAttributes: [
+        { Name: 'email', Value: email },
+        { Name: 'email_verified', Value: 'true' },
+        { Name: 'given_name', Value: firstName },
+        { Name: 'family_name', Value: lastName },
+        { Name: 'name', Value: `${firstName} ${lastName}`.trim() },
+      ],
+    });
 
-  
+    await this.providerClient.send(adminCreateUserCommand);
+  }
+
   async deleteUser(email: string): Promise<void> {
     const adminDeleteUserCommand = new AdminDeleteUserCommand({
       Username: email,
