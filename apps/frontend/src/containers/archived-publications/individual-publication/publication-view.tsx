@@ -395,9 +395,9 @@ const PublicationView: React.FC = () => {
 
   const isProjectsView = location.pathname.startsWith('/projects/');
   const breadcrumbHref = isProjectsView
-    ? '/projects/publication/drafts'
-    : '/archive';
-  const breadcrumbLabel = isProjectsView ? 'Projects' : 'Archive';
+    ? '/projects/drafts'
+    : '/archive/published';
+  const breadcrumbLabel = isProjectsView ? 'Projects' : 'Library';
 
   return (
     <div className="publication-view">

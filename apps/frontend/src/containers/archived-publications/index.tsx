@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import './styles.css';
+import apiClient from '@api/apiClient';
 import {
   STATIC_ARCHIVED,
   RECENTLY_EDITED,
@@ -25,7 +26,13 @@ import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
 import BookmarkIcon from '../../assets/icons/bookmark.svg';
 
 type PublicationsPageMode = 'archive' | 'projects';
-type ProjectTab = 'drafts' | 'revision' | 'in-production' | 'published-archive';
+type ArchiveTab = 'published' | 'archived';
+type ProjectTab =
+  | 'drafts'
+  | 'in-revision'
+  | 'in-production'
+  | 'published'
+  | 'archived';
 
 interface PublicationsPageProps {
   mode?: PublicationsPageMode;
@@ -128,12 +135,17 @@ function applyFiltersAndSort(
   return result;
 }
 
+function isArchiveTab(value: string | undefined): value is ArchiveTab {
+  return value === 'published' || value === 'archived';
+}
+
 function isProjectTab(value: string | undefined): value is ProjectTab {
   return (
     value === 'drafts' ||
-    value === 'revision' ||
+    value === 'in-revision' ||
     value === 'in-production' ||
-    value === 'published-archive'
+    value === 'published' ||
+    value === 'archived'
   );
 }
 
@@ -149,11 +161,12 @@ export default function ArchivedPublications({
   const navigate = useNavigate();
   const { tab } = useParams<{ tab: string }>();
 
+  const activeArchiveTab: ArchiveTab = isArchiveTab(tab) ? tab : 'published';
   const activeProjectTab: ProjectTab = isProjectTab(tab) ? tab : 'drafts';
 
   useEffect(() => {
-    fetch('/api/anthologies')
-      .then((res) => res.json())
+    apiClient
+      .getAnthologies()
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setPublications(data as Anthology[]);
@@ -168,23 +181,33 @@ export default function ArchivedPublications({
     const status = String(pub.status);
 
     if (mode === 'archive') {
-      return status === AnthologyStatus.ARCHIVED || status === 'Published';
+      if (activeArchiveTab === 'published') {
+        return (
+          status === AnthologyStatus.CAN_BE_SHARED || status === 'Published'
+        );
+      }
+
+      return status === AnthologyStatus.ARCHIVED;
     }
 
     if (activeProjectTab === 'drafts') {
       return pub.status === AnthologyStatus.NOT_STARTED;
     }
 
-    if (activeProjectTab === 'revision') {
+    if (activeProjectTab === 'in-revision') {
       return pub.status === AnthologyStatus.DRAFTING;
     }
 
     if (activeProjectTab === 'in-production') {
-      return pub.status === AnthologyStatus.CAN_BE_SHARED;
+      return status === 'InProduction';
     }
 
-    if (activeProjectTab === 'published-archive') {
-      return status === AnthologyStatus.ARCHIVED || status === 'Published';
+    if (activeProjectTab === 'published') {
+      return status === AnthologyStatus.CAN_BE_SHARED || status === 'Published';
+    }
+
+    if (activeProjectTab === 'archived') {
+      return status === AnthologyStatus.ARCHIVED;
     }
 
     return false;
@@ -244,7 +267,7 @@ export default function ArchivedPublications({
           {/* Search Header */}
           <div className="publication-search-header">
             <h2 className="publication-search-title">
-              {mode === 'projects' ? 'Publications' : 'All Publications'}
+              {mode === 'projects' ? 'Publication Tracker' : 'Library'}
             </h2>
             <div className="publication-search-controls">
               <div className="publication-search-input-wrapper">
@@ -287,10 +310,30 @@ export default function ArchivedPublications({
               )}
             </div>
           </div>
+          {mode === 'archive' && (
+            <div className="publication-tabs">
+              <NavLink
+                to="/archive/published"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Published
+              </NavLink>
+              <NavLink
+                to="/archive/archived"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Archived
+              </NavLink>
+            </div>
+          )}
           {mode === 'projects' && (
             <div className="publication-tabs">
               <NavLink
-                to="/projects/publication/drafts"
+                to="/projects/drafts"
                 className={({ isActive }) =>
                   `publication-tab ${isActive ? 'publication-tab--active' : ''}`
                 }
@@ -298,15 +341,15 @@ export default function ArchivedPublications({
                 Drafts
               </NavLink>
               <NavLink
-                to="/projects/publication/revision"
+                to="/projects/in-revision"
                 className={({ isActive }) =>
                   `publication-tab ${isActive ? 'publication-tab--active' : ''}`
                 }
               >
-                Revision
+                In Revision
               </NavLink>
               <NavLink
-                to="/projects/publication/in-production"
+                to="/projects/in-production"
                 className={({ isActive }) =>
                   `publication-tab ${isActive ? 'publication-tab--active' : ''}`
                 }
@@ -314,12 +357,20 @@ export default function ArchivedPublications({
                 In Production
               </NavLink>
               <NavLink
-                to="/projects/publication/published-archive"
+                to="/projects/published"
                 className={({ isActive }) =>
                   `publication-tab ${isActive ? 'publication-tab--active' : ''}`
                 }
               >
-                Published/Archive
+                Published
+              </NavLink>
+              <NavLink
+                to="/projects/archived"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Archived
               </NavLink>
             </div>
           )}
@@ -334,7 +385,7 @@ export default function ArchivedPublications({
                 onClick={() =>
                   navigate(
                     mode === 'projects'
-                      ? `/projects/publication/details/${pub.id}`
+                      ? `/projects/publication/${pub.id}`
                       : `/archive/publication/${pub.id}`,
                   )
                 }

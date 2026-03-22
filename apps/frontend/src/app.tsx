@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 
 import './styles.css';
 import apiClient from '@api/apiClient';
@@ -18,12 +22,19 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       // public routes
-      { index: true, element: <ArchivedPublications mode="archive" /> },
+      { index: true, element: <Navigate to="/archive/published" replace /> },
       {
         // archive
         path: 'archive',
         children: [
-          { index: true, element: <ArchivedPublications mode="archive" /> },
+          {
+            index: true,
+            element: <Navigate to="/archive/published" replace />,
+          },
+          {
+            path: ':tab',
+            element: <ArchivedPublications mode="archive" />,
+          },
           {
             path: 'publication/:id?',
             element: <PublicationView />,
@@ -35,12 +46,21 @@ const router = createBrowserRouter([
         element: <AuthedApp roles={[Role.ADMIN, Role.VOLUNTEER]} />,
         children: [
           {
-            path: 'projects/publication/:tab',
-            element: <ArchivedPublications mode="projects" />,
-          },
-          {
-            path: 'projects/publication/details/:id?',
-            element: <PublicationView />,
+            path: 'projects',
+            children: [
+              {
+                index: true,
+                element: <Navigate to="/projects/drafts" replace />,
+              },
+              {
+                path: ':tab',
+                element: <ArchivedPublications mode="projects" />,
+              },
+              {
+                path: 'publication/:id?',
+                element: <PublicationView />,
+              },
+            ],
           },
           {
             path: 'test',

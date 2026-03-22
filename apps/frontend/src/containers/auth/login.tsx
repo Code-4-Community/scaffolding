@@ -1,5 +1,12 @@
 import React from 'react';
-import { Authenticator, View, Image, Heading, Text } from '@aws-amplify/ui-react';
+import {
+  Authenticator,
+  View,
+  Image,
+  Heading,
+  Text,
+} from '@aws-amplify/ui-react';
+import { fetchAuthSession } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 import './auth.css';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +42,7 @@ const components = {
         </Heading>
       </View>
     );
-  }
+  },
 };
 
 const Login: React.FC = () => {
@@ -47,12 +54,35 @@ const Login: React.FC = () => {
         hideSignUp
         initialState="signIn"
         components={components}
-        loginMechanisms={['email', 'phone_number', 'username']} 
+        loginMechanisms={['email', 'phone_number', 'username']}
       >
         {({ user }) => {
           if (user) {
-             setTimeout(() => navigate('/'), 0);
-             return <div>Loading...</div>;
+            if (
+              import.meta.env.DEV &&
+              !sessionStorage.getItem('dev-auth-token-logged')
+            ) {
+              sessionStorage.setItem('dev-auth-token-logged', '1');
+              fetchAuthSession()
+                .then((session) => {
+                  const idToken = session.tokens?.idToken?.toString();
+                  console.log(
+                    '[DEV] Use this bearer token for backend testing:',
+                    {
+                      bearerToken: idToken ? `Bearer ${idToken}` : null,
+                      idToken,
+                    },
+                  );
+                })
+                .catch((error) => {
+                  console.error(
+                    '[DEV] Failed to fetch auth session tokens',
+                    error,
+                  );
+                });
+            }
+            setTimeout(() => navigate('/'), 0);
+            return <div>Loading...</div>;
           }
           return <></>;
         }}

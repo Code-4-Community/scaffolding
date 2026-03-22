@@ -20,9 +20,7 @@ const Root: React.FC = () => {
 
   const isLibraryActive =
     location.pathname.startsWith('/archive') || location.pathname === '/';
-  const isProjectsActive = location.pathname.startsWith(
-    '/projects/publication',
-  );
+  const isProjectsActive = location.pathname.startsWith('/projects');
 
   return (
     <div className="root-shell">
@@ -61,7 +59,7 @@ const Root: React.FC = () => {
             {/* Library */}
             <div className="sidebar-library-section">
               <NavLink
-                to="/archive"
+                to="/archive/published"
                 className={
                   'sidebar-library-header' +
                   (isLibraryActive ? ' sidebar-nav-item--active' : '')
@@ -76,7 +74,7 @@ const Root: React.FC = () => {
                     />
                     {!collapsed && (
                       <span className="sidebar-nav-label sidebar-nav-label--bold">
-                        Archive
+                        Library
                       </span>
                     )}
                   </div>
@@ -86,7 +84,7 @@ const Root: React.FC = () => {
 
             {/* Projects */}
             <NavLink
-              to="/projects/publication/drafts"
+              to="/projects/drafts"
               className={
                 'sidebar-nav-item' +
                 (isProjectsActive ? ' sidebar-nav-item--active' : '')
