@@ -14,8 +14,12 @@ export class AuthService {
   private readonly providerClient: CognitoIdentityProviderClient;
 
   constructor() {
+    const cognitoRegion = CognitoAuthConfig.aws_cognito_region;
+
     this.providerClient = new CognitoIdentityProviderClient({
-      region: CognitoAuthConfig.aws_cognito_region,
+      region: cognitoRegion,
+      // Work around endpoint rule resolution issues in the currently installed SDK tree.
+      endpoint: `https://cognito-idp.${cognitoRegion}.amazonaws.com`,
       credentials: {
         accessKeyId: process.env.NX_AWS_ACCESS_KEY,
         secretAccessKey: process.env.NX_AWS_SECRET_ACCESS_KEY,
