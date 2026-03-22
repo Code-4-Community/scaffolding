@@ -33,10 +33,8 @@ export class AuthService {
     return Users[0].Attributes;
   }
 
-
   // TODO: add create user function for admin members
 
-  
   async deleteUser(email: string): Promise<void> {
     const adminDeleteUserCommand = new AdminDeleteUserCommand({
       Username: email,
