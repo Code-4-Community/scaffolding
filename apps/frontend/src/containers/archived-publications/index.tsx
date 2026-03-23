@@ -49,7 +49,7 @@ function applyFiltersAndSort(
     }
   }
 
-  if (filters.pubLevels) {
+  if (filters.pubLevels.length > 0) {
     result = result.filter((p) =>
       filters.pubLevels.some((l) => p.pub_level === l),
     );
@@ -71,7 +71,7 @@ function applyFiltersAndSort(
 
   // Program — normalize programs to array for comparison
   // Note: original entries 1–2 use 'YABP' and will not match any enum value
-  if (filters.programs) {
+  if (filters.programs.length > 0) {
     result = result.filter((p) =>
       filters.programs.some((g) => p.programs?.includes(g)),
     );
