@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
-import {
-  STATIC_ARCHIVED,
-  MOCK_STORIES,
-  MOCK_AUTHORS,
-} from '../../../utils/mock-data';
-import {
-  Anthology,
-  AnthologyStatus,
-  AnthologyPubLevel,
-  Story,
-} from '../../../types';
+import { Anthology, Story } from '../../../types';
 import './publication-view.css';
 
 import imgFrame69 from '../../../assets/images/frame-69.png';
@@ -168,43 +158,6 @@ const assets = [
   { name: 'name_of_file', type: 'PDF', size: '6.2 MB' },
 ];
 
-const mockAnthology: Anthology = {
-  id: 0,
-  title: 'Untitled Publication (Mock)',
-  subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  byline: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  description:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  published_year: 2025,
-  programs: 'YLAB',
-  inventory: 79,
-  status: AnthologyStatus.CAN_BE_SHARED,
-  pub_level: AnthologyPubLevel.PERFECT_BOUND,
-  photo_url: undefined,
-  genres: ['Fantasy', 'Science Fiction', 'Mystery'],
-  themes: ['Short Stories', 'Creative Writing'],
-  isbn: '979-8-88694-087-9',
-  shopify_url: 'https://example.com',
-  praise_quotes:
-    '"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."',
-  foreword_author: 'Agnes Ugoji',
-  age_category: '9-12',
-  dimensions: '7" x 7"',
-  binding_type: 'Perfect Bound',
-  page_count: 132,
-  print_run: 500,
-  printed_by: 'Marquis',
-  number_of_students: 53,
-  printing_cost: '$2,906.40',
-  weight: '6.2 oz / 176 g',
-  inventory_locations: {
-    'Devs/Comms Office (1865 Columbus)': 79,
-    'The Hub (1989 Columbus)': 400,
-    'Tutoring Center (3035 Office)': 0,
-    Archived: 3,
-  },
-};
-
 const PublicationView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<TabType>('publications');
@@ -220,85 +173,32 @@ const PublicationView: React.FC = () => {
       apiClient
         .getAnthology(id)
         .then((data) => {
-          if (data) {
-            setAnthology(data);
-          } else {
-            // Fallback to mock if ID exists but no data returned (unlikely with current API structure but safe)
-            setAnthology(mockAnthology);
-          }
+          setAnthology(data);
           setLoading(false);
         })
         .catch((err) => {
           console.error(err);
-          // Fallback to mock data based on ID
-          const mockPub = STATIC_ARCHIVED.find(
-            (pub) => pub.id === parseInt(id || '0'),
-          );
-          if (mockPub) {
-            setAnthology(mockPub as Anthology);
-          } else {
-            setAnthology(mockAnthology);
-          }
           setLoading(false);
         });
     } else {
-      // Fallback for development if no ID is present
-      const mockPub = STATIC_ARCHIVED.find(
-        (pub) => pub.id === parseInt(id || '0'),
-      );
-      console.log('Using mock anthology (no ID)');
-      setAnthology(mockPub ? (mockPub as Anthology) : mockAnthology);
+      setAnthology(null);
       setLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
     if (anthology?.id) {
-      if (apiClient.getStoriesByAnthology) {
-        apiClient
-          .getStoriesByAnthology(anthology.id)
-          .then((stories: Story[]) => {
-            const authorNames = [
-              ...new Set(
-                stories
-                  .map(
-                    (s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name,
-                  )
-                  .filter(Boolean),
-              ),
-            ] as string[];
-            setAuthors(authorNames);
-          })
-          .catch(() => {
-            // Fallback to mock stories on error
-            const mockStories = MOCK_STORIES.filter(
-              (s) => s.anthologyId === anthology.id,
-            );
-            const authorNames = [
-              ...new Set(
-                mockStories
-                  .map(
-                    (s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name,
-                  )
-                  .filter(Boolean),
-              ),
-            ];
-            setAuthors(authorNames as string[]);
-          });
-      } else {
-        // API method doesn't exist yet, so use mock stories
-        const mockStories = MOCK_STORIES.filter(
-          (s) => s.anthologyId === anthology.id,
-        );
-        const authorNames = [
-          ...new Set(
-            mockStories
-              .map((s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name)
-              .filter(Boolean),
-          ),
-        ];
-        setAuthors(authorNames as string[]);
-      }
+      apiClient
+        .getStoriesByAnthology(anthology.id)
+        .then((stories: Story[]) => {
+          const authorNames = [
+            ...new Set(stories.map((s) => s.author?.name).filter(Boolean)),
+          ] as string[];
+          setAuthors(authorNames);
+        })
+        .catch(() => {
+          setAuthors([]);
+        });
     }
   }, [anthology?.id]);
 
