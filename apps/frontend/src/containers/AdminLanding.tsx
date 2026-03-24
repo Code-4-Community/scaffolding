@@ -70,7 +70,7 @@ const AdminLanding: React.FC = () => {
             className="basis-1/4"
             title="Approved"
             value={approvedCount}
-            description="Active volunteers "
+            description="Active volunteers"
             icon={checkmarkIcon}
           />
         </Box>
