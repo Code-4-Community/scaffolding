@@ -21,6 +21,10 @@ export class ApiClient {
     return this.get('/api') as Promise<string>;
   }
 
+  public async getApplications(): Promise<Application[]> {
+    return this.get('/api/applications') as Promise<Application[]>;
+  }
+
   public async getApplication(appId: number): Promise<Application> {
     return this.get(`/api/applications/${appId}`) as Promise<Application>;
   }

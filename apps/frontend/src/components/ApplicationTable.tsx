@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table } from '@chakra-ui/react';
+import type { ApplicationRow } from '@hooks/useApplications';
 
 const COLUMNS = [
   'Name',
@@ -7,77 +8,36 @@ const COLUMNS = [
   'Actual Start Date',
   'Experience Type',
   'Discipline',
-  'Discipline Admin Name',
+  'Applicant Type',
   'Status',
 ];
 
-const APPLICATIONS = [
-  {
-    id: '1',
-    name: 'Firstname Lastname',
-    proposedDate: '01-01-2026',
-    actualStartDate: '01-07-2026',
-    experienceType: 'Volunteer',
-    discipline: 'Nursing',
-    disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
-  },
-  {
-    id: '2',
-    name: 'Firstname Lastname',
-    proposedDate: '01-01-2026',
-    actualStartDate: '01-06-2026',
-    experienceType: 'Volunteer',
-    discipline: 'Nursing',
-    disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
-  },
-  {
-    id: '3',
-    name: 'Firstname Lastname',
-    proposedDate: '01-01-2026',
-    actualStartDate: '01-05-2026',
-    experienceType: 'Volunteer',
-    discipline: 'Nursing',
-    disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
-  },
-  {
-    id: '4',
-    name: 'Firstname Lastname',
-    proposedDate: '01-01-2026',
-    actualStartDate: '01-03-2026',
-    experienceType: 'Volunteer',
-    discipline: 'Nursing',
-    disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
-  },
-  {
-    id: '5',
-    name: 'Firstname Lastname',
-    proposedDate: '01-01-2026',
-    actualStartDate: '01-02-2026',
-    experienceType: 'Volunteer',
-    discipline: 'Nursing',
-    disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
-  },
-];
-
 interface ApplicationTableProps {
+  applications: ApplicationRow[];
   searchQuery?: string;
 }
 
-export function ApplicationTable({ searchQuery = '' }: ApplicationTableProps) {
-  const filteredApplications = APPLICATIONS.filter((application) => {
+function formatDate(dateStr: string): string {
+  if (!dateStr) return '—';
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) return dateStr;
+  const [, year, month, day] = match;
+  return `${month}/${day}/${year}`;
+}
+
+export function ApplicationTable({
+  applications,
+  searchQuery = '',
+}: ApplicationTableProps) {
+  const filteredApplications = applications.filter((application) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
       application.name.toLowerCase().includes(query) ||
       application.discipline.toLowerCase().includes(query) ||
-      application.disciplineAdminName.toLowerCase().includes(query) ||
       application.status.toLowerCase().includes(query) ||
-      application.experienceType.toLowerCase().includes(query)
+      application.experienceType.toLowerCase().includes(query) ||
+      application.email.toLowerCase().includes(query)
     );
   });
 
@@ -98,13 +58,13 @@ export function ApplicationTable({ searchQuery = '' }: ApplicationTableProps) {
       </Table.Header>
       <Table.Body>
         {filteredApplications.map((application) => (
-          <Table.Row key={application.id}>
+          <Table.Row key={application.appId}>
             <Table.Cell>{application.name}</Table.Cell>
-            <Table.Cell>{application.proposedDate}</Table.Cell>
-            <Table.Cell>{application.actualStartDate}</Table.Cell>
+            <Table.Cell>{formatDate(application.proposedStartDate)}</Table.Cell>
+            <Table.Cell>{formatDate(application.actualStartDate)}</Table.Cell>
             <Table.Cell>{application.experienceType}</Table.Cell>
             <Table.Cell>{application.discipline}</Table.Cell>
-            <Table.Cell>{application.disciplineAdminName}</Table.Cell>
+            <Table.Cell>{application.applicantType}</Table.Cell>
             <Table.Cell>{application.status}</Table.Cell>
           </Table.Row>
         ))}
