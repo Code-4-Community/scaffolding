@@ -11,13 +11,13 @@
     "prepush:fix": "yarn run format && yarn run lint",
     "prepare": "husky install",
     "typeorm": "ts-node --project apps/backend/tsconfig.seed.json ./node_modules/typeorm/cli.js",
-    "migration:generate": "npm run typeorm -- migration:generate apps/backend/src/migrations/$npm_config_name -d apps/backend/src/data-source.ts",
-    "migration:run": "npm run typeorm -- migration:run -d apps/backend/src/data-source.ts",
-    "migration:revert": "npm run typeorm -- migration:revert -d apps/backend/src/data-source.ts",
-    "migration:create": "npm run typeorm -- migration:create apps/backend/src/migrations/$npm_config_name",
+    "migration:generate": "dotenv -e apps/backend/.env -- yarn typeorm migration:generate -d apps/backend/src/data-source.ts",
+    "migration:run": "dotenv -e apps/backend/.env -- yarn typeorm migration:run -d apps/backend/src/data-source.ts",
+    "migration:revert": "dotenv -e apps/backend/.env -- yarn typeorm migration:revert -d apps/backend/src/data-source.ts",
+    "migration:create": "yarn typeorm migration:create",
     "test": "jest",
-    "schema:drop": "npm run typeorm -- schema:drop -d apps/backend/src/data-source.ts",
-    "db:reset": "npm run schema:drop && npm run migration:run && npx nx run backend:seed"
+    "schema:drop": "dotenv -e apps/backend/.env -- yarn typeorm schema:drop -d apps/backend/src/data-source.ts",
+    "db:reset": "yarn schema:drop && yarn migration:run && yarn nx run backend:seed"
   },
   "private": true,
   "dependencies": {
@@ -73,6 +73,7 @@
     "@vitejs/plugin-react": "^4.0.0",
     "@vitest/ui": "^0.32.0",
     "cypress": "^13.0.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-cypress": "^2.13.4",

@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import './styles.css';
-import apiClient from '@api/apiClient';
-import {
-  STATIC_ARCHIVED,
-  RECENTLY_EDITED,
-  MOCK_LAST_MODIFIED,
-  MOCK_STORIES,
-  MOCK_AUTHORS,
-} from '@utils/mock-data';
+import apiClient from '../../api/apiClient';
+import { MOCK_LAST_MODIFIED } from '@utils/mock-data';
 import {
   Anthology,
   AnthologyStatus,
@@ -19,7 +13,6 @@ import {
 import FilterModal from './filter-modal/FilterModal';
 
 // Import SVG icons
-import DocumentIcon from '../../assets/icons/document.svg';
 import SearchIcon from '../../assets/icons/search.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
@@ -38,13 +31,6 @@ interface PublicationsPageProps {
   mode?: PublicationsPageMode;
 }
 
-/** Returns the author names for a given anthology id via the stories join. */
-function getAuthors(anthologyId: number): string[] {
-  return MOCK_STORIES.filter((s) => s.anthologyId === anthologyId)
-    .map((s) => MOCK_AUTHORS.find((a) => a.id === s.authorId)?.name)
-    .filter(Boolean) as string[];
-}
-
 /**
  * Applies search, filters, and sort to the publication list.
  * Returns a new sorted+filtered array without mutating the original.
@@ -56,14 +42,10 @@ function applyFiltersAndSort(
 ): Anthology[] {
   let result = [...pubs];
 
-  // Search by title or author
+  // Search by title
   if (search) {
     const q = search.toLowerCase();
-    result = result.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        getAuthors(p.id).some((a) => a.toLowerCase().includes(q)),
-    );
+    result = result.filter((p) => p.title.toLowerCase().includes(q));
   }
 
   // Publication date year range
@@ -80,7 +62,7 @@ function applyFiltersAndSort(
     }
   }
 
-  if (filters.pubLevels) {
+  if (filters.pubLevels.length > 0) {
     result = result.filter((p) =>
       filters.pubLevels.some((l) => p.pub_level === l),
     );
@@ -102,7 +84,7 @@ function applyFiltersAndSort(
 
   // Program — normalize programs to array for comparison
   // Note: original entries 1–2 use 'YABP' and will not match any enum value
-  if (filters.programs) {
+  if (filters.programs.length > 0) {
     result = result.filter((p) =>
       filters.programs.some((g) => p.programs?.includes(g)),
     );
@@ -120,9 +102,7 @@ function applyFiltersAndSort(
       case SortOption.TITLE_ASC:
         return a.title.localeCompare(b.title);
       case SortOption.AUTHOR_ASC:
-        return (getAuthors(a.id)[0] ?? '').localeCompare(
-          getAuthors(b.id)[0] ?? '',
-        );
+        return a.title.localeCompare(b.title);
       case SortOption.DATE_NEWEST:
         return b.published_year - a.published_year;
       case SortOption.DATE_OLDEST:
@@ -152,8 +132,7 @@ function isProjectTab(value: string | undefined): value is ProjectTab {
 export default function ArchivedPublications({
   mode = 'archive',
 }: PublicationsPageProps) {
-  const [publications, setPublications] =
-    useState<Anthology[]>(STATIC_ARCHIVED);
+  const [publications, setPublications] = useState<Anthology[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedFilters, setAppliedFilters] =
     useState<FilterState>(DEFAULT_FILTER_STATE);
@@ -168,12 +147,12 @@ export default function ArchivedPublications({
     apiClient
       .getAnthologies()
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setPublications(data as Anthology[]);
         }
       })
-      .catch(() => {
-        setPublications(STATIC_ARCHIVED);
+      .catch((err) => {
+        console.log(err);
       });
   }, []);
 
@@ -221,46 +200,6 @@ export default function ArchivedPublications({
 
   return (
     <div className="archive-wrapper">
-      {/* Recently Edited Section */}
-      {mode === 'projects' && (
-        <section className="recently-edited-section">
-          <div className="recently-edited-content">
-            <h2 className="recently-edited-title">Recently Edited</h2>
-            <div className="recently-edited-list">
-              {RECENTLY_EDITED.map((pub) => (
-                <div
-                  key={pub.id}
-                  className="publication-list-item"
-                  // onClick={() => setSelected(pub)}
-                >
-                  <div className="publication-list-item-content">
-                    <div className="publication-list-item-left">
-                      <img
-                        src={DocumentIcon}
-                        alt=""
-                        className="publication-list-icon"
-                      />
-                      <span className="publication-list-title">
-                        {pub.title}
-                      </span>
-                    </div>
-                    <div className="publication-list-item-right">
-                      <span className="publication-list-modified">
-                        Last modified 1 hour ago
-                      </span>
-                      <img
-                        src={MenuDotsIcon}
-                        alt=""
-                        className="publication-list-menu"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
       {/* All Publications Section */}
       <section className="all-publications-section">
         <div className="all-publications-content">
@@ -407,9 +346,6 @@ export default function ArchivedPublications({
                 <div className="publication-card-info">
                   <div className="publication-card-details">
                     <h3 className="publication-card-title">{pub.title}</h3>
-                    <p className="publication-card-author">
-                      {getAuthors(pub.id).join(', ') || 'Author Name'}
-                    </p>
                     <div className="publication-card-meta">
                       <span className="publication-card-modified">
                         Last modified {MOCK_LAST_MODIFIED}

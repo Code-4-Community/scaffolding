@@ -94,4 +94,26 @@ export const AnthologiesSeed: DeepPartial<Anthology>[] = [
 
     isbn: '979-8-88694-087-9',
   },
+
+  {
+    id: 4,
+    title: 'Archived Anthology',
+    byline: 'Written by Boston Graduates, 2021-2025',
+    genres: ['College Essay'],
+    themes: ['Identity', 'College Essay'],
+    description: 'This is an archived anthology',
+    publishedDate: new Date('2025-06-30'),
+
+    programs: ['Holland (Burke)', 'In-School'],
+    sponsors: [
+      'Northeastern University Office of City and Community Engagement',
+      'Suffolk University',
+    ],
+
+    status: AnthologyStatus.ARCHIVED,
+
+    pubLevel: AnthologyPubLevel.PERFECT_BOUND,
+
+    isbn: '979-8-88694-087-9',
+  },
 ];

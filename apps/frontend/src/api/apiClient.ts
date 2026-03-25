@@ -21,12 +21,12 @@ export class ApiClient {
     return this.get('/api') as Promise<string>;
   }
 
-  public async getAnthology(id: string | number): Promise<Anthology> {
-    return this.get(`/api/anthologies/${id}`) as Promise<Anthology>;
-  }
-
   public async getAnthologies(): Promise<Anthology[]> {
     return this.get('/api/anthologies') as Promise<Anthology[]>;
+  }
+
+  public async getAnthology(id: string | number): Promise<Anthology> {
+    return this.get(`/api/anthologies/${id}`) as Promise<Anthology>;
   }
 
   public async getStoriesByAnthology(
