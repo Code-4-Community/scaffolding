@@ -16,7 +16,12 @@ export class UsersService {
     status: Status = Status.VOLUNTEER,
     publishingName?: string,
   ) {
-    const userId = (await this.repo.count()) + 1;
+    const maxIdRow = await this.repo
+      .createQueryBuilder('user')
+      .select('MAX(user.id)', 'maxId')
+      .getRawOne<{ maxId: string | null }>();
+    const userId = (Number(maxIdRow?.maxId) || 0) + 1;
+
     const user = this.repo.create({
       id: userId,
       status,
