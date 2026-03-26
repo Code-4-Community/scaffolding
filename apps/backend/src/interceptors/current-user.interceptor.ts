@@ -4,24 +4,20 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class CurrentUserInterceptor implements NestInterceptor {
-  constructor(
-    private authService: AuthService,
-    private usersService: UsersService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   async intercept(context: ExecutionContext, handler: CallHandler) {
     const request = context.switchToHttp().getRequest();
-    const cognitoUserAttributes = await this.authService.getUser(
-      request.user.idUser,
-    );
-    const userEmail = cognitoUserAttributes.find(
-      (attribute) => attribute.Name === 'email',
-    ).Value;
+    const userEmail = request.user?.email;
+
+    if (!userEmail) {
+      return handler.handle();
+    }
+
     const users = await this.usersService.find(userEmail);
 
     if (users.length > 0) {

@@ -1,6 +1,5 @@
 import Role from '@api/dtos/role';
-import { roleMap } from '../../constants';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 interface AuthedAppProps {
@@ -26,9 +25,9 @@ const AuthedApp: React.FC<AuthedAppProps> = ({ roles }) => {
       </div>
     );
   if (!user || !roles.includes(user.role))
-    return <Navigate to="/archive" />;
+    return <Navigate to="/archive/published" replace />;
 
-  return <Navigate to={roleMap[user.role]} />;
+  return <Outlet />;
 };
 
 export default AuthedApp;

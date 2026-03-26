@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import './styles.css';
 import apiClient from '../../api/apiClient';
 import { MOCK_LAST_MODIFIED } from '@utils/mock-data';
@@ -13,10 +14,22 @@ import FilterModal from './filter-modal/FilterModal';
 
 // Import SVG icons
 import SearchIcon from '../../assets/icons/search.svg';
-import ListIcon from '../../assets/icons/list.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
 import BookmarkIcon from '../../assets/icons/bookmark.svg';
+
+type PublicationsPageMode = 'archive' | 'projects';
+type ArchiveTab = 'published' | 'archived';
+type ProjectTab =
+  | 'drafts'
+  | 'in-revision'
+  | 'in-production'
+  | 'published'
+  | 'archived';
+
+interface PublicationsPageProps {
+  mode?: PublicationsPageMode;
+}
 
 /**
  * Applies search, filters, and sort to the publication list.
@@ -94,35 +107,93 @@ function applyFiltersAndSort(
         return b.published_year - a.published_year;
       case SortOption.DATE_OLDEST:
         return a.published_year - b.published_year;
+      default:
+        return 0;
     }
   });
 
   return result;
 }
 
-export default function ArchivedPublications() {
-  const [archived, setArchived] = useState<Anthology[]>([]);
+function isArchiveTab(value: string | undefined): value is ArchiveTab {
+  return value === 'published' || value === 'archived';
+}
+
+function isProjectTab(value: string | undefined): value is ProjectTab {
+  return (
+    value === 'drafts' ||
+    value === 'in-revision' ||
+    value === 'in-production' ||
+    value === 'published' ||
+    value === 'archived'
+  );
+}
+
+export default function ArchivedPublications({
+  mode = 'archive',
+}: PublicationsPageProps) {
+  const [publications, setPublications] = useState<Anthology[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedFilters, setAppliedFilters] =
     useState<FilterState>(DEFAULT_FILTER_STATE);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { tab } = useParams<{ tab: string }>();
+
+  const activeArchiveTab: ArchiveTab = isArchiveTab(tab) ? tab : 'published';
+  const activeProjectTab: ProjectTab = isProjectTab(tab) ? tab : 'drafts';
 
   useEffect(() => {
     apiClient
       .getAnthologies()
       .then((data) => {
-        const archivedOnly = (data as Anthology[]).filter(
-          (item) => item.status === AnthologyStatus.ARCHIVED,
-        );
-        setArchived(archivedOnly);
+        if (Array.isArray(data)) {
+          setPublications(data as Anthology[]);
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
+  const statusFilteredPublications = publications.filter((pub) => {
+    const status = String(pub.status);
+
+    if (mode === 'archive') {
+      if (activeArchiveTab === 'published') {
+        return (
+          status === AnthologyStatus.CAN_BE_SHARED || status === 'Published'
+        );
+      }
+
+      return status === AnthologyStatus.ARCHIVED;
+    }
+
+    if (activeProjectTab === 'drafts') {
+      return pub.status === AnthologyStatus.NOT_STARTED;
+    }
+
+    if (activeProjectTab === 'in-revision') {
+      return pub.status === AnthologyStatus.DRAFTING;
+    }
+
+    if (activeProjectTab === 'in-production') {
+      return status === 'InProduction';
+    }
+
+    if (activeProjectTab === 'published') {
+      return status === AnthologyStatus.CAN_BE_SHARED || status === 'Published';
+    }
+
+    if (activeProjectTab === 'archived') {
+      return status === AnthologyStatus.ARCHIVED;
+    }
+
+    return false;
+  });
+
   const filteredPublications = applyFiltersAndSort(
-    archived,
+    statusFilteredPublications,
     searchQuery,
     appliedFilters,
   );
@@ -134,7 +205,9 @@ export default function ArchivedPublications() {
         <div className="all-publications-content">
           {/* Search Header */}
           <div className="publication-search-header">
-            <h2 className="publication-search-title">All Publications</h2>
+            <h2 className="publication-search-title">
+              {mode === 'projects' ? 'Publication Tracker' : 'Library'}
+            </h2>
             <div className="publication-search-controls">
               <div className="publication-search-input-wrapper">
                 <div className="publication-search-input-content">
@@ -152,16 +225,9 @@ export default function ArchivedPublications() {
                   />
                 </div>
               </div>
-              <button type="button" className="publication-filter-btn">
-                <img
-                  src={ListIcon}
-                  alt=""
-                  className="publication-filter-icon"
-                />
-              </button>
               <button
                 type="button"
-                className="publication-filter-btn"
+                className="publication-filter-btn publication-filter-btn--text"
                 onClick={() => setIsFilterModalOpen(true)}
                 aria-label="Open sort and filter"
               >
@@ -170,9 +236,83 @@ export default function ArchivedPublications() {
                   alt=""
                   className="publication-filter-icon"
                 />
+                <span>Filters</span>
               </button>
+              {mode === 'projects' && (
+                <button
+                  type="button"
+                  className="publication-create-btn"
+                  aria-label="Create project"
+                >
+                  Create Project
+                </button>
+              )}
             </div>
           </div>
+          {mode === 'archive' && (
+            <div className="publication-tabs">
+              <NavLink
+                to="/archive/published"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Published
+              </NavLink>
+              <NavLink
+                to="/archive/archived"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Archived
+              </NavLink>
+            </div>
+          )}
+          {mode === 'projects' && (
+            <div className="publication-tabs">
+              <NavLink
+                to="/projects/drafts"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Drafts
+              </NavLink>
+              <NavLink
+                to="/projects/in-revision"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                In Revision
+              </NavLink>
+              <NavLink
+                to="/projects/in-production"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                In Production
+              </NavLink>
+              <NavLink
+                to="/projects/published"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Published
+              </NavLink>
+              <NavLink
+                to="/projects/archived"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                Archived
+              </NavLink>
+            </div>
+          )}
 
           {/* Publication Cards Grid */}
           <div className="publication-cards-grid">
@@ -182,13 +322,17 @@ export default function ArchivedPublications() {
                 type="button"
                 className="publication-card"
                 onClick={() =>
-                  (window.location.href = `archive/publication/${pub.id}`)
+                  navigate(
+                    mode === 'projects'
+                      ? `/projects/publication/${pub.id}`
+                      : `/archive/publication/${pub.id}`,
+                  )
                 }
               >
                 <div className="publication-card-image">
                   <img
                     src={
-                      pub.photo_url || 'src/assets/images/covers/booktemp.avif'
+                      pub.photo_url || '/src/assets/images/covers/booktemp.avif'
                     }
                     alt={pub.title}
                     className="publication-card-cover"
