@@ -1,9 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, ILike, Repository } from 'typeorm';
+import {
+  ArrayOverlap,
+  Between,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  In,
+  Repository,
+} from 'typeorm';
 
 import { Anthology } from './anthology.entity';
 import { AgeCategory, AnthologyStatus, AnthologyPubLevel } from './types';
+import {
+  AnthologySortOption,
+  FilterSortAnthologyDto,
+} from './dtos/filter-anthology.dto';
 
 @Injectable()
 export class AnthologyService {
@@ -96,33 +107,34 @@ export class AnthologyService {
     return this.repo.save(anthology);
   }
 
-  findAllSortedByTitle(): Promise<Anthology[]> {
-    return this.repo.find({ order: { title: 'ASC' } });
-  }
+  findWithFilterSort(dto: FilterSortAnthologyDto): Promise<Anthology[]> {
+    const where: FindOptionsWhere<Anthology> = {};
+    const order: FindOptionsOrder<Anthology> = {};
 
-  findAllSortedByDateRecent(): Promise<Anthology[]> {
-    return this.repo.find({ order: { publishedDate: 'DESC' } });
-  }
+    if (dto.pubDateRange) {
+      where.publishedDate = Between(
+        new Date(dto.pubDateRange.start),
+        new Date(dto.pubDateRange.end),
+      );
+    }
+    if (dto.pubLevels?.length) {
+      where.pubLevel = In(dto.pubLevels);
+    }
+    if (dto.genres?.length) {
+      where.genres = ArrayOverlap(dto.genres);
+    }
+    if (dto.programs?.length) {
+      where.programs = ArrayOverlap(dto.programs);
+    }
 
-  findAllSortedByDateOldest(): Promise<Anthology[]> {
-    return this.repo.find({ order: { publishedDate: 'ASC' } });
-  }
+    if (dto.sortBy === AnthologySortOption.TITLE_ASC) {
+      order.title = 'ASC';
+    } else if (dto.sortBy === AnthologySortOption.DATE_RECENT) {
+      order.publishedDate = 'DESC';
+    } else if (dto.sortBy === AnthologySortOption.DATE_OLDEST) {
+      order.publishedDate = 'ASC';
+    }
 
-  findByAgeCategory(ageCategory: AgeCategory): Promise<Anthology[]> {
-    return this.repo.find({ where: { ageCategory } });
-  }
-
-  findByPubDateRange(start: string, end: string): Promise<Anthology[]> {
-    return this.repo.find({
-      where: { publishedDate: Between(new Date(start), new Date(end)) },
-    });
-  }
-
-  findByGenre(genre: string): Promise<Anthology[]> {
-    return this.repo.find({ where: { genres: ILike(`%${genre}%`) } });
-  }
-
-  findByProgram(program: string): Promise<Anthology[]> {
-    return this.repo.find({ where: { programs: ILike(`%${program}%`) } });
+    return this.repo.find({ where, order });
   }
 }
