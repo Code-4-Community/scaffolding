@@ -4,19 +4,31 @@ import {
   ConflictException,
   Controller,
   ForbiddenException,
+  Get,
+  NotFoundException,
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { DeleteUserDto } from './dtos/delete-user.dto';
 import { CreateManagedUserDto } from './dtos/create-managed-user.dto';
 import { User } from '../users/user.entity';
-import { ApiTags } from '@nestjs/swagger';
-import { Status } from '../users/types';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { Status } from '../users/types';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { Request } from 'express';
+
+interface AuthenticatedUserResponse {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: 'admin' | 'volunteer';
+}
 
 type JwtUserRequest = Request & {
   user?: {
@@ -31,6 +43,26 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
   ) {}
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(CurrentUserInterceptor)
+  @Get('/me')
+  async me(@Req() request): Promise<AuthenticatedUserResponse> {
+    const user = request.user;
+
+    if (!user?.id) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.status === Status.ADMIN ? 'admin' : 'volunteer',
+    };
+  }
 
   @Post('/delete')
   async delete(@Body() body: DeleteUserDto): Promise<void> {

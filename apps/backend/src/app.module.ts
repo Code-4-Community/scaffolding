@@ -12,6 +12,7 @@ import { StoryModule } from './story/story.module';
 import { OmchaiModule } from './omchai/omchai.module';
 import { UsersModule } from './users/users.module';
 import { StoryDraftModule } from './story-draft/story-draft.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { StoryDraftModule } from './story-draft/story-draft.module';
     OmchaiModule,
     UsersModule,
     StoryDraftModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
