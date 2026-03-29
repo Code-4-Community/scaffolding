@@ -6,8 +6,8 @@ import {
   CognitoIdentityProviderClient,
   ListUsersCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-
 import CognitoAuthConfig from '../../../shared/aws-exports';
+
 
 @Injectable()
 export class AuthService {

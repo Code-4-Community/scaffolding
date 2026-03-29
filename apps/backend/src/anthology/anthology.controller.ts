@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  Post,
+  Body,
   Delete,
   Param,
   ParseIntPipe,
@@ -11,11 +13,22 @@ import { AnthologyService } from './anthology.service';
 import { Anthology } from './anthology.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FilterSortAnthologyDto } from './dtos/filter-anthology.dto';
 
 @ApiTags('Anthologies')
 @Controller('anthologies')
 export class AnthologyController {
   constructor(private readonly anthologyService: AnthologyService) {}
+
+  @Post('filter-sort')
+  filterSort(@Body() dto: FilterSortAnthologyDto): Promise<Anthology[]> {
+    return this.anthologyService.findWithFilterSort(dto);
+  }
+
+  @Get()
+  async getAllAnthologies(): Promise<Anthology[]> {
+    return this.anthologyService.findAll();
+  }
 
   @Get(':id')
   async getAnthology(
@@ -28,11 +41,6 @@ export class AnthologyController {
     }
 
     return anthology;
-  }
-
-  @Get()
-  async getAllAnthologies(): Promise<Anthology[]> {
-    return this.anthologyService.findAll();
   }
 
   @ApiBearerAuth()

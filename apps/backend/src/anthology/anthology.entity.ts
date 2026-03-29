@@ -1,10 +1,8 @@
 import {
   Entity,
   Column,
-  IntegerType,
   PrimaryGeneratedColumn,
   OneToMany,
-  ManyToOne,
   OneToOne,
   Relation,
 } from 'typeorm';
@@ -99,5 +97,5 @@ export class Anthology {
   productionInfo: ProductionInfo;
 
   @OneToMany(() => Omchai, (omchai) => omchai.anthology)
-  omchaiAssignments: Omchai[];
+  omchaiAssignments: Relation<Omchai[]>;
 }
