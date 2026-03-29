@@ -43,11 +43,6 @@ export class AnthologyController {
     return anthology;
   }
 
-  @Get()
-  async getAllAnthologies(): Promise<Anthology[]> {
-    return this.anthologyService.findAll();
-  }
-
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:anthologyId')
