@@ -111,6 +111,7 @@ function useCount(
 
   useEffect(() => {
     let mounted = true;
+    setIsLoading(true);
     getter()
       .then((value) => {
         if (mounted) {
@@ -118,9 +119,9 @@ function useCount(
           setError(null);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         if (mounted) {
-          setError(err);
+          setError(err instanceof Error ? err : new Error(String(err)));
         }
       })
       .finally(() => {

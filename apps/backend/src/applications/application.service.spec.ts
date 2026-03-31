@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -182,7 +182,9 @@ describe('ApplicationsService', () => {
 
       const result = await service.countApprovedOrActive();
 
-      expect(repository.count).toHaveBeenCalled();
+      expect(repository.count).toHaveBeenCalledWith({
+        where: { appStatus: In([AppStatus.ACCEPTED, AppStatus.ACTIVE]) },
+      });
       expect(result).toBe(102);
     });
   });
