@@ -8,9 +8,8 @@ import {
 import { Request, Response } from 'express';
 import { EmailService } from '../util/email/email.service';
 import { UsersService } from '../users/users.service';
+import { FIELD_LABELS } from './types';
 
-// Helper function to escape HTML characters in the error message (avoid XSS)
-// TODO: can remove or use a separate library for security handling
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -46,10 +45,8 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
 
-    // Extract the validation error message(s)
-    const errorMessage = this.sanitizeErrorMessage(exceptionResponse);
+    const errorMessages = this.extractErrorMessages(exceptionResponse);
 
-    // Best-effort email: never let email failure affect the error response
     try {
       const body = request.body;
       const recipientEmail = body?.email;
@@ -59,7 +56,6 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
           'No email found in request body. Skipping error email.',
         );
       } else {
-        // this.logger.log(`Looking up user by email: ${recipientEmail}`);
         const applicant = await this.usersService.findOne(recipientEmail);
 
         if (!applicant) {
@@ -70,14 +66,12 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
           const applicantName = `${escapeHtml(
             applicant.firstName,
           )} ${escapeHtml(applicant.lastName)}`;
-          // this.logger.log(`Found user: ${applicantName}. Building email body...`);
 
           const emailBody = this.buildEmailBody(
             applicantName,
             body,
-            errorMessage,
+            errorMessages,
           );
-          // this.logger.log('Email body built. Sending email...');
 
           await this.emailService.queueEmail(
             recipientEmail,
@@ -96,33 +90,63 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
       );
     }
 
-    // Always return the original error response to the client
     response.status(status).json(exceptionResponse);
   }
 
   /**
-   * Extracts a user-safe error message from the exception response.
-   * Handles both string messages and class-validator's { message: string[] } format.
+   * Extracts validation error messages from the exception response
+   * and rewrites them with user-friendly field names.
+   * @returns An array of sanitized, human-readable error strings.
    */
-  private sanitizeErrorMessage(exceptionResponse: string | object): string {
+  private extractErrorMessages(exceptionResponse: string | object): string[] {
     if (typeof exceptionResponse === 'string') {
-      return exceptionResponse;
+      return [exceptionResponse];
     }
 
     const res = exceptionResponse as Record<string, unknown>;
 
-    // if the exception response is an array of strings
-    // NestJS ValidationPipe combines all the validation errors into a single array
     if (Array.isArray(res.message)) {
-      return res.message.map((msg: unknown) => String(msg)).join('\n');
+      return res.message.map((msg: unknown) =>
+        this.humanizeErrorMessage(String(msg)),
+      );
     }
 
-    // if the exception response is just one string
     if (typeof res.message === 'string') {
-      return res.message;
+      return [this.humanizeErrorMessage(res.message)];
     }
 
-    return 'An unexpected error occurred with your submission. Please try again.';
+    return [
+      'An unexpected error occurred with your submission. Please try again.',
+    ];
+  }
+
+  /**
+   * Replaces internal camelCase field names in a class-validator error message
+   * with their user-friendly labels.
+   *
+   * Example:
+   *   "appStatus must be one of..." → "Application Status must be one of..."
+   *   "each value in interest must be one of..." → "Each value in Areas of Interest must be one of..."
+   */
+  private humanizeErrorMessage(message: string): string {
+    // for single fields like appStatus, applicantType, etc.
+    const directMatch = message.match(/^(\w+)\s/);
+
+    // for array fields like interest, heardAboutFrom, etc.
+    const eachMatch = message.match(/^each value in (\w+)\s/);
+
+    // get the field name from the match
+    const field = eachMatch?.[1] ?? directMatch?.[1];
+
+    if (field && FIELD_LABELS[field]) {
+      return (
+        message.replace(field, FIELD_LABELS[field]).charAt(0).toUpperCase() +
+        message.slice(1)
+      );
+    }
+
+    // capitalize the first letter of the message
+    return message.charAt(0).toUpperCase() + message.slice(1);
   }
 
   /**
@@ -131,25 +155,52 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
   private buildEmailBody(
     applicantName: string,
     requestBody: Record<string, unknown>,
-    errorMessage: string,
+    errorMessages: string[],
   ): string {
-    const submittedFields = escapeHtml(JSON.stringify(requestBody, null, 2));
+    // format the error messages into a list of <li> tags
+    const errorList = errorMessages
+      .map((msg) => `<li style="margin-bottom:8px;">${escapeHtml(msg)}</li>`)
+      .join('\n');
 
-    const linkBlock = this.pandaDocLink
-      ? `<p><a href="${escapeHtml(
-          this.pandaDocLink,
-        )}">Click here to resubmit your application</a></p>`
-      : '';
+    // format the submitted fields into a user-friendly HTML table
+    const submittedFieldsHtml = this.formatSubmittedFields(requestBody);
 
     return `<p>Hello ${applicantName},</p>
-    <p>We were unable to process your application due to an issue with the information provided.</p>
-    <p><strong>What needs to be corrected:</strong></p>
-    <p>${escapeHtml(errorMessage)}</p>
-    <p><strong>Your submitted information:</strong></p>
-    <pre style="white-space:pre-wrap;font-family:inherit;">${submittedFields}</pre>
-    <p>Please review the information above and resubmit your application through the PandaDoc form with the correct details.</p>
-    ${linkBlock}
-    <p>We appreciate your time and apologize for the inconvenience.</p>
-    <p>Best regards,<br/>Boston Health Care for the Homeless Program</p>`;
+      <p>We were unable to process your application due to an issue with the information provided.</p>
+      <p><strong>What needs to be corrected:</strong></p>
+      <ul style="margin:8px 0;">
+      ${errorList}
+      </ul>
+      <p><strong>Your submitted information:</strong></p>
+      ${submittedFieldsHtml}
+      <p>Please review the information above and resubmit your application through the PandaDoc form with the correct details.</p>
+      ${escapeHtml(this.pandaDocLink)}
+      <p>We appreciate your time and apologize for the inconvenience.</p>
+      <p>Best regards,<br/>Boston Health Care for the Homeless Program</p>`;
+  }
+
+  /**
+   * Formats request body fields into a user-friendly HTML table.
+   * Only includes fields that have a friendly label defined in FIELD_LABELS.
+   * Skips null/undefined values.
+   */
+  private formatSubmittedFields(body: Record<string, unknown>): string {
+    const rows = Object.entries(FIELD_LABELS)
+      .filter(([key]) => key in body && body[key] != null && body[key] !== '')
+      .map(([key, label]) => {
+        const rawValue = body[key];
+        const displayValue = Array.isArray(rawValue)
+          ? rawValue.join(', ')
+          : String(rawValue);
+        return `<tr>
+  <td style="padding:4px 12px 4px 0;font-weight:bold;vertical-align:top;">${escapeHtml(
+    label,
+  )}</td>
+  <td style="padding:4px 0;">${escapeHtml(displayValue)}</td>
+</tr>`;
+      })
+      .join('\n');
+
+    return `<table style="border-collapse:collapse;font-family:inherit;">\n${rows}\n</table>`;
   }
 }
