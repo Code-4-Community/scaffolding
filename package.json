@@ -11,12 +11,12 @@
     "prepush:fix": "yarn run format && yarn run lint",
     "prepare": "husky install",
     "typeorm": "ts-node --project apps/backend/tsconfig.seed.json ./node_modules/typeorm/cli.js",
-    "migration:generate": "dotenv -e apps/backend/.env -- yarn typeorm migration:generate -d apps/backend/src/data-source.ts",
-    "migration:run": "dotenv -e apps/backend/.env -- yarn typeorm migration:run -d apps/backend/src/data-source.ts",
-    "migration:revert": "dotenv -e apps/backend/.env -- yarn typeorm migration:revert -d apps/backend/src/data-source.ts",
+    "migration:generate": "yarn typeorm migration:generate apps/backend/src/migrations/nullable-publish-date -d apps/backend/src/data-source.ts",
+    "migration:run": "yarn typeorm migration:run -d apps/backend/src/data-source.ts",
+    "migration:revert": "yarn typeorm migration:revert -d apps/backend/src/data-source.ts",
     "migration:create": "yarn typeorm migration:create",
     "test": "jest",
-    "schema:drop": "dotenv -e apps/backend/.env -- yarn typeorm schema:drop -d apps/backend/src/data-source.ts",
+    "schema:drop": "yarn typeorm schema:drop -d apps/backend/src/data-source.ts",
     "db:reset": "yarn schema:drop && yarn migration:run && yarn nx run backend:seed"
   },
   "private": true,
@@ -96,5 +96,6 @@
   "overrides": {
     "@typescript-eslint/parser": "6.9.1",
     "@typescript-eslint/eslint-plugin": "6.9.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
