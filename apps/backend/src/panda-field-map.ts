@@ -2,7 +2,7 @@ import { InterestArea } from './applications/types';
 
 export type TargetTable =
   | 'application'
-  | 'applicant'
+  | 'candidateInfo'
   | 'learnerInfo'
   | 'volunteerInfo';
 
@@ -16,34 +16,12 @@ export interface ValidPayload {
 }
 
 export const PANDADOC_FIELD_MAP: ValidPayload[] = [
-  // ── applicant table ──
+  // ── candidateInfo table ──
   {
-    pandaDocKey: 'name',
-    backendField: 'firstName',
-    transform: (value: string) => value.split(' ')[0],
+    pandaDocKey: 'email',
+    backendField: 'email',
     required: true,
-    targetTable: 'applicant',
-  },
-  {
-    pandaDocKey: 'name',
-    backendField: 'lastName',
-    transform: (value: string) => value.split(' ')[1],
-    required: true,
-    targetTable: 'applicant',
-  },
-  {
-    pandaDocKey: 'start_date',
-    backendField: 'startDate',
-    transform: (value: string) => new Date(value),
-    required: true,
-    targetTable: 'applicant',
-  },
-  {
-    pandaDocKey: 'end_date',
-    backendField: 'endDate',
-    transform: (value: string) => new Date(value),
-    required: false,
-    targetTable: 'applicant',
+    targetTable: 'candidateInfo',
   },
 
   // ── application table ──
@@ -51,6 +29,20 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     pandaDocKey: 'email',
     backendField: 'email',
     required: true,
+    targetTable: 'application',
+  },
+  {
+    pandaDocKey: 'start_date',
+    backendField: 'proposedStartDate',
+    transform: (value: string) => new Date(value),
+    required: true,
+    targetTable: 'application',
+  },
+  {
+    pandaDocKey: 'end_date',
+    backendField: 'endDate',
+    transform: (value: string) => new Date(value),
+    required: false,
     targetTable: 'application',
   },
   {
@@ -73,20 +65,8 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   },
   {
     pandaDocKey: 'experience_type',
-    backendField: 'desiredExperience',
+    backendField: 'experienceType',
     required: true,
-    targetTable: 'application',
-  },
-  {
-    pandaDocKey: 'school_affiliation',
-    backendField: 'school',
-    required: true,
-    targetTable: 'application',
-  },
-  {
-    pandaDocKey: 'other_school',
-    backendField: 'otherSchool',
-    required: false,
     targetTable: 'application',
   },
   {
@@ -274,6 +254,12 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   },
 
   // ── learnerInfo table ──
+  {
+    pandaDocKey: 'other_school',
+    backendField: 'otherSchool',
+    required: false,
+    targetTable: 'learnerInfo',
+  },
   {
     pandaDocKey: 'applicant_role',
     backendField: 'isSupervisorApplying',

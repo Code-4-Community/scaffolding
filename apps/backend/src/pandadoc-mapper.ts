@@ -33,7 +33,7 @@ export function pandadocMapper(
 ): MappedBuckets {
   const buckets: MappedBuckets = {
     application: {},
-    applicant: {},
+    candidateInfo: {},
     learnerInfo: {},
     volunteerInfo: {},
   };

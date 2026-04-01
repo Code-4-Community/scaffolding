@@ -3,7 +3,6 @@ import { InterestArea } from './applications/types';
 
 function buildFullPayload(): Record<string, unknown> {
   return {
-    name: 'Owen Stepan',
     start_date: '2026-06-01',
     end_date: '2026-12-01',
     email: 'ohstep23@gmail.com',
@@ -49,22 +48,25 @@ describe('pandadocMapper', () => {
   it('maps a complete submission into the correct buckets', () => {
     const result = pandadocMapper(buildFullPayload());
 
-    expect(result.applicant['firstName']).toBe('Owen');
-    expect(result.applicant['lastName']).toBe('Stepan');
-    expect(result.applicant['startDate']).toEqual(new Date('2026-06-01'));
-    expect(result.applicant['endDate']).toEqual(new Date('2026-12-01'));
-
     expect(result.application['email']).toBe('ohstep23@gmail.com');
+    expect(result.application['proposedStartDate']).toEqual(
+      new Date('2026-06-01'),
+    );
+    expect(result.application['endDate']).toEqual(new Date('2026-12-01'));
     expect(result.application['pronouns']).toBe('he/him');
     expect(result.application['phone']).toBe('617-555-0199');
     expect(result.application['weeklyHours']).toBe(10);
     expect(result.application['emergencyContactName']).toBe('Susan Stepan');
   });
 
-  it('splits name into first and last', () => {
+  it('maps email to candidateInfo', () => {
     const result = pandadocMapper(buildFullPayload());
-    expect(result.applicant['firstName']).toBe('Owen');
-    expect(result.applicant['lastName']).toBe('Stepan');
+    expect(result.candidateInfo['email']).toBe('ohstep23@gmail.com');
+  });
+
+  it('maps experience_type to experienceType on application', () => {
+    const result = pandadocMapper(buildFullPayload());
+    expect(result.application['experienceType']).toBe('Volunteer/Intern');
   });
 
   it('parses total_hours as a number', () => {
@@ -120,7 +122,7 @@ describe('pandadocMapper', () => {
   it('throws listing all missing required fields at once', () => {
     const payload = buildFullPayload();
     delete payload['email'];
-    delete payload['name'];
+    delete payload['start_date'];
     delete payload['resume'];
 
     try {
@@ -129,15 +131,22 @@ describe('pandadocMapper', () => {
     } catch (e) {
       const msg = (e as Error).message;
       expect(msg).toContain('email');
-      expect(msg).toContain('name');
+      expect(msg).toContain('start_date');
       expect(msg).toContain('resume');
     }
   });
 
-  it('maps school_affiliation to both application and learnerInfo', () => {
+  it('maps school_affiliation to learnerInfo only', () => {
     const result = pandadocMapper(buildFullPayload());
-    expect(result.application['school']).toBe('Northeastern');
     expect(result.learnerInfo['school']).toBe('Northeastern');
+    expect(result.application['school']).toBeUndefined();
+  });
+
+  it('maps otherSchool to learnerInfo', () => {
+    const payload = buildFullPayload();
+    payload['other_school'] = 'Northeastern University';
+    const result = pandadocMapper(payload);
+    expect(result.learnerInfo['otherSchool']).toBe('Northeastern University');
   });
 
   it('maps learnerInfo fields correctly', () => {
