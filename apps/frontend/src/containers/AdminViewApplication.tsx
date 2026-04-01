@@ -129,13 +129,17 @@ const AdminViewApplication: React.FC = () => {
           />
         </Box>
 
-        {application.applicantType === ApplicantType.LEARNER &&
-        learnerInfo !== null &&
-        'syllabus' in learnerInfo ? (
-          <UploadedMaterial frameProps={{ hasSyllabus: true }} />
-        ) : (
-          <UploadedMaterial frameProps={{ hasSyllabus: false }} />
-        )}
+        <UploadedMaterial
+          frameProps={{
+            resume: application.resume,
+            coverLetter: application.coverLetter,
+            syllabus:
+              application.applicantType === ApplicantType.LEARNER &&
+              learnerInfo !== null
+                ? learnerInfo.syllabus
+                : undefined,
+          }}
+        />
 
         {application.applicantType === ApplicantType.LEARNER &&
           learnerInfo !== null && (
