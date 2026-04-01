@@ -125,51 +125,7 @@ export class ApplicationsService {
   async create(
     createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
-    try {
-      this.validateApplicationDto(createApplicationDto);
-    } catch (error) {
-      // Sanitize: only expose known validation messages, not internal details
-      const errorMessage =
-        error instanceof BadRequestException
-          ? error.message
-          : 'An unexpected error occurred with your submission. Please try again.';
-
-      // TODO: Replace with production PandaDoc form URL
-      const pandaDocLink =
-        'https://eform.pandadoc.com/?eform=e27f6460-7fa2-40f2-825b-4a83c507b9fe';
-
-      // get user info from email and send
-      try {
-        const applicant = await this.usersService.findOne(
-          createApplicationDto.email,
-        );
-        if (!applicant) {
-          throw new BadRequestException('Applicant not found');
-        }
-        const applicantName: string = `${escapeHtml(
-          applicant.firstName,
-        )} ${escapeHtml(applicant.lastName)}`;
-
-        const emailBody = this.buildApplicationSubmissionErrorEmailBody(
-          applicantName,
-          createApplicationDto,
-          errorMessage,
-          pandaDocLink,
-        );
-
-        await this.emailService.queueEmail(
-          createApplicationDto.email,
-          'Action Required: Issue with Your Application Submission',
-          emailBody,
-        );
-      } catch (error) {
-        throw new BadRequestException('Failed to send validation error email');
-      }
-
-      // Re-throw original error after email is sent
-      throw error;
-    }
-
+    this.validateApplicationDto(createApplicationDto);
     const application = this.applicationRepository.create(createApplicationDto);
     return await this.applicationRepository.save(application);
   }

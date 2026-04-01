@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseFilters,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -16,6 +17,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
 import { UpdateApplicationAvailabilityDto } from './dto/update-application-availability.request.dto';
+import { ApplicationValidationEmailFilter } from './application-validation-email.filter';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
@@ -75,6 +77,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Post()
+  @UseFilters(ApplicationValidationEmailFilter)
   async createApplication(
     @Body() createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
