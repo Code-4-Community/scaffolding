@@ -40,7 +40,7 @@ export class Anthology {
   @Column({ type: 'simple-array', default: [] })
   triggers: string[];
 
-  @Column({ name: 'published_date', type: 'date', nullable: true })
+  @Column({ type: 'date', nullable: true })
   publishedDate?: Date;
 
   @Column({ type: 'simple-array', nullable: true })
