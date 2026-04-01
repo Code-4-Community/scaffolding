@@ -16,6 +16,7 @@ import QuestionFrame from '@components/QuestionFrame';
 import RequirementsFrame from '@components/RequirementsFrame';
 import UploadedMaterial from '@components/UploadedMaterial';
 import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
+import EmergencyContactFrame from '@components/EmergencyContactFrame';
 
 const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
@@ -185,6 +186,11 @@ const AdminViewApplication: React.FC = () => {
             }}
           />
         )}
+        <EmergencyContactFrame
+          name={application.emergencyContactName}
+          phone={application.emergencyContactPhone}
+          relationship={application.emergencyContactRelationship}
+        />
       </Box>
     </div>
   );
