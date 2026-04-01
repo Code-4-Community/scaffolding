@@ -4,10 +4,10 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
-import { PHONE_REGEX } from './types';
+import { AppStatus, PHONE_REGEX } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 /**
@@ -48,6 +48,44 @@ export class ApplicationsService {
    */
   async findAll(): Promise<Application[]> {
     return await this.applicationRepository.find();
+  }
+
+  /**
+   * Returns the total number of applications.
+   * @returns A promise resolving to the total number of applications.
+   */
+  async countAll(): Promise<number> {
+    return await this.applicationRepository.count();
+  }
+
+  /**
+   * Returns the number of applications in review.
+   * @returns A promise resolving to the count for AppStatus.IN_REVIEW.
+   */
+  async countInReview(): Promise<number> {
+    return await this.applicationRepository.count({
+      where: { appStatus: AppStatus.IN_REVIEW },
+    });
+  }
+
+  /**
+   * Returns the number of rejected applications.
+   * @returns A promise resolving to the count for declined applications.
+   */
+  async countRejected(): Promise<number> {
+    return await this.applicationRepository.count({
+      where: { appStatus: AppStatus.DECLINED },
+    });
+  }
+
+  /**
+   * Returns the number of approved/active applications.
+   * @returns A promise resolving to the count for accepted or active applications.
+   */
+  async countApprovedOrActive(): Promise<number> {
+    return await this.applicationRepository.count({
+      where: { appStatus: In([AppStatus.ACCEPTED, AppStatus.ACTIVE]) },
+    });
   }
 
   /**
@@ -140,11 +178,113 @@ export class ApplicationsService {
     return await this.applicationRepository.save(application);
   }
 
-  async delete(appId: number): Promise<Application> {
+  /**
+   * Updates an application's commitment starting date with validation.
+   * @param appId The id of the application to update.
+   * @param proposedStartDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not before endDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateProposedStartDate(
+    appId: number,
+    proposedStartDate: Date,
+  ): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!proposedStartDate) {
+      throw new BadRequestException('Start date is required');
+    }
+
+    if (isNaN(proposedStartDate.getTime())) {
+      throw new BadRequestException('Start date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (application.endDate && proposedStartDate >= application.endDate) {
+      throw new BadRequestException('Start date must be before end date');
+    }
+
+    application.proposedStartDate = proposedStartDate;
+    return await this.applicationRepository.save(application);
+  }
+
+  /**
+   * Updates an application's actual commitment starting date with validation.
+   * @param appId The id of the application to update.
+   * @param actualStartDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not before endDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateActualStartDate(
+    appId: number,
+    actualStartDate: Date,
+  ): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!actualStartDate) {
+      throw new BadRequestException('Start date is required');
+    }
+
+    if (isNaN(actualStartDate.getTime())) {
+      throw new BadRequestException('Start date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (application.endDate && actualStartDate >= application.endDate) {
+      throw new BadRequestException('Start date must be before end date');
+    }
+
+    application.proposedStartDate = actualStartDate;
+    return await this.applicationRepository.save(application);
+  }
+
+  /**
+   * Updates an application's commitment ending date with validation.
+   * @param appId The id of the application to update.
+   * @param endDate The new ending date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if the date is invalid or not after proposedStartDate (when present).
+   * @throws {NotFoundException} if the application does not exist.
+   */
+  async updateEndDate(appId: number, endDate: Date): Promise<Application> {
+    if (!appId) {
+      throw new BadRequestException('Application ID is required');
+    }
+
+    if (!endDate) {
+      throw new BadRequestException('End date is required');
+    }
+
+    if (isNaN(endDate.getTime())) {
+      throw new BadRequestException('End date must be a valid date');
+    }
+
+    const application = await this.findById(appId);
+
+    if (
+      application.proposedStartDate &&
+      application.proposedStartDate >= endDate
+    ) {
+      throw new BadRequestException('End date must be after start date');
+    }
+
+    application.endDate = endDate;
+    return await this.applicationRepository.save(application);
+  }
+
+  async delete(appId: number): Promise<void> {
     const application = await this.findById(appId);
     if (!application) {
       throw new NotFoundException(`Application with ID ${appId} not found`);
     }
-    return await this.applicationRepository.remove(application);
+    await this.applicationRepository.remove(application);
   }
 }

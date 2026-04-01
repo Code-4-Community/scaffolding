@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 /**
  * Defines the expected shape of data for updating an admin's email.
  */
-export class UpdateAdminEmailDto {
+export class UpdateAdminInfoEmailDto {
   /**
    * The new email to change to.
    *

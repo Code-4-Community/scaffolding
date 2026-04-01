@@ -21,6 +21,7 @@ describe('AuthController', () => {
   const mockUsersService = {
     create: jest.fn(),
     findOne: jest.fn(),
+    find: jest.fn(),
     remove: jest.fn(),
   };
 
@@ -58,10 +59,10 @@ describe('AuthController', () => {
       };
 
       const mockUser = {
-        appId: 1,
         email: 'c4c.neu@northestern.edu',
         firstName: 'c4c',
         lastName: 'neu',
+        userType: 'STANDARD',
       };
 
       // Setup mocks
@@ -253,14 +254,14 @@ describe('AuthController', () => {
   describe('POST /delete', () => {
     it('should delete user from Cognito and database', async () => {
       const deleteDto = {
-        appId: 1,
+        email: 'test@northeastern.edu',
       };
 
       const mockUser = {
-        appId: 1,
         email: 'test@northeastern.edu',
         firstName: 'Test',
         lastName: 'User',
+        userType: 'STANDARD',
       };
 
       mockUsersService.findOne.mockResolvedValue(mockUser);
@@ -269,22 +270,27 @@ describe('AuthController', () => {
 
       await controller.delete(deleteDto);
 
-      // Verify correct order: find user, delete from Cognito, then database
-      expect(mockUsersService.findOne).toHaveBeenCalledWith(1);
+      expect(mockUsersService.findOne).toHaveBeenCalledWith(
+        'test@northeastern.edu',
+      );
       expect(mockAuthService.deleteUser).toHaveBeenCalledWith(
         'test@northeastern.edu',
       );
-      expect(mockUsersService.remove).toHaveBeenCalledWith(1);
+      expect(mockUsersService.remove).toHaveBeenCalledWith(
+        'test@northeastern.edu',
+      );
     });
 
     it('should throw BadRequestException if Cognito deletion fails', async () => {
       const deleteDto = {
-        appId: 1,
+        email: 'test@northeastern.edu',
       };
 
       const mockUser = {
-        appId: 1,
         email: 'test@northeastern.edu',
+        firstName: 'Test',
+        lastName: 'User',
+        userType: 'STANDARD',
       };
 
       mockUsersService.findOne.mockResolvedValue(mockUser);
@@ -296,7 +302,23 @@ describe('AuthController', () => {
         BadRequestException,
       );
 
-      // Database deletion should NOT happen if Cognito fails
+      expect(mockUsersService.remove).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException if user not found', async () => {
+      const deleteDto = {
+        email: 'nonexistent@northeastern.edu',
+      };
+
+      mockUsersService.findOne.mockResolvedValue(null);
+
+      await expect(controller.delete(deleteDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(mockUsersService.findOne).toHaveBeenCalledWith(
+        'nonexistent@northeastern.edu',
+      );
+      expect(mockAuthService.deleteUser).not.toHaveBeenCalled();
       expect(mockUsersService.remove).not.toHaveBeenCalled();
     });
   });

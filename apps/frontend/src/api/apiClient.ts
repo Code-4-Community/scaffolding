@@ -1,33 +1,11 @@
 import axios, { type AxiosInstance } from 'axios';
-
-export interface AvailabilityFields {
-  mondayAvailability: string;
-  tuesdayAvailability: string;
-  wednesdayAvailability: string;
-  thursdayAvailability: string;
-  fridayAvailability: string;
-  saturdayAvailability: string;
-}
-
-export interface Application extends AvailabilityFields {
-  appId: number;
-  email: string;
-  discipline: string;
-  appStatus: string;
-  experienceType: string;
-  interest: string[];
-  license: string;
-  phone: string;
-  applicantType: string;
-  school: string;
-  weeklyHours: number;
-  pronouns: string;
-  resume: string;
-  coverLetter: string;
-  emergencyContactName: string;
-  emergencyContactPhone: string;
-  emergencyContactRelationship: string;
-}
+import { useCallback, useEffect, useState } from 'react';
+import {
+  Application,
+  AvailabilityFields,
+  LearnerInfo,
+  VolunteerInfo,
+} from './types';
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
@@ -47,6 +25,14 @@ export class ApiClient {
     return this.get(`/api/applications/${appId}`) as Promise<Application>;
   }
 
+  public async getVolunteerInfo(appId: number): Promise<VolunteerInfo> {
+    return this.get(`/api/volunteer_info/${appId}`) as Promise<VolunteerInfo>;
+  }
+
+  public async getLearnerInfo(appId: number): Promise<LearnerInfo> {
+    return this.get(`/api/learner_info/${appId}`) as Promise<LearnerInfo>;
+  }
+
   public async updateAvailability(
     appId: number,
     availability: Partial<AvailabilityFields>,
@@ -55,6 +41,34 @@ export class ApiClient {
       `/api/applications/${appId}/availability`,
       availability,
     ) as Promise<Application>;
+  }
+
+  public async getTotalApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/total')) as {
+      count: number;
+    };
+    return response.count;
+  }
+
+  public async getInReviewApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/in-review')) as {
+      count: number;
+    };
+    return response.count;
+  }
+
+  public async getRejectedApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/rejected')) as {
+      count: number;
+    };
+    return response.count;
+  }
+
+  public async getApprovedApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/approved')) as {
+      count: number;
+    };
+    return response.count;
   }
 
   private async get(path: string): Promise<unknown> {
@@ -78,4 +92,77 @@ export class ApiClient {
   }
 }
 
-export default new ApiClient();
+const apiClient = new ApiClient();
+export default apiClient;
+
+type CountHookResult = {
+  count: number;
+  isLoading: boolean;
+  error: Error | null;
+};
+
+function useCount(
+  getter: () => Promise<number>,
+  initialCount = 0,
+): CountHookResult {
+  const [count, setCount] = useState(initialCount);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    setIsLoading(true);
+    getter()
+      .then((value) => {
+        if (mounted) {
+          setCount(value);
+          setError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (mounted) {
+          setError(err instanceof Error ? err : new Error(String(err)));
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [getter]);
+
+  return { count, isLoading, error };
+}
+
+export function useTotalApplicationsCount(): CountHookResult {
+  const getter = useCallback(() => apiClient.getTotalApplicationsCount(), []);
+  return useCount(getter);
+}
+
+export function useInReviewApplicationsCount(): CountHookResult {
+  const getter = useCallback(
+    () => apiClient.getInReviewApplicationsCount(),
+    [],
+  );
+  return useCount(getter);
+}
+
+export function useRejectedApplicationsCount(): CountHookResult {
+  const getter = useCallback(
+    () => apiClient.getRejectedApplicationsCount(),
+    [],
+  );
+  return useCount(getter);
+}
+
+export function useApprovedApplicationsCount(): CountHookResult {
+  const getter = useCallback(
+    () => apiClient.getApprovedApplicationsCount(),
+    [],
+  );
+  return useCount(getter);
+}

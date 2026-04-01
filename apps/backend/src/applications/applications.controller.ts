@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   Query,
-  Request,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -27,13 +26,52 @@ export class ApplicationsController {
   constructor(private applicationsService: ApplicationsService) {}
 
   /**
+   * Exposes an endpoint to return the total number of applications.
+   * @returns Object containing the total application count.
+   */
+  @Get('count/total')
+  async getTotalApplicationsCount(): Promise<{ count: number }> {
+    const count = await this.applicationsService.countAll();
+    return { count };
+  }
+
+  /**
+   * Exposes an endpoint to return the total number of applications in review.
+   * @returns Object containing the in-review application count.
+   */
+  @Get('count/in-review')
+  async getInReviewApplicationsCount(): Promise<{ count: number }> {
+    const count = await this.applicationsService.countInReview();
+    return { count };
+  }
+
+  /**
+   * Exposes an endpoint to return the total number of rejected applications.
+   * @returns Object containing the rejected application count.
+   */
+  @Get('count/rejected')
+  async getRejectedApplicationsCount(): Promise<{ count: number }> {
+    const count = await this.applicationsService.countRejected();
+    return { count };
+  }
+
+  /**
+   * Exposes an endpoint to return the total number of approved/active applications.
+   * @returns Object containing the approved/active application count.
+   */
+  @Get('count/approved')
+  async getApprovedApplicationsCount(): Promise<{ count: number }> {
+    const count = await this.applicationsService.countApprovedOrActive();
+    return { count };
+  }
+
+  /**
    * Exposes an endpoint to return all applications.
-   * @param req The request object from the caller (frontend). Currently not used.
    * @returns A promise of the list of all available applications.
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get()
-  async getAllApplications(@Request() req): Promise<Application[]> {
+  async getAllApplications(): Promise<Application[]> {
     return await this.applicationsService.findAll();
   }
 
@@ -49,7 +87,6 @@ export class ApplicationsController {
   @Get('by-discipline')
   async getApplicationsByDiscipline(
     @Query('discipline') discipline: string,
-    @Request() req,
   ): Promise<Application[]> {
     return await this.applicationsService.findByDiscipline(discipline);
   }
@@ -66,7 +103,6 @@ export class ApplicationsController {
   @Get('/:appId')
   async getApplicationById(
     @Param('appId', ParseIntPipe) appId: number,
-    @Request() req,
   ): Promise<Application> {
     return await this.applicationsService.findById(appId);
   }
@@ -81,7 +117,6 @@ export class ApplicationsController {
   @Post()
   async createApplication(
     @Body() createApplicationDto: CreateApplicationDto,
-    @Request() req,
   ): Promise<Application> {
     return await this.applicationsService.create(createApplicationDto);
   }
@@ -100,7 +135,6 @@ export class ApplicationsController {
   async updateApplicationStatus(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateStatusDto: UpdateApplicationStatusDto,
-    @Request() req,
   ): Promise<Application> {
     return await this.applicationsService.update(appId, {
       appStatus: updateStatusDto.appStatus,
@@ -121,7 +155,6 @@ export class ApplicationsController {
   async updateApplicationDiscipline(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateDisciplineDto: UpdateApplicationDisciplineDto,
-    @Request() req,
   ): Promise<Application> {
     return await this.applicationsService.update(appId, {
       discipline: updateDisciplineDto.discipline,
@@ -140,9 +173,68 @@ export class ApplicationsController {
   async updateApplicationAvailability(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateAvailabilityDto: UpdateApplicationAvailabilityDto,
-    @Request() req,
   ): Promise<Application> {
     return await this.applicationsService.update(appId, updateAvailabilityDto);
+  }
+
+  /**
+   * Exposes an endpoint to update an application's commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationProposedStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('proposedStartDate') startDate: string,
+  ): Promise<Application> {
+    return await this.applicationsService.updateProposedStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's actual commitment starting date.
+   * @param appId The id of the application to update.
+   * @param startDate The new actual starting date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/start-date')
+  async updateApplicationActualStartDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('actualStartDate') startDate: string,
+  ): Promise<Application> {
+    return await this.applicationsService.updateActualStartDate(
+      appId,
+      new Date(startDate),
+    );
+  }
+
+  /**
+   * Exposes an endpoint to update an application's commitment ending date.
+   * @param appId The id of the application to update.
+   * @param endDate The new ending date for the application's commitment.
+   * @returns The updated application object.
+   * @throws {BadRequestException} if any field is invalid (e.g. null or undefined).
+   * @throws {NotFoundException} with message 'Application with ID <appId> not found'
+   *         if the application does not exist.
+   */
+  @Patch('/:appId/end-date')
+  async updateApplicationEndDate(
+    @Param('appId', ParseIntPipe) appId: number,
+    @Body('endDate') endDate: string,
+  ): Promise<Application> {
+    return await this.applicationsService.updateEndDate(
+      appId,
+      new Date(endDate),
+    );
   }
 
   /**
@@ -157,8 +249,7 @@ export class ApplicationsController {
   @Delete('/:appId')
   async deleteApplication(
     @Param('appId', ParseIntPipe) appId: number,
-    @Request() req,
-  ): Promise<Application> {
-    return await this.applicationsService.delete(appId);
+  ): Promise<void> {
+    await this.applicationsService.delete(appId);
   }
 }

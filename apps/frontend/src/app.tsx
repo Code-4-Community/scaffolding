@@ -1,33 +1,37 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 
 import apiClient from '@api/apiClient';
-import Root from '@containers/root';
-import ApplicantView from '@containers/applicant';
-import NotFound from '@containers/404';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/applications/:appId',
-    element: <ApplicantView />,
-    errorElement: <NotFound />,
-  },
-]);
+import AdminLanding from '@containers/AdminLanding';
+import AdminViewApplication from '@containers/AdminViewApplication';
 
 export const App: React.FC = () => {
   useEffect(() => {
     apiClient.getHello().then((res) => console.log(res));
   }, []);
 
+  // Note: the / to /admin/landing redirect is temporary convenience for development
   return (
     <ChakraProvider value={defaultSystem}>
-      <RouterProvider router={router} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/admin/landing" replace />} />
+          <Route path="/admin">
+            <Route path="/admin/landing" element={<AdminLanding />} />
+            <Route
+              path="/admin/view-application/:appId"
+              element={<AdminViewApplication />}
+            />
+            <Route path="/admin/settings" />
+          </Route>
+          <Route path="/candidate">
+            <Route path="/candidate/view-application" />
+            <Route path="/candidate/upload-forms" />
+            <Route path="/candidate/settings" />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </ChakraProvider>
   );
 };

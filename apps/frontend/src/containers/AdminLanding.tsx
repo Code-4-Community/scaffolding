@@ -11,18 +11,28 @@ import PageTransitionButton from '@components/PageTransitionButton';
 import Searchbar from '@components/TableSearchBar';
 import PageCounter from '@components/PageCounter';
 import ApplicationTable from '@components/ApplicationTable';
-import AvailabilityTable from '@components/AvailabilityTable';
+import { UserType } from '@api/types';
+import {
+  useApprovedApplicationsCount,
+  useInReviewApplicationsCount,
+  useRejectedApplicationsCount,
+  useTotalApplicationsCount,
+} from '@api/apiClient';
 
-const Root: React.FC = () => {
+const AdminLanding: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
+  const { count: totalCount } = useTotalApplicationsCount();
+  const { count: inReviewCount } = useInReviewApplicationsCount();
+  const { count: rejectedCount } = useRejectedApplicationsCount();
+  const { count: approvedCount } = useApprovedApplicationsCount();
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchQuery(e.target.value);
   }
   return (
     <div className="flex flex-row h-screen">
-      <NavBar logo={'BHCHP'} />
+      <NavBar logo={'BHCHP'} userType={UserType.ADMIN} />
       <Box
         id="main-content"
         p="10"
@@ -35,7 +45,7 @@ const Root: React.FC = () => {
           <DashboardCard
             className="basis-1/4"
             title="Total Applications"
-            value={298}
+            value={totalCount}
             description="All time submissions"
             icon={usersIcon}
           />
@@ -43,7 +53,7 @@ const Root: React.FC = () => {
           <DashboardCard
             className="basis-1/4"
             title="Pending Review"
-            value={52}
+            value={inReviewCount}
             description="Awaiting decision"
             icon={clockIcon}
           />
@@ -51,7 +61,7 @@ const Root: React.FC = () => {
           <DashboardCard
             className="basis-1/4"
             title="Rejected"
-            value={12}
+            value={rejectedCount}
             description="Not matched"
             icon={crossIcon}
           />
@@ -59,8 +69,8 @@ const Root: React.FC = () => {
           <DashboardCard
             className="basis-1/4"
             title="Approved"
-            value={102}
-            description="Active volunteers "
+            value={approvedCount}
+            description="Active volunteers"
             icon={checkmarkIcon}
           />
         </Box>
@@ -106,4 +116,4 @@ const Root: React.FC = () => {
   );
 };
 
-export default Root;
+export default AdminLanding;
