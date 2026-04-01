@@ -9,7 +9,16 @@ import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { PHONE_REGEX } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
+import { EmailService } from '../util/email/email.service';
+import { UsersService } from '../users/users.service';
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 /**
  * Service for applications that interfaces with the application repository.
  */
@@ -18,6 +27,8 @@ export class ApplicationsService {
   constructor(
     @InjectRepository(Application)
     private applicationRepository: Repository<Application>,
+    private emailService: EmailService,
+    private usersService: UsersService,
   ) {}
 
   /**
@@ -114,7 +125,51 @@ export class ApplicationsService {
   async create(
     createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
-    this.validateApplicationDto(createApplicationDto);
+    try {
+      this.validateApplicationDto(createApplicationDto);
+    } catch (error) {
+      // Sanitize: only expose known validation messages, not internal details
+      const errorMessage =
+        error instanceof BadRequestException
+          ? error.message
+          : 'An unexpected error occurred with your submission. Please try again.';
+
+      // TODO: Replace with production PandaDoc form URL
+      const pandaDocLink =
+        'https://eform.pandadoc.com/?eform=e27f6460-7fa2-40f2-825b-4a83c507b9fe';
+
+      // get user info from email and send
+      try {
+        const applicant = await this.usersService.findOne(
+          createApplicationDto.email,
+        );
+        if (!applicant) {
+          throw new BadRequestException('Applicant not found');
+        }
+        const applicantName: string = `${escapeHtml(
+          applicant.firstName,
+        )} ${escapeHtml(applicant.lastName)}`;
+
+        const emailBody = this.buildApplicationSubmissionErrorEmailBody(
+          applicantName,
+          createApplicationDto,
+          errorMessage,
+          pandaDocLink,
+        );
+
+        await this.emailService.queueEmail(
+          createApplicationDto.email,
+          'Action Required: Issue with Your Application Submission',
+          emailBody,
+        );
+      } catch (error) {
+        throw new BadRequestException('Failed to send validation error email');
+      }
+
+      // Re-throw original error after email is sent
+      throw error;
+    }
+
     const application = this.applicationRepository.create(createApplicationDto);
     return await this.applicationRepository.save(application);
   }
@@ -248,5 +303,40 @@ export class ApplicationsService {
       throw new NotFoundException(`Application with ID ${appId} not found`);
     }
     await this.applicationRepository.remove(application);
+  }
+
+  /**
+   * Builds the HTML email body for a failed application submission.
+   * Uses data directly from the DTO — no database lookup required.
+   *
+   * @param applicantDto The submitted application data.
+   * @param errorMessage The sanitized validation error message.
+   * @param pandaDocLink The URL to the PandaDoc resubmission form.
+   * @returns The formatted HTML email body string.
+   */
+  private buildApplicationSubmissionErrorEmailBody(
+    applicantName: string,
+    applicantDto: CreateApplicationDto,
+    errorMessage: string,
+    pandaDocLink: string,
+  ): string {
+    const submittedFields = escapeHtml(JSON.stringify(applicantDto, null, 2));
+
+    const linkBlock = pandaDocLink
+      ? `<p><a href="${escapeHtml(
+          pandaDocLink,
+        )}">Click here to resubmit your application</a></p>`
+      : '';
+
+    return `<p>Hello ${applicantName},</p>
+      <p>We were unable to process your application due to an issue with the information provided.</p>
+      <p><strong>What needs to be corrected:</strong></p>
+      <p>${escapeHtml(errorMessage)}</p>
+      <p><strong>Your submitted information:</strong></p>
+      <pre style="white-space:pre-wrap;font-family:inherit;">${submittedFields}</pre>
+      <p>Please review the information above and resubmit your application through the PandaDoc form with the correct details.</p>
+      ${linkBlock}
+      <p>We appreciate your time and apologize for the inconvenience.</p>
+      <p>Best regards,<br/>Boston Health Care for the Homeless Program</p>`;
   }
 }
