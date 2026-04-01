@@ -2,9 +2,9 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import apiClient from '@api/apiClient';
 import { useApplications } from './useApplications';
-import type { Application, Applicant } from '@api/apiClient';
+import type { Application } from '@api/types';
 
-const mockApplications: Application[] = [
+const mockApplications = [
   {
     appId: 1,
     email: 'jane@example.com',
@@ -15,9 +15,9 @@ const mockApplications: Application[] = [
     license: 'n/a',
     phone: '123-456-7890',
     applicantType: 'Learner',
-    school: 'BU',
     weeklyHours: 20,
     pronouns: 'she/her',
+    desiredExperience: 'clinical',
     resume: 'resume.pdf',
     coverLetter: 'cover.pdf',
     emergencyContactName: 'Mom',
@@ -29,6 +29,7 @@ const mockApplications: Application[] = [
     thursdayAvailability: '9-5',
     fridayAvailability: '9-5',
     saturdayAvailability: 'none',
+    heardAboutFrom: [],
   },
   {
     appId: 2,
@@ -40,9 +41,9 @@ const mockApplications: Application[] = [
     license: 'LCSW',
     phone: '222-333-4444',
     applicantType: 'Volunteer',
-    school: 'NEU',
     weeklyHours: 10,
     pronouns: 'they/them',
+    desiredExperience: 'community outreach',
     resume: 'resume2.pdf',
     coverLetter: 'cover2.pdf',
     emergencyContactName: 'Dad',
@@ -54,25 +55,14 @@ const mockApplications: Application[] = [
     thursdayAvailability: '10-2',
     fridayAvailability: 'none',
     saturdayAvailability: 'none',
+    heardAboutFrom: [],
   },
-];
-
-const mockApplicants: Applicant[] = [
-  {
-    appId: 1,
-    firstName: 'Jane',
-    lastName: 'Doe',
-    proposedStartDate: '2026-01-15',
-    actualStartDate: '2026-02-01',
-    endDate: '2026-06-30',
-  },
-];
+] as Application[];
 
 vi.mock('@api/apiClient', () => {
   return {
     default: {
       getApplications: vi.fn(),
-      getApplicants: vi.fn(),
     },
   };
 });
@@ -84,7 +74,6 @@ describe('useApplications', () => {
 
   it('should start in a loading state', () => {
     vi.mocked(apiClient.getApplications).mockReturnValue(new Promise(() => {}));
-    vi.mocked(apiClient.getApplicants).mockReturnValue(new Promise(() => {}));
 
     const { result } = renderHook(() => useApplications());
 
@@ -93,9 +82,8 @@ describe('useApplications', () => {
     expect(result.current.error).toBeNull();
   });
 
-  it('should fetch and merge applications with applicants', async () => {
+  it('should fetch applications and map to rows', async () => {
     vi.mocked(apiClient.getApplications).mockResolvedValue(mockApplications);
-    vi.mocked(apiClient.getApplicants).mockResolvedValue(mockApplicants);
 
     const { result } = renderHook(() => useApplications());
 
@@ -106,9 +94,8 @@ describe('useApplications', () => {
 
     const first = result.current.applications[0];
     expect(first.appId).toBe(1);
-    expect(first.name).toBe('Jane Doe');
-    expect(first.proposedStartDate).toBe('2026-01-15');
-    expect(first.actualStartDate).toBe('2026-02-01');
+    expect(first.name).toBe('jane@example.com');
+    expect(first.email).toBe('jane@example.com');
     expect(first.discipline).toBe('RN');
     expect(first.status).toBe('App submitted');
     expect(first.experienceType).toBe('BS');
@@ -117,27 +104,10 @@ describe('useApplications', () => {
     const second = result.current.applications[1];
     expect(second.appId).toBe(2);
     expect(second.name).toBe('noname@example.com');
-    expect(second.proposedStartDate).toBe('');
-    expect(second.actualStartDate).toBe('');
-  });
-
-  it('should fall back to email when no matching applicant exists', async () => {
-    vi.mocked(apiClient.getApplications).mockResolvedValue(mockApplications);
-    vi.mocked(apiClient.getApplicants).mockResolvedValue([]);
-
-    const { result } = renderHook(() => useApplications());
-
-    await waitFor(() => expect(result.current.loading).toBe(false));
-
-    expect(result.current.applications[0].name).toBe('jane@example.com');
-    expect(result.current.applications[1].name).toBe('noname@example.com');
   });
 
   it('should set error state when API call fails', async () => {
     vi.mocked(apiClient.getApplications).mockRejectedValue(
-      new Error('Network error'),
-    );
-    vi.mocked(apiClient.getApplicants).mockRejectedValue(
       new Error('Network error'),
     );
 
@@ -149,9 +119,8 @@ describe('useApplications', () => {
     expect(result.current.applications).toEqual([]);
   });
 
-  it('should handle empty responses from both endpoints', async () => {
+  it('should handle empty response', async () => {
     vi.mocked(apiClient.getApplications).mockResolvedValue([]);
-    vi.mocked(apiClient.getApplicants).mockResolvedValue([]);
 
     const { result } = renderHook(() => useApplications());
 
@@ -161,15 +130,13 @@ describe('useApplications', () => {
     expect(result.current.error).toBeNull();
   });
 
-  it('should call both API endpoints exactly once', async () => {
+  it('should call the API endpoint exactly once', async () => {
     vi.mocked(apiClient.getApplications).mockResolvedValue([]);
-    vi.mocked(apiClient.getApplicants).mockResolvedValue([]);
 
     renderHook(() => useApplications());
 
     await waitFor(() => {
       expect(apiClient.getApplications).toHaveBeenCalledTimes(1);
-      expect(apiClient.getApplicants).toHaveBeenCalledTimes(1);
     });
   });
 });

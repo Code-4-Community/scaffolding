@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import apiClient, { type Application, type Applicant } from '@api/apiClient';
+import apiClient from '@api/apiClient';
+import type { Application } from '@api/types';
 
 export interface ApplicationRow {
   appId: number;
@@ -19,28 +20,18 @@ interface UseApplicationsResult {
   error: string | null;
 }
 
-function mergeData(
-  applications: Application[],
-  applicants: Applicant[],
-): ApplicationRow[] {
-  const applicantsByAppId = new Map(applicants.map((a) => [a.appId, a]));
-
-  return applications.map((app) => {
-    const applicant = applicantsByAppId.get(app.appId);
-    return {
-      appId: app.appId,
-      name: applicant
-        ? `${applicant.firstName} ${applicant.lastName}`
-        : app.email,
-      email: app.email,
-      proposedStartDate: applicant?.proposedStartDate ?? '',
-      actualStartDate: applicant?.actualStartDate ?? '',
-      experienceType: app.experienceType,
-      discipline: app.discipline,
-      applicantType: app.applicantType,
-      status: app.appStatus,
-    };
-  });
+function toRows(applications: Application[]): ApplicationRow[] {
+  return applications.map((app) => ({
+    appId: app.appId,
+    name: app.email,
+    email: app.email,
+    proposedStartDate: '',
+    actualStartDate: '',
+    experienceType: app.experienceType,
+    discipline: app.discipline,
+    applicantType: app.applicantType,
+    status: app.appStatus,
+  }));
 }
 
 export function useApplications(): UseApplicationsResult {
@@ -55,12 +46,9 @@ export function useApplications(): UseApplicationsResult {
       setLoading(true);
       setError(null);
       try {
-        const [apps, applicants] = await Promise.all([
-          apiClient.getApplications(),
-          apiClient.getApplicants(),
-        ]);
+        const apps = await apiClient.getApplications();
         if (!cancelled) {
-          setApplications(mergeData(apps, applicants));
+          setApplications(toRows(apps));
         }
       } catch {
         if (!cancelled) {
