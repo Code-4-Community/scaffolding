@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Application,
   AvailabilityFields,
@@ -42,6 +43,34 @@ export class ApiClient {
     ) as Promise<Application>;
   }
 
+  public async getTotalApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/total')) as {
+      count: number;
+    };
+    return response.count;
+  }
+
+  public async getInReviewApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/in-review')) as {
+      count: number;
+    };
+    return response.count;
+  }
+
+  public async getRejectedApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/rejected')) as {
+      count: number;
+    };
+    return response.count;
+  }
+
+  public async getApprovedApplicationsCount(): Promise<number> {
+    const response = (await this.get('/api/applications/count/approved')) as {
+      count: number;
+    };
+    return response.count;
+  }
+
   private async get(path: string): Promise<unknown> {
     return this.axiosInstance.get(path).then((response) => response.data);
   }
@@ -63,4 +92,77 @@ export class ApiClient {
   }
 }
 
-export default new ApiClient();
+const apiClient = new ApiClient();
+export default apiClient;
+
+type CountHookResult = {
+  count: number;
+  isLoading: boolean;
+  error: Error | null;
+};
+
+function useCount(
+  getter: () => Promise<number>,
+  initialCount = 0,
+): CountHookResult {
+  const [count, setCount] = useState(initialCount);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    setIsLoading(true);
+    getter()
+      .then((value) => {
+        if (mounted) {
+          setCount(value);
+          setError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (mounted) {
+          setError(err instanceof Error ? err : new Error(String(err)));
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [getter]);
+
+  return { count, isLoading, error };
+}
+
+export function useTotalApplicationsCount(): CountHookResult {
+  const getter = useCallback(() => apiClient.getTotalApplicationsCount(), []);
+  return useCount(getter);
+}
+
+export function useInReviewApplicationsCount(): CountHookResult {
+  const getter = useCallback(
+    () => apiClient.getInReviewApplicationsCount(),
+    [],
+  );
+  return useCount(getter);
+}
+
+export function useRejectedApplicationsCount(): CountHookResult {
+  const getter = useCallback(
+    () => apiClient.getRejectedApplicationsCount(),
+    [],
+  );
+  return useCount(getter);
+}
+
+export function useApprovedApplicationsCount(): CountHookResult {
+  const getter = useCallback(
+    () => apiClient.getApprovedApplicationsCount(),
+    [],
+  );
+  return useCount(getter);
+}
