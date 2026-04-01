@@ -190,6 +190,7 @@ const LEARNER_INFO_SEED: LearnerInfo[] = [
   {
     appId: 1,
     school: School.HARVARD_MEDICAL_SCHOOL,
+    syllabus: 'jane_doe_syllabus.pdf',
     isSupervisorApplying: false,
     isLegalAdult: true,
   },
