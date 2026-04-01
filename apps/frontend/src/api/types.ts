@@ -162,3 +162,8 @@ export interface User {
   lastName: string;
   userType: UserType;
 }
+
+export interface CandidateInfo {
+  email: string;
+  appId: number;
+}

@@ -6,6 +6,7 @@ import {
   Application,
   AppStatus,
   AvailabilityFields,
+  CandidateInfo,
   LearnerInfo,
   User,
 } from './types';
@@ -53,6 +54,12 @@ export class ApiClient {
 
   public async getLearnerInfo(appId: number): Promise<LearnerInfo> {
     return this.get(`/api/learner_info/${appId}`) as Promise<LearnerInfo>;
+  }
+
+  public async getCandidateInfoByEmail(email: string): Promise<CandidateInfo> {
+    return this.get(
+      `/api/CandidateInfo/email/${encodeURIComponent(email)}`,
+    ) as Promise<CandidateInfo>;
   }
 
   public async updateAvailability(
