@@ -8,7 +8,7 @@ import { Status } from './types';
 
 export const mockUser: User = {
   id: 1,
-  status: Status.STANDARD,
+  status: Status.VOLUNTEER,
   email: 'john@example.com',
   name: 'John Doe',
   firstName: '',
@@ -61,7 +61,7 @@ describe('UsersService', () => {
       const result = await service.create(
         'john@example.com',
         'John Doe',
-        Status.STANDARD,
+        Status.VOLUNTEER,
       );
 
       expect(repo.count).toHaveBeenCalled();

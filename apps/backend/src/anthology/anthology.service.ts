@@ -1,9 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  ArrayOverlap,
+  Between,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  In,
+  Repository,
+} from 'typeorm';
 
 import { Anthology } from './anthology.entity';
-import { AnthologyStatus, AnthologyPubLevel } from './types';
+import { AgeCategory, AnthologyStatus, AnthologyPubLevel } from './types';
+import {
+  AnthologySortOption,
+  FilterSortAnthologyDto,
+} from './dtos/filter-anthology.dto';
 
 @Injectable()
 export class AnthologyService {
@@ -94,5 +105,36 @@ export class AnthologyService {
 
     anthology.status = status;
     return this.repo.save(anthology);
+  }
+
+  findWithFilterSort(dto: FilterSortAnthologyDto): Promise<Anthology[]> {
+    const where: FindOptionsWhere<Anthology> = {};
+    const order: FindOptionsOrder<Anthology> = {};
+
+    if (dto.pubDateRange) {
+      where.publishedDate = Between(
+        new Date(dto.pubDateRange.start),
+        new Date(dto.pubDateRange.end),
+      );
+    }
+    if (dto.pubLevels?.length) {
+      where.pubLevel = In(dto.pubLevels);
+    }
+    if (dto.genres?.length) {
+      where.genres = ArrayOverlap(dto.genres);
+    }
+    if (dto.programs?.length) {
+      where.programs = ArrayOverlap(dto.programs);
+    }
+
+    if (dto.sortBy === AnthologySortOption.TITLE_ASC) {
+      order.title = 'ASC';
+    } else if (dto.sortBy === AnthologySortOption.DATE_RECENT) {
+      order.publishedDate = 'DESC';
+    } else if (dto.sortBy === AnthologySortOption.DATE_OLDEST) {
+      order.publishedDate = 'ASC';
+    }
+
+    return this.repo.find({ where, order });
   }
 }

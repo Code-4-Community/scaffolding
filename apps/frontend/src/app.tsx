@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 
 import './styles.css';
 import apiClient from '@api/apiClient';
@@ -10,6 +14,7 @@ import PublicationView from '@containers/archived-publications/individual-public
 import Login from '@containers/auth/login';
 import AuthedApp from '@containers/auth/AuthedApp';
 import Role from '@api/dtos/role';
+import CreatePublicationModal from '@containers/create-publication-modal';
 
 const router = createBrowserRouter([
   {
@@ -18,12 +23,19 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       // public routes
-      { index: true, element: <ArchivedPublications /> },
+      { index: true, element: <Navigate to="/archive/published" replace /> },
       {
         // archive
         path: 'archive',
         children: [
-          { index: true, element: <ArchivedPublications /> },
+          {
+            index: true,
+            element: <Navigate to="/archive/published" replace />,
+          },
+          {
+            path: ':tab',
+            element: <ArchivedPublications mode="archive" />,
+          },
           {
             path: 'publication/:id?',
             element: <PublicationView />,
@@ -34,6 +46,23 @@ const router = createBrowserRouter([
       {
         element: <AuthedApp roles={[Role.ADMIN, Role.VOLUNTEER]} />,
         children: [
+          {
+            path: 'projects',
+            children: [
+              {
+                index: true,
+                element: <Navigate to="/projects/drafts" replace />,
+              },
+              {
+                path: ':tab',
+                element: <ArchivedPublications mode="projects" />,
+              },
+              {
+                path: 'publication/:id?',
+                element: <PublicationView />,
+              },
+            ],
+          },
           {
             path: 'test',
             element: <NotFound />,
@@ -67,6 +96,17 @@ export const App: React.FC = () => {
   }, []);
 
   return <RouterProvider router={router} />;
+  /* for temp testing of create publication modal */
+  /* return (
+    <>
+    <RouterProvider router={router} />
+    <CreatePublicationModal
+    onClose={() => {}}
+    onSave={() => {}}
+    />
+    </>
+    );
+  */
 };
 
 export default App;

@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { Amplify } from 'aws-amplify';
 import App from './app';
-import CognitoAuthConfig from './aws-exports';
+import CognitoAuthConfig from '../../shared/aws-exports';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 

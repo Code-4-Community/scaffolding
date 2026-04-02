@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import './root.css';
 
 // Import SVG icons
@@ -17,9 +18,12 @@ import LogoutIcon from '../assets/icons/logout.svg';
 const Root: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+  const isAuthenticated = authStatus === 'authenticated';
 
   const isLibraryActive =
     location.pathname.startsWith('/archive') || location.pathname === '/';
+  const isProjectsActive = location.pathname.startsWith('/projects');
 
   return (
     <div className="root-shell">
@@ -55,12 +59,14 @@ const Root: React.FC = () => {
               </div>
             </div>
 
-            {/* Library - Expandable Section */}
+            {/* Library */}
             <div className="sidebar-library-section">
-              <button
-                type="button"
-                className="sidebar-library-header"
-                onClick={() => `/library/publication/archived`}
+              <NavLink
+                to="/archive/published"
+                className={
+                  'sidebar-library-header' +
+                  (isLibraryActive ? ' sidebar-nav-item--active' : '')
+                }
               >
                 <div className="sidebar-library-header-content">
                   <div className="sidebar-library-header-left">
@@ -71,25 +77,37 @@ const Root: React.FC = () => {
                     />
                     {!collapsed && (
                       <span className="sidebar-nav-label sidebar-nav-label--bold">
-                        Archive
+                        Library
                       </span>
                     )}
                   </div>
                 </div>
-              </button>
+              </NavLink>
             </div>
 
-            {/* Projects */}
-            <div className="sidebar-nav-item">
-              <div className="sidebar-nav-item-content">
-                <div className="sidebar-nav-item-left">
-                  <img src={ProjectsIcon} alt="" className="sidebar-nav-icon" />
-                  {!collapsed && (
-                    <span className="sidebar-nav-label">Projects</span>
-                  )}
+            {/* Projects - only visible when logged in */}
+            {isAuthenticated && (
+              <NavLink
+                to="/projects/drafts"
+                className={
+                  'sidebar-nav-item' +
+                  (isProjectsActive ? ' sidebar-nav-item--active' : '')
+                }
+              >
+                <div className="sidebar-nav-item-content">
+                  <div className="sidebar-nav-item-left">
+                    <img
+                      src={ProjectsIcon}
+                      alt=""
+                      className="sidebar-nav-icon"
+                    />
+                    {!collapsed && (
+                      <span className="sidebar-nav-label">Projects</span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
+              </NavLink>
+            )}
 
             {/* Resources */}
             <div className="sidebar-nav-item">
