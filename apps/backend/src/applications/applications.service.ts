@@ -12,6 +12,12 @@ import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 import { EmailService } from '../util/email/email.service';
 import { UsersService } from '../users/users.service';
 
+/**
+ * Escapes characters that have special meaning in HTML so a string is safe to embed in text or attributes.
+ *
+ * @param text Raw string that may contain `&`, `<`, `>`, or `"`.
+ * @returns The same content with those characters replaced by entity references (`&amp;`, `&lt;`, `&gt;`, `&quot;`).
+ */
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -125,7 +131,6 @@ export class ApplicationsService {
   async create(
     createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
-    this.validateApplicationDto(createApplicationDto);
     const application = this.applicationRepository.create(createApplicationDto);
     return await this.applicationRepository.save(application);
   }

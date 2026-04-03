@@ -94,9 +94,11 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
   }
 
   /**
-   * Extracts validation error messages from the exception response
-   * and rewrites them with user-friendly field names.
-   * @returns An array of sanitized, human-readable error strings.
+   * Pulls user-facing text from a NestJS `BadRequestException` response body and normalizes it to a list of lines.
+   * When `message` is an array or string (typical for `ValidationPipe`), each entry is passed through {@link humanizeErrorMessage}.
+   *
+   * @param exceptionResponse Value from `exception.getResponse()`: either a plain string or an object (often `{ message: string | string[], statusCode: number }`).
+   * @returns One or more human-readable error lines; a single-item fallback if the shape is unrecognized.
    */
   private extractErrorMessages(exceptionResponse: string | object): string[] {
     if (typeof exceptionResponse === 'string') {
@@ -121,12 +123,16 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
   }
 
   /**
-   * Replaces internal camelCase field names in a class-validator error message
-   * with their user-friendly labels.
+   * Rewrites validator wording that starts with a DTO property key (or `each value in &lt;key&gt;`) using {@link FIELD_LABELS}.
+   * Capitalizes the first character of the result for sentence-style email copy.
    *
-   * Example:
-   *   "appStatus must be one of..." → "Application Status must be one of..."
-   *   "each value in interest must be one of..." → "Each value in Areas of Interest must be one of..."
+   * @param message Raw class-validator message, e.g. `appStatus must be one of the following values` or `each value in interest must be...`.
+   * @returns The same message with the matched field key replaced by its label when defined; otherwise the original string with its first letter uppercased.
+   *
+   * @example
+   * `"appStatus must be one of..."` → `"Application Status must be one of..."`
+   * @example
+   * `"each value in interest must be one of..."` → `"Each value in Areas of Interest must be one of..."`
    */
   private humanizeErrorMessage(message: string): string {
     // for single fields like appStatus, applicantType, etc.
@@ -150,7 +156,13 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
   }
 
   /**
-   * Builds the HTML email body for a failed application submission.
+   * Assembles the HTML body for the “application validation failed” notification email.
+   * Escapes dynamic text where needed; `applicantName` is expected to be pre-escaped for HTML.
+   *
+   * @param applicantName Greeting name (typically first and last), already safe for HTML interpolation.
+   * @param requestBody Parsed POST body used to render the submitted-field summary table.
+   * @param errorMessages Lines produced by {@link extractErrorMessages}, shown as a bulleted list.
+   * @returns A fragment of HTML suitable for the MIME `text/html` part (no outer `<html>` wrapper).
    */
   private buildEmailBody(
     applicantName: string,
@@ -180,9 +192,11 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
   }
 
   /**
-   * Formats request body fields into a user-friendly HTML table.
-   * Only includes fields that have a friendly label defined in FIELD_LABELS.
-   * Skips null/undefined values.
+   * Renders a two-column HTML table: friendly labels (from {@link FIELD_LABELS}) and stringified values.
+   * Only iterates keys that exist in `FIELD_LABELS` and omits empty or nullish body values.
+   *
+   * @param body The application create payload as received on the request (property keys match DTO fields).
+   * @returns An HTML `<table>` element with escaped cell text, or an empty table if no labeled fields qualify.
    */
   private formatSubmittedFields(body: Record<string, unknown>): string {
     const rows = Object.entries(FIELD_LABELS)
