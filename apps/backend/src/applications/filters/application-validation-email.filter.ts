@@ -6,8 +6,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { EmailService } from '../util/email/email.service';
-import { FIELD_LABELS } from './types';
+import { EmailService } from '../../util/email/email.service';
+import { FIELD_LABELS } from '../types';
 
 function escapeHtml(text: string): string {
   return text
