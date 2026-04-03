@@ -4,11 +4,10 @@ import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
 import { UtilModule } from '../util/util.module';
-import { UsersModule } from '../users/users.module';
 import { ApplicationValidationEmailFilter } from './application-validation-email.filter';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Application]), UtilModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([Application]), UtilModule],
   controllers: [ApplicationsController],
   providers: [ApplicationsService, ApplicationValidationEmailFilter],
 })

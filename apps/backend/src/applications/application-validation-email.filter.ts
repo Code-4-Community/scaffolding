@@ -56,32 +56,23 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
           'No email found in request body. Skipping error email.',
         );
       } else {
-        const applicant = await this.usersService.findOne(recipientEmail);
+        // TODO: Replace with applicant name when PandaDoc Mapping implemented
+        const applicantName = 'Applicant';
 
-        if (!applicant) {
-          this.logger.warn(
-            `No user found for email: ${recipientEmail}. Skipping error email.`,
-          );
-        } else {
-          const applicantName = `${escapeHtml(
-            applicant.firstName,
-          )} ${escapeHtml(applicant.lastName)}`;
+        const emailBody = this.buildEmailBody(
+          applicantName,
+          body,
+          errorMessages,
+        );
 
-          const emailBody = this.buildEmailBody(
-            applicantName,
-            body,
-            errorMessages,
-          );
-
-          await this.emailService.queueEmail(
-            recipientEmail,
-            'Action Required: Issue with Your Application Submission',
-            emailBody,
-          );
-          this.logger.log(
-            `Validation error email sent successfully to ${recipientEmail}`,
-          );
-        }
+        await this.emailService.queueEmail(
+          recipientEmail,
+          'Action Required: Issue with Your Application Submission',
+          emailBody,
+        );
+        this.logger.log(
+          `Validation error email sent successfully to ${recipientEmail}`,
+        );
       }
     } catch (emailError) {
       this.logger.error(
