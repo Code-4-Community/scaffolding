@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { EmailService } from '../util/email/email.service';
-import { UsersService } from '../users/users.service';
 import { FIELD_LABELS } from './types';
 
 function escapeHtml(text: string): string {
@@ -19,11 +18,11 @@ function escapeHtml(text: string): string {
 }
 
 /**
- * Exception filter that sends an error notification email when the
- * POST /api/applications endpoint fails due to validation errors.
+ * Exception filter that sends an error notification email when
+ * `POST /api/applications` fails after the body is parsed.
  *
- * Applied at the controller-method level so it only intercepts
- * BadRequestExceptions thrown during application creation.
+ * Handles {@link BadRequestException} from `ValidationPipe` / class-validator (DTO shape and rules).
+ * Database errors on the same route are handled by the global {@link TypeOrmExceptionFilter} and do not trigger this email.
  */
 @Catch(BadRequestException)
 export class ApplicationValidationEmailFilter implements ExceptionFilter {
@@ -33,55 +32,75 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
   private readonly pandaDocLink =
     'https://eform.pandadoc.com/?eform=e27f6460-7fa2-40f2-825b-4a83c507b9fe';
 
-  constructor(
-    private readonly emailService: EmailService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly emailService: EmailService) {}
 
+  /**
+   * Nest entrypoint: records humanized validation messages, sends a best-effort email to `body.email`,
+   * then returns the same HTTP status and JSON body Nest would have sent without this filter.
+   *
+   * @param exception Thrown by `ValidationPipe` or other code as `BadRequestException` on the create route.
+   * @param host Nest execution context; used to read the HTTP request and write the response.
+   * @returns Resolves after the response is sent (email failures are logged and do not change the HTTP outcome).
+   */
   async catch(exception: BadRequestException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
-
     const errorMessages = this.extractErrorMessages(exceptionResponse);
 
+    // Send email to the applicant if the request body includes an `email` recipient
+    await this.trySendSubmissionErrorEmail(request, errorMessages);
+
+    response.status(status).json(exceptionResponse);
+  }
+
+  /**
+   * Builds and queues the submission-error email when the request body includes an `email` recipient.
+   * Swallows email transport errors so validation responses are never blocked.
+   *
+   * @param request Express request whose `body` should match the create-application DTO shape.
+   * @param errorMessages Lines to show under “What needs to be corrected” (already humanized for validators).
+   * @returns Resolves when queuing finishes or when skipped; does not throw on SES/queue failures.
+   */
+  private async trySendSubmissionErrorEmail(
+    request: Request,
+    errorMessages: string[],
+  ): Promise<void> {
     try {
-      const body = request.body;
+      const body = request.body as Record<string, unknown> | undefined;
       const recipientEmail = body?.email;
 
       if (!recipientEmail) {
         this.logger.warn(
           'No email found in request body. Skipping error email.',
         );
-      } else {
-        // TODO: Replace with applicant name when PandaDoc Mapping implemented
-        const applicantName = 'Applicant';
-
-        const emailBody = this.buildEmailBody(
-          applicantName,
-          body,
-          errorMessages,
-        );
-
-        await this.emailService.queueEmail(
-          recipientEmail,
-          'Action Required: Issue with Your Application Submission',
-          emailBody,
-        );
-        this.logger.log(
-          `Validation error email sent successfully to ${recipientEmail}`,
-        );
+        return;
       }
+
+      const applicantName = 'Applicant';
+
+      const emailBody = this.buildEmailBody(
+        applicantName,
+        body ?? {},
+        errorMessages,
+      );
+
+      await this.emailService.queueEmail(
+        String(recipientEmail),
+        'Action Required: Issue with Your Application Submission',
+        emailBody,
+      );
+      this.logger.log(
+        `Application submission error email sent successfully to ${recipientEmail}`,
+      );
     } catch (emailError) {
       this.logger.error(
-        `Failed to send validation error email`,
+        `Failed to send application submission error email`,
         emailError instanceof Error ? emailError.stack : emailError,
       );
     }
-
-    response.status(status).json(exceptionResponse);
   }
 
   /**
@@ -136,10 +155,8 @@ export class ApplicationValidationEmailFilter implements ExceptionFilter {
     const field = eachMatch?.[1] ?? directMatch?.[1];
 
     if (field && FIELD_LABELS[field]) {
-      return (
-        message.replace(field, FIELD_LABELS[field]).charAt(0).toUpperCase() +
-        message.slice(1)
-      );
+      const replaced = message.replace(field, FIELD_LABELS[field]);
+      return replaced.charAt(0).toUpperCase() + replaced.slice(1);
     }
 
     // capitalize the first letter of the message
