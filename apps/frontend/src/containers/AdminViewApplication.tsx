@@ -5,6 +5,7 @@ import { Box, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '@components/AvailabilityTable';
 import { useEffect, useState } from 'react';
 import {
+  AppStatus,
   ApplicantType,
   Application,
   AvailabilityFields,
@@ -17,6 +18,7 @@ import RequirementsFrame from '@components/RequirementsFrame';
 import UploadedMaterial from '@components/UploadedMaterial';
 import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
 import EmergencyContactFrame from '@components/EmergencyContactFrame';
+import ApplicantStageControl from '@components/ApplicantStageControl';
 
 const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
@@ -56,6 +58,17 @@ const AdminViewApplication: React.FC = () => {
 
   const handleAvailabilityUpdate = (updated: AvailabilityFields) => {
     setApplication((prev) => (prev ? { ...prev, ...updated } : prev));
+  };
+
+  const handleStatusUpdate = async (nextStatus: AppStatus) => {
+    if (!application) return;
+
+    const updatedApplication = await apiClient.updateApplicationStatus(
+      application.appId,
+      nextStatus,
+    );
+
+    setApplication(updatedApplication);
   };
 
   if (loading) {
@@ -112,6 +125,12 @@ const AdminViewApplication: React.FC = () => {
           actualStartDate={''}
           endDate={''}
           totalTimeRequested={application.weeklyHours + ' hours per week'}
+          statusControl={
+            <ApplicantStageControl
+              value={application.appStatus}
+              onConfirmChange={handleStatusUpdate}
+            />
+          }
         />
 
         <Box>

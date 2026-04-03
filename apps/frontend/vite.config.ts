@@ -4,12 +4,18 @@ import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import path from 'path';
 
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, '../..');
+
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/frontend',
 
   server: {
     port: 4200,
     host: 'localhost',
+    fs: {
+      allow: [projectRoot, workspaceRoot],
+    },
   },
 
   preview: {

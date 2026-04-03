@@ -1,6 +1,7 @@
 import axios, { type AxiosInstance } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  AppStatus,
   Application,
   AvailabilityFields,
   LearnerInfo,
@@ -41,6 +42,15 @@ export class ApiClient {
       `/api/applications/${appId}/availability`,
       availability,
     ) as Promise<Application>;
+  }
+
+  public async updateApplicationStatus(
+    appId: number,
+    appStatus: AppStatus,
+  ): Promise<Application> {
+    return this.patch(`/api/applications/${appId}/status`, {
+      appStatus,
+    }) as Promise<Application>;
   }
 
   public async getTotalApplicationsCount(): Promise<number> {
