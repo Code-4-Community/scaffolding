@@ -1,10 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  BadRequestException,
-  Logger,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { EmailService } from '../../util/email/email.service';
 
@@ -33,12 +27,7 @@ export class ApplicationCreationErrorFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
-    // Let the validation filter handle BadRequestExceptions
-    if (exception instanceof BadRequestException) {
-      throw exception;
-    }
-
-    // Everything else: DB errors, unexpected crashes, etc.
+    // BadRequestException is handled by ApplicationValidationEmailFilter (see controller @UseFilters order + Nest's filter reversal).
     try {
       const body = request.body as Record<string, unknown> | undefined;
       const recipientEmail = body?.email;

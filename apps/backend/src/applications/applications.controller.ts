@@ -78,7 +78,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Post()
-  @UseFilters(ApplicationValidationEmailFilter, ApplicationCreationErrorFilter)
+  @UseFilters(ApplicationCreationErrorFilter, ApplicationValidationEmailFilter)
   async createApplication(
     @Body() createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
