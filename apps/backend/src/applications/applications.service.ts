@@ -33,8 +33,6 @@ export class ApplicationsService {
   constructor(
     @InjectRepository(Application)
     private applicationRepository: Repository<Application>,
-    private emailService: EmailService,
-    private usersService: UsersService,
   ) {}
 
   /**
