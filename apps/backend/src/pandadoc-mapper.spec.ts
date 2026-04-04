@@ -3,6 +3,11 @@ import { HeardAboutFrom, InterestArea } from './applications/types';
 import { School } from './learner-info/types';
 import { PANDADOC_FIELD_MAP } from './panda-field-map';
 
+const mappingPairKey = (item: {
+  targetTable: string;
+  backendField: string;
+}): string => `${item.targetTable}.${item.backendField}`;
+
 function buildFullPayload(): Record<string, unknown> {
   return {
     Volunteer_StartDate: '2026-06-01',
@@ -282,15 +287,15 @@ describe('pandadocMapper', () => {
     const payload = buildCoveragePayload();
     const result = pandadocMapper(payload);
 
-    const fieldCounts = new Map<string, number>();
-    for (const item of PANDADOC_FIELD_MAP) {
-      const key = `${item.targetTable}.${item.backendField}`;
-      fieldCounts.set(key, (fieldCounts.get(key) ?? 0) + 1);
-    }
+    const aggregateFields = new Set(
+      PANDADOC_FIELD_MAP.filter((item) => item.aggregate === 'array').map(
+        (item) => mappingPairKey(item),
+      ),
+    );
 
     for (const item of PANDADOC_FIELD_MAP) {
       const bucket = result[item.targetTable];
-      const fieldKey = `${item.targetTable}.${item.backendField}`;
+      const fieldKey = mappingPairKey(item);
       const raw = payload[item.pandaDocKey];
       const expected =
         raw == null || raw === ''
@@ -299,7 +304,7 @@ describe('pandadocMapper', () => {
           ? item.transform(String(raw))
           : raw;
 
-      if ((fieldCounts.get(fieldKey) ?? 0) > 1) {
+      if (aggregateFields.has(fieldKey)) {
         expect(Array.isArray(bucket[item.backendField])).toBe(true);
         if (expected != null) {
           expect(bucket[item.backendField] as unknown[]).toContainEqual(
@@ -308,6 +313,22 @@ describe('pandadocMapper', () => {
         }
       } else {
         expect(bucket[item.backendField]).toEqual(expected);
+      }
+    }
+  });
+
+  it('marks all duplicate mapping targets as explicit array aggregation', () => {
+    const counts = new Map<string, number>();
+
+    for (const item of PANDADOC_FIELD_MAP) {
+      const key = mappingPairKey(item);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+
+    for (const item of PANDADOC_FIELD_MAP) {
+      const key = mappingPairKey(item);
+      if ((counts.get(key) ?? 0) > 1) {
+        expect(item.aggregate).toBe('array');
       }
     }
   });

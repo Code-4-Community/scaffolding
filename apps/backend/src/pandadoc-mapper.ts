@@ -6,19 +6,32 @@ import {
 
 export type MappedBuckets = Record<TargetTable, Record<string, unknown>>;
 
-// Some backend fields are fed by multiple PandaDoc keys and need to be
-// collected into an array rather than overwritten. For example, each interest-
-// area checkbox is its own PandaDoc field, but they all map to the single
-// application.interest column. We detect these at startup by finding any
-// (targetTable, backendField) pair that appears more than once in the map.
+const pairKey = (item: Pick<ValidPayload, 'targetTable' | 'backendField'>) =>
+  `${item.targetTable}.${item.backendField}`;
+
+// Aggregation is explicit: map items must opt in with `aggregate: 'array'`.
+// If duplicate mappings exist without explicit aggregation, fail fast to avoid
+// silently changing output schema from scalar to array.
 const arrayFields = new Set<string>();
-const seen = new Set<string>();
+const pairStats = new Map<string, { count: number; allArray: boolean }>();
 for (const item of PANDADOC_FIELD_MAP) {
-  const key = `${item.targetTable}.${item.backendField}`;
-  if (seen.has(key)) {
+  const key = pairKey(item);
+  const stats = pairStats.get(key) ?? { count: 0, allArray: true };
+  stats.count += 1;
+  stats.allArray = stats.allArray && item.aggregate === 'array';
+  pairStats.set(key, stats);
+
+  if (item.aggregate === 'array') {
     arrayFields.add(key);
   }
-  seen.add(key);
+}
+
+for (const [key, stats] of pairStats) {
+  if (stats.count > 1 && !stats.allArray) {
+    throw new Error(
+      `Invalid PandaDoc field map for ${key}: duplicate mappings must set aggregate: 'array'`,
+    );
+  }
 }
 
 function isEmptyRawValue(raw: unknown): boolean {
@@ -73,7 +86,7 @@ export function pandadocMapper(
 
   for (const item of PANDADOC_FIELD_MAP) {
     const raw = pandaDoc[item.pandaDocKey];
-    const key = `${item.targetTable}.${item.backendField}`;
+    const key = pairKey(item);
 
     if (item.required && isEmptyRawValue(raw)) {
       missing.push(item.pandaDocKey);

@@ -81,6 +81,9 @@ export type TargetTable =
  * - `required` indicates the field must be present (non-empty) or mapping
  *    will throw a missing-field error.
  * - `targetTable` selects which of the backend buckets the value lands in.
+ * - `aggregate` opts this mapping into array aggregation. Use
+ *    `aggregate: 'array'` when multiple PandaDoc keys should collect into one
+ *    backend array field (for example checkbox groups).
  * - `transform` is an optional function that converts the raw string value
  *    into the appropriate runtime type (dates, enums, numbers, etc.).
  * - `defaultValue` will be used when the input is blank (only when the
@@ -91,6 +94,7 @@ export interface ValidPayload {
   backendField: string;
   required: boolean;
   targetTable: TargetTable;
+  aggregate?: 'array';
   transform?: (value: string) => unknown;
   defaultValue?: unknown;
 }
@@ -100,9 +104,12 @@ export interface ValidPayload {
  *
  * The mapper consumes the PandaDoc webhook payload (a simple record of
  * field_id -> value) and uses this table to populate backend insert/update
- * objects. Items that share the same `(targetTable, backendField)` pair are
- * treated as array-aggregated inputs (for example multiple interest
- * checkboxes mapping into `application.interest`).
+ * objects.
+ *
+ * Aggregation is explicit: only entries with `aggregate: 'array'` will be
+ * collected into array outputs. Duplicate `(targetTable, backendField)`
+ * mappings without explicit aggregation are treated as a map configuration
+ * error by the mapper.
  */
 export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   // ── candidateInfo table ──
@@ -280,10 +287,11 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     targetTable: 'application',
   },
 
-  // Interest area checkboxes — each checked box maps to the `interest` array
+  // Interest area checkboxes -> `application.interest[]` (explicit aggregation)
   {
     pandaDocKey: 'Volunteer_Interest_WomensHealth',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.WOMENS_HEALTH,
     required: false,
     targetTable: 'application',
@@ -291,6 +299,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_AdditctionServices',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.ADDICTION_MEDICINE,
     required: false,
     targetTable: 'application',
@@ -298,6 +307,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_VeteransServices',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.VETERANS_SERVICES,
     required: false,
     targetTable: 'application',
@@ -305,6 +315,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_HIV',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.HIV_SERVICES,
     required: false,
     targetTable: 'application',
@@ -312,6 +323,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_Respite',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.MEDICAL_RESPITE_INPATIENT,
     required: false,
     targetTable: 'application',
@@ -319,6 +331,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_PrimaryCare',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.PRIMARY_CARE,
     required: false,
     targetTable: 'application',
@@ -326,6 +339,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_FamilyServices',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.FAMILY_AND_YOUTH_SERVICES,
     required: false,
     targetTable: 'application',
@@ -333,6 +347,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_CaseManagement',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.CASE_MANAGEMENT,
     required: false,
     targetTable: 'application',
@@ -340,6 +355,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_StreetMedicine',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.STREET_MEDICINE,
     required: false,
     targetTable: 'application',
@@ -347,6 +363,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_BehavioralHealth',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.BEHAVIORAL_HEALTH,
     required: false,
     targetTable: 'application',
@@ -354,6 +371,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_HepC',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.HEP_C_CARE,
     required: false,
     targetTable: 'application',
@@ -361,15 +379,17 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_Interest_Dental',
     backendField: 'interest',
+    aggregate: 'array',
     transform: () => InterestArea.DENTAL,
     required: false,
     targetTable: 'application',
   },
 
-  // How did you hear about us checkboxes
+  // How-did-you-hear-about-us checkboxes -> `application.heardAboutFrom[]`
   {
     pandaDocKey: 'Volunteer_HearAboutUs_School',
     backendField: 'heardAboutFrom',
+    aggregate: 'array',
     transform: () => HeardAboutFrom.SCHOOL,
     required: false,
     targetTable: 'application',
@@ -377,6 +397,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_HearAboutUs_Website',
     backendField: 'heardAboutFrom',
+    aggregate: 'array',
     transform: () => HeardAboutFrom.BHCHP_WEBSITE,
     required: false,
     targetTable: 'application',
@@ -384,6 +405,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_HearAboutUs_OnlineSearch',
     backendField: 'heardAboutFrom',
+    aggregate: 'array',
     transform: () => HeardAboutFrom.ONLINE_SEARCH,
     required: false,
     targetTable: 'application',
@@ -391,6 +413,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_HearAboutUs_FromStaff',
     backendField: 'heardAboutFrom',
+    aggregate: 'array',
     transform: () => HeardAboutFrom.FROM_A_BHCHP_STAFF_MEMBER,
     required: false,
     targetTable: 'application',
@@ -398,6 +421,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_HearAboutUs_CurrentStaff',
     backendField: 'heardAboutFrom',
+    aggregate: 'array',
     transform: () => HeardAboutFrom.CURRENT_OR_FORMER_STAFF,
     required: false,
     targetTable: 'application',
@@ -405,6 +429,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_HearAboutUs_FriendFamily',
     backendField: 'heardAboutFrom',
+    aggregate: 'array',
     transform: () => HeardAboutFrom.FRIEND_FAMILY,
     required: false,
     targetTable: 'application',
@@ -412,6 +437,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_HearAboutUs_Other',
     backendField: 'heardAboutFrom',
+    aggregate: 'array',
     transform: () => HeardAboutFrom.OTHER,
     required: false,
     targetTable: 'application',
