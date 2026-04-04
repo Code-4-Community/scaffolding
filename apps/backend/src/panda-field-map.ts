@@ -451,7 +451,29 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     // the enum constraint.
     pandaDocKey: 'Volunteer_Affiliation',
     backendField: 'school',
-    transform: () => School.OTHER,
+    transform: (value: string) => {
+      const normalized = value.trim().toLowerCase();
+
+      if (normalized.includes('harvard')) {
+        return 'Harvard';
+      }
+      if (
+        normalized.includes('johns hopkins') ||
+        normalized.includes('jhmi') ||
+        normalized.includes('hopkins')
+      ) {
+        return 'Johns Hopkins';
+      }
+      if (normalized.includes('stanford')) {
+        return 'Stanford';
+      }
+      if (normalized.includes('mayo')) {
+        return 'Mayo';
+      }
+
+      // Any unrecognized school should be treated as "Other" to satisfy the School enum.
+      return 'Other';
+    },
     required: true,
     targetTable: 'learnerInfo',
   },
