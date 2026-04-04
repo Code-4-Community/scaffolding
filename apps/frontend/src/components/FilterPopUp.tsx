@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import StatusPill, { StatusPillConfig, StatusVariant } from './StatusPill';
 
-export const DISCIPLINES = [
+export const DISCIPLINE_VALUES = [
   'MD/Medical Student/Pre-Med',
   'Medical NP/PA',
   'Psychiatry or Psychiatric NP/PA',
@@ -26,12 +26,16 @@ export const DISCIPLINES = [
   'Other',
 ] as const;
 
-export const EXPERIENCE_TYPES = [
-  'Pre-Licensure Placement',
-  'Practicum',
-  'Public Health Project',
-  'Shadowing',
-  'Volunteer/Intern',
+export const ExperienceType = [
+  'BS',
+  'MS',
+  'PhD',
+  'MD',
+  'MD PhD',
+  'RN',
+  'NP',
+  'PA',
+  'Other',
 ] as const;
 
 export const STATUS_OPTIONS = Object.entries(StatusPillConfig).map(
@@ -47,7 +51,9 @@ interface FilterPopUpProps {
 }
 
 const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
-  const [selectedDisciplines, setSelectedDisciplines] = useState<string[]>([]);
+  const [selectedDISCIPLINE_VALUES, setSelectedDISCIPLINE_VALUES] = useState<
+    string[]
+  >([]);
   const [selectedExperienceTypes, setSelectedExperienceTypes] = useState<
     string[]
   >([]);
@@ -64,7 +70,7 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
   ]);
 
   const totalFilters =
-    selectedDisciplines.length +
+    selectedDISCIPLINE_VALUES.length +
     selectedExperienceTypes.length +
     selectedStatuses.length +
     (proposedStartDate ? 1 : 0) +
@@ -254,7 +260,7 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
                                   onValueChange={setSelectedExperienceTypes}
                                 >
                                   <Fieldset.Content>
-                                    <For each={EXPERIENCE_TYPES}>
+                                    <For each={ExperienceType}>
                                       {(value) => (
                                         <Checkbox.Root
                                           key={value}
@@ -276,12 +282,12 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
                             <Stack gap="3">
                               <Fieldset.Root>
                                 <CheckboxGroup
-                                  name="disciplines"
-                                  value={selectedDisciplines}
-                                  onValueChange={setSelectedDisciplines}
+                                  name="DISCIPLINE_VALUES"
+                                  value={selectedDISCIPLINE_VALUES}
+                                  onValueChange={setSelectedDISCIPLINE_VALUES}
                                 >
                                   <Fieldset.Content>
-                                    <For each={DISCIPLINES}>
+                                    <For each={DISCIPLINE_VALUES}>
                                       {(value) => (
                                         <Checkbox.Root
                                           key={value}

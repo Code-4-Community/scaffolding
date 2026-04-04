@@ -1,14 +1,15 @@
 import { Button } from '@chakra-ui/react';
 
-export type StatusVariant =
-  | 'submitted'
-  | 'review'
-  | 'formsSent'
-  | 'accepted'
-  | 'declined'
-  | 'noAvailability'
-  | 'active'
-  | 'inactive';
+export enum StatusVariant {
+  APP_SUBMITTED = 'submitted',
+  IN_REVIEW = 'review',
+  FORMS_SENT = 'formsSent',
+  ACCEPTED = 'accepted',
+  DECLINED = 'declined',
+  NO_AVAILABILITY = 'noAvailability',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
 
 type StatusPillProps = {
   variant: StatusVariant;
