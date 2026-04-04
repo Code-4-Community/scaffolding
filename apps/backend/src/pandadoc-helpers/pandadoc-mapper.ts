@@ -2,7 +2,7 @@ import {
   PANDADOC_FIELD_MAP,
   TargetTable,
   ValidPayload,
-} from './panda-field-map';
+} from './pandadoc-field-map';
 
 export type MappedBuckets = Record<TargetTable, Record<string, unknown>>;
 

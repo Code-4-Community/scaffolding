@@ -1,7 +1,7 @@
-import { pandadocMapper } from '../pandadoc-mapper';
+import { pandadocMapper } from './pandadoc-mapper';
 import { HeardAboutFrom, InterestArea } from '../applications/types';
 import { School } from '../learner-info/types';
-import { PANDADOC_FIELD_MAP } from './panda-field-map';
+import { PANDADOC_FIELD_MAP } from './pandadoc-field-map';
 
 const mappingPairKey = (item: {
   targetTable: string;
