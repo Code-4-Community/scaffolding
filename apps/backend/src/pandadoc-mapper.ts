@@ -21,11 +21,42 @@ for (const item of PANDADOC_FIELD_MAP) {
   seen.add(key);
 }
 
+function isEmptyRawValue(raw: unknown): boolean {
+  if (raw == null || raw === '' || raw === false) return true;
+
+  if (typeof raw === 'object') {
+    if (Array.isArray(raw)) return raw.length === 0;
+
+    const record = raw as Record<string, unknown>;
+    // PandaDoc collect_file fields arrive as objects like { name, url }.
+    // Treat missing/empty names as no file provided.
+    if ('name' in record || 'url' in record) {
+      return typeof record['name'] !== 'string' || record['name'].trim() === '';
+    }
+
+    return Object.keys(record).length === 0;
+  }
+
+  return false;
+}
+
+function normalizeRawValue(raw: unknown): unknown {
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    const record = raw as Record<string, unknown>;
+    if (typeof record['name'] === 'string' && record['name'].trim() !== '') {
+      return record['name'];
+    }
+  }
+  return raw;
+}
+
 function resolveValue(raw: unknown, item: ValidPayload): unknown {
-  if (raw == null || raw === '') {
+  if (isEmptyRawValue(raw)) {
     return item.defaultValue ?? null;
   }
-  return item.transform ? item.transform(String(raw)) : raw;
+
+  const normalized = normalizeRawValue(raw);
+  return item.transform ? item.transform(String(normalized)) : normalized;
 }
 
 export function pandadocMapper(
@@ -44,7 +75,7 @@ export function pandadocMapper(
     const raw = pandaDoc[item.pandaDocKey];
     const key = `${item.targetTable}.${item.backendField}`;
 
-    if (item.required && (raw == null || raw === '')) {
+    if (item.required && isEmptyRawValue(raw)) {
       missing.push(item.pandaDocKey);
       continue;
     }
@@ -70,6 +101,18 @@ export function pandadocMapper(
   // gets a single error listing everything that needs to be fixed.
   if (missing.length > 0) {
     throw new Error(`Missing required PandaDoc fields: ${missing.join(', ')}`);
+  }
+
+  // If the user selected a school via `Volunteer_Affiliation` but did not
+  // provide an explicit `Volunteer_ Affiliation_Other` entry, store the raw name in
+  // `learnerInfo.otherSchool`. This keeps the enum-backed `school` safe
+  // while preserving the free-text source value.
+  if (
+    (buckets.learnerInfo['otherSchool'] == null ||
+      buckets.learnerInfo['otherSchool'] === '') &&
+    pandaDoc['Volunteer_Affiliation']
+  ) {
+    buckets.learnerInfo['otherSchool'] = pandaDoc['Volunteer_Affiliation'];
   }
 
   return buckets;

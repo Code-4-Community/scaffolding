@@ -1,46 +1,69 @@
 import { pandadocMapper } from './pandadoc-mapper';
-import { InterestArea } from './applications/types';
+import { HeardAboutFrom, InterestArea } from './applications/types';
+import { School } from './learner-info/types';
+import { PANDADOC_FIELD_MAP } from './panda-field-map';
 
 function buildFullPayload(): Record<string, unknown> {
   return {
-    start_date: '2026-06-01',
-    end_date: '2026-12-01',
+    Volunteer_StartDate: '2026-06-01',
+    Volunteer_EndDate: '2026-12-01',
     email: 'ohstep23@gmail.com',
-    pronouns: 'he/him',
-    phone_number: '617-555-0199',
-    languages: '',
-    experience_type: 'Volunteer/Intern',
-    school_affiliation: 'Northeastern',
-    other_school: '',
-    discipline: 'Public Health',
-    other_discipline: '',
-    license: 'N/A',
-    total_hours: '10',
-    monday_availability: '9am-12pm',
-    tuesday_availability: '',
-    wednesday_availability: '1pm-5pm',
-    thursday_availability: '',
-    friday_availability: '9am-12pm',
-    saturday_availability: '',
-    resume: 'owen_resume.pdf',
-    cover_letter: 'owen_cl.pdf',
-    emergency_contact_name: 'Susan Stepan',
-    emergency_contact_phone: '617-555-0100',
-    emergency_contact_relationship: 'Mother',
-    interest_womens_health: 'on',
-    interest_addiction_medicine: 'on',
-    interest_primary_care: 'on',
-    interest_street_medicine: 'on',
-    interest_dental: 'on',
-    interest_hiv_services: 'on',
-    interest_case_management: 'on',
-    applicant_role: 'Supervisor/Instructor',
-    over_18: 'No',
-    dob: '02-04-2026',
-    school_department: 'Khoury College',
-    course_requirements: '120 clinical hours',
-    instructor_info: 'Dr. Smith, smith@northeastern.edu',
-    syllabus: 'cs3500_syllabus.pdf',
+    Volunteer_Pronouns: 'he/him',
+    Volunteer_Phone: '617-555-0199',
+    Volunteer_Languages: '',
+    Volunteer_Experience: 'Volunteer/Intern',
+    Volunteer_Affiliation: 'Northeastern',
+    'Volunteer_ Affiliation_Other': '',
+    Volunteer_Discipline: 'Public Health',
+    Volunteer_Discipline_Other: 'Some additional discipline detail',
+    Volunteer_License: 'N/A',
+    Volunteer_Referred: 'Yes',
+    Volunteer_ReferredEmail: 'referrer@example.com',
+    Volunteer_TotalHours: '10',
+    Volunteer_AvailabilityMonday: '9am-12pm',
+    Volunteer_AvailabilityTuesday: '',
+    Volunteer_AvailabilityWednesday: '1pm-5pm',
+    Volunteer_AvailabilityThursday: '',
+    Volunteer_AvailabilityFriday: '9am-12pm',
+    Volunteer_AvailabilitySaturday: '',
+    Volunteer_ResumeUpload2: 'owen_resume.pdf',
+    Volunteer_CoverletterUpload2: 'owen_cl.pdf',
+    Volunteer_EmergencyContactName: 'Susan Stepan',
+    Volunteer_EmergencyContactPhone: '617-555-0100',
+    Volunteer_EmergencyContactRelationship: 'Mother',
+    Volunteer_Interest_WomensHealth: 'on',
+    Volunteer_Interest_AdditctionServices: 'on',
+    Volunteer_Interest_PrimaryCare: 'on',
+    Volunteer_Interest_StreetMedicine: 'on',
+    Volunteer_Interest_Dental: 'on',
+    Volunteer_Interest_HIV: 'on',
+    Volunteer_Interest_CaseManagement: 'on',
+    Volunteer_HearAboutUs_School: 'on',
+    Volunteer_HearAboutUs_Website: 'on',
+    Volunteer_FormFor: 'Supervisor/Instructor',
+    Volunteer_Age: 'No',
+    Volunteer_DOB: '02-04-2026',
+    Volunteer_Department: 'Khoury College',
+    Volunteer_CourseRequirements: '120 clinical hours',
+    Volunteer_InstructorInfo: 'Dr. Smith, smith@northeastern.edu',
+    Volunteer_SyllabusUpload: 'cs3500_syllabus.pdf',
+  };
+}
+
+function buildCoveragePayload(): Record<string, unknown> {
+  return {
+    ...buildFullPayload(),
+    'Volunteer_ Affiliation_Other': 'Coverage University',
+    Volunteer_Interest_VeteransServices: 'on',
+    Volunteer_Interest_Respite: 'on',
+    Volunteer_Interest_FamilyServices: 'on',
+    Volunteer_Interest_BehavioralHealth: 'on',
+    Volunteer_Interest_HepC: 'on',
+    Volunteer_HearAboutUs_OnlineSearch: 'on',
+    Volunteer_HearAboutUs_FromStaff: 'on',
+    Volunteer_HearAboutUs_CurrentStaff: 'on',
+    Volunteer_HearAboutUs_FriendFamily: 'on',
+    Volunteer_HearAboutUs_Other: 'on',
   };
 }
 
@@ -56,6 +79,11 @@ describe('pandadocMapper', () => {
     expect(result.application['pronouns']).toBe('he/him');
     expect(result.application['phone']).toBe('617-555-0199');
     expect(result.application['weeklyHours']).toBe(10);
+    expect(result.application['referred']).toBe(true);
+    expect(result.application['referredEmail']).toBe('referrer@example.com');
+    expect(result.application['elaborateOtherDiscipline']).toBe(
+      'Some additional discipline detail',
+    );
     expect(result.application['emergencyContactName']).toBe('Susan Stepan');
   });
 
@@ -64,9 +92,9 @@ describe('pandadocMapper', () => {
     expect(result.candidateInfo['email']).toBe('ohstep23@gmail.com');
   });
 
-  it('maps experience_type to experienceType on application', () => {
+  it('maps experience_type to desiredExperience on application', () => {
     const result = pandadocMapper(buildFullPayload());
-    expect(result.application['experienceType']).toBe('Volunteer/Intern');
+    expect(result.application['desiredExperience']).toBe('Volunteer/Intern');
   });
 
   it('parses total_hours as a number', () => {
@@ -97,6 +125,16 @@ describe('pandadocMapper', () => {
     expect(interests).not.toContain(InterestArea.HEP_C_CARE);
   });
 
+  it('aggregates checked hear-about-us checkboxes into heardAboutFrom', () => {
+    const result = pandadocMapper(buildFullPayload());
+    const heardAbout = result.application['heardAboutFrom'] as string[];
+
+    expect(Array.isArray(heardAbout)).toBe(true);
+    expect(heardAbout).toContain(HeardAboutFrom.SCHOOL);
+    expect(heardAbout).toContain(HeardAboutFrom.BHCHP_WEBSITE);
+    expect(heardAbout).not.toContain(HeardAboutFrom.ONLINE_SEARCH);
+  });
+
   it('falls back to defaultValue for blank optional fields', () => {
     const result = pandadocMapper(buildFullPayload());
     expect(result.application['tuesdayAvailability']).toBe('');
@@ -105,7 +143,7 @@ describe('pandadocMapper', () => {
 
   it('sets optional fields to null when not provided and no defaultValue', () => {
     const payload = buildFullPayload();
-    delete payload['languages'];
+    delete payload['Volunteer_Languages'];
     const result = pandadocMapper(payload);
     expect(result.application['nonEnglishLangs']).toBeNull();
   });
@@ -122,8 +160,8 @@ describe('pandadocMapper', () => {
   it('throws listing all missing required fields at once', () => {
     const payload = buildFullPayload();
     delete payload['email'];
-    delete payload['start_date'];
-    delete payload['resume'];
+    delete payload['Volunteer_StartDate'];
+    delete payload['Volunteer_ResumeUpload2'];
 
     try {
       pandadocMapper(payload);
@@ -131,20 +169,23 @@ describe('pandadocMapper', () => {
     } catch (e) {
       const msg = (e as Error).message;
       expect(msg).toContain('email');
-      expect(msg).toContain('start_date');
-      expect(msg).toContain('resume');
+      expect(msg).toContain('Volunteer_StartDate');
+      expect(msg).toContain('Volunteer_ResumeUpload2');
     }
   });
 
   it('maps school_affiliation to learnerInfo only', () => {
-    const result = pandadocMapper(buildFullPayload());
-    expect(result.learnerInfo['school']).toBe('Northeastern');
+    const payload = buildFullPayload();
+    payload['Volunteer_ Affiliation_Other'] = '';
+    const result = pandadocMapper(payload);
+    expect(result.learnerInfo['school']).toBe(School.OTHER);
+    expect(result.learnerInfo['otherSchool']).toBe('Northeastern');
     expect(result.application['school']).toBeUndefined();
   });
 
   it('maps otherSchool to learnerInfo', () => {
     const payload = buildFullPayload();
-    payload['other_school'] = 'Northeastern University';
+    payload['Volunteer_ Affiliation_Other'] = 'Northeastern University';
     const result = pandadocMapper(payload);
     expect(result.learnerInfo['otherSchool']).toBe('Northeastern University');
   });
@@ -163,5 +204,111 @@ describe('pandadocMapper', () => {
     const result = pandadocMapper(buildFullPayload());
     expect(result.application['license']).toBe('N/A');
     expect(result.volunteerInfo['license']).toBe('N/A');
+  });
+
+  it('handles native PandaDoc checkbox and collect_file value types', () => {
+    const payload = {
+      ...buildFullPayload(),
+      Volunteer_DOB: '2026-04-01T00:00:00',
+      Volunteer_StartDate: '2026-04-16T00:00:00',
+      Volunteer_EndDate: '2026-04-30T00:00:00',
+      Volunteer_TotalHours: 'efse 13',
+      Volunteer_Referred: false,
+      Volunteer_ReferredEmail: '',
+      Volunteer_Interest_BehavioralHealth: true,
+      Volunteer_Interest_PrimaryCare: true,
+      Volunteer_Interest_HepC: true,
+      Volunteer_Interest_VeteransServices: false,
+      Volunteer_Interest_HIV: false,
+      Volunteer_Interest_Dental: false,
+      Volunteer_HearAboutUs_Website: true,
+      Volunteer_HearAboutUs_FromStaff: true,
+      Volunteer_HearAboutUs_CurrentStaff: true,
+      Volunteer_HearAboutUs_School: false,
+      Volunteer_HearAboutUs_OnlineSearch: false,
+      Volunteer_ResumeUpload2: {
+        name: 'Student_Volunteer Interest Form.pdf',
+        url: 'https://example.com/resume.pdf',
+      },
+      Volunteer_CoverletterUpload2: {
+        name: 'Student_Volunteer Interest Form.pdf',
+        url: 'https://example.com/cover.pdf',
+      },
+      Volunteer_SyllabusUpload: {
+        name: 'Student_Volunteer Interest Form.pdf',
+        url: 'https://example.com/syllabus.pdf',
+      },
+    };
+
+    const result = pandadocMapper(payload);
+
+    expect(result.application['weeklyHours']).toBe(13);
+    expect(result.application['referred']).toBe(false);
+    expect(result.application['referredEmail']).toBeNull();
+    expect(result.application['resume']).toBe(
+      'Student_Volunteer Interest Form.pdf',
+    );
+    expect(result.application['coverLetter']).toBe(
+      'Student_Volunteer Interest Form.pdf',
+    );
+    expect(result.learnerInfo['syllabus']).toBe(
+      'Student_Volunteer Interest Form.pdf',
+    );
+
+    const interests = result.application['interest'] as string[];
+    expect(interests).toContain(InterestArea.BEHAVIORAL_HEALTH);
+    expect(interests).toContain(InterestArea.PRIMARY_CARE);
+    expect(interests).toContain(InterestArea.HEP_C_CARE);
+    expect(interests).not.toContain(InterestArea.VETERANS_SERVICES);
+    expect(interests).not.toContain(InterestArea.HIV_SERVICES);
+    expect(interests).not.toContain(InterestArea.DENTAL);
+
+    const heardAbout = result.application['heardAboutFrom'] as string[];
+    expect(heardAbout).toContain(HeardAboutFrom.BHCHP_WEBSITE);
+    expect(heardAbout).toContain(HeardAboutFrom.FROM_A_BHCHP_STAFF_MEMBER);
+    expect(heardAbout).toContain(HeardAboutFrom.CURRENT_OR_FORMER_STAFF);
+    expect(heardAbout).not.toContain(HeardAboutFrom.SCHOOL);
+    expect(heardAbout).not.toContain(HeardAboutFrom.ONLINE_SEARCH);
+
+    expect(result.application['proposedStartDate']).toEqual(
+      new Date('2026-04-16T00:00:00'),
+    );
+    expect(result.learnerInfo['dateOfBirth']).toEqual(
+      new Date('2026-04-01T00:00:00'),
+    );
+  });
+
+  it('covers every field mapping entry in PANDADOC_FIELD_MAP', () => {
+    const payload = buildCoveragePayload();
+    const result = pandadocMapper(payload);
+
+    const fieldCounts = new Map<string, number>();
+    for (const item of PANDADOC_FIELD_MAP) {
+      const key = `${item.targetTable}.${item.backendField}`;
+      fieldCounts.set(key, (fieldCounts.get(key) ?? 0) + 1);
+    }
+
+    for (const item of PANDADOC_FIELD_MAP) {
+      const bucket = result[item.targetTable];
+      const fieldKey = `${item.targetTable}.${item.backendField}`;
+      const raw = payload[item.pandaDocKey];
+      const expected =
+        raw == null || raw === ''
+          ? item.defaultValue ?? null
+          : item.transform
+          ? item.transform(String(raw))
+          : raw;
+
+      if ((fieldCounts.get(fieldKey) ?? 0) > 1) {
+        expect(Array.isArray(bucket[item.backendField])).toBe(true);
+        if (expected != null) {
+          expect(bucket[item.backendField] as unknown[]).toContainEqual(
+            expected,
+          );
+        }
+      } else {
+        expect(bucket[item.backendField]).toEqual(expected);
+      }
+    }
   });
 });
