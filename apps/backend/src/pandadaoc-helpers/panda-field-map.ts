@@ -533,7 +533,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
   {
     pandaDocKey: 'Volunteer_License',
     backendField: 'license',
-    required: false,
+    required: true,
     targetTable: 'volunteerInfo',
   },
 ];
