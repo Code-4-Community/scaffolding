@@ -35,7 +35,7 @@ for (const [key, stats] of pairStats) {
 }
 
 function isEmptyRawValue(raw: unknown): boolean {
-  if (raw == null || raw === '' || raw === false) return true;
+  if (raw == null || raw === '') return true;
 
   if (typeof raw === 'object') {
     if (Array.isArray(raw)) return raw.length === 0;
