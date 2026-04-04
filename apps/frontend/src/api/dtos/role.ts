@@ -1,5 +1,5 @@
 enum Role {
-  VOLUNTEER = 'volunteer',
+  STANDARD = 'standard',
   ADMIN = 'admin',
 }
 export default Role;

@@ -1,4 +1,4 @@
-export enum Status {
+export enum Role {
   ADMIN = 'ADMIN',
-  VOLUNTEER = 'VOLUNTEER',
+  STANDARD = 'STANDARD',
 }

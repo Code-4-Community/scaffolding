@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Status } from '../../users/types';
+import { Role } from '../../users/types';
 
 export class CreateManagedUserDto {
   @ApiProperty({ description: 'First name of the user' })
@@ -21,18 +21,18 @@ export class CreateManagedUserDto {
 
   @ApiProperty({
     description: 'Role of the user',
-    enum: Status,
+    enum: Role,
   })
   @Transform(({ value }) =>
     typeof value === 'string' ? value.trim().toUpperCase() : value,
   )
-  @IsEnum(Status)
-  role: Status;
+  @IsEnum(Role)
+  role: Role;
 
   @ApiPropertyOptional({
-    description: 'Optional publishing name for this user',
+    description: 'Job title of this user',
   })
   @IsOptional()
   @IsString()
-  publishingName?: string;
+  title?: string;
 }
