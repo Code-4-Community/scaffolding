@@ -12,7 +12,6 @@ import NotFound from '@containers/404';
 import ArchivedPublications from '@containers/archived-publications';
 import PublicationView from '@containers/archived-publications/individual-publication/publication-view';
 import Login from '@containers/auth/login';
-import AuthedApp from '@containers/auth/AuthedApp';
 import ProtectedRoute from '@containers/auth/ProtectedRoute';
 import People from '@containers/people';
 import Role from '@api/dtos/role';
@@ -50,7 +49,7 @@ const router = createBrowserRouter([
         children: [{ path: 'people', element: <People /> }],
       },
       {
-        element: <AuthedApp roles={[Role.ADMIN, Role.STANDARD]} />,
+        element: <ProtectedRoute roles={[Role.ADMIN, Role.STANDARD]} />,
         children: [
           {
             path: 'projects',
@@ -84,7 +83,7 @@ const router = createBrowserRouter([
       // TODO: admin routes (ex. adding admin/standard)
       {
         path: 'admin',
-        element: <AuthedApp roles={[Role.ADMIN]} />,
+        element: <ProtectedRoute roles={[Role.ADMIN]} />,
         children: [
           /*
           TODO: set default page for admins
