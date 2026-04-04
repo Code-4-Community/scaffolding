@@ -5,8 +5,8 @@
  * (the `pandaDocKey` values) to backend properties, plus lightweight
  * helpers used during mapping (date parsing and boolean normalization).
  */
-import { HeardAboutFrom, InterestArea } from './applications/types';
-import { School } from './learner-info/types';
+import { HeardAboutFrom, InterestArea } from '../applications/types';
+import { School } from '../learner-info/types';
 
 /**
  * Parse a user-supplied date string into a Date normalized to EST midnight
@@ -475,7 +475,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     targetTable: 'learnerInfo',
   },
   {
-    // Map unknown PandaDoc school names to the enum `School.OTHER` and
+    // Map known PandaDoc school names to supported School enum values and
     // store the raw value in `otherSchool` so persistence won't violate
     // the enum constraint.
     pandaDocKey: 'Volunteer_Affiliation',
@@ -483,9 +483,6 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     transform: (value: string) => {
       const normalized = value.trim().toLowerCase();
 
-      if (normalized.includes('harvard')) {
-        return School.HARVARD_MEDICAL_SCHOOL;
-      }
       if (
         normalized.includes('johns hopkins') ||
         normalized.includes('jhmi') ||
@@ -493,11 +490,11 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
       ) {
         return School.JOHNS_HOPKINS;
       }
-      if (normalized.includes('stanford')) {
-        return School.STANFORD_MEDICINE;
+      if (normalized.includes('northeastern')) {
+        return School.NORTHEASTERN;
       }
-      if (normalized.includes('mayo')) {
-        return School.MAYO_CLINIC;
+      if (normalized.includes('boston university') || normalized === 'bu') {
+        return School.BOSTON_UNIVERSITY;
       }
 
       // Any unrecognized school should be treated as "Other" to satisfy the School enum.

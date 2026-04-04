@@ -1,6 +1,6 @@
-import { pandadocMapper } from './pandadoc-mapper';
-import { HeardAboutFrom, InterestArea } from './applications/types';
-import { School } from './learner-info/types';
+import { pandadocMapper } from '../pandadoc-mapper';
+import { HeardAboutFrom, InterestArea } from '../applications/types';
+import { School } from '../learner-info/types';
 import { PANDADOC_FIELD_MAP } from './panda-field-map';
 
 const mappingPairKey = (item: {
@@ -197,21 +197,20 @@ describe('pandadocMapper', () => {
     const payload = buildFullPayload();
     payload['Volunteer_ Affiliation_Other'] = '';
     const result = pandadocMapper(payload);
-    expect(result.learnerInfo['school']).toBe(School.OTHER);
+    expect(result.learnerInfo['school']).toBe(School.NORTHEASTERN);
     expect(result.learnerInfo['otherSchool']).toBe('Northeastern');
     expect(result.application['school']).toBeUndefined();
   });
 
   it('maps known affiliations to valid School enum values', () => {
     const cases: Array<{ input: string; expected: School }> = [
-      {
-        input: 'Harvard Medical School',
-        expected: School.HARVARD_MEDICAL_SCHOOL,
-      },
       { input: 'Johns Hopkins University', expected: School.JOHNS_HOPKINS },
       { input: 'JHMI program', expected: School.JOHNS_HOPKINS },
-      { input: 'Stanford Medicine', expected: School.STANFORD_MEDICINE },
-      { input: 'Mayo Clinic', expected: School.MAYO_CLINIC },
+      { input: 'Northeastern University', expected: School.NORTHEASTERN },
+      { input: 'Boston University', expected: School.BOSTON_UNIVERSITY },
+      { input: 'Harvard Medical School', expected: School.OTHER },
+      { input: 'Stanford Medicine', expected: School.OTHER },
+      { input: 'Mayo Clinic', expected: School.OTHER },
     ];
 
     for (const testCase of cases) {

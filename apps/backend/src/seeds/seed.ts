@@ -269,7 +269,7 @@ const APPLICATION_SEED: Application[] = [
 const LEARNER_INFO_SEED: LearnerInfo[] = [
   {
     appId: 1,
-    school: School.HARVARD_MEDICAL_SCHOOL,
+    school: School.BOSTON_UNIVERSITY,
     syllabus: 'jane_doe_syllabus.pdf',
     isSupervisorApplying: false,
     isLegalAdult: true,
@@ -286,7 +286,7 @@ const LEARNER_INFO_SEED: LearnerInfo[] = [
   },
   {
     appId: 5,
-    school: School.STANFORD_MEDICINE,
+    school: School.NORTHEASTERN,
     schoolDepartment: 'Nursing',
     isSupervisorApplying: false,
     isLegalAdult: true,
