@@ -1,6 +1,5 @@
 import { Entity, Column, OneToMany, Relation } from 'typeorm';
-
-import { Status } from './types';
+import { Role } from './types';
 import { Omchai } from 'src/omchai/omchai.entity';
 
 @Entity()
@@ -8,8 +7,8 @@ export class User {
   @Column({ primary: true })
   id: number;
 
-  @Column({ type: 'enum', enum: Status })
-  status: Status;
+  @Column({ type: 'enum', enum: Role })
+  role: Role;
 
   @Column({ name: 'first_name' })
   firstName: string;
@@ -20,11 +19,8 @@ export class User {
   @Column({ default: '' })
   email: string;
 
-  @Column({ name: 'publishing_name', nullable: true })
-  publishingName?: string;
-
   @Column({ nullable: true })
-  name?: string;
+  title?: string;
 
   @OneToMany(() => Omchai, (omchai) => omchai.user)
   omchaiAssignments: Relation<Omchai[]>;
