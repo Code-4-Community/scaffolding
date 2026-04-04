@@ -9,13 +9,13 @@ import { HeardAboutFrom, InterestArea } from './applications/types';
 import { School } from './learner-info/types';
 
 /**
- * Parse a user-supplied date string into a Date normalized to UTC midnight
- * for the intended calendar date.
+ * Parse a user-supplied date string into a Date normalized to EST midnight
+ * (UTC-05:00) for the intended calendar date.
  *
  * Expected input format is `MM-DD-YYYY`.
  *
- * This is converted with `Date.UTC(...)` so persistence/serialization does
- * not shift the calendar date across timezones.
+ * This is converted with `Date.UTC(...)` plus a fixed EST offset so
+ * persistence/serialization keeps calendar dates consistent in EST.
  *
  * Non-matching values fall back to the native Date parser as a defensive
  * guard for unexpected payloads.
@@ -26,14 +26,14 @@ import { School } from './learner-info/types';
 function parseDate(value: string): Date {
   if (!value || typeof value !== 'string') return new Date(String(value));
 
-  // MM-DD-YYYY -> UTC midnight for that calendar date.
+  // MM-DD-YYYY -> EST midnight (UTC-05:00) for that calendar date.
   const mmdd = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
   const m = value.match(mmdd);
   if (m) {
     const mm = parseInt(m[1], 10);
     const dd = parseInt(m[2], 10);
     const yyyy = parseInt(m[3], 10);
-    return new Date(Date.UTC(yyyy, mm - 1, dd));
+    return new Date(Date.UTC(yyyy, mm - 1, dd, 5, 0, 0, 0));
   }
 
   // For non-date-like values, defer to native parser.

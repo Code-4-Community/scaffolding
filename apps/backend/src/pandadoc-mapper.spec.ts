@@ -8,8 +8,8 @@ const mappingPairKey = (item: {
   backendField: string;
 }): string => `${item.targetTable}.${item.backendField}`;
 
-const utcDate = (yyyy: number, mm: number, dd: number): Date =>
-  new Date(Date.UTC(yyyy, mm - 1, dd));
+const estDate = (yyyy: number, mm: number, dd: number): Date =>
+  new Date(Date.UTC(yyyy, mm - 1, dd, 5, 0, 0, 0));
 
 function buildFullPayload(): Record<string, unknown> {
   return {
@@ -81,9 +81,9 @@ describe('pandadocMapper', () => {
 
     expect(result.application['email']).toBe('ohstep23@gmail.com');
     expect(result.application['proposedStartDate']).toEqual(
-      utcDate(2026, 6, 1),
+      estDate(2026, 6, 1),
     );
-    expect(result.application['endDate']).toEqual(utcDate(2026, 12, 1));
+    expect(result.application['endDate']).toEqual(estDate(2026, 12, 1));
     expect(result.application['pronouns']).toBe('he/him');
     expect(result.application['phone']).toBe('617-555-0199');
     expect(result.application['weeklyHours']).toBe(10);
@@ -236,7 +236,7 @@ describe('pandadocMapper', () => {
     expect(result.learnerInfo['instructorInfo']).toBe(
       'Dr. Smith, smith@northeastern.edu',
     );
-    expect(result.learnerInfo['dateOfBirth']).toEqual(utcDate(2026, 2, 4));
+    expect(result.learnerInfo['dateOfBirth']).toEqual(estDate(2026, 2, 4));
   });
 
   it('maps license to both application and volunteerInfo', () => {
@@ -310,9 +310,9 @@ describe('pandadocMapper', () => {
     expect(heardAbout).not.toContain(HeardAboutFrom.ONLINE_SEARCH);
 
     expect(result.application['proposedStartDate']).toEqual(
-      utcDate(2026, 4, 16),
+      estDate(2026, 4, 16),
     );
-    expect(result.learnerInfo['dateOfBirth']).toEqual(utcDate(2026, 4, 1));
+    expect(result.learnerInfo['dateOfBirth']).toEqual(estDate(2026, 4, 1));
   });
 
   it('covers every field mapping entry in PANDADOC_FIELD_MAP', () => {
