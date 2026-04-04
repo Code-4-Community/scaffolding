@@ -188,6 +188,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     backendField: 'license',
     required: false,
     targetTable: 'application',
+    defaultValue: '',
   },
   {
     pandaDocKey: 'Volunteer_Referred',
