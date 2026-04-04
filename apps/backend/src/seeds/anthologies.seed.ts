@@ -29,7 +29,7 @@ export const AnthologiesSeed: DeepPartial<Anthology>[] = [
 
     programs: ['BINcA'],
 
-    status: AnthologyStatus.CAN_BE_SHARED,
+    status: AnthologyStatus.ARCHIVED,
     // partners ?
     ageCategory: AgeCategory.YA,
 
@@ -53,7 +53,7 @@ export const AnthologiesSeed: DeepPartial<Anthology>[] = [
 
     programs: ['OB'],
 
-    status: AnthologyStatus.CAN_BE_SHARED,
+    status: AnthologyStatus.DRAFT,
     // partners ?
     ageCategory: AgeCategory.YA,
 
@@ -88,7 +88,7 @@ export const AnthologiesSeed: DeepPartial<Anthology>[] = [
       'Suffolk University',
     ],
 
-    status: AnthologyStatus.CAN_BE_SHARED,
+    status: AnthologyStatus.IN_PRODUCTION,
 
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
 
@@ -110,10 +110,25 @@ export const AnthologiesSeed: DeepPartial<Anthology>[] = [
       'Suffolk University',
     ],
 
-    status: AnthologyStatus.ARCHIVED,
+    status: AnthologyStatus.IN_REVISION,
 
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
 
     isbn: '979-8-88694-087-9',
+  },
+  {
+    id: 5,
+    title: 'New and Beautiful Places',
+    byline:
+      '10th-grade students from the Boston International Newcomers Academy',
+    genres: ['Nonfiction', 'Personal Narratives', 'Multicultural'],
+    themes: [],
+    description: '',
+    publishedDate: new Date('2025-06-30'),
+    programs: ['BINcA'],
+    sponsors: [],
+    status: AnthologyStatus.PUBLISHED,
+    pubLevel: AnthologyPubLevel.CHAPBOOK,
+    isbn: '',
   },
 ];

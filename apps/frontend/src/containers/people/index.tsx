@@ -16,7 +16,7 @@ const PersonRow: React.FC<{ user: User }> = ({ user }) => (
         <span className="people-name">
           {user.firstName} {user.lastName}
         </span>
-        <span className="people-title">Title</span>
+        <span className="people-title">{user.title}</span>
       </div>
     </div>
     <span className="people-role">{user.role}</span>

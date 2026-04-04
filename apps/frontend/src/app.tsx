@@ -46,11 +46,11 @@ const router = createBrowserRouter([
       },
       // admin and volunteer routes
       {
-        element: <ProtectedRoute roles={[Role.ADMIN, Role.VOLUNTEER]} />,
+        element: <ProtectedRoute roles={[Role.ADMIN, Role.STANDARD]} />,
         children: [{ path: 'people', element: <People /> }],
       },
       {
-        element: <AuthedApp roles={[Role.ADMIN, Role.VOLUNTEER]} />,
+        element: <AuthedApp roles={[Role.ADMIN, Role.STANDARD]} />,
         children: [
           {
             path: 'projects',
@@ -74,14 +74,14 @@ const router = createBrowserRouter([
             element: <NotFound />,
           },
           /*
-          TODO: set default page for admins/volunteers to projects page?
+          TODO: set default page for admins/standard to projects page?
           {index: true,
             element: <Projects />
           }*/
         ],
       },
 
-      // TODO: admin routes (ex. adding admin/volunteers)
+      // TODO: admin routes (ex. adding admin/standard)
       {
         path: 'admin',
         element: <AuthedApp roles={[Role.ADMIN]} />,

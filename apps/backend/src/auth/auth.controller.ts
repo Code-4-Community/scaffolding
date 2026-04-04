@@ -18,7 +18,7 @@ import { CreateManagedUserDto } from './dtos/create-managed-user.dto';
 import { User } from '../users/user.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { Status } from '../users/types';
+import { Role } from '../users/types';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { Request } from 'express';
 
@@ -27,7 +27,7 @@ interface AuthenticatedUserResponse {
   firstName: string;
   lastName: string;
   email: string;
-  role: 'admin' | 'volunteer';
+  role: 'admin' | 'standard';
 }
 
 type JwtUserRequest = Request & {
@@ -60,7 +60,7 @@ export class AuthController {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      role: user.role === Status.ADMIN ? 'admin' : 'standard',
+      role: user.role === Role.ADMIN ? 'admin' : 'standard',
     };
   }
 
@@ -104,7 +104,7 @@ export class AuthController {
     const requestingUsers = await this.usersService.find(requestingUserEmail);
     const requestingUser = requestingUsers[0];
 
-    if (!requestingUser || requestingUser.role !== Status.ADMIN) {
+    if (!requestingUser || requestingUser.role !== Role.ADMIN) {
       throw new ForbiddenException('Only admins can create users');
     }
 
@@ -140,7 +140,7 @@ export class AuthController {
         body.firstName,
         body.lastName,
         body.role,
-        body.publishingName,
+        body.title,
       );
     } catch (error) {
       await this.authService.deleteUser(body.email).catch(() => undefined);

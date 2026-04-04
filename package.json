@@ -11,7 +11,7 @@
     "prepush:fix": "yarn run format && yarn run lint",
     "prepare": "husky install",
     "typeorm": "ts-node --project apps/backend/tsconfig.seed.json ./node_modules/typeorm/cli.js",
-    "migration:generate": "dotenv -e apps/backend/.env -- yarn typeorm migration:generate -d apps/backend/src/data-source.ts",
+    "migration:generate": "dotenv -e apps/backend/.env -- yarn typeorm migration:generate apps/backend/src/migrations/MigrationName -d apps/backend/src/data-source.ts",
     "migration:run": "dotenv -e apps/backend/.env -- yarn typeorm migration:run -d apps/backend/src/data-source.ts",
     "migration:revert": "dotenv -e apps/backend/.env -- yarn typeorm migration:revert -d apps/backend/src/data-source.ts",
     "migration:create": "yarn typeorm migration:create",

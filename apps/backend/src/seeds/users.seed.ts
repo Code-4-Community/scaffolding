@@ -1,32 +1,47 @@
-import { Status } from 'src/users/types';
+import { Role } from 'src/users/types';
 import { User } from 'src/users/user.entity';
 import { DeepPartial } from 'typeorm';
 
 export const UsersSeed: DeepPartial<User>[] = [
   {
     id: 1,
-    status: Status.ADMIN,
+    role: Role.ADMIN,
     firstName: 'Richie',
+    lastName: 'Jacobs',
+    email: 'richie.jacobs@gmail.com',
+    title: 'Publishing Manager',
+  
   },
   {
     id: 2,
-    status: Status.ADMIN,
+    role: Role.ADMIN,
     firstName: 'Kanyin',
+    lastName: 'Brown',
+    email: 'kanyin.brown@gmail.com',
+    title: 'Volunteer Manager',
   },
   {
     id: 3,
-    status: Status.ADMIN,
+    role: Role.ADMIN,
     firstName: 'Mirn',
+    lastName: 'Miller',
+    email: 'mirn.miller@gmail.com',
+    title: 'Program Manager',
   },
   {
     id: 4,
-    status: Status.ADMIN,
-    firstName: 'Ms. F',
+    role: Role.STANDARD,
+    firstName: 'Kelly',
+    lastName: 'Williams',
+    email: 'kelly.williams@gmail.com',
+    title: 'Community Partner',
   },
   {
     id: 5,
-    status: Status.ADMIN,
+    role: Role.STANDARD,
     firstName: 'Tony',
     lastName: 'King',
+    email: 'tony.king@gmail.com',
+    title: 'Director of Communications'
   },
 ];
