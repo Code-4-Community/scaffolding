@@ -16,7 +16,9 @@ import QuestionFrame from '@components/QuestionFrame';
 import RequirementsFrame from '@components/RequirementsFrame';
 import UploadedMaterial from '@components/UploadedMaterial';
 import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
+
 import EmergencyContactFrame from '@components/EmergencyContactFrame';
+import ApplicationProfileHeader from '@components/ApplicationProfileHeader';
 
 const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
@@ -27,6 +29,35 @@ const AdminViewApplication: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const firstName: string = application?.email
+    ? application.email
+        .split('@')[0]
+        .split('.')[0]
+        .replace(/^./, (c) => c.toUpperCase())
+    : '';
+
+  const lastName: string = application?.email
+    ? application.email
+        .split('@')[0]
+        .split('.')[1]
+        .replace(/^./, (c) => c.toUpperCase())
+    : '';
+  const pronouns = application?.pronouns;
+  const discipline = application?.discipline;
+  const over18: boolean = learnerInfo?.dateOfBirth
+    ? (() => {
+        const today = new Date();
+        const dob = new Date(learnerInfo.dateOfBirth);
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        const dayDiff = today.getDate() - dob.getDate();
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+          age--;
+        }
+        return age >= 18;
+      })()
+    : false;
 
   // TODO: derive from actual auth state once auth is wired up
   const isAdmin = true;
@@ -97,6 +128,16 @@ const AdminViewApplication: React.FC = () => {
         overflowY="auto"
         maxH="100vh"
       >
+        <ApplicationProfileHeader
+          firstName={firstName}
+          lastName={lastName}
+          pronouns={pronouns}
+          discipline={discipline}
+          experienceType={application.experienceType || 'N/A'}
+          email={application.email || 'N/A'}
+          phone={application.phone || 'N/A'}
+          over18={over18}
+        />
         <SchoolAffiliationFrame
           schoolName={learnerInfo ? learnerInfo.school : 'N/A'}
           schoolDepartment={
