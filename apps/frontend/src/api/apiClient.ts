@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
+import { fetchAuthSession } from 'aws-amplify/auth';
 import { Anthology, Story } from '../types';
 import User from './dtos/user.dto';
 
@@ -13,7 +14,7 @@ export class ApiClient {
   }
 
   public async getMe(): Promise<User> {
-    return this.get('/auth/me') as Promise<User>;
+    return this.get('/api/auth/me') as Promise<User>;
   }
 
   public async getUsers(): Promise<User[]> {
@@ -22,6 +23,10 @@ export class ApiClient {
 
   public async getHello(): Promise<string> {
     return this.get('/api') as Promise<string>;
+  }
+
+  public async getAnthologies(): Promise<Anthology[]> {
+    return this.get('/api/anthologies') as Promise<Anthology[]>;
   }
 
   public async getAnthology(id: string | number): Promise<Anthology> {
@@ -36,24 +41,43 @@ export class ApiClient {
     >;
   }
 
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    try {
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+
+      return token ? { Authorization: `Bearer ${token}` } : {};
+    } catch {
+      return {};
+    }
+  }
+
   private async get(path: string): Promise<unknown> {
-    return this.axiosInstance.get(path).then((response) => response.data);
+    const headers = await this.getAuthHeaders();
+    return this.axiosInstance
+      .get(path, { headers })
+      .then((response) => response.data);
   }
 
   private async post(path: string, body: unknown): Promise<unknown> {
+    const headers = await this.getAuthHeaders();
     return this.axiosInstance
-      .post(path, body)
+      .post(path, body, { headers })
       .then((response) => response.data);
   }
 
   private async patch(path: string, body: unknown): Promise<unknown> {
+    const headers = await this.getAuthHeaders();
     return this.axiosInstance
-      .patch(path, body)
+      .patch(path, body, { headers })
       .then((response) => response.data);
   }
 
   private async delete(path: string): Promise<unknown> {
-    return this.axiosInstance.delete(path).then((response) => response.data);
+    const headers = await this.getAuthHeaders();
+    return this.axiosInstance
+      .delete(path, { headers })
+      .then((response) => response.data);
   }
 }
 

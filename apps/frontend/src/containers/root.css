@@ -107,6 +107,7 @@ a.sidebar-nav-link {
   padding: 12px 0px 12px 38px;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  text-decoration: none;
 }
 
 .root-sidebar.collapsed .sidebar-nav-item {
@@ -115,6 +116,10 @@ a.sidebar-nav-link {
 }
 
 .sidebar-nav-item:hover {
+  background-color: var(--neutral-150);
+}
+
+.sidebar-nav-item--active {
   background-color: var(--neutral-150);
 }
 
@@ -176,11 +181,13 @@ a.sidebar-nav-link {
 .sidebar-library-header {
   display: flex;
   flex-direction: column;
+  width: 100%;
   padding: 12px 12px 12px 38px;
   cursor: pointer;
   background-color: var(--neutral-100);
   border: none;
   text-align: left;
+  text-decoration: none;
   transition: background-color 0.15s ease;
 }
 

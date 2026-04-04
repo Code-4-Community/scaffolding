@@ -132,7 +132,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 45px;
+  gap: 18px;
 }
 
 /* Search Header */
@@ -159,7 +159,7 @@
   justify-content: flex-end;
   align-items: center;
   flex: 1;
-  gap: 8px;
+  gap: 12px;
 }
 
 /* Search Input */
@@ -169,7 +169,7 @@
   justify-content: center;
   align-items: center;
   flex: 1;
-  max-width: 500px;
+  max-width: 620px;
   padding: 8px 20px;
   border: 1px solid var(--neutral-300);
   border-radius: 8px;
@@ -213,23 +213,83 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: none;
+  height: 43px;
+  border: 1px solid var(--neutral-600);
+  border-radius: 8px;
+  background: var(--neutral-100);
   cursor: pointer;
-  padding: 0;
-  transition: opacity 0.15s ease;
+  padding: 0 16px;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
 }
 
 .publication-filter-btn:hover {
-  opacity: 0.7;
+  background-color: var(--neutral-150);
 }
 
 .publication-filter-icon {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   object-fit: contain;
+}
+
+.publication-filter-btn--text {
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.publication-filter-btn--text span {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--neutral-600);
+}
+
+.publication-create-btn {
+  height: 43px;
+  min-width: 168px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ed6c02;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 20px;
+  transition: opacity 0.15s ease;
+}
+
+.publication-create-btn:hover {
+  opacity: 0.9;
+}
+
+.publication-tabs {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+  border-bottom: 1px solid var(--neutral-300);
+}
+
+.publication-tab {
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--neutral-600);
+  border-bottom: 2px solid transparent;
+}
+
+.publication-tab--active {
+  color: var(--accent-500);
+  border-bottom-color: var(--accent-500);
 }
 
 /* Publication Cards Grid */
@@ -244,9 +304,10 @@
 .publication-card {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
+  min-height: 360px;
   cursor: pointer;
   border: none;
   background: none;
@@ -303,8 +364,8 @@
 .publication-card-info {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   width: 100%;
   padding: 12px 9px;
   background-color: #f7f3f2;
@@ -318,9 +379,10 @@
 .publication-card-details {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  width: 206px;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 84px;
   gap: 4px;
 }
 
@@ -356,8 +418,9 @@
 .publication-card-meta {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  gap: 24px;
+  gap: 8px;
 }
 
 .publication-card-modified {
@@ -366,6 +429,40 @@
   font-size: 12px;
   line-height: 1.36;
   color: var(--neutral-400);
+  text-align: left;
+}
+
+@media (max-width: 1200px) {
+  .recently-edited-section {
+    padding: 32px 40px;
+  }
+
+  .all-publications-section {
+    padding: 24px 40px 72px;
+  }
+}
+
+@media (max-width: 900px) {
+  .publication-search-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .publication-search-controls {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .publication-search-input-wrapper {
+    max-width: none;
+    min-width: 280px;
+  }
+
+  .publication-tab {
+    font-size: 14px;
+  }
 }
 
 .publication-card-menu {
