@@ -8,10 +8,13 @@ const mappingPairKey = (item: {
   backendField: string;
 }): string => `${item.targetTable}.${item.backendField}`;
 
+const utcDate = (yyyy: number, mm: number, dd: number): Date =>
+  new Date(Date.UTC(yyyy, mm - 1, dd));
+
 function buildFullPayload(): Record<string, unknown> {
   return {
-    Volunteer_StartDate: '2026-06-01',
-    Volunteer_EndDate: '2026-12-01',
+    Volunteer_StartDate: '06-01-2026',
+    Volunteer_EndDate: '12-01-2026',
     email: 'ohstep23@gmail.com',
     Volunteer_Pronouns: 'he/him',
     Volunteer_Phone: '617-555-0199',
@@ -78,9 +81,9 @@ describe('pandadocMapper', () => {
 
     expect(result.application['email']).toBe('ohstep23@gmail.com');
     expect(result.application['proposedStartDate']).toEqual(
-      new Date('2026-06-01'),
+      utcDate(2026, 6, 1),
     );
-    expect(result.application['endDate']).toEqual(new Date('2026-12-01'));
+    expect(result.application['endDate']).toEqual(utcDate(2026, 12, 1));
     expect(result.application['pronouns']).toBe('he/him');
     expect(result.application['phone']).toBe('617-555-0199');
     expect(result.application['weeklyHours']).toBe(10);
@@ -106,6 +109,17 @@ describe('pandadocMapper', () => {
     const result = pandadocMapper(buildFullPayload());
     expect(typeof result.application['weeklyHours']).toBe('number');
     expect(result.application['weeklyHours']).toBe(10);
+  });
+
+  it('defaults weeklyHours to 0 when missing or invalid', () => {
+    const missingHours = buildFullPayload();
+    delete missingHours['Volunteer_TotalHours'];
+
+    const invalidHours = buildFullPayload();
+    invalidHours['Volunteer_TotalHours'] = 'no numeric value';
+
+    expect(pandadocMapper(missingHours).application['weeklyHours']).toBe(0);
+    expect(pandadocMapper(invalidHours).application['weeklyHours']).toBe(0);
   });
 
   it('converts boolean-style fields correctly', () => {
@@ -188,6 +202,26 @@ describe('pandadocMapper', () => {
     expect(result.application['school']).toBeUndefined();
   });
 
+  it('maps known affiliations to valid School enum values', () => {
+    const cases: Array<{ input: string; expected: School }> = [
+      {
+        input: 'Harvard Medical School',
+        expected: School.HARVARD_MEDICAL_SCHOOL,
+      },
+      { input: 'Johns Hopkins University', expected: School.JOHNS_HOPKINS },
+      { input: 'JHMI program', expected: School.JOHNS_HOPKINS },
+      { input: 'Stanford Medicine', expected: School.STANFORD_MEDICINE },
+      { input: 'Mayo Clinic', expected: School.MAYO_CLINIC },
+    ];
+
+    for (const testCase of cases) {
+      const payload = buildFullPayload();
+      payload['Volunteer_Affiliation'] = testCase.input;
+      const result = pandadocMapper(payload);
+      expect(result.learnerInfo['school']).toBe(testCase.expected);
+    }
+  });
+
   it('maps otherSchool to learnerInfo', () => {
     const payload = buildFullPayload();
     payload['Volunteer_ Affiliation_Other'] = 'Northeastern University';
@@ -202,7 +236,7 @@ describe('pandadocMapper', () => {
     expect(result.learnerInfo['instructorInfo']).toBe(
       'Dr. Smith, smith@northeastern.edu',
     );
-    expect(result.learnerInfo['dateOfBirth']).toEqual(new Date('02-04-2026'));
+    expect(result.learnerInfo['dateOfBirth']).toEqual(utcDate(2026, 2, 4));
   });
 
   it('maps license to both application and volunteerInfo', () => {
@@ -214,9 +248,9 @@ describe('pandadocMapper', () => {
   it('handles native PandaDoc checkbox and collect_file value types', () => {
     const payload = {
       ...buildFullPayload(),
-      Volunteer_DOB: '2026-04-01T00:00:00',
-      Volunteer_StartDate: '2026-04-16T00:00:00',
-      Volunteer_EndDate: '2026-04-30T00:00:00',
+      Volunteer_DOB: '04-01-2026',
+      Volunteer_StartDate: '04-16-2026',
+      Volunteer_EndDate: '04-30-2026',
       Volunteer_TotalHours: 'efse 13',
       Volunteer_Referred: false,
       Volunteer_ReferredEmail: '',
@@ -276,11 +310,9 @@ describe('pandadocMapper', () => {
     expect(heardAbout).not.toContain(HeardAboutFrom.ONLINE_SEARCH);
 
     expect(result.application['proposedStartDate']).toEqual(
-      new Date('2026-04-16T00:00:00'),
+      utcDate(2026, 4, 16),
     );
-    expect(result.learnerInfo['dateOfBirth']).toEqual(
-      new Date('2026-04-01T00:00:00'),
-    );
+    expect(result.learnerInfo['dateOfBirth']).toEqual(utcDate(2026, 4, 1));
   });
 
   it('covers every field mapping entry in PANDADOC_FIELD_MAP', () => {

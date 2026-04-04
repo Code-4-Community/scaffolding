@@ -8,35 +8,35 @@
 import { HeardAboutFrom, InterestArea } from './applications/types';
 import { School } from './learner-info/types';
 
-// Parse MM-DD-YYYY, MM/DD/YYYY, or YYYY-MM-DD into a Date parsed as UTC midnight.
-// This produces the same value as `new Date('YYYY-MM-DD')` for the same date
-// (tests compare against `new Date('YYYY-MM-DD')`).
 /**
- * Parse a user-supplied date string into a Date representing local-midnight
- * for the supplied date when input is in MM-DD-YYYY or MM/DD/YYYY formats.
+ * Parse a user-supplied date string into a Date normalized to UTC midnight
+ * for the intended calendar date.
  *
- * For ISO (YYYY-MM-DD) and other formats this defers to the native parser.
- * Tests expect that dates like "02-04-2026" map to the same Date value
- * produced by `new Date('YYYY-MM-DD')` for that date.
+ * Expected input format is `MM-DD-YYYY`.
  *
- * @param value - date string from PandaDoc (may be MM-dd-yyyy or ISO)
+ * This is converted with `Date.UTC(...)` so persistence/serialization does
+ * not shift the calendar date across timezones.
+ *
+ * Non-matching values fall back to the native Date parser as a defensive
+ * guard for unexpected payloads.
+ *
+ * @param value - date string from PandaDoc in MM-DD-YYYY format
  * @returns Date instance representing the parsed date
  */
 function parseDate(value: string): Date {
   if (!value || typeof value !== 'string') return new Date(String(value));
 
-  // MM-DD-YYYY or MM/DD/YYYY -> construct local-midnight Date to match
-  // native `new Date('MM-DD-YYYY')` behavior in Node (avoids timezone shifts).
-  const mmdd = /^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/;
+  // MM-DD-YYYY -> UTC midnight for that calendar date.
+  const mmdd = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
   const m = value.match(mmdd);
   if (m) {
     const mm = parseInt(m[1], 10);
     const dd = parseInt(m[2], 10);
     const yyyy = parseInt(m[3], 10);
-    return new Date(yyyy, mm - 1, dd);
+    return new Date(Date.UTC(yyyy, mm - 1, dd));
   }
 
-  // For ISO (YYYY-MM-DD) and other formats, defer to native parser.
+  // For non-date-like values, defer to native parser.
   return new Date(value);
 }
 
@@ -209,10 +209,12 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     transform: (value: string) => {
       const s = String(value ?? '');
       const m = s.match(/(\d+)/);
-      return m ? parseInt(m[1], 10) : parseInt(s, 10);
+      const parsed = m ? parseInt(m[1], 10) : parseInt(s, 10);
+      return Number.isNaN(parsed) ? 0 : parsed;
     },
     required: false,
     targetTable: 'application',
+    defaultValue: 0,
   },
   {
     pandaDocKey: 'Volunteer_AvailabilityMonday',
@@ -481,24 +483,24 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
       const normalized = value.trim().toLowerCase();
 
       if (normalized.includes('harvard')) {
-        return 'Harvard';
+        return School.HARVARD_MEDICAL_SCHOOL;
       }
       if (
         normalized.includes('johns hopkins') ||
         normalized.includes('jhmi') ||
         normalized.includes('hopkins')
       ) {
-        return 'Johns Hopkins';
+        return School.JOHNS_HOPKINS;
       }
       if (normalized.includes('stanford')) {
-        return 'Stanford';
+        return School.STANFORD_MEDICINE;
       }
       if (normalized.includes('mayo')) {
-        return 'Mayo';
+        return School.MAYO_CLINIC;
       }
 
       // Any unrecognized school should be treated as "Other" to satisfy the School enum.
-      return 'Other';
+      return School.OTHER;
     },
     required: true,
     targetTable: 'learnerInfo',
