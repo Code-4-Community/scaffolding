@@ -167,6 +167,7 @@ export class ApplicationsService {
   async create(
     createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
+    this.validateApplicationDto(createApplicationDto);
     const application = this.applicationRepository.create(createApplicationDto);
     return await this.applicationRepository.save(application);
   }
