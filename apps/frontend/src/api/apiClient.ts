@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { type AxiosInstance } from 'axios';
+import { getIdToken } from '../auth/cognito';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Application,
@@ -16,6 +18,29 @@ export class ApiClient {
 
   constructor() {
     this.axiosInstance = axios.create({ baseURL: defaultBaseUrl });
+    this.axiosInstance.interceptors.request.use(async (config) => {
+      try {
+        const idToken = await getIdToken();
+        if (!idToken) {
+          if (!config.headers) config.headers = {} as any;
+          const hasAuth =
+            (config.headers as any).Authorization ||
+            (config.headers as any)['Authorization'];
+          if (!hasAuth) {
+            (config.headers as any)['Authorization'] = `Bearer ${idToken}`;
+            console.debug(
+              'ApiClient: attached Authorization header from getIdToken',
+            );
+          }
+        } else {
+          console.debug('ApiClient: no idToken available from getIdToken');
+        }
+      } catch (err) {
+        console.debug('ApiClient: error while retrieving idToken', err);
+      }
+
+      return config;
+    });
   }
 
   public async getHello(): Promise<string> {
