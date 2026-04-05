@@ -11,6 +11,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from './user.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserType } from './types';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 /**
  * Controller to expose callable HTTP endpoints to
@@ -20,7 +23,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('Users')
 @ApiBearerAuth()
 @Controller('users')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -31,6 +34,7 @@ export class UsersController {
    * @returns The user with the corresponding email or null if not found.
    */
   @Get('email/:email')
+  @Roles(UserType.ADMIN)
   async getUser(@Param('email') email: string): Promise<User | null> {
     const decoded = decodeURIComponent(email);
     return this.usersService.findOne(decoded);
@@ -41,6 +45,7 @@ export class UsersController {
    * @param email The email of the user to delete (URL-encoded).
    */
   @Delete('email/:email')
+  @Roles(UserType.ADMIN)
   async removeUser(@Param('email') email: string): Promise<void> {
     const decoded = decodeURIComponent(email);
     await this.usersService.remove(decoded);

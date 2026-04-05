@@ -5,6 +5,33 @@ import { VolunteerInfoService } from './volunteer-info.service';
 import { VolunteerInfo } from './volunteer-info.entity';
 import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto';
 import { BadRequestException } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { UsersService } from '../users/users.service';
+
+jest.mock('../util/aws-exports', () => ({
+  __esModule: true,
+  default: {
+    AWSConfig: {
+      accessKeyId: 'test-access-key',
+      secretAccessKey: 'test-secret-key',
+      region: 'us-east-2',
+      bucket: 'bucket',
+    },
+    CognitoAuthConfig: {
+      userPoolId: 'test-user-pool-id',
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    },
+  },
+}));
+
+const mockRolesGuard = {
+  canActivate: jest.fn(() => true),
+};
+
+const mockUsersService = {
+  findOne: jest.fn(),
+};
 
 describe('VolunteerInfoController', () => {
   let controller: VolunteerInfoController;
@@ -25,6 +52,14 @@ describe('VolunteerInfoController', () => {
         {
           provide: getRepositoryToken(VolunteerInfo),
           useValue: {},
+        },
+        {
+          provide: RolesGuard,
+          useValue: mockRolesGuard,
+        },
+        {
+          provide: UsersService,
+          useValue: mockUsersService,
         },
       ],
     }).compile();

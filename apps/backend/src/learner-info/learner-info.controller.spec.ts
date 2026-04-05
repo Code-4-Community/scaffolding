@@ -6,6 +6,33 @@ import { LearnerInfo } from './learner-info.entity';
 import { CreateLearnerInfoDto } from './dto/create-learner-info.request.dto';
 import { School } from './types';
 import { BadRequestException } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
+import { RolesGuard } from '../auth/roles.guard';
+
+jest.mock('../util/aws-exports', () => ({
+  __esModule: true,
+  default: {
+    AWSConfig: {
+      accessKeyId: 'test-access-key',
+      secretAccessKey: 'test-secret-key',
+      region: 'us-east-2',
+      bucketName: 'bucket',
+    },
+    CognitoAuthConfig: {
+      userPoolId: 'test-user-pool-id',
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    },
+  },
+}));
+
+const mockRolesGuard = {
+  canActivate: jest.fn(() => true),
+};
+
+const mockUsersService = {
+  findOne: jest.fn(),
+};
 
 describe('LearnerInfoController', () => {
   let controller: LearnerInfoController;
@@ -27,6 +54,14 @@ describe('LearnerInfoController', () => {
         {
           provide: getRepositoryToken(LearnerInfo),
           useValue: {},
+        },
+        {
+          provide: RolesGuard,
+          useValue: mockRolesGuard,
+        },
+        {
+          provide: UsersService,
+          useValue: mockUsersService,
         },
       ],
     }).compile();

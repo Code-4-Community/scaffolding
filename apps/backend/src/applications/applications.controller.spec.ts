@@ -10,6 +10,25 @@ import {
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
+import { RolesGuard } from '../auth/roles.guard';
+import { UsersService } from '../users/users.service';
+
+jest.mock('../util/aws-exports', () => ({
+  __esModule: true,
+  default: {
+    AWSConfig: {
+      accessKeyId: 'test-access-key',
+      secretAccessKey: 'test-secret-key',
+      region: 'us-east-2',
+      bucket: 'bucket',
+    },
+    CognitoAuthConfig: {
+      userPoolId: 'test-user-pool-id',
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    },
+  },
+}));
 
 const mockApplicationsService: Partial<ApplicationsService> = {
   findAll: jest.fn(),
@@ -25,6 +44,14 @@ const mockApplicationsService: Partial<ApplicationsService> = {
   updateProposedStartDate: jest.fn(),
   updateActualStartDate: jest.fn(),
   updateEndDate: jest.fn(),
+};
+
+const mockRolesGuard = {
+  canActivate: jest.fn(() => true),
+};
+
+const mockUsersService = {
+  findOne: jest.fn(),
 };
 
 const mockApplication: Application = {
@@ -69,6 +96,14 @@ describe('ApplicationsController', () => {
         {
           provide: ApplicationsService,
           useValue: mockApplicationsService,
+        },
+        {
+          provide: RolesGuard,
+          useValue: mockRolesGuard,
+        },
+        {
+          provide: UsersService,
+          useValue: mockUsersService,
         },
       ],
     }).compile();

@@ -8,6 +8,8 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -16,12 +18,19 @@ import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
 import { UpdateApplicationAvailabilityDto } from './dto/update-application-availability.request.dto';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthGuard } from '@nestjs/passport';
+import { UserType } from '../users/types';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
  */
 @ApiTags('Applications')
 @Controller('applications')
+@UseInterceptors(CurrentUserInterceptor)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ApplicationsController {
   constructor(private applicationsService: ApplicationsService) {}
 
@@ -30,6 +39,7 @@ export class ApplicationsController {
    * @returns Object containing the total application count.
    */
   @Get('count/total')
+  @Roles(UserType.ADMIN)
   async getTotalApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countAll();
     return { count };
@@ -40,6 +50,7 @@ export class ApplicationsController {
    * @returns Object containing the in-review application count.
    */
   @Get('count/in-review')
+  @Roles(UserType.ADMIN)
   async getInReviewApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countInReview();
     return { count };
@@ -50,6 +61,7 @@ export class ApplicationsController {
    * @returns Object containing the rejected application count.
    */
   @Get('count/rejected')
+  @Roles(UserType.ADMIN)
   async getRejectedApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countRejected();
     return { count };
@@ -60,6 +72,7 @@ export class ApplicationsController {
    * @returns Object containing the approved/active application count.
    */
   @Get('count/approved')
+  @Roles(UserType.ADMIN)
   async getApprovedApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countApprovedOrActive();
     return { count };
@@ -71,6 +84,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get()
+  @Roles(UserType.ADMIN)
   async getAllApplications(): Promise<Application[]> {
     return await this.applicationsService.findAll();
   }
@@ -85,6 +99,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get('by-discipline')
+  @Roles(UserType.ADMIN)
   async getApplicationsByDiscipline(
     @Query('discipline') discipline: string,
   ): Promise<Application[]> {
@@ -101,6 +116,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get('/:appId')
+  @Roles(UserType.ADMIN)
   async getApplicationById(
     @Param('appId', ParseIntPipe) appId: number,
   ): Promise<Application> {
@@ -115,6 +131,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Post()
+  @Roles(UserType.ADMIN)
   async createApplication(
     @Body() createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
@@ -132,6 +149,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Patch('/:appId/status')
+  @Roles(UserType.ADMIN)
   async updateApplicationStatus(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateStatusDto: UpdateApplicationStatusDto,
@@ -152,6 +170,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Patch('/:appId/discipline')
+  @Roles(UserType.ADMIN)
   async updateApplicationDiscipline(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateDisciplineDto: UpdateApplicationDisciplineDto,
@@ -170,6 +189,7 @@ export class ApplicationsController {
    * @throws {NotFoundException} if the application does not exist.
    */
   @Patch('/:appId/availability')
+  @Roles(UserType.ADMIN)
   async updateApplicationAvailability(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateAvailabilityDto: UpdateApplicationAvailabilityDto,
@@ -187,6 +207,7 @@ export class ApplicationsController {
    *         if the application does not exist.
    */
   @Patch('/:appId/start-date')
+  @Roles(UserType.ADMIN)
   async updateApplicationProposedStartDate(
     @Param('appId', ParseIntPipe) appId: number,
     @Body('proposedStartDate') startDate: string,
@@ -207,6 +228,7 @@ export class ApplicationsController {
    *         if the application does not exist.
    */
   @Patch('/:appId/start-date')
+  @Roles(UserType.ADMIN)
   async updateApplicationActualStartDate(
     @Param('appId', ParseIntPipe) appId: number,
     @Body('actualStartDate') startDate: string,
@@ -227,6 +249,7 @@ export class ApplicationsController {
    *         if the application does not exist.
    */
   @Patch('/:appId/end-date')
+  @Roles(UserType.ADMIN)
   async updateApplicationEndDate(
     @Param('appId', ParseIntPipe) appId: number,
     @Body('endDate') endDate: string,
@@ -247,6 +270,7 @@ export class ApplicationsController {
    * @returns {Application} The application object which has been deleted.
    */
   @Delete('/:appId')
+  @Roles(UserType.ADMIN)
   async deleteApplication(
     @Param('appId', ParseIntPipe) appId: number,
   ): Promise<void> {

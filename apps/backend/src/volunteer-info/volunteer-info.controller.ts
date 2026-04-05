@@ -1,14 +1,29 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { VolunteerInfo } from './volunteer-info.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { VolunteerInfoService } from './volunteer-info.service';
 import { CreateVolunteerInfoDto } from './dto/create-volunteer-info.request.dto';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthGuard } from '@nestjs/passport';
+import { UserType } from '../users/types';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about volunteer-specific application info.
  */
 @ApiTags('volunteerInfo')
 @Controller('volunteer_info')
+@UseInterceptors(CurrentUserInterceptor)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class VolunteerInfoController {
   constructor(private volunteerInfoService: VolunteerInfoService) {}
 
@@ -19,6 +34,7 @@ export class VolunteerInfoController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Post()
+  @Roles(UserType.ADMIN)
   async createVolunteerInfo(
     @Body() createvolunteerInfoDto: CreateVolunteerInfoDto,
   ): Promise<VolunteerInfo> {
@@ -35,6 +51,7 @@ export class VolunteerInfoController {
    * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined)
    */
   @Get('/:appId')
+  @Roles(UserType.ADMIN)
   async getVolunteerInfo(
     @Param('appId') appId: number,
   ): Promise<VolunteerInfo> {

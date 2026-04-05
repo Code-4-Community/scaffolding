@@ -7,11 +7,16 @@ import {
   UseInterceptors,
   ParseIntPipe,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { DisciplinesService } from './disciplines.service';
 import { CreateDisciplineRequestDto } from './dto/create-discipline.request.dto';
 import { Discipline } from './disciplines.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../auth/roles.decorator';
+import { UserType } from '../users/types';
+import { RolesGuard } from '../auth/roles.guard';
 
 /**
  * Controller to expose callable HTTP endpoints to interface,
@@ -19,8 +24,7 @@ import { Discipline } from './disciplines.entity';
  */
 @Controller('disciplines')
 @UseInterceptors(CurrentUserInterceptor)
-// TODO: Uncomment after JWT authentication is setup with Cognito
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class DisciplinesController {
   constructor(private disciplinesService: DisciplinesService) {}
 
@@ -29,6 +33,7 @@ export class DisciplinesController {
    * @returns a list of all disciplines
    */
   @Get()
+  @Roles(UserType.ADMIN)
   async getAll(): Promise<Discipline[]> {
     return this.disciplinesService.findAll();
   }
@@ -39,6 +44,7 @@ export class DisciplinesController {
    * @returns the discipline with the corresponding email
    */
   @Get(':email')
+  @Roles(UserType.ADMIN)
   async getOne(@Param('email') email: string): Promise<Discipline> {
     return this.disciplinesService.findOne(Number(email));
   }
@@ -49,6 +55,7 @@ export class DisciplinesController {
    * @returns the new discipline
    */
   @Post()
+  @Roles(UserType.ADMIN)
   async create(
     @Body() createDto: CreateDisciplineRequestDto,
   ): Promise<Discipline> {
@@ -63,6 +70,7 @@ export class DisciplinesController {
    * @throws {Error} if the repository throws an error.
    */
   @Delete(':email')
+  @Roles(UserType.ADMIN)
   async remove(
     @Param('email', ParseIntPipe) email: number,
   ): Promise<Discipline> {
@@ -78,6 +86,7 @@ export class DisciplinesController {
    * @throws {Error} if the repository throws an error.
    */
   @Post(':email/admins/:adminEmail')
+  @Roles(UserType.ADMIN)
   async addAdmin(
     @Param('email', ParseIntPipe) email: number,
     @Param('adminEmail') adminEmail: string,
@@ -94,6 +103,7 @@ export class DisciplinesController {
    * @throws {Error} if the repository throws an error.
    */
   @Delete(':email/admins/:adminEmail')
+  @Roles(UserType.ADMIN)
   async removeAdmin(
     @Param('email', ParseIntPipe) email: number,
     @Param('admiEemail') adminEmail: string,

@@ -3,10 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LearnerInfoController } from './learner-info.controller';
 import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
+import { AuthModule } from '../auth/auth.module';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LearnerInfo])],
+  imports: [TypeOrmModule.forFeature([LearnerInfo]), AuthModule],
   controllers: [LearnerInfoController],
-  providers: [LearnerInfoService],
+  providers: [LearnerInfoService, RolesGuard],
 })
 export class LearnerInfoModule {}
