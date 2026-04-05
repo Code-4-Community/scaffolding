@@ -4,12 +4,12 @@ import { DisciplinesController } from './disciplines.controller';
 import { DisciplinesService } from './disciplines.service';
 import { Discipline } from './disciplines.entity';
 import { AuthModule } from '../auth/auth.module';
+import { UsersModule } from '../users/users.module';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
-import { RolesGuard } from '../auth/roles.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Discipline]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Discipline]), AuthModule, UsersModule],
   controllers: [DisciplinesController],
-  providers: [DisciplinesService, CurrentUserInterceptor, RolesGuard],
+  providers: [DisciplinesService, CurrentUserInterceptor],
 })
 export class DisciplinesModule {}

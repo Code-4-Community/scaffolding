@@ -4,10 +4,12 @@ import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
 import { AuthModule } from '../auth/auth.module';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Application]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Application]), AuthModule, UsersModule],
   controllers: [ApplicationsController],
-  providers: [ApplicationsService],
+  providers: [ApplicationsService, CurrentUserInterceptor],
 })
 export class ApplicationsModule {}
