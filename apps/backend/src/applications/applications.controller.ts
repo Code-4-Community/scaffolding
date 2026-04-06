@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -23,6 +24,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserType } from '../users/types';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
+import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
@@ -132,6 +135,7 @@ export class ApplicationsController {
    */
   @Post()
   @Roles(UserType.ADMIN)
+  @UseFilters(ApplicationCreationErrorFilter, ApplicationValidationEmailFilter)
   async createApplication(
     @Body() createApplicationDto: CreateApplicationDto,
   ): Promise<Application> {
