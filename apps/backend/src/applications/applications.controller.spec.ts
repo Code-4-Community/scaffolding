@@ -33,6 +33,16 @@ jest.mock('../util/aws-exports', () => ({
   },
 }));
 
+jest.mock('@nestjs/passport', () => ({
+  AuthGuard: jest.fn().mockReturnValue(
+    class {
+      canActivate() {
+        return true;
+      }
+    },
+  ),
+}));
+
 const mockEmailService = {
   queueEmail: jest.fn().mockResolvedValue(undefined),
 };
@@ -129,7 +139,7 @@ describe('ApplicationsController', () => {
         },
         {
           provide: EmailService,
-          useValue: EmailService,
+          useValue: mockEmailService,
         },
         ApplicationValidationEmailFilter,
         ApplicationCreationErrorFilter,
