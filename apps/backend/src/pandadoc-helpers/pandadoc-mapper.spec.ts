@@ -154,6 +154,35 @@ describe('pandadocMapper', () => {
     expect(heardAbout).not.toContain(HeardAboutFrom.ONLINE_SEARCH);
   });
 
+  it('returns empty array outputs when no checkbox options are selected', () => {
+    const payload = {
+      ...buildFullPayload(),
+      Volunteer_Interest_WomensHealth: false,
+      Volunteer_Interest_AdditctionServices: false,
+      Volunteer_Interest_VeteransServices: false,
+      Volunteer_Interest_HIV: false,
+      Volunteer_Interest_Respite: false,
+      Volunteer_Interest_PrimaryCare: false,
+      Volunteer_Interest_FamilyServices: false,
+      Volunteer_Interest_CaseManagement: false,
+      Volunteer_Interest_StreetMedicine: false,
+      Volunteer_Interest_BehavioralHealth: false,
+      Volunteer_Interest_HepC: false,
+      Volunteer_Interest_Dental: false,
+      Volunteer_HearAboutUs_School: false,
+      Volunteer_HearAboutUs_Website: false,
+      Volunteer_HearAboutUs_OnlineSearch: false,
+      Volunteer_HearAboutUs_FromStaff: false,
+      Volunteer_HearAboutUs_CurrentStaff: false,
+      Volunteer_HearAboutUs_FriendFamily: false,
+      Volunteer_HearAboutUs_Other: false,
+    };
+
+    const result = pandadocMapper(payload);
+    expect(result.application['interest']).toEqual([]);
+    expect(result.application['heardAboutFrom']).toEqual([]);
+  });
+
   it('falls back to defaultValue for blank optional fields', () => {
     const result = pandadocMapper(buildFullPayload());
     expect(result.application['tuesdayAvailability']).toBe('');
@@ -204,10 +233,14 @@ describe('pandadocMapper', () => {
 
   it('maps known affiliations to valid School enum values', () => {
     const cases: Array<{ input: string; expected: School }> = [
-      { input: 'Johns Hopkins University', expected: School.JOHNS_HOPKINS },
-      { input: 'JHMI program', expected: School.JOHNS_HOPKINS },
-      { input: 'Northeastern University', expected: School.NORTHEASTERN },
+      { input: 'Johns Hopkins', expected: School.JOHNS_HOPKINS },
+      { input: '  johns-hopkins  ', expected: School.JOHNS_HOPKINS },
+      { input: 'Northeastern', expected: School.NORTHEASTERN },
+      { input: 'northeastern ', expected: School.NORTHEASTERN },
       { input: 'Boston University', expected: School.BOSTON_UNIVERSITY },
+      { input: 'boston-university', expected: School.BOSTON_UNIVERSITY },
+      { input: 'Johns Hopkins University', expected: School.OTHER },
+      { input: 'JHMI program', expected: School.OTHER },
       { input: 'Harvard Medical School', expected: School.OTHER },
       { input: 'Stanford Medicine', expected: School.OTHER },
       { input: 'Mayo Clinic', expected: School.OTHER },

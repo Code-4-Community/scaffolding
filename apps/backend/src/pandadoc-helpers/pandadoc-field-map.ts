@@ -63,6 +63,20 @@ function parseBooleanish(value: string): boolean {
 }
 
 /**
+ * Normalize a school label for strict comparisons.
+ *
+ * This keeps alphanumeric content and removes whitespace/punctuation so
+ * equivalent labels match even if formatting differs (case, separators,
+ * or special characters).
+ */
+function normalizeSchoolLabel(value: string): string {
+  return String(value ?? '')
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
+
+/**
  * The backend target tables which panda-doc fields map into.
  * Each field entry in `PANDADOC_FIELD_MAP` declares which of these
  * tables the value should be written to.
@@ -481,23 +495,17 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     pandaDocKey: 'Volunteer_Affiliation',
     backendField: 'school',
     transform: (value: string) => {
-      const normalized = value.trim().toLowerCase();
+      const normalized = normalizeSchoolLabel(value);
 
-      if (
-        normalized.includes('johns hopkins') ||
-        normalized.includes('jhmi') ||
-        normalized.includes('hopkins')
-      ) {
-        return School.JOHNS_HOPKINS;
-      }
-      if (normalized.includes('northeastern')) {
-        return School.NORTHEASTERN;
-      }
-      if (normalized.includes('boston university') || normalized === 'bu') {
-        return School.BOSTON_UNIVERSITY;
+      // Strict comparison against enum values after normalization.
+      // This avoids fuzzy substring behavior while still tolerating
+      // differences in case, whitespace, and punctuation.
+      const candidates = Object.values(School) as string[];
+      for (const candidate of candidates) {
+        const cNorm = normalizeSchoolLabel(candidate);
+        if (cNorm === normalized) return candidate as School;
       }
 
-      // Any unrecognized school should be treated as "Other" to satisfy the School enum.
       return School.OTHER;
     },
     required: true,
