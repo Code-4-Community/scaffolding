@@ -230,7 +230,7 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
                           category === 'Actual Start Date' ? (
                             <Stack gap="3">
                               <Input
-                                placeholder="DD-MM-YYYY"
+                                placeholder="MM-DD-YYYY"
                                 type="text"
                                 bg="white"
                                 borderRadius="md"
