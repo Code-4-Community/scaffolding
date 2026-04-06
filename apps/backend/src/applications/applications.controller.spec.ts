@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
+import { ArgumentsHost, BadRequestException } from '@nestjs/common';
 import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -10,6 +10,13 @@ import {
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
+import { EmailService } from '../util/email/email.service';
+import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
+import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
+
+const mockEmailService = {
+  queueEmail: jest.fn().mockResolvedValue(undefined),
+};
 
 const mockApplicationsService: Partial<ApplicationsService> = {
   findAll: jest.fn(),
@@ -59,21 +66,41 @@ const mockApplication: Application = {
   endDate: new Date('2024-06-30'),
 };
 
+function createMockHttpHost(body: Record<string, unknown> | undefined) {
+  const json = jest.fn();
+  const status = jest.fn().mockReturnValue({ json });
+  const response = { status };
+  const request = { body };
+  const host = {
+    switchToHttp: () => ({
+      getRequest: () => request,
+      getResponse: () => response,
+    }),
+  } as ArgumentsHost;
+  return { host, json, status };
+}
+
 describe('ApplicationsController', () => {
   let controller: ApplicationsController;
+  let testingModule: TestingModule;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    testingModule = await Test.createTestingModule({
       controllers: [ApplicationsController],
       providers: [
         {
           provide: ApplicationsService,
           useValue: mockApplicationsService,
         },
+        { provide: EmailService, useValue: mockEmailService },
+        ApplicationValidationEmailFilter,
+        ApplicationCreationErrorFilter,
       ],
     }).compile();
 
-    controller = module.get<ApplicationsController>(ApplicationsController);
+    controller = testingModule.get<ApplicationsController>(
+      ApplicationsController,
+    );
   });
 
   afterEach(() => {
@@ -82,6 +109,98 @@ describe('ApplicationsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('createApplication exception filters', () => {
+    let validationEmailFilter: ApplicationValidationEmailFilter;
+    let creationErrorFilter: ApplicationCreationErrorFilter;
+
+    beforeEach(() => {
+      validationEmailFilter = testingModule.get(
+        ApplicationValidationEmailFilter,
+      );
+      creationErrorFilter = testingModule.get(ApplicationCreationErrorFilter);
+    });
+
+    it('ApplicationValidationEmailFilter sends email and returns 400 body when ValidationPipe-style BadRequestException is caught', async () => {
+      const payload = {
+        email: 'applicant@example.com',
+        appStatus: 'invalid',
+      };
+      const { host, json, status } = createMockHttpHost(payload);
+      const exceptionResponse = {
+        message: ['appStatus must be one of the following values: x'],
+        error: 'Bad Request',
+        statusCode: 400,
+      };
+      const exception = new BadRequestException(exceptionResponse);
+
+      await validationEmailFilter.catch(exception, host);
+
+      expect(mockEmailService.queueEmail).toHaveBeenCalledTimes(1);
+      expect(mockEmailService.queueEmail).toHaveBeenCalledWith(
+        'applicant@example.com',
+        'Action Required: Issue with Your Application Submission',
+        expect.stringContaining('Hello Applicant'),
+      );
+      expect(mockEmailService.queueEmail).toHaveBeenCalledWith(
+        'applicant@example.com',
+        'Action Required: Issue with Your Application Submission',
+        expect.stringContaining('Application Status'),
+      );
+      expect(status).toHaveBeenCalledWith(400);
+      expect(json).toHaveBeenCalledWith(exceptionResponse);
+    });
+
+    it('ApplicationValidationEmailFilter skips email when request body has no email', async () => {
+      const { host, json, status } = createMockHttpHost({ appStatus: 'bad' });
+      const exceptionResponse = {
+        message: ['appStatus must be valid'],
+        error: 'Bad Request',
+        statusCode: 400,
+      };
+      const exception = new BadRequestException(exceptionResponse);
+
+      await validationEmailFilter.catch(exception, host);
+
+      expect(mockEmailService.queueEmail).not.toHaveBeenCalled();
+      expect(status).toHaveBeenCalledWith(400);
+      expect(json).toHaveBeenCalledWith(exceptionResponse);
+    });
+
+    it('ApplicationCreationErrorFilter sends generic email and returns 500 for non-BadRequest errors', async () => {
+      const payload = { email: 'applicant@example.com' };
+      const { host, json, status } = createMockHttpHost(payload);
+
+      await creationErrorFilter.catch(new Error('database unavailable'), host);
+
+      expect(mockEmailService.queueEmail).toHaveBeenCalledTimes(1);
+      expect(mockEmailService.queueEmail).toHaveBeenCalledWith(
+        'applicant@example.com',
+        'Issue with Your Application Submission',
+        expect.stringContaining('unexpected issue'),
+      );
+      expect(status).toHaveBeenCalledWith(500);
+      expect(json).toHaveBeenCalledWith({
+        message:
+          'An unexpected error occurred while processing your application.',
+        statusCode: 500,
+      });
+    });
+
+    it('ApplicationCreationErrorFilter skips email when body has no email', async () => {
+      const { host, json, status } = createMockHttpHost({});
+
+      await creationErrorFilter.catch(new Error('fail'), host);
+
+      expect(mockEmailService.queueEmail).not.toHaveBeenCalled();
+      expect(status).toHaveBeenCalledWith(500);
+      expect(json).toHaveBeenCalledWith({
+        message:
+          'An unexpected error occurred while processing your application.',
+        statusCode: 500,
+      });
+    });
   });
 
   describe('count endpoints', () => {

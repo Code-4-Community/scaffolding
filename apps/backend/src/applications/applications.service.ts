@@ -9,7 +9,22 @@ import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
 import { AppStatus, PHONE_REGEX } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
+import { EmailService } from '../util/email/email.service';
+import { UsersService } from '../users/users.service';
 
+/**
+ * Escapes characters that have special meaning in HTML so a string is safe to embed in text or attributes.
+ *
+ * @param text Raw string that may contain `&`, `<`, `>`, or `"`.
+ * @returns The same content with those characters replaced by entity references (`&amp;`, `&lt;`, `&gt;`, `&quot;`).
+ */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 /**
  * Service for applications that interfaces with the application repository.
  */
@@ -286,5 +301,40 @@ export class ApplicationsService {
       throw new NotFoundException(`Application with ID ${appId} not found`);
     }
     await this.applicationRepository.remove(application);
+  }
+
+  /**
+   * Builds the HTML email body for a failed application submission.
+   * Uses data directly from the DTO — no database lookup required.
+   *
+   * @param applicantDto The submitted application data.
+   * @param errorMessage The sanitized validation error message.
+   * @param pandaDocLink The URL to the PandaDoc resubmission form.
+   * @returns The formatted HTML email body string.
+   */
+  private buildApplicationSubmissionErrorEmailBody(
+    applicantName: string,
+    applicantDto: CreateApplicationDto,
+    errorMessage: string,
+    pandaDocLink: string,
+  ): string {
+    const submittedFields = escapeHtml(JSON.stringify(applicantDto, null, 2));
+
+    const linkBlock = pandaDocLink
+      ? `<p><a href="${escapeHtml(
+          pandaDocLink,
+        )}">Click here to resubmit your application</a></p>`
+      : '';
+
+    return `<p>Hello ${applicantName},</p>
+      <p>We were unable to process your application due to an issue with the information provided.</p>
+      <p><strong>What needs to be corrected:</strong></p>
+      <p>${escapeHtml(errorMessage)}</p>
+      <p><strong>Your submitted information:</strong></p>
+      <pre style="white-space:pre-wrap;font-family:inherit;">${submittedFields}</pre>
+      <p>Please review the information above and resubmit your application through the PandaDoc form with the correct details.</p>
+      ${linkBlock}
+      <p>We appreciate your time and apologize for the inconvenience.</p>
+      <p>Best regards,<br/>Boston Health Care for the Homeless Program</p>`;
   }
 }
