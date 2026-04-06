@@ -1,6 +1,11 @@
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
+
+import { createMockApiClientModule } from './test/mockApiClient';
 
 import App from './app';
+
+vi.mock('@api/apiClient', () => createMockApiClientModule());
 
 describe('App', () => {
   it('should render successfully', () => {
