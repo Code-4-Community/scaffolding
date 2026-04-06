@@ -5,7 +5,7 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import path from 'path';
 
 const projectRoot = __dirname;
-const workspaceRoot = path.resolve(projectRoot, '../..');
+const sharedRoot = path.resolve(projectRoot, '../../shared');
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/frontend',
@@ -14,7 +14,7 @@ export default defineConfig({
     port: 4200,
     host: 'localhost',
     fs: {
-      allow: [projectRoot, workspaceRoot],
+      allow: [projectRoot, sharedRoot],
     },
   },
 
