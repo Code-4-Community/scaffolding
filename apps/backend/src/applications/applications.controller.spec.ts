@@ -33,16 +33,6 @@ jest.mock('../util/aws-exports', () => ({
   },
 }));
 
-jest.mock('@nestjs/passport', () => ({
-  AuthGuard: jest.fn().mockReturnValue(
-    class {
-      canActivate() {
-        return true;
-      }
-    },
-  ),
-}));
-
 const mockEmailService = {
   queueEmail: jest.fn().mockResolvedValue(undefined),
 };
