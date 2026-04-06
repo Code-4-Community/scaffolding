@@ -8,7 +8,7 @@ describe('App', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should show the app title (BHCHP)in the sidebar', () => {
+  it('should show the app title (BHCHP) in the component', () => {
     const { getByText } = render(<App />);
     expect(getByText('BHCHP')).toBeTruthy();
   });
