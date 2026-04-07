@@ -1,11 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Application,
-  AvailabilityFields,
-  LearnerInfo,
-  VolunteerInfo,
-} from './types';
+import { Application, AvailabilityFields, LearnerInfo } from './types';
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
@@ -23,10 +18,6 @@ export class ApiClient {
 
   public async getApplication(appId: number): Promise<Application> {
     return this.get(`/api/applications/${appId}`) as Promise<Application>;
-  }
-
-  public async getVolunteerInfo(appId: number): Promise<VolunteerInfo> {
-    return this.get(`/api/volunteer_info/${appId}`) as Promise<VolunteerInfo>;
   }
 
   public async getLearnerInfo(appId: number): Promise<LearnerInfo> {
