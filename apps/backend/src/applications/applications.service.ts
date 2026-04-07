@@ -12,6 +12,21 @@ import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 import { EmailService } from '../util/email/email.service';
 import { UsersService } from '../users/users.service';
 
+const STATUS_EMAIL_SUBJECTS: Partial<Record<AppStatus, string>> = {
+  [AppStatus.ACCEPTED]: 'Your Application Has Been Updated',
+  [AppStatus.DECLINED]: 'Your Application Has Been Updated',
+  [AppStatus.NO_AVAILABILITY]: 'Your Application Has Been Updated',
+};
+
+const STATUS_EMAIL_BODIES: Partial<Record<AppStatus, string>> = {
+  [AppStatus.ACCEPTED]:
+    'Hello Applicant,<br><br>Congratulations! Your application has been accepted. Please complete your forms in the MyForms tab on your applicant portal.<br><br>Thank you,<br>BHCHP Team',
+  [AppStatus.DECLINED]:
+    'Hello Applicant,<br><br>We regret to inform you that your application has not been accepted at this time.<br><br>Thank you,<br>BHCHP Team',
+  [AppStatus.NO_AVAILABILITY]:
+    'Hello Applicant,<br><br>We wanted to inform you that there is currently no availability at this time.<br><br>Thank you,<br>BHCHP Team',
+};
+
 /**
  * Escapes characters that have special meaning in HTML so a string is safe to embed in text or attributes.
  *
@@ -33,6 +48,7 @@ export class ApplicationsService {
   constructor(
     @InjectRepository(Application)
     private applicationRepository: Repository<Application>,
+    private emailService: EmailService,
   ) {}
 
   /**
@@ -191,6 +207,34 @@ export class ApplicationsService {
     }
     Object.assign(application, updateData);
     return await this.applicationRepository.save(application);
+  }
+
+  /**
+   * Updates the status of an application and sends a notification email
+   * if the new status is ACCEPTED, DECLINED, or NO_AVAILABILITY.
+   * @param appId The id of the application to update.
+   * @param appStatus The new application status.
+   * @returns The updated application object.
+   * @throws {NotFoundException} if the application does not exist.
+   * @throws {Error} which is unchanged from what repository or email service throws.
+   */
+  async updateStatus(
+    appId: number,
+    appStatus: AppStatus,
+  ): Promise<Application> {
+    const application = await this.findById(appId);
+
+    application.appStatus = appStatus;
+    const updated = await this.applicationRepository.save(application);
+
+    const subject = STATUS_EMAIL_SUBJECTS[appStatus];
+    const body = STATUS_EMAIL_BODIES[appStatus];
+
+    if (subject && body) {
+      await this.emailService.queueEmail(application.email, subject, body);
+    }
+
+    return updated;
   }
 
   /**
