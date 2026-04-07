@@ -1,6 +1,11 @@
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
+
+import { createMockApiClientModule } from './test/mockApiClient';
 
 import App from './app';
+
+vi.mock('@api/apiClient', () => createMockApiClientModule());
 
 describe('App', () => {
   it('should render successfully', () => {
@@ -8,8 +13,8 @@ describe('App', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should have a greeting as the title', () => {
+  it('should show the app title (BHCHP) in the component', () => {
     const { getByText } = render(<App />);
-    expect(getByText(/Welcome frontend/gi)).toBeTruthy();
+    expect(getByText('BHCHP')).toBeTruthy();
   });
 });

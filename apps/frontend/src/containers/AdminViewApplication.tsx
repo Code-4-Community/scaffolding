@@ -11,7 +11,6 @@ import {
   AvailabilityFields,
   LearnerInfo,
   UserType,
-  VolunteerInfo,
 } from '@api/types';
 import QuestionFrame from '@components/QuestionFrame';
 import RequirementsFrame from '@components/RequirementsFrame';
@@ -24,9 +23,6 @@ const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<Application | null>(null);
   const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(null);
-  const [volunteerInfo, setVolunteerInfo] = useState<VolunteerInfo | null>(
-    null,
-  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,12 +36,7 @@ const AdminViewApplication: React.FC = () => {
       .getApplication(Number(appId))
       .then((app) => {
         setApplication(app);
-        if (app?.applicantType === ApplicantType.VOLUNTEER) {
-          apiClient
-            .getVolunteerInfo(Number(appId))
-            .then(setVolunteerInfo)
-            .catch(() => setError('Failed to load volunteer info'));
-        } else if (app?.applicantType === ApplicantType.LEARNER) {
+        if (app?.applicantType === ApplicantType.LEARNER) {
           apiClient
             .getLearnerInfo(Number(appId))
             .then(setLearnerInfo)
@@ -85,7 +76,8 @@ const AdminViewApplication: React.FC = () => {
   if (
     error ||
     application === null ||
-    (learnerInfo === null && volunteerInfo === null)
+    (application.applicantType === ApplicantType.LEARNER &&
+      learnerInfo === null)
   ) {
     return (
       <div className="flex flex-row">
@@ -115,7 +107,7 @@ const AdminViewApplication: React.FC = () => {
           schoolDepartment={
             (learnerInfo && learnerInfo.schoolDepartment) || 'N/A'
           }
-          license={(volunteerInfo && volunteerInfo.license) || 'N/A'}
+          license={application.license || 'N/A'}
           areaOfInterest={
             Array.isArray(application.interest)
               ? application.interest.join(', ')
