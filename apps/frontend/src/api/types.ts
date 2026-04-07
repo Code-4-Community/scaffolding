@@ -153,7 +153,6 @@ export interface LearnerInfo {
 
 export interface VolunteerInfo {
   appId: number;
-  license: string;
 }
 
 export enum UserType {
