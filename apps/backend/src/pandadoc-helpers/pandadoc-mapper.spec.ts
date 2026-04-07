@@ -254,6 +254,57 @@ describe('pandadocMapper', () => {
     }
   });
 
+  it('maps legacy and shortened school labels for renamed enum entries', () => {
+    const cases: Array<{ input: string; expected: School }> = [
+      {
+        input:
+          'BMC School of Medicine - Center for Multicultural Training in Psychology',
+        expected: School.BMC_CENTER_FOR_MULTICULTURAL_TRAINING_IN_PSYCHOLOGY,
+      },
+      {
+        input: 'BMC SOM - Center for Multicultural Training in Psychology',
+        expected: School.BMC_CENTER_FOR_MULTICULTURAL_TRAINING_IN_PSYCHOLOGY,
+      },
+      {
+        input: 'bmc som center for multicultural training in psychology',
+        expected: School.BMC_CENTER_FOR_MULTICULTURAL_TRAINING_IN_PSYCHOLOGY,
+      },
+      {
+        input:
+          'Boston College - Lynch School of Education and Human Development',
+        expected: School.BOSTON_COLLEGE_LYNCH_SCHOOL,
+      },
+      {
+        input: 'Boston College - Lynch School of Ed and Human Development',
+        expected: School.BOSTON_COLLEGE_LYNCH_SCHOOL,
+      },
+      {
+        input: 'boston college lynch school of ed and human development',
+        expected: School.BOSTON_COLLEGE_LYNCH_SCHOOL,
+      },
+      {
+        input:
+          'Boston University School of Medicine Division of Graduate Medical Sciences physician assistant program',
+        expected: School.BOSTON_UNIVERSITY_SCHOOL_OF_MEDICINE_PA,
+      },
+      {
+        input: 'Boston University SOM DGMS physician assistant program',
+        expected: School.BOSTON_UNIVERSITY_SCHOOL_OF_MEDICINE_PA,
+      },
+      {
+        input: 'boston university som dgms physician assistant program',
+        expected: School.BOSTON_UNIVERSITY_SCHOOL_OF_MEDICINE_PA,
+      },
+    ];
+
+    for (const testCase of cases) {
+      const payload = buildFullPayload();
+      payload['Volunteer_Affiliation'] = testCase.input;
+      const result = pandadocMapper(payload);
+      expect(result.learnerInfo['school']).toBe(testCase.expected);
+    }
+  });
+
   it('maps otherSchool to learnerInfo', () => {
     const payload = buildFullPayload();
     payload['Volunteer_ Affiliation_Other'] = 'Northeastern University';
@@ -269,12 +320,6 @@ describe('pandadocMapper', () => {
       'Dr. Smith, smith@northeastern.edu',
     );
     expect(result.learnerInfo['dateOfBirth']).toEqual(estDate(2026, 2, 4));
-  });
-
-  it('maps license to both application and volunteerInfo', () => {
-    const result = pandadocMapper(buildFullPayload());
-    expect(result.application['license']).toBe('N/A');
-    expect(result.volunteerInfo['license']).toBe('N/A');
   });
 
   it('handles native PandaDoc checkbox and collect_file value types', () => {

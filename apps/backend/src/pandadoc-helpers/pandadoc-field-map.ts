@@ -76,16 +76,37 @@ function normalizeSchoolLabel(value: string): string {
     .replace(/[^a-z0-9]/g, '');
 }
 
+const LEGACY_SCHOOL_ALIASES: Array<[string, School]> = [
+  [
+    'BMC School of Medicine - Center for Multicultural Training in Psychology',
+    School.BMC_CENTER_FOR_MULTICULTURAL_TRAINING_IN_PSYCHOLOGY,
+  ],
+  [
+    'Boston College - Lynch School of Education and Human Development',
+    School.BOSTON_COLLEGE_LYNCH_SCHOOL,
+  ],
+  [
+    'Boston University School of Medicine Division of Graduate Medical Sciences physician assistant program',
+    School.BOSTON_UNIVERSITY_SCHOOL_OF_MEDICINE_PA,
+  ],
+];
+
+const SCHOOL_LOOKUP = new Map<string, School>();
+
+for (const candidate of Object.values(School) as string[]) {
+  SCHOOL_LOOKUP.set(normalizeSchoolLabel(candidate), candidate as School);
+}
+
+for (const [legacyValue, school] of LEGACY_SCHOOL_ALIASES) {
+  SCHOOL_LOOKUP.set(normalizeSchoolLabel(legacyValue), school);
+}
+
 /**
  * The backend target tables which panda-doc fields map into.
  * Each field entry in `PANDADOC_FIELD_MAP` declares which of these
  * tables the value should be written to.
  */
-export type TargetTable =
-  | 'application'
-  | 'candidateInfo'
-  | 'learnerInfo'
-  | 'volunteerInfo';
+export type TargetTable = 'application' | 'candidateInfo' | 'learnerInfo';
 
 /**
  * Describes a single PandaDoc -> backend mapping.
@@ -496,17 +517,7 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     backendField: 'school',
     transform: (value: string) => {
       const normalized = normalizeSchoolLabel(value);
-
-      // Strict comparison against enum values after normalization.
-      // This avoids fuzzy substring behavior while still tolerating
-      // differences in case, whitespace, and punctuation.
-      const candidates = Object.values(School) as string[];
-      for (const candidate of candidates) {
-        const cNorm = normalizeSchoolLabel(candidate);
-        if (cNorm === normalized) return candidate as School;
-      }
-
-      return School.OTHER;
+      return SCHOOL_LOOKUP.get(normalized) ?? School.OTHER;
     },
     required: true,
     targetTable: 'learnerInfo',
@@ -535,13 +546,5 @@ export const PANDADOC_FIELD_MAP: ValidPayload[] = [
     backendField: 'syllabus',
     required: false,
     targetTable: 'learnerInfo',
-  },
-
-  // ── volunteerInfo table ──
-  {
-    pandaDocKey: 'Volunteer_License',
-    backendField: 'license',
-    required: false,
-    targetTable: 'volunteerInfo',
   },
 ];

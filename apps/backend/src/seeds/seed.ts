@@ -12,7 +12,6 @@ import {
 } from '../applications/types';
 import { LearnerInfo } from '../learner-info/learner-info.entity';
 import { School } from '../learner-info/types';
-import { VolunteerInfo } from '../volunteer-info/volunteer-info.entity';
 import { CandidateInfo } from '../candidate-info/candidate-info.entity';
 import { AdminInfo } from '../admin-info/admin-info.entity';
 import { User } from '../users/user.entity';
@@ -295,16 +294,6 @@ const LEARNER_INFO_SEED: LearnerInfo[] = [
     syllabus: 'approved_learner_syllabus.pdf',
   },
 ];
-const VOLUNTEER_INFO_SEED: VolunteerInfo[] = [
-  {
-    appId: 2,
-    license: '1234567890',
-  },
-  {
-    appId: 3,
-    license: '1234567890',
-  },
-];
 
 async function seed() {
   try {
@@ -365,15 +354,6 @@ async function seed() {
       LEARNER_INFO_SEED as DeepPartial<LearnerInfo>[],
     );
     console.log(`✅ Created ${learnerInfos.length} learner infos`);
-
-    // Create volunteer info test data
-    console.log('📋 Creating applicants...');
-    const volunteerInfoRepo: Repository<VolunteerInfo> =
-      dataSource.getRepository(VolunteerInfo);
-    const volunteerInfos = await volunteerInfoRepo.save(
-      VOLUNTEER_INFO_SEED as DeepPartial<VolunteerInfo>[],
-    );
-    console.log(`✅ Created ${volunteerInfos.length} volunteer infos`);
 
     console.log('🎉 Database seed completed successfully!');
   } catch (error) {

@@ -151,7 +151,6 @@ export function pandadocMapper(
     application: {},
     candidateInfo: {},
     learnerInfo: {},
-    volunteerInfo: {},
   };
 
   const missing: string[] = [];
