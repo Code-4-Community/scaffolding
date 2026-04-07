@@ -81,7 +81,7 @@ describe('LearnerInfoController', () => {
     it('should create a new learner info', async () => {
       const createLearnerInfo: CreateLearnerInfoDto = {
         appId: 0,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         schoolDepartment: 'Infectious Diseases',
         isSupervisorApplying: false,
         isLegalAdult: true,
@@ -107,7 +107,7 @@ describe('LearnerInfoController', () => {
       );
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: 0,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         isSupervisorApplying: false,
         isLegalAdult: true,
       };
@@ -120,7 +120,7 @@ describe('LearnerInfoController', () => {
     it('should not accept negative appId', async () => {
       const createLearnerInfoDto: CreateLearnerInfoDto = {
         appId: -1,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         isSupervisorApplying: false,
         isLegalAdult: true,
       };
@@ -139,7 +139,7 @@ describe('LearnerInfoController', () => {
     it('should get the learner info by appId', async () => {
       const learnerInfo: LearnerInfo = {
         appId: 0,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         schoolDepartment: 'Infectious Diseases',
         isSupervisorApplying: false,
         isLegalAdult: true,

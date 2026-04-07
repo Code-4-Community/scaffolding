@@ -1,5 +1,5 @@
-import React from 'react';
 import { Table } from '@chakra-ui/react';
+import StatusPill, { StatusPillConfig, StatusVariant } from './StatusPill';
 
 const COLUMNS = [
   'Name',
@@ -20,7 +20,7 @@ const APPLICATIONS = [
     experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
+    status: 'submitted',
   },
   {
     id: '2',
@@ -30,7 +30,7 @@ const APPLICATIONS = [
     experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
+    status: 'review',
   },
   {
     id: '3',
@@ -40,7 +40,7 @@ const APPLICATIONS = [
     experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
+    status: 'accepted',
   },
   {
     id: '4',
@@ -50,7 +50,7 @@ const APPLICATIONS = [
     experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
+    status: 'accepted',
   },
   {
     id: '5',
@@ -60,7 +60,7 @@ const APPLICATIONS = [
     experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
-    status: 'Approved',
+    status: 'inactive',
   },
 ];
 
@@ -82,7 +82,7 @@ export function ApplicationTable({ searchQuery = '' }: ApplicationTableProps) {
   });
 
   return (
-    <Table.Root striped stickyHeader>
+    <Table.Root striped stickyHeader minW="900px">
       <Table.Header>
         <Table.Row>
           {COLUMNS.map((column) => (
@@ -105,7 +105,11 @@ export function ApplicationTable({ searchQuery = '' }: ApplicationTableProps) {
             <Table.Cell>{application.experienceType}</Table.Cell>
             <Table.Cell>{application.discipline}</Table.Cell>
             <Table.Cell>{application.disciplineAdminName}</Table.Cell>
-            <Table.Cell>{application.status}</Table.Cell>
+            <Table.Cell>
+              <StatusPill variant={application.status as StatusVariant}>
+                {StatusPillConfig[application.status as StatusVariant].label}
+              </StatusPill>
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>

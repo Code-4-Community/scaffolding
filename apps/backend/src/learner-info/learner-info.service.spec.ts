@@ -48,7 +48,7 @@ describe('LearnerInfoService', () => {
     it('should create and save a new learner info', async () => {
       const LearnerInfo: LearnerInfo = {
         appId: 0,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         isSupervisorApplying: false,
         isLegalAdult: true,
       };
@@ -67,7 +67,7 @@ describe('LearnerInfoService', () => {
       );
       const LearnerInfo: LearnerInfo = {
         appId: 0,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         isSupervisorApplying: false,
         isLegalAdult: true,
       };
@@ -80,7 +80,7 @@ describe('LearnerInfoService', () => {
     it('should not accept negative appId', async () => {
       const LearnerInfo: LearnerInfo = {
         appId: -1,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         isSupervisorApplying: false,
         isLegalAdult: true,
       };
@@ -92,7 +92,7 @@ describe('LearnerInfoService', () => {
     it('should reject duplicate appId', async () => {
       const LearnerInfo: LearnerInfo = {
         appId: 2,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         isSupervisorApplying: false,
         isLegalAdult: true,
       };
@@ -116,7 +116,7 @@ describe('LearnerInfoService', () => {
     it('should return a single application', async () => {
       const LearnerInfo: LearnerInfo = {
         appId: 1,
-        school: School.HARVARD_MEDICAL_SCHOOL,
+        school: School.BOSTON_UNIVERSITY,
         isSupervisorApplying: false,
         isLegalAdult: true,
       };
