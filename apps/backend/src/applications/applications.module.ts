@@ -8,9 +8,15 @@ import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor
 import { UsersModule } from '../users/users.module';
 import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
 import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
+import { UtilModule } from '../util/util.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Application]), AuthModule, UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([Application]),
+    AuthModule,
+    UsersModule,
+    UtilModule,
+  ],
   controllers: [ApplicationsController],
   providers: [
     ApplicationsService,
