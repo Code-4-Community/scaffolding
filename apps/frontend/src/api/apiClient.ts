@@ -15,7 +15,7 @@ export class ApiClient {
     this.axiosInstance.interceptors.request.use(async (config) => {
       try {
         const idToken = await getIdToken();
-        if (!idToken) {
+        if (idToken) {
           if (!config.headers) config.headers = {} as any;
           const hasAuth =
             (config.headers as any).Authorization ||
