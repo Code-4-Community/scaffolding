@@ -9,6 +9,7 @@ import {
   Application,
   AvailabilityFields,
   LearnerInfo,
+  User,
   UserType,
   VolunteerInfo,
 } from '@api/types';
@@ -27,22 +28,10 @@ const AdminViewApplication: React.FC = () => {
   const [volunteerInfo, setVolunteerInfo] = useState<VolunteerInfo | null>(
     null,
   );
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const firstName: string = application?.email
-    ? application.email
-        .split('@')[0]
-        .split('.')[0]
-        .replace(/^./, (c) => c.toUpperCase())
-    : '';
-
-  const lastName: string = application?.email
-    ? application.email
-        .split('@')[0]
-        .split('.')[1]
-        .replace(/^./, (c) => c.toUpperCase())
-    : '';
   const pronouns = application?.pronouns;
   const discipline = application?.discipline;
   const over18: boolean = learnerInfo?.dateOfBirth
@@ -80,6 +69,10 @@ const AdminViewApplication: React.FC = () => {
             .then(setLearnerInfo)
             .catch(() => setError('Failed to load learner info'));
         }
+        apiClient
+          .getUser(app.email)
+          .then(setUser)
+          .catch(() => setError('Failed to load user info'));
       })
       .catch(() => setError('Failed to load application'))
       .finally(() => setLoading(false));
@@ -129,8 +122,8 @@ const AdminViewApplication: React.FC = () => {
         maxH="100vh"
       >
         <ApplicationProfileHeader
-          firstName={firstName}
-          lastName={lastName}
+          firstName={user ? user.firstName : ''}
+          lastName={user ? user.lastName : ''}
           pronouns={pronouns}
           discipline={discipline}
           experienceType={application.experienceType || 'N/A'}
