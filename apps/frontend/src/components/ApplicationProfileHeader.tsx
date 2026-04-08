@@ -22,7 +22,8 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
   over18,
 }) => {
   return (
-    <div>
+    <div className="space-y-4">
+      {/* Header */}
       <div className="bg-blue-700 text-white p-6 flex items-center gap-6">
         <div className="w-24 h-24 bg-blue-900 rounded-full flex items-center justify-center flex-shrink-0">
           <svg
@@ -38,27 +39,22 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
           {firstName} {lastName}
         </h1>
       </div>
-      <div className="bg-white p-6 space-y-2 text-sm border border-gray-200">
-        <div>
-          <span className="font-bold">Pronouns:</span> {pronouns ?? 'N/A'}
-        </div>
-        <div>
-          <span className="font-bold">Discipline:</span> {discipline ?? 'N/A'}
-        </div>
-        <div>
-          <span className="font-bold">Type of Experience:</span>{' '}
+
+      {/* Info Section */}
+      <div className="bg-white p-6 border border-gray-200 rounded-md space-y-3">
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
+          <span className="font-semibold">Pronouns:</span> {pronouns ?? 'N/A'}
+          <span className="font-semibold">Discipline:</span>{' '}
+          {discipline ?? 'N/A'}
+          <span className="font-semibold">Type of Experience:</span>{' '}
           {experienceType ?? 'N/A'}
         </div>
-        <div>
-          <span className="font-bold">Email:</span> {email ?? 'N/A'}
-        </div>
-        <div>
-          <span className="font-bold">Phone:</span> {phone ?? 'N/A'}
-        </div>
-        <div>
-          <span className="font-bold">Over 18?</span>{' '}
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
+          <span className="font-semibold">Email:</span> {email ?? 'N/A'}
+          <span className="font-semibold">Phone:</span> {phone ?? 'N/A'}
+          <span className="font-semibold">Over 18?</span>
           <span
-            className={`inline-block px-3 py-1 text-xs rounded-full font-semibold text-white ${
+            className={`inline-block px-3 py-1 text-sm rounded-full font-semibold text-white ${
               over18 ? 'bg-green-500' : 'bg-red-500'
             }`}
           >
