@@ -23,8 +23,7 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div className="bg-blue-700 text-white p-6 flex items-center gap-6">
+      <div className="bg-blue-700 text-white p-6 flex items-center gap-6 rounded-t-md">
         <div className="w-24 h-24 bg-blue-900 rounded-full flex items-center justify-center flex-shrink-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -40,19 +39,26 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
         </h1>
       </div>
 
-      {/* Info Section */}
-      <div className="bg-white p-6 border border-gray-200 rounded-md space-y-3">
-        <div className="flex flex-wrap gap-x-6 gap-y-2">
+      <div className="bg-white p-6 border border-gray-200 rounded-b-md space-y-2 text-sm">
+        <div>
           <span className="font-semibold">Pronouns:</span> {pronouns ?? 'N/A'}
+        </div>
+        <div>
           <span className="font-semibold">Discipline:</span>{' '}
           {discipline ?? 'N/A'}
+        </div>
+        <div>
           <span className="font-semibold">Type of Experience:</span>{' '}
           {experienceType ?? 'N/A'}
         </div>
-        <div className="flex flex-wrap gap-x-6 gap-y-2">
+        <div>
           <span className="font-semibold">Email:</span> {email ?? 'N/A'}
+        </div>
+        <div>
           <span className="font-semibold">Phone:</span> {phone ?? 'N/A'}
-          <span className="font-semibold">Over 18?</span>
+        </div>
+        <div>
+          <span className="font-semibold">Over 18?</span>{' '}
           <span
             className={`inline-block px-3 py-1 text-sm rounded-full font-semibold text-white ${
               over18 ? 'bg-green-500' : 'bg-red-500'
