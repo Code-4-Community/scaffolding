@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import { User } from './user.entity';
-import { Status } from './types';
+import { Role } from './types';
 
 @Injectable()
 export class UsersService {
@@ -13,22 +12,24 @@ export class UsersService {
     email: string,
     firstName: string,
     lastName: string,
-    status: Status = Status.VOLUNTEER,
-    publishingName?: string,
+    role: Role = Role.STANDARD,
+    title?: string,
   ) {
-    const maxIdRow = await this.repo
-      .createQueryBuilder('user')
-      .select('MAX(user.id)', 'maxId')
-      .getRawOne<{ maxId: string | null }>();
-    const userId = (Number(maxIdRow?.maxId) || 0) + 1;
+    const latestUser = await this.repo.find({
+      select: ['id'],
+      order: { id: 'DESC' },
+      take: 1,
+    });
+
+    const userId = latestUser.length > 0 ? Number(latestUser[0].id) : 1;
 
     const user = this.repo.create({
       id: userId,
-      status,
+      role,
       firstName,
       lastName,
       email,
-      publishingName,
+      title,
     });
 
     return this.repo.save(user);

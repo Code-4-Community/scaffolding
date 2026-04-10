@@ -12,7 +12,8 @@ import NotFound from '@containers/404';
 import ArchivedPublications from '@containers/archived-publications';
 import PublicationView from '@containers/archived-publications/individual-publication/publication-view';
 import Login from '@containers/auth/login';
-import AuthedApp from '@containers/auth/AuthedApp';
+import ProtectedRoute from '@containers/auth/ProtectedRoute';
+import People from '@containers/people';
 import Role from '@api/dtos/role';
 import CreatePublicationModal from '@containers/create-publication-modal';
 
@@ -44,7 +45,11 @@ const router = createBrowserRouter([
       },
       // admin and volunteer routes
       {
-        element: <AuthedApp roles={[Role.ADMIN, Role.VOLUNTEER]} />,
+        element: <ProtectedRoute roles={[Role.ADMIN, Role.STANDARD]} />,
+        children: [{ path: 'people', element: <People /> }],
+      },
+      {
+        element: <ProtectedRoute roles={[Role.ADMIN, Role.STANDARD]} />,
         children: [
           {
             path: 'projects',
@@ -68,17 +73,17 @@ const router = createBrowserRouter([
             element: <NotFound />,
           },
           /*
-          TODO: set default page for admins/volunteers to projects page?
+          TODO: set default page for admins/standard to projects page?
           {index: true,
             element: <Projects />
           }*/
         ],
       },
 
-      // TODO: admin routes (ex. adding admin/volunteers)
+      // TODO: admin routes (ex. adding admin/standard)
       {
         path: 'admin',
-        element: <AuthedApp roles={[Role.ADMIN]} />,
+        element: <ProtectedRoute roles={[Role.ADMIN]} />,
         children: [
           /*
           TODO: set default page for admins

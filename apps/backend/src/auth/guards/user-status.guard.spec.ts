@@ -2,7 +2,7 @@ import { ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserStatusGuard } from './user-status.guard';
 import { USER_STATUS } from '../roles.decorator';
-import { Status } from 'src/users/types';
+import { Role } from '../../users/types';
 
 function makeContext(user: unknown): ExecutionContext {
   return {
@@ -14,11 +14,11 @@ function makeContext(user: unknown): ExecutionContext {
   } as unknown as ExecutionContext;
 }
 
-const adminUser = { id: 1, email: 'admin@example.com', status: Status.ADMIN };
+const adminUser = { id: 1, email: 'admin@example.com', role: Role.ADMIN };
 const volunteerUser = {
   id: 2,
   email: 'vol@example.com',
-  status: Status.VOLUNTEER,
+  role: Role.STANDARD,
 };
 
 describe('UserStatusGuard', () => {
@@ -41,17 +41,17 @@ describe('UserStatusGuard', () => {
   });
 
   it('allows access when user has the required status', () => {
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Status.ADMIN]);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Role.ADMIN]);
     expect(guard.canActivate(makeContext(adminUser))).toBe(true);
   });
 
   it('denies access when user does not have the required status', () => {
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Status.ADMIN]);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Role.ADMIN]);
     expect(guard.canActivate(makeContext(volunteerUser))).toBe(false);
   });
 
   it('denies access when there is no user on the request', () => {
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Status.ADMIN]);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Role.ADMIN]);
     expect(guard.canActivate(makeContext(undefined))).toBe(false);
   });
 

@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { USER_STATUS } from '../roles.decorator';
-import { Status } from 'src/users/types';
 import { User } from 'src/users/user.entity';
+import { Role } from 'src/users/types';
 
 @Injectable()
 export class UserStatusGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class UserStatusGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredStatuses = this.reflector.getAllAndOverride<Status[]>(
+    const requiredStatuses = this.reflector.getAllAndOverride<Role[]>(
       USER_STATUS,
       [context.getHandler(), context.getClass()],
     );
@@ -30,7 +30,7 @@ export class UserStatusGuard implements CanActivate {
     const user = request.user as User;
 
     // no user
-    if (!user || !user.status) {
+    if (!user || !user.role) {
       this.logger.warn(
         `UserStatusGuard: denied — no user or status on request (required: [${requiredStatuses.join(
           ', ',
@@ -39,15 +39,15 @@ export class UserStatusGuard implements CanActivate {
       return false;
     }
 
-    const allowed = requiredStatuses.includes(user.status);
+    const allowed = requiredStatuses.includes(user.role);
     if (allowed) {
       this.logger.debug(
-        `UserStatusGuard: granted — user status "${user.status}"`,
+        `UserStatusGuard: granted — user status "${user.role}"`,
       );
     } else {
       this.logger.warn(
         `UserStatusGuard: denied — user status "${
-          user.status
+          user.role
         }", required: [${requiredStatuses.join(', ')}]`,
       );
     }

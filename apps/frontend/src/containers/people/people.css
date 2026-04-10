@@ -1,0 +1,155 @@
+/* People Page */
+
+.people-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--neutral-100);
+  padding: 48px 100px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.people-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.people-title-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--neutral-600);
+  margin: 0;
+}
+
+.people-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: var(--accent-500);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.people-create-btn:hover {
+  opacity: 0.85;
+}
+
+/* Table */
+.people-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--neutral-300);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--neutral-200);
+}
+
+.people-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: var(--neutral-200);
+  border-bottom: 1px solid var(--neutral-300);
+}
+
+.people-col-name,
+.people-col-role {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--neutral-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Row */
+.people-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: var(--neutral-200);
+  border-bottom: 1px solid var(--neutral-300);
+  transition: background-color 0.15s ease;
+}
+
+.people-row:last-child {
+  border-bottom: none;
+}
+
+.people-row:hover {
+  background-color: var(--neutral-150);
+}
+
+.people-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Avatar */
+.people-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--neutral-300);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--neutral-600);
+  flex-shrink: 0;
+}
+
+.people-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.people-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+.people-title {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--neutral-400);
+}
+
+.people-role {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--neutral-400);
+  text-transform: capitalize;
+}
+
+/* State messages */
+.people-state-message {
+  padding: 24px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--neutral-400);
+  text-align: center;
+}

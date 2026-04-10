@@ -2,23 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { UsersService } from '../../users/users.service';
-import { User } from '../../users/user.entity';
-import { Status } from '../../users/types';
 import { Omchai, OmchaiRole } from '../../omchai/omchai.entity';
 
 describe('JwtAuthGuard', () => {
   let guard: JwtAuthGuard;
   let usersService: jest.Mocked<UsersService>;
-
-  const mockOmchai: Omchai = {
-    id: 1,
-    anthologyId: 1,
-    userId: 1,
-    role: OmchaiRole.OWNER,
-    datetimeAssigned: new Date(),
-    user: null,
-    anthology: null,
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

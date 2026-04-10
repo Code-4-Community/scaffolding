@@ -4,15 +4,14 @@ import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { Status } from './types';
+import { Role } from './types';
 import { Omchai, OmchaiRole } from '../omchai/omchai.entity';
 
 export const mockUser: User = {
   id: 1,
-  status: Status.VOLUNTEER,
+  role: Role.STANDARD,
   email: 'john@example.com',
-  name: 'John Doe',
-  firstName: '',
+  firstName: 'John Doe',
   lastName: '',
   omchaiAssignments: [],
 };
@@ -60,7 +59,7 @@ describe('UsersService', () => {
 
   describe('create', () => {
     it('should create a new user', async () => {
-      mockQueryBuilder.getRawOne.mockResolvedValue({ maxId: null });
+      mockRepository.find.mockResolvedValue([mockUser]);
       mockRepository.create.mockReturnValue(mockUser);
       mockRepository.save.mockResolvedValue(mockUser);
 
@@ -68,10 +67,10 @@ describe('UsersService', () => {
         'john@example.com',
         'John',
         'Doe',
-        Status.VOLUNTEER,
+        Role.STANDARD,
       );
 
-      expect(mockRepository.createQueryBuilder).toHaveBeenCalled();
+      expect(repo.find).toHaveBeenCalled();
       expect(repo.create).toHaveBeenCalled();
       expect(repo.save).toHaveBeenCalled();
       expect(result).toEqual(mockUser);
@@ -216,18 +215,18 @@ describe('UsersService', () => {
   describe('update', () => {
     it('should update a user', async () => {
       mockRepository.findOneBy.mockResolvedValue(mockUser);
-      mockRepository.save.mockResolvedValue({ ...mockUser, name: 'Jane' });
+      mockRepository.save.mockResolvedValue({ ...mockUser, firstName: 'Jane' });
 
-      const result = await service.update(1, { name: 'Jane' });
+      const result = await service.update(1, { firstName: 'Jane' });
 
       expect(repo.save).toHaveBeenCalled();
-      expect(result.name).toBe('Jane');
+      expect(result.firstName).toBe('Jane');
     });
 
     it('should throw NotFoundException if user not found', async () => {
       mockRepository.findOneBy.mockResolvedValue(null);
 
-      await expect(service.update(999, { name: 'Jane' })).rejects.toThrow(
+      await expect(service.update(999, { firstName: 'Jane' })).rejects.toThrow(
         NotFoundException,
       );
     });

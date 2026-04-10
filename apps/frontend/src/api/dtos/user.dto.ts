@@ -9,6 +9,8 @@ interface User {
 
   email: string;
 
+  title: string;
+
   role: Role;
 }
 

@@ -20,7 +20,7 @@ export class CreateAnthologyDto {
   @ApiProperty({
     description: 'Status of the anthology',
     enum: AnthologyStatus,
-    example: AnthologyStatus.DRAFTING,
+    example: AnthologyStatus.DRAFT,
   })
   @IsEnum(AnthologyStatus)
   status: AnthologyStatus;

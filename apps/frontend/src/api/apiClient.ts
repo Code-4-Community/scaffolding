@@ -17,6 +17,10 @@ export class ApiClient {
     return this.get('/api/auth/me') as Promise<User>;
   }
 
+  public async getUsers(): Promise<User[]> {
+    return this.get('/api/users') as Promise<User[]>;
+  }
+
   public async getHello(): Promise<string> {
     return this.get('/api') as Promise<string>;
   }

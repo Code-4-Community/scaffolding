@@ -19,7 +19,7 @@ import { OmchaiRoles, UserStatus } from '../auth/roles.decorator';
 import { OmchaiRole } from 'src/omchai/omchai.entity';
 import { CreateAnthologyDto } from './dtos/create-anthology.dto';
 import { UpdateAnthologyDto } from './dtos/update-anthology.dto';
-import { Status } from 'src/users/types';
+import { Role } from 'src/users/types';
 
 @ApiTags('Anthologies')
 @Controller('anthologies')
@@ -59,7 +59,7 @@ export class AnthologyController {
   }
 
   @ApiBearerAuth()
-  @UserStatus(Status.ADMIN)
+  @UserStatus(Role.ADMIN)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createAnthology(
