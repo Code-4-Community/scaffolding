@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import apiClient from '@api/apiClient';
-import type { Application, User } from '@api/types';
+import type { Application, Applicant } from '@api/types';
 
 export interface ApplicationRow {
   appId: number;
@@ -22,7 +22,7 @@ interface UseApplicationsResult {
 
 function toRows(
   applications: Application[],
-  usersByEmail: Map<string, User>,
+  usersByEmail: Map<string, Applicant>,
 ): ApplicationRow[] {
   return applications.map((app) => {
     const user = usersByEmail.get(app.email);
@@ -54,12 +54,14 @@ export function useApplications(): UseApplicationsResult {
       setLoading(true);
       setError(null);
       try {
-        const [apps, users] = await Promise.all([
+        const [apps, applicants] = await Promise.all([
           apiClient.getApplications(),
-          apiClient.getUsers(),
+          apiClient.getApplicants(),
         ]);
         if (!cancelled) {
-          const usersByEmail = new Map(users.map((u) => [u.email, u]));
+          const usersByEmail = new Map(
+            applicants.map((a) => [a.email, a] as const),
+          );
           setApplications(toRows(apps, usersByEmail));
         }
       } catch {

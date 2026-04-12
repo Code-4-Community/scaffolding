@@ -5,7 +5,7 @@ import {
   AppStatus,
   AvailabilityFields,
   LearnerInfo,
-  User,
+  Applicant,
 } from './types';
 
 const defaultBaseUrl =
@@ -30,8 +30,8 @@ export class ApiClient {
     return this.get(`/api/applications/${appId}`) as Promise<Application>;
   }
 
-  public async getUsers(): Promise<User[]> {
-    return this.get('/users') as Promise<User[]>;
+  public async getApplicants(): Promise<Applicant[]> {
+    return this.get('/users') as Promise<Applicant[]>;
   }
 
   public async getLearnerInfo(appId: number): Promise<LearnerInfo> {

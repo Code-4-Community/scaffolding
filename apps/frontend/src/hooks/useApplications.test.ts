@@ -2,21 +2,29 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import apiClient from '@api/apiClient';
 import { useApplications } from './useApplications';
-import type { Application, User } from '@api/types';
+import {
+  AppStatus,
+  ExperienceType,
+  ApplicantType,
+  DISCIPLINE_VALUES,
+  UserType,
+  type Application,
+  type Applicant,
+} from '@api/types';
 
-const mockApplications = [
+const mockApplications: Application[] = [
   {
     appId: 1,
     email: 'jane@example.com',
     proposedStartDate: '2024-01-15',
     actualStartDate: '2024-02-01',
-    discipline: 'RN',
-    appStatus: 'App submitted',
-    experienceType: 'BS',
+    discipline: DISCIPLINE_VALUES.RN,
+    appStatus: AppStatus.APP_SUBMITTED,
+    experienceType: ExperienceType.BS,
     interest: [],
     license: 'n/a',
     phone: '123-456-7890',
-    applicantType: 'Learner',
+    applicantType: ApplicantType.LEARNER,
     weeklyHours: 20,
     pronouns: 'she/her',
     desiredExperience: 'clinical',
@@ -37,13 +45,13 @@ const mockApplications = [
     appId: 2,
     email: 'noname@example.com',
     proposedStartDate: '2024-03-01',
-    discipline: 'Social Work',
-    appStatus: 'In review',
-    experienceType: 'MS',
+    discipline: DISCIPLINE_VALUES.SocialWork,
+    appStatus: AppStatus.IN_REVIEW,
+    experienceType: ExperienceType.MS,
     interest: [],
     license: 'LCSW',
     phone: '222-333-4444',
-    applicantType: 'Volunteer',
+    applicantType: ApplicantType.VOLUNTEER,
     weeklyHours: 10,
     pronouns: 'they/them',
     desiredExperience: 'community outreach',
@@ -60,14 +68,14 @@ const mockApplications = [
     saturdayAvailability: 'none',
     heardAboutFrom: [],
   },
-] as Application[];
+];
 
-const mockUsers: User[] = [
+const mockApplicants: Applicant[] = [
   {
     email: 'jane@example.com',
     firstName: 'Jane',
     lastName: 'Doe',
-    userType: 'STANDARD' as User['userType'],
+    userType: UserType.STANDARD,
   },
 ];
 
@@ -75,7 +83,7 @@ vi.mock('@api/apiClient', () => {
   return {
     default: {
       getApplications: vi.fn(),
-      getUsers: vi.fn(),
+      getApplicants: vi.fn(),
     },
   };
 });
@@ -83,7 +91,7 @@ vi.mock('@api/apiClient', () => {
 describe('useApplications', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(apiClient.getUsers).mockResolvedValue(mockUsers);
+    vi.mocked(apiClient.getApplicants).mockResolvedValue(mockApplicants);
   });
 
   it('should start in a loading state', () => {
@@ -112,10 +120,10 @@ describe('useApplications', () => {
     expect(first.email).toBe('jane@example.com');
     expect(first.proposedStartDate).toBe('2024-01-15');
     expect(first.actualStartDate).toBe('2024-02-01');
-    expect(first.discipline).toBe('RN');
-    expect(first.status).toBe('App submitted');
-    expect(first.experienceType).toBe('BS');
-    expect(first.applicantType).toBe('Learner');
+    expect(first.discipline).toBe(DISCIPLINE_VALUES.RN);
+    expect(first.status).toBe(AppStatus.APP_SUBMITTED);
+    expect(first.experienceType).toBe(ExperienceType.BS);
+    expect(first.applicantType).toBe(ApplicantType.LEARNER);
 
     const second = result.current.applications[1];
     expect(second.appId).toBe(2);
@@ -126,7 +134,7 @@ describe('useApplications', () => {
 
   it('should fall back to email when user not found', async () => {
     vi.mocked(apiClient.getApplications).mockResolvedValue(mockApplications);
-    vi.mocked(apiClient.getUsers).mockResolvedValue([]);
+    vi.mocked(apiClient.getApplicants).mockResolvedValue([]);
 
     const { result } = renderHook(() => useApplications());
 
@@ -167,7 +175,7 @@ describe('useApplications', () => {
 
     await waitFor(() => {
       expect(apiClient.getApplications).toHaveBeenCalledTimes(1);
-      expect(apiClient.getUsers).toHaveBeenCalledTimes(1);
+      expect(apiClient.getApplicants).toHaveBeenCalledTimes(1);
     });
   });
 });

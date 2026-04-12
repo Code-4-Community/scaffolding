@@ -158,7 +158,7 @@ export enum UserType {
   STANDARD = 'STANDARD',
 }
 
-export interface User {
+export interface Applicant {
   email: string;
   firstName: string;
   lastName: string;
