@@ -1,6 +1,7 @@
 import {
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   UseGuards,
@@ -20,6 +21,11 @@ import { EditRound, SubmissionRound } from './types';
 export class StoryDraftController {
   constructor(private readonly storyDraftService: StoryDraftService) {}
 
+  @Get()
+  async getStoryDrafts() {
+    return this.storyDraftService.findAll();
+  }
+
   @Post()
   async createStoryDraft(
     @Body() createStoryDraftDto: CreateStoryDraftDto,
@@ -27,12 +33,12 @@ export class StoryDraftController {
     await this.storyDraftService.create(
       createStoryDraftDto.authorId,
       createStoryDraftDto.docLink,
-      createStoryDraftDto.submissionRound,
-      createStoryDraftDto.studentConsent,
-      createStoryDraftDto.inManuscript,
-      createStoryDraftDto.editRound,
-      createStoryDraftDto.proofread,
-      createStoryDraftDto.notes,
+      createStoryDraftDto.submissionRound ?? SubmissionRound.ONE,
+      createStoryDraftDto.studentConsent ?? false,
+      createStoryDraftDto.inManuscript ?? false,
+      createStoryDraftDto.editRound ?? EditRound.ONE,
+      createStoryDraftDto.proofread ?? false,
+      createStoryDraftDto.notes ?? [],
     );
     return { message: 'StoryDraft created successfully' };
   }
