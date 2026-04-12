@@ -122,7 +122,6 @@ const AdminViewApplication: React.FC = () => {
           lastName={user ? user.lastName : ''}
           pronouns={pronouns}
           discipline={discipline}
-          experienceType={application.experienceType || 'N/A'}
           email={application.email || 'N/A'}
           phone={application.phone || 'N/A'}
           over18={learnerInfo?.isLegalAdult}
