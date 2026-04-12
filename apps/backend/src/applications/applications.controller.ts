@@ -158,9 +158,10 @@ export class ApplicationsController {
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateStatusDto: UpdateApplicationStatusDto,
   ): Promise<Application> {
-    return await this.applicationsService.update(appId, {
-      appStatus: updateStatusDto.appStatus,
-    });
+    return await this.applicationsService.updateStatus(
+      appId,
+      updateStatusDto.appStatus,
+    );
   }
 
   /**

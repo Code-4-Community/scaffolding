@@ -12,6 +12,8 @@ import {
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
+import { EmailService } from '../util/email/email.service';
+import { UsersService } from '../users/users.service';
 
 const dummyApplication: Application = {
   appId: 1,
@@ -88,6 +90,14 @@ describe('ApplicationsService', () => {
     remove: jest.fn(),
   };
 
+  const mockEmailService = {
+    queueEmail: jest.fn().mockResolvedValue(undefined),
+  };
+
+  const mockUsersService = {
+    findOne: jest.fn().mockResolvedValue(null),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -95,6 +105,14 @@ describe('ApplicationsService', () => {
         {
           provide: getRepositoryToken(Application),
           useValue: mockRepository,
+        },
+        {
+          provide: EmailService,
+          useValue: mockEmailService,
+        },
+        {
+          provide: UsersService,
+          useValue: mockUsersService,
         },
       ],
     }).compile();
@@ -901,6 +919,149 @@ describe('ApplicationsService', () => {
           where: { discipline },
         });
       }
+    });
+  });
+
+  describe('updateStatus', () => {
+    it('should update the application status and return the updated application', async () => {
+      const updatedApplication: Application = {
+        ...dummyApplication,
+        appStatus: AppStatus.ACCEPTED,
+      };
+
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockResolvedValue(updatedApplication);
+
+      const result = await service.updateStatus(1, AppStatus.ACCEPTED);
+
+      expect(repository.findOne).toHaveBeenCalledWith({ where: { appId: 1 } });
+      expect(repository.save).toHaveBeenCalledWith({
+        ...dummyApplication,
+        appStatus: AppStatus.ACCEPTED,
+      });
+      expect(result).toEqual(updatedApplication);
+    });
+
+    it('should send an email when status is updated to ACCEPTED', async () => {
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockResolvedValue({
+        ...dummyApplication,
+        appStatus: AppStatus.ACCEPTED,
+      });
+
+      await service.updateStatus(1, AppStatus.ACCEPTED);
+
+      expect(mockEmailService.queueEmail).toHaveBeenCalledWith(
+        dummyApplication.email,
+        'Your Application Has Been Updated',
+        expect.stringContaining('Congratulations'),
+      );
+    });
+
+    it('should send an email when status is updated to DECLINED', async () => {
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockResolvedValue({
+        ...dummyApplication,
+        appStatus: AppStatus.DECLINED,
+      });
+
+      await service.updateStatus(1, AppStatus.DECLINED);
+
+      expect(mockEmailService.queueEmail).toHaveBeenCalledWith(
+        dummyApplication.email,
+        'Your Application Has Been Updated',
+        expect.stringContaining('not been accepted'),
+      );
+    });
+
+    it('should send an email when status is updated to NO_AVAILABILITY', async () => {
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockResolvedValue({
+        ...dummyApplication,
+        appStatus: AppStatus.NO_AVAILABILITY,
+      });
+
+      await service.updateStatus(1, AppStatus.NO_AVAILABILITY);
+
+      expect(mockEmailService.queueEmail).toHaveBeenCalledWith(
+        dummyApplication.email,
+        'Your Application Has Been Updated',
+        expect.stringContaining('no availability'),
+      );
+    });
+
+    it('should not send an email when status is updated to IN_REVIEW', async () => {
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockResolvedValue({
+        ...dummyApplication,
+        appStatus: AppStatus.IN_REVIEW,
+      });
+
+      await service.updateStatus(1, AppStatus.IN_REVIEW);
+
+      expect(mockEmailService.queueEmail).not.toHaveBeenCalled();
+    });
+
+    it('should not send an email when status is updated to ACTIVE', async () => {
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockResolvedValue({
+        ...dummyApplication,
+        appStatus: AppStatus.ACTIVE,
+      });
+
+      await service.updateStatus(1, AppStatus.ACTIVE);
+
+      expect(mockEmailService.queueEmail).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when application is not found', async () => {
+      mockRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.updateStatus(999, AppStatus.ACCEPTED),
+      ).rejects.toThrow('Application with ID 999 not found');
+
+      expect(mockEmailService.queueEmail).not.toHaveBeenCalled();
+    });
+
+    it('should pass along repo errors during retrieval without information loss', async () => {
+      mockRepository.findOne.mockRejectedValue(
+        new Error('There was a problem retrieving the info'),
+      );
+
+      await expect(service.updateStatus(1, AppStatus.ACCEPTED)).rejects.toThrow(
+        'There was a problem retrieving the info',
+      );
+
+      expect(mockEmailService.queueEmail).not.toHaveBeenCalled();
+    });
+
+    it('should pass along repo errors during save without information loss', async () => {
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockRejectedValue(
+        new Error('There was a problem saving the info'),
+      );
+
+      await expect(service.updateStatus(1, AppStatus.ACCEPTED)).rejects.toThrow(
+        'There was a problem saving the info',
+      );
+
+      expect(mockEmailService.queueEmail).not.toHaveBeenCalled();
+    });
+
+    it('should pass along email service errors without information loss', async () => {
+      mockRepository.findOne.mockResolvedValue(dummyApplication);
+      mockRepository.save.mockResolvedValue({
+        ...dummyApplication,
+        appStatus: AppStatus.ACCEPTED,
+      });
+      mockEmailService.queueEmail.mockRejectedValueOnce(
+        new Error('Failed to send email'),
+      );
+
+      await expect(service.updateStatus(1, AppStatus.ACCEPTED)).rejects.toThrow(
+        'Failed to send email',
+      );
     });
   });
 });
