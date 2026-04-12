@@ -10,7 +10,6 @@ export const UsersSeed: DeepPartial<User>[] = [
     lastName: 'Jacobs',
     email: 'richie.jacobs@gmail.com',
     title: 'Publishing Manager',
-  
   },
   {
     id: 2,
@@ -42,6 +41,6 @@ export const UsersSeed: DeepPartial<User>[] = [
     firstName: 'Tony',
     lastName: 'King',
     email: 'tony.king@gmail.com',
-    title: 'Director of Communications'
+    title: 'Director of Communications',
   },
 ];
