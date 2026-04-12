@@ -1,9 +1,12 @@
 import React from 'react';
 import { Box, Heading, Flex, Link, Text } from '@chakra-ui/react';
 import NavbarItem from './NavBarItem';
-import { FaHouse, FaPerson, FaRegFile } from 'react-icons/fa6';
-import { IoIosSettings } from 'react-icons/io';
-import { CgProfile } from 'react-icons/cg';
+import {
+  FaHouse,
+  FaPerson,
+  FaRegFile,
+  FaRightFromBracket,
+} from 'react-icons/fa6';
 import { UserType } from '@api/types';
 
 export type NavBarProps = {
@@ -52,16 +55,11 @@ export default function NavBar({ logo, userType }: NavBarProps) {
               icon={<FaRegFile />}
             />
           )}
-          <NavbarItem
-            href="#settings"
-            label="Settings"
-            icon={<IoIosSettings />}
-          />
         </Flex>
       </Box>
 
       <Link
-        href="#profile"
+        href="#logout"
         width="100%"
         _hover={{ textDecoration: 'none' }}
         _focus={{ outline: 'none', boxShadow: 'none' }}
@@ -69,29 +67,19 @@ export default function NavBar({ logo, userType }: NavBarProps) {
       >
         <Flex
           align="center"
-          gap="12px"
-          padding="12px 16px"
+          gap="18px"
+          padding="16px 4px"
           borderRadius="md"
-          bg="#204AA0"
           cursor="pointer"
-          width="100%"
+          color="white"
+          _focus={{ outline: 'none', boxShadow: 'none' }}
+          _focusVisible={{ outline: 'none', boxShadow: 'none' }}
         >
-          <Flex
-            width="32px"
-            height="32px"
-            borderRadius="full"
-            bg="white"
-            align="center"
-            justify="center"
-            fontSize="14px"
-            color="#204AA0"
-            fontWeight="bold"
-          >
-            <CgProfile size="20px" />
-          </Flex>
-
-          <Text fontSize="16px" fontWeight="500" color="white">
-            Profile
+          <Box fontSize="18px" lineHeight={1} display="flex">
+            <FaRightFromBracket aria-hidden />
+          </Box>
+          <Text fontSize="14px" fontWeight="500">
+            Log Out
           </Text>
         </Flex>
       </Link>
