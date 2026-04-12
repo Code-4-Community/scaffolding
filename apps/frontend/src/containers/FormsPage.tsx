@@ -131,7 +131,7 @@ const FormsPage: React.FC = () => {
                 {/* Display form details */}
                 <Flex align="flex-start" gap="3" w="100%" maxW="720px">
                   <Flex
-                    flex="1"
+                    flex="0 0 calc(100% - 0.75rem - 40px)"
                     align="center"
                     gap="4"
                     px="5"
@@ -181,20 +181,20 @@ const FormsPage: React.FC = () => {
                     >
                       {isFormComplete ? 'Completed' : 'Incomplete'}
                     </Text>
-                    {isFormComplete ? (
-                      <IconButton
-                        type="button"
-                        aria-label={`Delete ${form.name}`}
-                        variant="ghost"
-                        color="gray.500"
-                        alignSelf="center"
-                        flexShrink={0}
-                        onClick={() => {}}
-                      >
-                        <FaTrashCan size="18px" aria-hidden />
-                      </IconButton>
-                    ) : null}
                   </Flex>
+                  {isFormComplete ? (
+                    <IconButton
+                      type="button"
+                      aria-label={`Delete ${form.name}`}
+                      variant="ghost"
+                      color="gray.500"
+                      alignSelf="center"
+                      flexShrink={0}
+                      onClick={() => {}}
+                    >
+                      <FaTrashCan size="18px" aria-hidden />
+                    </IconButton>
+                  ) : null}
                 </Flex>
 
                 {/* Depending on if the form is uploaded, display the button to view template and upload OR preview the form */}
