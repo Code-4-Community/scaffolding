@@ -62,6 +62,10 @@ export class ApiClient {
     ) as Promise<CandidateInfo>;
   }
 
+  public async getUser(email: string): Promise<User> {
+    return this.get(`/api/users/email/${email}`) as Promise<User>;
+  }
+
   public async updateAvailability(
     appId: number,
     availability: Partial<AvailabilityFields>,
