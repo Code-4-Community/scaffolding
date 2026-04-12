@@ -16,6 +16,7 @@ import ProtectedRoute from '@containers/auth/ProtectedRoute';
 import People from '@containers/people';
 import Role from '@api/dtos/role';
 import CreatePublicationModal from '@containers/create-publication-modal';
+import ProjectPublicationView from '@containers/projects-publication/project-publication-view';
 
 const router = createBrowserRouter([
   {
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
               },
               {
                 path: 'publication/:id?',
-                element: <PublicationView />,
+                element: <ProjectPublicationView />,
               },
             ],
           },
