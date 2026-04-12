@@ -8,6 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { UsersService } from '../users/users.service';
 import { UserType } from '../users/types';
+import { ROLES_KEY } from './roles.decorator';
 
 type RequestUser = {
   email?: string;
@@ -42,7 +43,7 @@ export class RolesGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<UserType[]>(
-      'roles',
+      ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
 

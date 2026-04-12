@@ -2,6 +2,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Req,
   UseGuards,
@@ -62,11 +63,12 @@ export class UsersController {
    * @returns {User | null} Returns the user object or nothing.
    */
   @Get('me')
-  async getCurrentUser(@Req() req: { user?: User }): Promise<User | null> {
+  async getCurrentUser(
+    @Req() req: { user?: User },
+  ): Promise<User | NotFoundException> {
     if (!req.user || !req.user.userType) {
-      return null;
+      return new NotFoundException('No user matching the JWT was found.');
     }
-
     return req.user;
   }
 }
