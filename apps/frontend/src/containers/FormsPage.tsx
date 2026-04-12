@@ -7,11 +7,12 @@ import documentIcon from '../assets/icons/Vector.svg';
 
 interface Form {
   name: string;
-  url: string;
+  templateUrl: string;
 }
 
 const FORMS: Form[] = [
-  { name: 'Confidentiality Form', url: '' },
+  // Specify a url to the template for the form
+  { name: 'Confidentiality Form', templateUrl: 'https://www.google.com' },
   // { name: 'Application Form', url: '' },
 ];
 
@@ -142,13 +143,17 @@ const FormsPage: React.FC = () => {
                 bg="#B8AF98"
                 color="#000000"
                 _hover={{
-                  opacity: form.url ? 0.92 : undefined,
+                  opacity: form.templateUrl ? 0.92 : undefined,
                 }}
-                cursor={form.url ? 'pointer' : 'not-allowed'}
-                opacity={form.url ? 1 : 0.65}
+                cursor={form.templateUrl ? 'pointer' : 'not-allowed'}
+                opacity={form.templateUrl ? 1 : 0.65}
                 onClick={() => {
-                  if (form.url) {
-                    window.open(form.url, '_blank', 'noopener,noreferrer');
+                  if (form.templateUrl) {
+                    window.open(
+                      form.templateUrl,
+                      '_blank',
+                      'noopener,noreferrer',
+                    );
                   }
                 }}
               >
