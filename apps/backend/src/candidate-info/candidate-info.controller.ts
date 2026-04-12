@@ -8,6 +8,8 @@ import {
   UseInterceptors,
   Delete,
   UseGuards,
+  Logger,
+  Req,
 } from '@nestjs/common';
 import { CandidateInfoService } from './candidate-info.service';
 import { CandidateInfo } from './candidate-info.entity';
@@ -26,6 +28,8 @@ import { RolesGuard } from '../auth/roles.guard';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @UseInterceptors(CurrentUserInterceptor)
 export class CandidateInfoController {
+  private readonly logger = new Logger(CandidateInfoController.name);
+
   constructor(private CandidateInfoService: CandidateInfoService) {}
 
   /**
@@ -70,7 +74,13 @@ export class CandidateInfoController {
   @Roles(UserType.ADMIN, UserType.STANDARD)
   async getCandidateInfoByEmail(
     @Param('email') email: string,
+    @Req() req: { user?: { email?: string; userType?: string } },
   ): Promise<CandidateInfo> {
+    this.logger.log(
+      `GET /CandidateInfo/email requestedEmail=${email} requesterEmail=${
+        req.user?.email ?? 'unknown'
+      } requesterType=${req.user?.userType ?? 'unknown'}`,
+    );
     return this.CandidateInfoService.findOne(email);
   }
 

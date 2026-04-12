@@ -2,12 +2,14 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
   UseInterceptors,
   UseFilters,
@@ -119,11 +121,24 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get('/:appId')
-  @Roles(UserType.ADMIN)
+  @Roles(UserType.ADMIN, UserType.STANDARD)
   async getApplicationById(
     @Param('appId', ParseIntPipe) appId: number,
+    @Req() req: { user?: { email?: string; userType?: UserType } },
   ): Promise<Application> {
-    return await this.applicationsService.findById(appId);
+    const application = await this.applicationsService.findById(appId);
+
+    // Standard users may only access their own application.
+    if (
+      req.user?.userType === UserType.STANDARD &&
+      req.user.email !== application.email
+    ) {
+      throw new ForbiddenException(
+        'Standard users can only access their own application.',
+      );
+    }
+
+    return application;
   }
 
   /**

@@ -110,7 +110,32 @@ export class ApiClient {
   }
 
   private async get(path: string): Promise<unknown> {
-    return this.axiosInstance.get(path).then((response) => response.data);
+    console.debug('ApiClient GET: request start', {
+      baseURL: defaultBaseUrl,
+      path,
+    });
+
+    try {
+      const response = await this.axiosInstance.get(path);
+      console.debug('ApiClient GET: request success', {
+        path,
+        status: response.status,
+      });
+      return response.data;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('ApiClient GET: request failed', {
+          path,
+          status: err.response?.status,
+          url: err.config?.url,
+          method: err.config?.method,
+          data: err.response?.data,
+        });
+      } else {
+        console.error('ApiClient GET: request failed', { path, err });
+      }
+      throw err;
+    }
   }
 
   private async post(path: string, body: unknown): Promise<unknown> {

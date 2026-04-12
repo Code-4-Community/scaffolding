@@ -77,12 +77,30 @@ const CandidateViewApplication: React.FC = () => {
     const isNotFoundError = (err: unknown): boolean =>
       axios.isAxiosError(err) && err.response?.status === 404;
 
+    const logAxiosError = (label: string, err: unknown) => {
+      if (axios.isAxiosError(err)) {
+        console.error(label, {
+          status: err.response?.status,
+          url: err.config?.url,
+          method: err.config?.method,
+          data: err.response?.data,
+        });
+        return;
+      }
+
+      console.error(label, err);
+    };
+
     async function load() {
       setLoading(true);
       setError(null);
+      console.debug('CandidateViewApplication: load started');
 
       // Dev mode: use mock data, skip all API calls
       if (DEV_MODE) {
+        console.debug(
+          'CandidateViewApplication: DEV_MODE enabled, using mocks',
+        );
         setApplication(DEV_APPLICATION);
         if (DEV_APPLICATION.applicantType === ApplicantType.LEARNER) {
           setLearnerInfo(DEV_LEARNER_INFO);
@@ -94,32 +112,69 @@ const CandidateViewApplication: React.FC = () => {
       try {
         const attributes = await fetchUserAttributes();
         const email = attributes.email;
+        console.debug('CandidateViewApplication: fetched user attributes', {
+          email,
+        });
 
         if (!email) {
           setError('Unable to determine your email. Please log in again.');
+          console.warn(
+            'CandidateViewApplication: missing email in user attributes',
+          );
           return;
         }
 
+        console.debug(
+          'CandidateViewApplication: requesting candidate info by email',
+          { email },
+        );
         const candidateInfo = await apiClient.getCandidateInfoByEmail(email);
         if (cancelled) return;
+        console.debug('CandidateViewApplication: candidate info loaded', {
+          appId: candidateInfo.appId,
+          email: candidateInfo.email,
+        });
 
+        console.debug('CandidateViewApplication: requesting application', {
+          appId: candidateInfo.appId,
+        });
         const app = await apiClient.getApplication(candidateInfo.appId);
         if (cancelled) return;
         setApplication(app);
+        console.debug('CandidateViewApplication: application loaded', {
+          appId: app.appId,
+          applicantType: app.applicantType,
+        });
 
         if (app?.applicantType === ApplicantType.LEARNER) {
           try {
+            console.debug('CandidateViewApplication: requesting learner info', {
+              appId: candidateInfo.appId,
+            });
             const info = await apiClient.getLearnerInfo(candidateInfo.appId);
-            if (!cancelled) setLearnerInfo(info);
+            if (!cancelled) {
+              setLearnerInfo(info);
+              console.debug('CandidateViewApplication: learner info loaded', {
+                appId: info.appId,
+              });
+            }
           } catch (err) {
             if (!cancelled && !isNotFoundError(err)) {
               setError('Failed to load learner info');
             }
+            logAxiosError(
+              'CandidateViewApplication: learner info request failed',
+              err,
+            );
           }
         }
-      } catch {
+      } catch (err) {
+        logAxiosError('CandidateViewApplication: load failed', err);
         if (!cancelled) setError('Failed to load application');
       } finally {
+        console.debug('CandidateViewApplication: load finished', {
+          cancelled,
+        });
         if (!cancelled) setLoading(false);
       }
     }
@@ -166,10 +221,6 @@ const CandidateViewApplication: React.FC = () => {
         overflowY="auto"
         maxH="100vh"
       >
-        <Heading size="2xl" color="#013594">
-          my application
-        </Heading>
-
         <SchoolAffiliationFrame
           schoolName={learnerInfo ? learnerInfo.school : 'N/A'}
           schoolDepartment={
