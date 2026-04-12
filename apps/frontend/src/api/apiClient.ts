@@ -3,14 +3,6 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { Anthology, Story } from '../types';
 import User from './dtos/user.dto';
 
-export interface FilterSortAnthologyBody {
-  pubDateRange?: { start: string; end: string };
-  pubLevels?: string[];
-  programs?: string[];
-  genres?: string[];
-  sortBy?: string;
-}
-
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
@@ -46,14 +38,6 @@ export class ApiClient {
   ): Promise<Story[]> {
     return this.get(`/api/anthologies/${anthologyId}/stories`) as Promise<
       Story[]
-    >;
-  }
-
-  public async filterSortAnthologies(
-    body: FilterSortAnthologyBody,
-  ): Promise<Anthology[]> {
-    return this.post('/api/anthologies/filter-sort', body) as Promise<
-      Anthology[]
     >;
   }
 
