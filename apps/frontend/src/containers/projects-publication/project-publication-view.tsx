@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../../api/apiClient';
-import { Anthology } from '../../types';
+import { Anthology, Author } from '../../types';
 import NewStoryDraftModal from './new-story-draft-modal';
 import './project-publication-view.css';
 
@@ -20,21 +20,63 @@ const ProjectPublicationView: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [storyDrafts, setStoryDrafts] = useState<StoryDraftRow[]>([]);
 
+  const loadStoryDrafts = useCallback(async () => {
+    if (!id) return;
+    try {
+      const [drafts, authors] = await Promise.all([
+        apiClient.getStoryDrafts(Number(id)),
+        apiClient.getAuthors(),
+      ]);
+
+      const authorMap = new Map<number, Author>();
+      for (const author of authors) {
+        authorMap.set(author.id, author);
+      }
+
+      setStoryDrafts(
+        drafts.map((draft) => {
+          const author = authorMap.get(draft.authorId);
+          const nameParts = author?.name?.split(' ') ?? [];
+          return {
+            firstName: nameParts[0] ?? '',
+            lastName: nameParts.slice(1).join(' '),
+            nameInBook: author?.nameInBook ?? '',
+            classPeriod: author?.classPeriod ?? '',
+            docLink: draft.docLink,
+          };
+        }),
+      );
+    } catch {
+      // Story drafts will remain as-is on fetch failure
+    }
+  }, []);
+
   useEffect(() => {
     if (id) {
-      apiClient.getAnthology(id)
-        .then((data) => { setAnthology(data); setLoading(false); })
+      apiClient
+        .getAnthology(id)
+        .then((data) => {
+          setAnthology(data);
+          setLoading(false);
+        })
         .catch(() => setLoading(false));
     }
   }, [id]);
 
+  useEffect(() => {
+    loadStoryDrafts();
+  }, [loadStoryDrafts]);
+
   if (loading) return <div className="ppv-wrapper">Loading...</div>;
-  if (!anthology) return <div className="ppv-wrapper">No publication found.</div>;
+  if (!anthology)
+    return <div className="ppv-wrapper">No publication found.</div>;
 
   return (
     <div className="ppv-wrapper">
       <div className="ppv-breadcrumb">
-        <a href="/projects/drafts" className="ppv-breadcrumb-link">Projects</a>
+        <a href="/projects/drafts" className="ppv-breadcrumb-link">
+          Projects
+        </a>
         <span className="ppv-breadcrumb-sep">›</span>
         <span>{anthology.title}</span>
       </div>
@@ -43,7 +85,9 @@ const ProjectPublicationView: React.FC = () => {
         <h1 className="ppv-title">{anthology.title}</h1>
 
         <div className="publication-tabs">
-          <span className="publication-tab publication-tab--active">Document Tracker</span>
+          <span className="publication-tab publication-tab--active">
+            Document Tracker
+          </span>
         </div>
 
         <div className="ppv-tab-content">
@@ -70,7 +114,14 @@ const ProjectPublicationView: React.FC = () => {
             <tbody>
               {storyDrafts.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', color: 'var(--neutral-400)', padding: '24px' }}>
+                  <td
+                    colSpan={5}
+                    style={{
+                      textAlign: 'center',
+                      color: 'var(--neutral-400)',
+                      padding: '24px',
+                    }}
+                  >
                     No story drafts yet.
                   </td>
                 </tr>
@@ -81,7 +132,11 @@ const ProjectPublicationView: React.FC = () => {
                     <td>{draft.lastName}</td>
                     <td>{draft.nameInBook}</td>
                     <td>{draft.classPeriod}</td>
-                    <td><a href={draft.docLink} target="_blank" rel="noreferrer">Open</a></td>
+                    <td>
+                      <a href={draft.docLink} target="_blank" rel="noreferrer">
+                        Open
+                      </a>
+                    </td>
                   </tr>
                 ))
               )}
@@ -92,8 +147,9 @@ const ProjectPublicationView: React.FC = () => {
 
       {isModalOpen && (
         <NewStoryDraftModal
+          anthologyId={anthology.id}
           onClose={() => setIsModalOpen(false)}
-          onSave={(draft) => setStoryDrafts((prev) => [...prev, draft])}
+          onSaved={loadStoryDrafts}
         />
       )}
     </div>

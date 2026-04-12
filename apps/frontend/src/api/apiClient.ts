@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { Anthology, Story } from '../types';
+import { Anthology, Author, Story, StoryDraft } from '../types';
 import User from './dtos/user.dto';
 
 export interface FilterSortAnthologyBody {
@@ -55,6 +55,34 @@ export class ApiClient {
     return this.post('/api/anthologies/filter-sort', body) as Promise<
       Anthology[]
     >;
+  }
+
+  public async getAuthors(): Promise<Author[]> {
+    return this.get('/api/author/author') as Promise<Author[]>;
+  }
+
+  public async createAuthor(body: {
+    name: string;
+    nameInBook?: string;
+    classPeriod?: string;
+  }): Promise<Author> {
+    return this.post('/api/author/author', body) as Promise<Author>;
+  }
+
+  public async getStoryDrafts(anthologyId: number) {
+    return this.get(`/api/story-drafts/anthology/${anthologyId}`) as Promise<
+      StoryDraft[]
+    >;
+  }
+
+  public async createStoryDraft(body: {
+    authorId: number;
+    anthologyId: number;
+    docLink: string;
+  }): Promise<{ message: string }> {
+    return this.post('/api/story-drafts', body) as Promise<{
+      message: string;
+    }>;
   }
 
   private async getAuthHeaders(): Promise<Record<string, string>> {

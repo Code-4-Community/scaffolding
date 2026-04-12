@@ -17,8 +17,16 @@ export enum AnthologyPubLevel {
 export interface Author {
   id: number;
   name: string;
+  nameInBook?: string;
+  classPeriod?: string;
   bio?: string;
   grade?: number;
+}
+
+export interface StoryDraft {
+  id: number;
+  authorId: number;
+  docLink: string;
 }
 
 export interface Story {
