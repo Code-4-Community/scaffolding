@@ -26,12 +26,6 @@ export class Init1754254886189 implements MigrationInterface {
         `'No Availability', 'Declined', 'Active', 'Inactive')`,
     );
 
-    // ExperienceType
-    await queryRunner.query(
-      `CREATE TYPE "public"."application_experiencetype_enum" AS ENUM(` +
-        `'BS', 'MS', 'PhD', 'MD', 'MD PhD', 'RN', 'NP', 'PA', 'Other')`,
-    );
-
     // InterestArea
     await queryRunner.query(
       `CREATE TYPE "public"."application_interest_enum" AS ENUM(` +
