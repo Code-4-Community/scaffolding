@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { Anthology, Author, Story, StoryDraft } from '../types';
+import { Anthology, Author, OmchaiEntry, Story, StoryDraft } from '../types';
 import User from './dtos/user.dto';
 
 export interface FilterSortAnthologyBody {
@@ -83,6 +83,14 @@ export class ApiClient {
     return this.post('/api/story-drafts', body) as Promise<{
       message: string;
     }>;
+  }
+
+  public async getOmchaiByAnthology(
+    anthologyId: number,
+  ): Promise<OmchaiEntry[]> {
+    return this.get(`/api/omchai/anthology/${anthologyId}`) as Promise<
+      OmchaiEntry[]
+    >;
   }
 
   private async getAuthHeaders(): Promise<Record<string, string>> {
