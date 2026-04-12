@@ -15,7 +15,6 @@ import {
   LearnerInfo,
   School,
   UserType,
-  VolunteerInfo,
 } from '../api/types';
 import QuestionFrame from '../components/QuestionFrame';
 import RequirementsFrame from '../components/RequirementsFrame';
@@ -69,9 +68,6 @@ const DEV_LEARNER_INFO: LearnerInfo = {
 const CandidateViewApplication: React.FC = () => {
   const [application, setApplication] = useState<Application | null>(null);
   const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(null);
-  const [volunteerInfo, setVolunteerInfo] = useState<VolunteerInfo | null>(
-    null,
-  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -111,16 +107,7 @@ const CandidateViewApplication: React.FC = () => {
         if (cancelled) return;
         setApplication(app);
 
-        if (app?.applicantType === ApplicantType.VOLUNTEER) {
-          try {
-            const info = await apiClient.getVolunteerInfo(candidateInfo.appId);
-            if (!cancelled) setVolunteerInfo(info);
-          } catch (err) {
-            if (!cancelled && !isNotFoundError(err)) {
-              setError('Failed to load volunteer info');
-            }
-          }
-        } else if (app?.applicantType === ApplicantType.LEARNER) {
+        if (app?.applicantType === ApplicantType.LEARNER) {
           try {
             const info = await apiClient.getLearnerInfo(candidateInfo.appId);
             if (!cancelled) setLearnerInfo(info);
@@ -188,7 +175,7 @@ const CandidateViewApplication: React.FC = () => {
           schoolDepartment={
             (learnerInfo && learnerInfo.schoolDepartment) || 'N/A'
           }
-          license={(volunteerInfo && volunteerInfo.license) || 'N/A'}
+          license={application.license || 'N/A'}
           areaOfInterest={
             Array.isArray(application.interest)
               ? application.interest.join(', ')
