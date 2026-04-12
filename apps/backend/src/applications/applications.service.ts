@@ -242,10 +242,17 @@ export class ApplicationsService {
       try {
         const user = await this.usersService.findOne(application.email);
         if (user) {
-          name = `${user.firstName} ${user.lastName}`;
+          const toTitleCase = (s: string) =>
+            s
+              .split(/\s+/)
+              .filter(Boolean)
+              .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+              .join(' ');
+
+          name = toTitleCase(`${user.firstName} ${user.lastName}`);
         }
       } catch {
-        //
+        name = `applicant`;
       }
       const body = buildEmailBody(appStatus, name);
       if (body) {
