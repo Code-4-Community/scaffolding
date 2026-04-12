@@ -88,6 +88,31 @@ export const DEFAULT_FILTER_STATE: FilterState = {
   inventoryMax: '',
 };
 
+export enum OmchaiRole {
+  OWNER = 'OWNER',
+  MANAGER = 'MANAGER',
+  CONSULTED = 'CONSULTED',
+  HELPER = 'HELPER',
+  APPROVER = 'APPROVER',
+  INFORMED = 'INFORMED',
+}
+
+export interface OmchaiUser {
+  id: number;
+  firstName: string;
+  lastName: string;
+  title?: string;
+}
+
+export interface OmchaiEntry {
+  id: number;
+  anthologyId: number;
+  userId: number;
+  role: OmchaiRole;
+  datetimeAssigned: string;
+  user: OmchaiUser;
+}
+
 export interface Anthology {
   id: number;
   title: string;
