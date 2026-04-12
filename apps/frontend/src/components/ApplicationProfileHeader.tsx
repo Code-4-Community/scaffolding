@@ -1,3 +1,4 @@
+import { Box, Float, Text } from '@chakra-ui/react';
 import React from 'react';
 
 interface ApplicationProfileHeaderProps {
@@ -22,53 +23,87 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
   over18,
 }) => {
   return (
-    <div className="space-y-4">
-      <div className="bg-blue-700 text-white p-6 flex items-center gap-6 rounded-t-md">
-        <div className="w-24 h-24 bg-blue-900 rounded-full flex items-center justify-center flex-shrink-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-14 h-14 text-white"
-            viewBox="0 0 24 24"
-            fill="currentColor"
+    <Box className="space-y-4" p="5">
+      <Box
+        position="relative"
+        className="text-white p-6 flex items-center gap-6 rounded-t-md"
+        pt="10"
+        pl="5"
+        bg="#013594"
+      >
+        <Float offsetY="20" placement="top-start" offsetX="20">
+          <Box
+            className="w-24 h-24 rounded-full flex items-center justify-center flex-shrink-0"
+            bg="#013594"
+            borderWidth="5px"
+            borderColor="white"
           >
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-          </svg>
-        </div>
-        <h1 className="text-4xl font-bold capitalize">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-14 h-14 text-white"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+            </svg>
+          </Box>
+        </Float>
+        <Text textStyle="4xl" textTransform="capitalize" pl="130px" pb="3">
           {firstName} {lastName}
-        </h1>
-      </div>
+        </Text>
+      </Box>
 
-      <div className="bg-white p-6 border border-gray-200 rounded-b-md space-y-2 text-sm">
+      <Box
+        className="bg-white p-6 border border-gray-200 rounded-b-md space-y-2 text-sm"
+        p="6"
+        pl="150px"
+      >
         <div>
-          <span className="font-semibold">Pronouns:</span> {pronouns ?? 'N/A'}
+          <Text as="span" fontWeight="semibold">
+            Pronouns:
+          </Text>{' '}
+          {pronouns ?? 'N/A'}
         </div>
         <div>
-          <span className="font-semibold">Discipline:</span>{' '}
+          <Text as="span" fontWeight="semibold">
+            Discipline:
+          </Text>{' '}
           {discipline ?? 'N/A'}
         </div>
         <div>
-          <span className="font-semibold">Type of Experience:</span>{' '}
+          <Text as="span" fontWeight="semibold">
+            Type of Experience:
+          </Text>{' '}
           {experienceType ?? 'N/A'}
         </div>
         <div>
-          <span className="font-semibold">Email:</span> {email ?? 'N/A'}
+          <Text as="span" fontWeight="semibold">
+            Email:
+          </Text>{' '}
+          {email ?? 'N/A'}
         </div>
         <div>
-          <span className="font-semibold">Phone:</span> {phone ?? 'N/A'}
+          <Text as="span" fontWeight="semibold">
+            Phone:
+          </Text>{' '}
+          {phone ?? 'N/A'}
         </div>
         <div>
-          <span className="font-semibold">Over 18?</span>{' '}
-          <span
+          <Text as="span" fontWeight="semibold">
+            Over 18?
+          </Text>{' '}
+          <Text
             className={`inline-block px-3 py-1 text-sm rounded-full font-semibold text-white ${
               over18 ? 'bg-green-500' : 'bg-red-500'
             }`}
+            pl="3"
+            pr="3"
           >
             {over18 == false ? 'No' : 'Yes'}
-          </span>
+          </Text>
         </div>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
