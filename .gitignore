@@ -3,7 +3,7 @@
 yarn.lock
 # nx cache
 .nx/cache/
-
+.nx/workspace-data
 # compiled output
 dist
 tmp
