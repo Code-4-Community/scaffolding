@@ -2,6 +2,7 @@ import axios, { type AxiosInstance } from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { Anthology, Story } from '../types';
 import User from './dtos/user.dto';
+import Role from './dtos/role';
 
 export interface FilterSortAnthologyBody {
   pubDateRange?: { start: string; end: string };
@@ -94,6 +95,15 @@ export class ApiClient {
     return this.axiosInstance
       .delete(path, { headers })
       .then((response) => response.data);
+  }
+
+  public async createUser(body: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: Role;
+  }): Promise<User> {
+    return this.post('/api/users', body) as Promise<User>;
   }
 }
 

@@ -22,7 +22,7 @@ const Sidebar: React.FC = () => {
   const isLibraryActive =
     location.pathname.startsWith('/archive') || location.pathname === '/';
   const isAuthorized =
-    user?.role === Role.ADMIN || user?.role === Role.VOLUNTEER;
+    user?.role === Role.ADMIN || user?.role === Role.STANDARD;
 
   return (
     <aside className={`root-sidebar ${collapsed ? 'collapsed' : ''}`}>
