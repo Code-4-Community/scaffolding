@@ -15,7 +15,7 @@ export class LearnerInfo {
   /**
    * School of the applicant; includes well-known medical schools or an 'other' option.
    *
-   * Example: School.STANFORD_MEDICINE.
+   * Example: School.BOSTON_UNIVERSITY.
    */
   @Column({ type: 'enum', enum: School })
   school!: School;

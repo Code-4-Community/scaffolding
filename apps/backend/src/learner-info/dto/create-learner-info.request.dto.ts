@@ -27,7 +27,7 @@ export class CreateLearnerInfoDto {
   /**
    * School of the applicant; includes well-known medical schools or an 'other' option.
    *
-   * Example: School.STANFORD_MEDICINE.
+   * Example: School.BOSTON_UNIVERSITY.
    */
   @IsEnum(School)
   @IsDefined()

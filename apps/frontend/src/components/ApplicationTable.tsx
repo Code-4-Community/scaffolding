@@ -1,4 +1,3 @@
-import React from 'react';
 import { Table } from '@chakra-ui/react';
 import type { ApplicationRow } from '@hooks/useApplications';
 
@@ -42,7 +41,7 @@ export function ApplicationTable({
   });
 
   return (
-    <Table.Root striped stickyHeader>
+    <Table.Root striped stickyHeader minW="900px">
       <Table.Header>
         <Table.Row>
           {COLUMNS.map((column) => (

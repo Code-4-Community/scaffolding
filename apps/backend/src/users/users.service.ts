@@ -35,6 +35,14 @@ export class UsersService {
   }
 
   /**
+   * Returns all users.
+   * @returns All users in the repository.
+   */
+  findAll(): Promise<User[]> {
+    return this.repo.find();
+  }
+
+  /**
    * Returns a user by email.
    * @param email The email of the user to find.
    * @returns The user if they exist, otherwise null.

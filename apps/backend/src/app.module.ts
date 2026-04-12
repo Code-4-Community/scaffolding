@@ -8,7 +8,6 @@ import AppDataSource from './data-source';
 import { UtilModule } from './util/util.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { LearnerInfoModule } from './learner-info/learner-info.module';
-import { VolunteerInfoModule } from './volunteer-info/volunteer-info.module';
 import { Application } from './applications/application.entity';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
@@ -32,7 +31,6 @@ import { AdminInfoModule } from './admin-info/admin-info.module';
     TypeOrmModule.forFeature([Application]),
     DisciplinesModule,
     LearnerInfoModule,
-    VolunteerInfoModule,
     ApplicationsModule,
     ApplicationsModule,
   ],

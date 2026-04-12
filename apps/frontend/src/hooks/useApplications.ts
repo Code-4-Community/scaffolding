@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import apiClient from '@api/apiClient';
-import type { Application } from '@api/types';
+import type { Application, User } from '@api/types';
 
 export interface ApplicationRow {
   appId: number;
@@ -20,18 +20,26 @@ interface UseApplicationsResult {
   error: string | null;
 }
 
-function toRows(applications: Application[]): ApplicationRow[] {
-  return applications.map((app) => ({
-    appId: app.appId,
-    name: app.email,
-    email: app.email,
-    proposedStartDate: '',
-    actualStartDate: '',
-    experienceType: app.experienceType,
-    discipline: app.discipline,
-    applicantType: app.applicantType,
-    status: app.appStatus,
-  }));
+function toRows(
+  applications: Application[],
+  usersByEmail: Map<string, User>,
+): ApplicationRow[] {
+  return applications.map((app) => {
+    const user = usersByEmail.get(app.email);
+    const name = user ? `${user.firstName} ${user.lastName}` : app.email;
+
+    return {
+      appId: app.appId,
+      name,
+      email: app.email,
+      proposedStartDate: app.proposedStartDate,
+      actualStartDate: app.actualStartDate ?? '',
+      experienceType: app.experienceType,
+      discipline: app.discipline,
+      applicantType: app.applicantType,
+      status: app.appStatus,
+    };
+  });
 }
 
 export function useApplications(): UseApplicationsResult {
@@ -46,9 +54,13 @@ export function useApplications(): UseApplicationsResult {
       setLoading(true);
       setError(null);
       try {
-        const apps = await apiClient.getApplications();
+        const [apps, users] = await Promise.all([
+          apiClient.getApplications(),
+          apiClient.getUsers(),
+        ]);
         if (!cancelled) {
-          setApplications(toRows(apps));
+          const usersByEmail = new Map(users.map((u) => [u.email, u]));
+          setApplications(toRows(apps, usersByEmail));
         }
       } catch {
         if (!cancelled) {

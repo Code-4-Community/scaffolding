@@ -2,9 +2,10 @@ import axios, { type AxiosInstance } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Application,
+  AppStatus,
   AvailabilityFields,
   LearnerInfo,
-  VolunteerInfo,
+  User,
 } from './types';
 
 const defaultBaseUrl =
@@ -29,8 +30,8 @@ export class ApiClient {
     return this.get(`/api/applications/${appId}`) as Promise<Application>;
   }
 
-  public async getVolunteerInfo(appId: number): Promise<VolunteerInfo> {
-    return this.get(`/api/volunteer_info/${appId}`) as Promise<VolunteerInfo>;
+  public async getUsers(): Promise<User[]> {
+    return this.get('/users') as Promise<User[]>;
   }
 
   public async getLearnerInfo(appId: number): Promise<LearnerInfo> {
@@ -45,6 +46,15 @@ export class ApiClient {
       `/api/applications/${appId}/availability`,
       availability,
     ) as Promise<Application>;
+  }
+
+  public async updateApplicationStatus(
+    appId: number,
+    appStatus: AppStatus,
+  ): Promise<Application> {
+    return this.patch(`/api/applications/${appId}/status`, {
+      appStatus,
+    }) as Promise<Application>;
   }
 
   public async getTotalApplicationsCount(): Promise<number> {

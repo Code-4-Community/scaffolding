@@ -2,9 +2,9 @@
  * Status of the application in the system/ review process
  */
 export enum AppStatus {
-  APP_SUBMITTED = 'App submitted',
-  IN_REVIEW = 'In review',
-  FORMS_SENT = 'Forms sent',
+  APP_SUBMITTED = 'App Submitted',
+  IN_REVIEW = 'In Review',
+  FORMS_SIGNED = 'Forms Signed',
   ACCEPTED = 'Accepted',
   NO_AVAILABILITY = 'No Availability',
   DECLINED = 'Declined',
@@ -72,3 +72,34 @@ export enum HeardAboutFrom {
   FRIEND_FAMILY = 'Friend/Family',
   CURRENT_OR_FORMER_STAFF = 'I am a current/former BHCHP staff member',
 }
+
+/** User-friendly labels for request body fields displayed in the error email. */
+export const FIELD_LABELS: Record<string, string> = {
+  appStatus: 'Application Status',
+  mondayAvailability: 'Monday Availability',
+  tuesdayAvailability: 'Tuesday Availability',
+  wednesdayAvailability: 'Wednesday Availability',
+  thursdayAvailability: 'Thursday Availability',
+  fridayAvailability: 'Friday Availability',
+  saturdayAvailability: 'Saturday Availability',
+  applicantType: 'Applicant Type',
+  experienceType: 'Experience Type',
+  interest: 'Areas of Interest',
+  license: 'License',
+  phone: 'Phone Number',
+  email: 'Email',
+  proposedStartDate: 'Proposed Start Date',
+  actualStartDate: 'Actual Start Date',
+  endDate: 'End Date',
+  discipline: 'Discipline',
+  weeklyHours: 'Weekly Hours',
+  pronouns: 'Pronouns',
+  nonEnglishLangs: 'Non-English Languages',
+  desiredExperience: 'Desired Experience',
+  resume: 'Resume',
+  coverLetter: 'Cover Letter',
+  emergencyContactName: 'Emergency Contact Name',
+  emergencyContactPhone: 'Emergency Contact Phone',
+  emergencyContactRelationship: 'Emergency Contact Relationship',
+  heardAboutFrom: 'How Did You Hear About Us',
+};

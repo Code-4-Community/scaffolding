@@ -2,12 +2,14 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import apiClient from '@api/apiClient';
 import { useApplications } from './useApplications';
-import type { Application } from '@api/types';
+import type { Application, User } from '@api/types';
 
 const mockApplications = [
   {
     appId: 1,
     email: 'jane@example.com',
+    proposedStartDate: '2024-01-15',
+    actualStartDate: '2024-02-01',
     discipline: 'RN',
     appStatus: 'App submitted',
     experienceType: 'BS',
@@ -34,6 +36,7 @@ const mockApplications = [
   {
     appId: 2,
     email: 'noname@example.com',
+    proposedStartDate: '2024-03-01',
     discipline: 'Social Work',
     appStatus: 'In review',
     experienceType: 'MS',
@@ -59,10 +62,20 @@ const mockApplications = [
   },
 ] as Application[];
 
+const mockUsers: User[] = [
+  {
+    email: 'jane@example.com',
+    firstName: 'Jane',
+    lastName: 'Doe',
+    userType: 'STANDARD' as User['userType'],
+  },
+];
+
 vi.mock('@api/apiClient', () => {
   return {
     default: {
       getApplications: vi.fn(),
+      getUsers: vi.fn(),
     },
   };
 });
@@ -70,6 +83,7 @@ vi.mock('@api/apiClient', () => {
 describe('useApplications', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(apiClient.getUsers).mockResolvedValue(mockUsers);
   });
 
   it('should start in a loading state', () => {
@@ -82,7 +96,7 @@ describe('useApplications', () => {
     expect(result.current.error).toBeNull();
   });
 
-  it('should fetch applications and map to rows', async () => {
+  it('should fetch applications and users then merge names', async () => {
     vi.mocked(apiClient.getApplications).mockResolvedValue(mockApplications);
 
     const { result } = renderHook(() => useApplications());
@@ -94,8 +108,10 @@ describe('useApplications', () => {
 
     const first = result.current.applications[0];
     expect(first.appId).toBe(1);
-    expect(first.name).toBe('jane@example.com');
+    expect(first.name).toBe('Jane Doe');
     expect(first.email).toBe('jane@example.com');
+    expect(first.proposedStartDate).toBe('2024-01-15');
+    expect(first.actualStartDate).toBe('2024-02-01');
     expect(first.discipline).toBe('RN');
     expect(first.status).toBe('App submitted');
     expect(first.experienceType).toBe('BS');
@@ -104,6 +120,20 @@ describe('useApplications', () => {
     const second = result.current.applications[1];
     expect(second.appId).toBe(2);
     expect(second.name).toBe('noname@example.com');
+    expect(second.proposedStartDate).toBe('2024-03-01');
+    expect(second.actualStartDate).toBe('');
+  });
+
+  it('should fall back to email when user not found', async () => {
+    vi.mocked(apiClient.getApplications).mockResolvedValue(mockApplications);
+    vi.mocked(apiClient.getUsers).mockResolvedValue([]);
+
+    const { result } = renderHook(() => useApplications());
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.applications[0].name).toBe('jane@example.com');
+    expect(result.current.applications[1].name).toBe('noname@example.com');
   });
 
   it('should set error state when API call fails', async () => {
@@ -130,13 +160,14 @@ describe('useApplications', () => {
     expect(result.current.error).toBeNull();
   });
 
-  it('should call the API endpoint exactly once', async () => {
+  it('should call both API endpoints exactly once', async () => {
     vi.mocked(apiClient.getApplications).mockResolvedValue([]);
 
     renderHook(() => useApplications());
 
     await waitFor(() => {
       expect(apiClient.getApplications).toHaveBeenCalledTimes(1);
+      expect(apiClient.getUsers).toHaveBeenCalledTimes(1);
     });
   });
 });

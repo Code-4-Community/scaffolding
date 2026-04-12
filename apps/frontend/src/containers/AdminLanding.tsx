@@ -1,11 +1,12 @@
 import DashboardCard from '@components/DashboardCard';
 import NavBar from '@components/NavBar/NavBar';
+import FilterPopUp from '@components/FilterPopUp';
 
 import usersIcon from '../assets/icons/users.svg';
 import clockIcon from '../assets/icons/clock.svg';
 import crossIcon from '../assets/icons/cross.svg';
 import checkmarkIcon from '../assets/icons/checkmark.svg';
-import { Box, Spinner, Text } from '@chakra-ui/react';
+import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import PageTransitionButton from '@components/PageTransitionButton';
 import Searchbar from '@components/TableSearchBar';
@@ -23,6 +24,7 @@ import { useApplications } from '@hooks/useApplications';
 const AdminLanding: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { count: totalCount } = useTotalApplicationsCount();
   const { count: inReviewCount } = useInReviewApplicationsCount();
   const { count: rejectedCount } = useRejectedApplicationsCount();
@@ -34,7 +36,7 @@ const AdminLanding: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-row h-screen">
+    <div className="flex flex-row h-screen overflow-hidden">
       <NavBar logo={'BHCHP'} userType={UserType.ADMIN} />
       <Box
         id="main-content"
@@ -42,7 +44,7 @@ const AdminLanding: React.FC = () => {
         flex="1"
         display="flex"
         flexDirection="column"
-        overflow="hidden"
+        overflow="auto"
       >
         <Box className="flex flex-row gap-6 pl-4 pt-4">
           <DashboardCard
@@ -91,13 +93,22 @@ const AdminLanding: React.FC = () => {
           <p>Recent Applications</p>
         </div>
 
-        <Searchbar value={searchQuery} onChange={onChange}></Searchbar>
+        <Flex gap="3" align="center" mb="5">
+          <Box flex="1">
+            <Searchbar value={searchQuery} onChange={onChange}></Searchbar>
+          </Box>
+          <FilterPopUp open={isFilterOpen} onOpenChange={setIsFilterOpen} />
+        </Flex>
+
         <Box
           style={{
             display: 'flex',
             flexDirection: 'column',
             flex: 1,
             marginTop: '20px',
+            overflowX: 'auto',
+            paddingRight: isFilterOpen ? '340px' : '0',
+            transition: 'padding-right 0.2s ease',
           }}
         >
           {loading && <Spinner size="xl" alignSelf="center" mt="10" />}
@@ -110,7 +121,7 @@ const AdminLanding: React.FC = () => {
           )}
         </Box>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Flex justify="space-between" align="center" mt="4" mb="4">
           <PageTransitionButton
             buttonType="previous"
             onClick={() => setPage(page - 1)}
@@ -120,7 +131,7 @@ const AdminLanding: React.FC = () => {
             buttonType="next"
             onClick={() => setPage(page + 1)}
           />
-        </div>
+        </Flex>
       </Box>
     </div>
   );
