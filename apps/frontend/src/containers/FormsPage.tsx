@@ -43,16 +43,14 @@ const FormsPage: React.FC = () => {
           Upload a file
         </Heading>
         {isComplete !== true ? (
-          <>
-            <Text
-              fontFamily="Lato, sans-serif"
-              fontSize="20px"
-              fontWeight="500"
-              color="#000000"
-            >
-              Please upload the required forms
-            </Text>
-          </>
+          <Text
+            fontFamily="Lato, sans-serif"
+            fontSize="20px"
+            fontWeight="500"
+            color="#000000"
+          >
+            Please upload the required forms
+          </Text>
         ) : null}
 
         <Box maxW="720px" width="100%">
@@ -117,8 +115,10 @@ const FormsPage: React.FC = () => {
               display="inline-flex"
               alignItems="center"
               justifyContent="center"
-              w="123px"
+              minW="123px"
+              w="auto"
               h="34px"
+              whiteSpace="nowrap"
               pt="5px"
               pr="15px"
               pb="5px"
@@ -144,9 +144,8 @@ const FormsPage: React.FC = () => {
                   );
                 }
               }}
-              disabled={!CONFIDENTIALITY_TEMPLATE_URL}
             >
-              Download
+              Download Template
               <FaDownload size="16px" color="#000000" aria-hidden />
             </Button>
             <Button
