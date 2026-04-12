@@ -23,10 +23,27 @@ export interface Author {
   grade?: number;
 }
 
+export enum SubmissionRound {
+  ONE = 0,
+  TWO = 1,
+  THREE = 2,
+}
+
+export enum EditRound {
+  ONE = 0,
+  TWO = 1,
+}
+
 export interface StoryDraft {
   id: number;
   authorId: number;
   docLink: string;
+  submissionRound: SubmissionRound;
+  studentConsent: boolean;
+  inManuscript: boolean;
+  editRound: EditRound;
+  proofread: boolean;
+  notes: string[];
 }
 
 export interface Story {

@@ -81,6 +81,23 @@
   background-color: var(--neutral-200);
 }
 
+.document-tracker-edit-btn {
+  background: none;
+  border: 1px solid #E85100;
+  color: #E85100;
+  border-radius: 6px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.document-tracker-edit-btn:hover {
+  background: #E85100;
+  color: #fff;
+}
+
 .archive-modal-content input {
   display: block;
   width: 100%;

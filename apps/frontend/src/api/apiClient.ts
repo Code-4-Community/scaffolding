@@ -1,6 +1,14 @@
 import axios, { type AxiosInstance } from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { Anthology, Author, OmchaiEntry, Story, StoryDraft } from '../types';
+import {
+  Anthology,
+  Author,
+  EditRound,
+  OmchaiEntry,
+  Story,
+  StoryDraft,
+  SubmissionRound,
+} from '../types';
 import User from './dtos/user.dto';
 
 export interface FilterSortAnthologyBody {
@@ -85,6 +93,34 @@ export class ApiClient {
     }>;
   }
 
+  public async updateAuthor(
+    authorId: number,
+    body: {
+      name?: string;
+      nameInBook?: string;
+      classPeriod?: string;
+    },
+  ): Promise<Author> {
+    return this.put(`/api/author/author/${authorId}`, body) as Promise<Author>;
+  }
+
+  public async updateStoryDraft(
+    storyDraftId: number,
+    body: {
+      docLink?: string;
+      submissionRound?: SubmissionRound;
+      studentConsent?: boolean;
+      inManuscript?: boolean;
+      editRound?: EditRound;
+      proofread?: boolean;
+      notes?: string[];
+    },
+  ): Promise<{ message: string }> {
+    return this.post(`/api/story-drafts/${storyDraftId}`, body) as Promise<{
+      message: string;
+    }>;
+  }
+
   public async getOmchaiByAnthology(
     anthologyId: number,
   ): Promise<OmchaiEntry[]> {
@@ -115,6 +151,13 @@ export class ApiClient {
     const headers = await this.getAuthHeaders();
     return this.axiosInstance
       .post(path, body, { headers })
+      .then((response) => response.data);
+  }
+
+  private async put(path: string, body: unknown): Promise<unknown> {
+    const headers = await this.getAuthHeaders();
+    return this.axiosInstance
+      .put(path, body, { headers })
       .then((response) => response.data);
   }
 

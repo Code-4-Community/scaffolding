@@ -1,19 +1,30 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../../api/apiClient';
-import { Anthology, Author } from '../../types';
+import { Anthology, Author, SubmissionRound, EditRound } from '../../types';
 import NewStoryDraftModal from './new-story-draft-modal';
+import EditStoryDraftModal, {
+  EditableStoryDraft,
+} from './edit-story-draft-modal';
 import OmchaiView from './omchai-view';
 import './project-publication-view.css';
 
 type Tab = 'omchai' | 'document-tracker';
 
 interface StoryDraftRow {
+  storyDraftId: number;
+  authorId: number;
   firstName: string;
   lastName: string;
   nameInBook: string;
   classPeriod: string;
   docLink: string;
+  submissionRound: SubmissionRound;
+  studentConsent: boolean;
+  inManuscript: boolean;
+  editRound: EditRound;
+  proofread: boolean;
+  notes: string[];
 }
 
 const ProjectPublicationView: React.FC = () => {
@@ -22,6 +33,7 @@ const ProjectPublicationView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('omchai');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingDraft, setEditingDraft] = useState<StoryDraftRow | null>(null);
   const [storyDrafts, setStoryDrafts] = useState<StoryDraftRow[]>([]);
 
   const loadStoryDrafts = useCallback(async () => {
@@ -42,11 +54,19 @@ const ProjectPublicationView: React.FC = () => {
           const author = authorMap.get(draft.authorId);
           const nameParts = author?.name?.split(' ') ?? [];
           return {
+            storyDraftId: draft.id,
+            authorId: draft.authorId,
             firstName: nameParts[0] ?? '',
             lastName: nameParts.slice(1).join(' '),
             nameInBook: author?.nameInBook ?? '',
             classPeriod: author?.classPeriod ?? '',
             docLink: draft.docLink,
+            submissionRound: draft.submissionRound,
+            studentConsent: draft.studentConsent,
+            inManuscript: draft.inManuscript,
+            editRound: draft.editRound,
+            proofread: draft.proofread,
+            notes: draft.notes,
           };
         }),
       );
@@ -137,13 +157,14 @@ const ProjectPublicationView: React.FC = () => {
                   <th>Name in Book</th>
                   <th>Class Period</th>
                   <th>Document Link</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {storyDrafts.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={6}
                       style={{
                         textAlign: 'center',
                         color: 'var(--neutral-400)',
@@ -154,8 +175,8 @@ const ProjectPublicationView: React.FC = () => {
                     </td>
                   </tr>
                 ) : (
-                  storyDrafts.map((draft, i) => (
-                    <tr key={i}>
+                  storyDrafts.map((draft) => (
+                    <tr key={draft.storyDraftId}>
                       <td>{draft.firstName}</td>
                       <td>{draft.lastName}</td>
                       <td>{draft.nameInBook}</td>
@@ -168,6 +189,15 @@ const ProjectPublicationView: React.FC = () => {
                         >
                           Open
                         </a>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="document-tracker-edit-btn"
+                          onClick={() => setEditingDraft(draft)}
+                        >
+                          Edit
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -182,6 +212,14 @@ const ProjectPublicationView: React.FC = () => {
         <NewStoryDraftModal
           anthologyId={anthology.id}
           onClose={() => setIsModalOpen(false)}
+          onSaved={loadStoryDrafts}
+        />
+      )}
+
+      {editingDraft && (
+        <EditStoryDraftModal
+          draft={editingDraft as EditableStoryDraft}
+          onClose={() => setEditingDraft(null)}
           onSaved={loadStoryDrafts}
         />
       )}
