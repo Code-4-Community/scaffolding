@@ -5,7 +5,6 @@ import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 import { Application } from '../applications/application.entity';
 import {
   AppStatus,
-  ExperienceType,
   InterestArea,
   ApplicantType,
   HeardAboutFrom,
@@ -116,7 +115,6 @@ const APPLICATION_SEED: Application[] = [
     thursdayAvailability: 'maybe before 10am',
     fridayAvailability: 'Sometime between 4-6',
     saturdayAvailability: 'no availability',
-    experienceType: ExperienceType.BS,
     interest: [
       InterestArea.MEDICAL_RESPITE_INPATIENT,
       InterestArea.FAMILY_AND_YOUTH_SERVICES,
@@ -150,7 +148,6 @@ const APPLICATION_SEED: Application[] = [
     thursdayAvailability: 'maybe before 10am',
     fridayAvailability: 'Sometime between 4-6',
     saturdayAvailability: 'no availability',
-    experienceType: ExperienceType.BS,
     interest: [InterestArea.HEP_C_CARE],
     license: 'n/a',
     applicantType: ApplicantType.VOLUNTEER,
@@ -181,7 +178,6 @@ const APPLICATION_SEED: Application[] = [
     thursdayAvailability: 'maybe before 10am',
     fridayAvailability: 'Sometime between 4-6',
     saturdayAvailability: 'no availability',
-    experienceType: ExperienceType.BS,
     interest: [InterestArea.WOMENS_HEALTH],
     license: 'n/a',
     applicantType: ApplicantType.VOLUNTEER,
@@ -212,7 +208,6 @@ const APPLICATION_SEED: Application[] = [
     thursdayAvailability: 'after 3pm',
     fridayAvailability: 'evenings only',
     saturdayAvailability: 'no availability',
-    experienceType: ExperienceType.MS,
     interest: [InterestArea.PRIMARY_CARE],
     license: 'n/a',
     applicantType: ApplicantType.LEARNER,
@@ -242,7 +237,6 @@ const APPLICATION_SEED: Application[] = [
     thursdayAvailability: 'after 5pm',
     fridayAvailability: 'no availability',
     saturdayAvailability: 'weekend mornings',
-    experienceType: ExperienceType.RN,
     interest: [InterestArea.BEHAVIORAL_HEALTH],
     license: 'registered nurse license',
     applicantType: ApplicantType.LEARNER,

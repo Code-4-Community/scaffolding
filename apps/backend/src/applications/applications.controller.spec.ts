@@ -3,12 +3,7 @@ import { ArgumentsHost, BadRequestException } from '@nestjs/common';
 import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
-import {
-  AppStatus,
-  ExperienceType,
-  InterestArea,
-  ApplicantType,
-} from './types';
+import { AppStatus, InterestArea, ApplicantType } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 import { RolesGuard } from '../auth/roles.guard';
 import { UsersService } from '../users/users.service';
@@ -72,7 +67,6 @@ const mockApplication: Application = {
   thursdayAvailability: 'maybe before 10am',
   fridayAvailability: 'Sometime between 4-6',
   saturdayAvailability: 'no availability',
-  experienceType: ExperienceType.BS,
   interest: [InterestArea.WOMENS_HEALTH],
   license: 'n/a',
   applicantType: ApplicantType.LEARNER,

@@ -14,7 +14,6 @@ import {
 } from 'class-validator';
 import {
   AppStatus,
-  ExperienceType,
   InterestArea,
   ApplicantType,
   HeardAboutFrom,
@@ -92,15 +91,6 @@ export class CreateApplicationDto {
   @IsEnum(ApplicantType)
   @IsDefined()
   applicantType: ApplicantType;
-
-  /**
-   * Experience type/ level of the applicant, generally in terms of medical experience/ degree.
-   *
-   * Example: ExperienceType.BS.
-   */
-  @IsEnum(ExperienceType)
-  @IsDefined()
-  experienceType: ExperienceType;
 
   /**
    * Applicant's areas of interest for the commitment (multiple select).

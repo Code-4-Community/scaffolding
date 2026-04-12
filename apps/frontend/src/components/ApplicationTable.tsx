@@ -5,7 +5,6 @@ const COLUMNS = [
   'Name',
   'Proposed Date',
   'Actual Start Date',
-  'Experience Type',
   'Discipline',
   'Discipline Admin Name',
   'Status',
@@ -17,7 +16,6 @@ const APPLICATIONS = [
     name: 'Firstname Lastname',
     proposedDate: '01-01-2026',
     actualStartDate: '01-07-2026',
-    experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
     status: 'submitted',
@@ -27,7 +25,6 @@ const APPLICATIONS = [
     name: 'Firstname Lastname',
     proposedDate: '01-01-2026',
     actualStartDate: '01-06-2026',
-    experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
     status: 'review',
@@ -37,7 +34,6 @@ const APPLICATIONS = [
     name: 'Firstname Lastname',
     proposedDate: '01-01-2026',
     actualStartDate: '01-05-2026',
-    experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
     status: 'accepted',
@@ -47,7 +43,6 @@ const APPLICATIONS = [
     name: 'Firstname Lastname',
     proposedDate: '01-01-2026',
     actualStartDate: '01-03-2026',
-    experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
     status: 'accepted',
@@ -57,7 +52,6 @@ const APPLICATIONS = [
     name: 'Firstname Lastname',
     proposedDate: '01-01-2026',
     actualStartDate: '01-02-2026',
-    experienceType: 'Volunteer',
     discipline: 'Nursing',
     disciplineAdminName: 'Firstname Lastname',
     status: 'inactive',
@@ -76,8 +70,7 @@ export function ApplicationTable({ searchQuery = '' }: ApplicationTableProps) {
       application.name.toLowerCase().includes(query) ||
       application.discipline.toLowerCase().includes(query) ||
       application.disciplineAdminName.toLowerCase().includes(query) ||
-      application.status.toLowerCase().includes(query) ||
-      application.experienceType.toLowerCase().includes(query)
+      application.status.toLowerCase().includes(query)
     );
   });
 
@@ -102,7 +95,6 @@ export function ApplicationTable({ searchQuery = '' }: ApplicationTableProps) {
             <Table.Cell>{application.name}</Table.Cell>
             <Table.Cell>{application.proposedDate}</Table.Cell>
             <Table.Cell>{application.actualStartDate}</Table.Cell>
-            <Table.Cell>{application.experienceType}</Table.Cell>
             <Table.Cell>{application.discipline}</Table.Cell>
             <Table.Cell>{application.disciplineAdminName}</Table.Cell>
             <Table.Cell>

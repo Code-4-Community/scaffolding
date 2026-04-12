@@ -6,7 +6,6 @@ interface ApplicationProfileHeaderProps {
   lastName: string;
   pronouns?: string;
   discipline?: string;
-  experienceType?: string;
   email?: string;
   phone?: string;
   over18?: boolean;
@@ -17,7 +16,6 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
   lastName,
   pronouns,
   discipline,
-  experienceType,
   email,
   phone,
   over18,
@@ -69,12 +67,6 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
             Discipline:
           </Text>{' '}
           {discipline ?? 'N/A'}
-        </div>
-        <div>
-          <Text as="span" fontWeight="semibold">
-            Type of Experience:
-          </Text>{' '}
-          {experienceType ?? 'N/A'}
         </div>
         <div>
           <Text as="span" fontWeight="semibold">
