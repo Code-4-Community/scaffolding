@@ -11,6 +11,7 @@ import { EmailService } from '../util/email/email.service';
 import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
 import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
 import { NotFoundException } from '@nestjs/common';
+import { CandidateInfoService } from '../candidate-info/candidate-info.service';
 
 jest.mock('../util/aws-exports', () => ({
   __esModule: true,
@@ -56,6 +57,13 @@ const mockRolesGuard = {
 
 const mockUsersService = {
   findOne: jest.fn(),
+};
+
+const mockCandidateInfoService = {
+  findOne: jest.fn(),
+  findByApplicationId: jest.fn(),
+  create: jest.fn(),
+  update: jest.fn(),
 };
 
 const mockApplication: Application = {
@@ -126,6 +134,10 @@ describe('ApplicationsController', () => {
         {
           provide: EmailService,
           useValue: mockEmailService,
+        },
+        {
+          provide: CandidateInfoService,
+          useValue: mockCandidateInfoService,
         },
         ApplicationValidationEmailFilter,
         ApplicationCreationErrorFilter,

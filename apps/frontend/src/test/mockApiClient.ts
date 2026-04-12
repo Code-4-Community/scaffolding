@@ -39,7 +39,6 @@ export function createMockApiClientModule(
     default: {
       getHello: vi.fn().mockResolvedValue(overrides?.getHelloValue ?? 'Hello'),
       getApplication: vi.fn(),
-      getVolunteerInfo: vi.fn(),
       getLearnerInfo: vi.fn(),
       getCurrentUser: vi.fn().mockResolvedValue(null),
       updateAvailability: vi.fn(),

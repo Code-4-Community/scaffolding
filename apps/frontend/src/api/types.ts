@@ -109,6 +109,9 @@ export interface Application extends AvailabilityFields {
   emergencyContactPhone: string;
   emergencyContactRelationship: string;
   heardAboutFrom: HeardAboutFrom[];
+  proposedStartDate: Date;
+  actualStartDate?: Date;
+  endDate?: Date;
 }
 
 /**
@@ -135,10 +138,6 @@ export interface LearnerInfo {
   syllabus?: string;
 }
 
-export interface VolunteerInfo {
-  appId: number;
-}
-
 export enum UserType {
   ADMIN = 'ADMIN',
   STANDARD = 'STANDARD',
@@ -149,4 +148,9 @@ export interface User {
   firstName: string;
   lastName: string;
   userType: UserType;
+}
+
+export interface CandidateInfo {
+  email: string;
+  appId: number;
 }
