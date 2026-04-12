@@ -21,9 +21,10 @@ const ProjectPublicationView: React.FC = () => {
   const [storyDrafts, setStoryDrafts] = useState<StoryDraftRow[]>([]);
 
   const loadStoryDrafts = useCallback(async () => {
+    if (!id) return;
     try {
       const [drafts, authors] = await Promise.all([
-        apiClient.getStoryDrafts(),
+        apiClient.getStoryDrafts(Number(id)),
         apiClient.getAuthors(),
       ]);
 
@@ -146,6 +147,7 @@ const ProjectPublicationView: React.FC = () => {
 
       {isModalOpen && (
         <NewStoryDraftModal
+          anthologyId={anthology.id}
           onClose={() => setIsModalOpen(false)}
           onSaved={loadStoryDrafts}
         />

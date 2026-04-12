@@ -3,6 +3,7 @@ import '../../containers/create-publication-modal/styles.css';
 import apiClient from '../../api/apiClient';
 
 interface Props {
+  anthologyId: number;
   onClose: () => void;
   onSaved: () => void;
 }
@@ -24,7 +25,11 @@ function Field({ label, required = false, children }: FieldProps) {
   );
 }
 
-export default function NewStoryDraftModal({ onClose, onSaved }: Props) {
+export default function NewStoryDraftModal({
+  anthologyId,
+  onClose,
+  onSaved,
+}: Props) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [nameInBook, setNameInBook] = useState('');
@@ -50,6 +55,7 @@ export default function NewStoryDraftModal({ onClose, onSaved }: Props) {
 
       await apiClient.createStoryDraft({
         authorId: author.id,
+        anthologyId: anthologyId,
         docLink: docLink.trim(),
       });
 

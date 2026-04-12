@@ -39,6 +39,7 @@ export class StoryDraftController {
       createStoryDraftDto.editRound ?? EditRound.ONE,
       createStoryDraftDto.proofread ?? false,
       createStoryDraftDto.notes ?? [],
+      createStoryDraftDto.anthologyId,
     );
     return { message: 'StoryDraft created successfully' };
   }
@@ -70,5 +71,12 @@ export class StoryDraftController {
   ): Promise<{ message: string }> {
     await this.storyDraftService.remove(storyDraftId);
     return { message: 'StoryDraft deleted successfully' };
+  }
+
+  @Get('/anthology/:anthologyId')
+  async getStoryDraftsByAnthology(
+    @Param('anthologyId', ParseIntPipe) anthologyId: number,
+  ) {
+    return this.storyDraftService.findByAnthology(anthologyId);
   }
 }

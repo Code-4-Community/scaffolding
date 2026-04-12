@@ -69,12 +69,15 @@ export class ApiClient {
     return this.post('/api/author/author', body) as Promise<Author>;
   }
 
-  public async getStoryDrafts(): Promise<StoryDraft[]> {
-    return this.get('/api/story-drafts') as Promise<StoryDraft[]>;
+  public async getStoryDrafts(anthologyId: number) {
+    return this.get(`/api/story-drafts/anthology/${anthologyId}`) as Promise<
+      StoryDraft[]
+    >;
   }
 
   public async createStoryDraft(body: {
     authorId: number;
+    anthologyId: number;
     docLink: string;
   }): Promise<{ message: string }> {
     return this.post('/api/story-drafts', body) as Promise<{

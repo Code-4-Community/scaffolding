@@ -14,6 +14,10 @@ export class CreateStoryDraftDto {
   @IsInt()
   authorId: number;
 
+  @ApiProperty({ description: 'ID of the anthology' })
+  @IsInt()
+  anthologyId: number;
+
   @ApiProperty({ description: 'Link to the document' })
   @IsString()
   docLink: string;
