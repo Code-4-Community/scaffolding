@@ -18,13 +18,21 @@ const STATUS_EMAIL_SUBJECTS: Partial<Record<AppStatus, string>> = {
   [AppStatus.NO_AVAILABILITY]: 'Your Application Has Been Updated',
 };
 
-const STATUS_EMAIL_BODIES: Partial<Record<AppStatus, string>> = {
-  [AppStatus.ACCEPTED]:
-    'Hello Applicant,<br><br>Congratulations! Your application has been accepted. Please complete your forms in the MyForms tab on your applicant portal.<br><br>Thank you,<br>BHCHP Team',
-  [AppStatus.DECLINED]:
-    'Hello Applicant,<br><br>We regret to inform you that your application has not been accepted at this time.<br><br>Thank you,<br>BHCHP Team',
-  [AppStatus.NO_AVAILABILITY]:
-    'Hello Applicant,<br><br>We wanted to inform you that there is currently no availability at this time.<br><br>Thank you,<br>BHCHP Team',
+const buildEmailBody = (
+  appStatus: AppStatus,
+  name: string,
+): string | undefined => {
+  const greeting = `Hello ${name},<br><br>`;
+  switch (appStatus) {
+    case AppStatus.ACCEPTED:
+      return `${greeting}Congratulations! Your application has been accepted. Please complete your forms in the MyForms tab on your applicant portal.<br><br>Thank you,<br>BHCHP Team`;
+    case AppStatus.DECLINED:
+      return `${greeting}We regret to inform you that your application has not been accepted at this time.<br><br>Thank you,<br>BHCHP Team`;
+    case AppStatus.NO_AVAILABILITY:
+      return `${greeting}We wanted to inform you that there is currently no availability at this time.<br><br>Thank you,<br>BHCHP Team`;
+    default:
+      return undefined;
+  }
 };
 
 /**
@@ -49,6 +57,7 @@ export class ApplicationsService {
     @InjectRepository(Application)
     private applicationRepository: Repository<Application>,
     private emailService: EmailService,
+    private usersService: UsersService,
   ) {}
 
   /**
@@ -228,10 +237,20 @@ export class ApplicationsService {
     const updated = await this.applicationRepository.save(application);
 
     const subject = STATUS_EMAIL_SUBJECTS[appStatus];
-    const body = STATUS_EMAIL_BODIES[appStatus];
-
-    if (subject && body) {
-      await this.emailService.queueEmail(application.email, subject, body);
+    if (subject) {
+      let name = 'Applicant';
+      try {
+        const user = await this.usersService.findOne(application.email);
+        if (user) {
+          name = `${user.firstName} ${user.lastName}`;
+        }
+      } catch {
+        //
+      }
+      const body = buildEmailBody(appStatus, name);
+      if (body) {
+        await this.emailService.queueEmail(application.email, subject, body);
+      }
     }
 
     return updated;

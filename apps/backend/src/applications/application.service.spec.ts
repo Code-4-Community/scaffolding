@@ -13,6 +13,7 @@ import {
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 import { EmailService } from '../util/email/email.service';
+import { UsersService } from '../users/users.service';
 
 const dummyApplication: Application = {
   appId: 1,
@@ -93,6 +94,10 @@ describe('ApplicationsService', () => {
     queueEmail: jest.fn().mockResolvedValue(undefined),
   };
 
+  const mockUsersService = {
+    findOne: jest.fn().mockResolvedValue(null),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -104,6 +109,10 @@ describe('ApplicationsService', () => {
         {
           provide: EmailService,
           useValue: mockEmailService,
+        },
+        {
+          provide: UsersService,
+          useValue: mockUsersService,
         },
       ],
     }).compile();
