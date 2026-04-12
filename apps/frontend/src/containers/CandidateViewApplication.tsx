@@ -9,18 +9,23 @@ import {
   ApplicantType,
   Application,
   LearnerInfo,
+  User,
   UserType,
 } from '../api/types';
 import QuestionFrame from '../components/QuestionFrame';
 import RequirementsFrame from '../components/RequirementsFrame';
 import UploadedMaterial from '../components/UploadedMaterial';
 import SchoolAffiliationFrame from '../components/SchoolAffiliationFrame';
+import ApplicationProfileHeader from '@components/ApplicationProfileHeader';
 
 const CandidateViewApplication: React.FC = () => {
   const [application, setApplication] = useState<Application | null>(null);
   const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const pronouns = application?.pronouns;
+  const discipline = application?.discipline;
 
   useEffect(() => {
     let cancelled = false;
@@ -106,6 +111,10 @@ const CandidateViewApplication: React.FC = () => {
             );
           }
         }
+        apiClient
+          .getUser(app.email)
+          .then(setUser)
+          .catch(() => setError('Failed to load user info'));
       } catch (err) {
         logAxiosError('CandidateViewApplication: load failed', err);
         if (!cancelled) setError('Failed to load application');
@@ -159,6 +168,16 @@ const CandidateViewApplication: React.FC = () => {
         overflowY="auto"
         maxH="100vh"
       >
+        <ApplicationProfileHeader
+          firstName={user ? user.firstName : ''}
+          lastName={user ? user.lastName : ''}
+          pronouns={pronouns}
+          discipline={discipline}
+          experienceType={application.experienceType || 'N/A'}
+          email={application.email || 'N/A'}
+          phone={application.phone || 'N/A'}
+          over18={learnerInfo?.isLegalAdult}
+        />
         <SchoolAffiliationFrame
           schoolName={learnerInfo ? learnerInfo.school : 'N/A'}
           schoolDepartment={
