@@ -4,7 +4,6 @@ import { Box, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '../components/AvailabilityTable';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { fetchUserAttributes } from 'aws-amplify/auth';
 import {
   ApplicantType,
   Application,
@@ -53,25 +52,25 @@ const CandidateViewApplication: React.FC = () => {
       console.debug('CandidateViewApplication: load started');
 
       try {
-        const attributes = await fetchUserAttributes();
-        const email = attributes.email;
-        console.debug('CandidateViewApplication: fetched user attributes', {
-          email,
-        });
+        await apiClient
+          .getCurrentUser()
+          .then(setUser)
+          .catch(() => setError('Failed to load user'));
 
-        if (!email) {
-          setError('Unable to determine your email. Please log in again.');
-          console.warn(
-            'CandidateViewApplication: missing email in user attributes',
-          );
+        if (!user) {
+          setError('Unable to determine user');
           return;
         }
 
-        console.debug(
-          'CandidateViewApplication: requesting candidate info by email',
-          { email },
-        );
-        const candidateInfo = await apiClient.getCandidateInfoByEmail(email);
+        const candidateInfo = await apiClient
+          .getCandidateInfoByEmail(user.email)
+          .catch(() => setError('Failed to load candidate info'));
+
+        if (!candidateInfo) {
+          setError("Unable to get user's application id");
+          return;
+        }
+
         if (cancelled) return;
         console.debug('CandidateViewApplication: candidate info loaded', {
           appId: candidateInfo.appId,
@@ -81,15 +80,27 @@ const CandidateViewApplication: React.FC = () => {
         console.debug('CandidateViewApplication: requesting application', {
           appId: candidateInfo.appId,
         });
-        const app = await apiClient.getApplication(candidateInfo.appId);
+
+        await apiClient
+          .getCurrentApplication()
+          .then(setApplication)
+          .catch(() => setError('Failed to load application'));
+
         if (cancelled) return;
-        setApplication(app);
+
+        if (!application) {
+          console.debug(
+            '[application] No backend application found for current user',
+          );
+          return null;
+        }
+
         console.debug('CandidateViewApplication: application loaded', {
-          appId: app.appId,
-          applicantType: app.applicantType,
+          appId: application.appId,
+          applicantType: application.applicantType,
         });
 
-        if (app?.applicantType === ApplicantType.LEARNER) {
+        if (application.applicantType === ApplicantType.LEARNER) {
           try {
             console.debug('CandidateViewApplication: requesting learner info', {
               appId: candidateInfo.appId,
@@ -111,10 +122,6 @@ const CandidateViewApplication: React.FC = () => {
             );
           }
         }
-        apiClient
-          .getUser(app.email)
-          .then(setUser)
-          .catch(() => setError('Failed to load user info'));
       } catch (err) {
         logAxiosError('CandidateViewApplication: load failed', err);
         if (!cancelled) setError('Failed to load application');
@@ -173,7 +180,6 @@ const CandidateViewApplication: React.FC = () => {
           lastName={user ? user.lastName : ''}
           pronouns={pronouns}
           discipline={discipline}
-          experienceType={application.experienceType || 'N/A'}
           email={application.email || 'N/A'}
           phone={application.phone || 'N/A'}
           over18={learnerInfo?.isLegalAdult}

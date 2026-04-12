@@ -154,12 +154,12 @@ export class ApiClient {
       .then((response) => response.data);
   }
 
-  private async delete(path: string): Promise<unknown> {
-    return this.axiosInstance.delete(path).then((response) => response.data);
-  }
-
   public async getCurrentUser(): Promise<User | null> {
     return this.get('/api/users/me') as Promise<User | null>;
+  }
+
+  public async getCurrentApplication(): Promise<Application | null> {
+    return this.get('/api/applications/me') as Promise<Application | null>;
   }
 }
 
