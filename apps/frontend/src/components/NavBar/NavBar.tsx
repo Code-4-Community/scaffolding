@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Heading, Flex, Link, Text } from '@chakra-ui/react';
+import { Box, Heading, Flex, Link, Text, Button } from '@chakra-ui/react';
 import NavbarItem from './NavBarItem';
 import {
   FaHouse,
@@ -75,12 +75,17 @@ export default function NavBar({ logo, userType }: NavBarProps) {
           _focus={{ outline: 'none', boxShadow: 'none' }}
           _focusVisible={{ outline: 'none', boxShadow: 'none' }}
         >
-          <Box fontSize="18px" lineHeight={1} display="flex">
+          <Button
+            fontSize="14px"
+            fontWeight="500"
+            lineHeight={1}
+            bg="transparent"
+            color="white"
+            onClick={() => {}}
+          >
             <FaRightFromBracket aria-hidden />
-          </Box>
-          <Text fontSize="14px" fontWeight="500">
             Log Out
-          </Text>
+          </Button>
         </Flex>
       </Link>
     </Box>
