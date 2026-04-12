@@ -14,6 +14,7 @@ import PublicationView from '@containers/archived-publications/individual-public
 import Login from '@containers/auth/login';
 import ProtectedRoute from '@containers/auth/ProtectedRoute';
 import People from '@containers/people';
+import Resources from '@containers/resources';
 import Role from '@api/dtos/role';
 import CreatePublicationModal from '@containers/create-publication-modal';
 import ProjectPublicationView from '@containers/projects-publication/project-publication-view';
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+      { path: 'resources', element: <Resources /> },
       // admin and volunteer routes
       {
         element: <ProtectedRoute roles={[Role.ADMIN, Role.STANDARD]} />,
