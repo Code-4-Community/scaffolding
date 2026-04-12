@@ -1,14 +1,29 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { LearnerInfo } from './learner-info.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { LearnerInfoService } from './learner-info.service';
 import { CreateLearnerInfoDto } from './dto/create-learner-info.request.dto';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthGuard } from '@nestjs/passport';
+import { UserType } from '../users/types';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about learner-specific application info.
  */
 @ApiTags('LearnerInfo')
 @Controller('learner_info')
+@UseInterceptors(CurrentUserInterceptor)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class LearnerInfoController {
   constructor(private learnerInfoService: LearnerInfoService) {}
 
@@ -19,6 +34,7 @@ export class LearnerInfoController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Post()
+  @Roles(UserType.ADMIN)
   async createLearnerInfo(
     @Body() createLearnerInfoDto: CreateLearnerInfoDto,
   ): Promise<LearnerInfo> {
@@ -35,6 +51,7 @@ export class LearnerInfoController {
    * @throws {BadRequestException} if the id field is invalid (e.g. null or undefined)
    */
   @Get('/:appId')
+  @Roles(UserType.ADMIN)
   async getLearnerInfo(@Param('appId') appId: number): Promise<LearnerInfo> {
     return await this.learnerInfoService.findById(appId);
   }
