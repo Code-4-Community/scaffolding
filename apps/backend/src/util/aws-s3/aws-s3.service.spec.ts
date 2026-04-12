@@ -17,23 +17,31 @@ import { mockClient } from 'aws-sdk-client-mock';
 import axios from 'axios';
 
 const s3Mock = mockClient(S3Client);
+jest.mock('../aws-exports', () => ({
+  __esModule: true,
+  default: {
+    AWSConfig: {
+      accessKeyId: 'test-access-key',
+      secretAccessKey: 'test-secret-key',
+      region: 'us-east-2',
+      bucketName: 'bucket',
+    },
+    CognitoAuthConfig: {
+      userPoolId: 'test-user-pool-id',
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    },
+  },
+}));
 
 describe('AWSS3Service', () => {
-  let service: AWSS3Service;
-  const bucketName = process.env.AWS_BUCKET_NAME;
-  const bucketRegion = process.env.AWS_REGION;
+  const bucketName = 'bucket';
+  const bucketRegion = 'us-east-2';
 
+  let service: AWSS3Service;
   beforeEach(() => {
     s3Mock.reset();
     service = new AWSS3Service();
-  });
-
-  it('should throw error if AWS_BUCKET_NAME is not defined', () => {
-    delete process.env.AWS_BUCKET_NAME;
-    expect(() => new AWSS3Service()).toThrow(
-      'AWS_BUCKET_NAME is not defined in environment variables',
-    );
-    process.env.AWS_BUCKET_NAME = bucketName; // restore for other tests
   });
 
   it('should create correct S3 link', () => {

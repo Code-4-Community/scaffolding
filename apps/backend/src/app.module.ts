@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AWSS3Module } from './aws-s3/aws-s3.module';
+import { AWSS3Module } from './util/aws-s3/aws-s3.module';
 import AppDataSource from './data-source';
 import { UtilModule } from './util/util.module';
 import { ApplicationsModule } from './applications/applications.module';

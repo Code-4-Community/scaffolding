@@ -1,20 +1,11 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { PassportModule } from '@nestjs/passport';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
-import { User } from '../users/user.entity';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtStrategy } from './jwt.strategy';
-import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { RolesGuard } from './roles.guard';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, UsersService, JwtStrategy, CurrentUserInterceptor],
-  exports: [AuthService, UsersService],
+  imports: [forwardRef(() => UsersModule)],
+  providers: [JwtStrategy, RolesGuard],
+  exports: [JwtStrategy, RolesGuard],
 })
 export class AuthModule {}
