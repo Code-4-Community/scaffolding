@@ -59,7 +59,7 @@ export default function NavBar({ logo, userType }: NavBarProps) {
       </Box>
 
       <NavbarItem
-        href="#logout"
+        href="/logout"
         label="Log Out"
         icon={<FaRightFromBracket />}
       />
