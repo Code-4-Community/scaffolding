@@ -5,12 +5,7 @@ import { NotFoundException } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
-import {
-  AppStatus,
-  ExperienceType,
-  InterestArea,
-  ApplicantType,
-} from './types';
+import { AppStatus, InterestArea, ApplicantType } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 
 const dummyApplication: Application = {
@@ -22,7 +17,6 @@ const dummyApplication: Application = {
   thursdayAvailability: 'maybe before 10am',
   fridayAvailability: 'Sometime between 4-6',
   saturdayAvailability: 'no availability',
-  experienceType: ExperienceType.BS,
   interest: [InterestArea.WOMENS_HEALTH],
   license: null,
   applicantType: ApplicantType.LEARNER,
@@ -52,7 +46,6 @@ const dummyCreateApplicationDto: CreateApplicationDto = {
   thursdayAvailability: 'maybe before 10am',
   fridayAvailability: 'Sometime between 4-6',
   saturdayAvailability: 'no availability',
-  experienceType: ExperienceType.BS,
   interest: [InterestArea.WOMENS_HEALTH],
   license: null,
   applicantType: ApplicantType.LEARNER,
@@ -223,7 +216,6 @@ describe('ApplicationsService', () => {
         thursdayAvailability: 'maybe before 10am',
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
-        experienceType: ExperienceType.BS,
         interest: [InterestArea.WOMENS_HEALTH],
         license: null,
         applicantType: ApplicantType.LEARNER,
@@ -770,7 +762,6 @@ describe('ApplicationsService', () => {
           thursdayAvailability: 'maybe before 10am',
           fridayAvailability: 'Sometime between 4-6',
           saturdayAvailability: 'no availability',
-          experienceType: ExperienceType.BS,
           interest: [InterestArea.WOMENS_HEALTH],
           license: null,
           proposedStartDate: new Date('2025-11-12'),
@@ -800,7 +791,6 @@ describe('ApplicationsService', () => {
           thursdayAvailability: 'maybe before 10am',
           fridayAvailability: 'Sometime between 4-6',
           saturdayAvailability: 'no availability',
-          experienceType: ExperienceType.MS,
           interest: [InterestArea.WOMENS_HEALTH],
           proposedStartDate: new Date('2025-11-12'),
           license: null,
