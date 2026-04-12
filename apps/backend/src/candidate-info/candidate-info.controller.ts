@@ -67,7 +67,7 @@ export class CandidateInfoController {
    * @throws {NotFoundException} if the CandidateInfo with the specified email does not exist.
    */
   @Get('email/:email')
-  @Roles(UserType.ADMIN)
+  @Roles(UserType.ADMIN, UserType.STANDARD)
   async getCandidateInfoByEmail(
     @Param('email') email: string,
   ): Promise<CandidateInfo> {
