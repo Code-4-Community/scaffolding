@@ -1,6 +1,6 @@
 import NavBar from '../components/NavBar/NavBar';
 import apiClient from '../api/apiClient';
-import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '../components/AvailabilityTable';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -8,62 +8,13 @@ import { fetchUserAttributes } from 'aws-amplify/auth';
 import {
   ApplicantType,
   Application,
-  AppStatus,
-  DISCIPLINE_VALUES,
-  ExperienceType,
-  InterestArea,
   LearnerInfo,
-  School,
   UserType,
 } from '../api/types';
 import QuestionFrame from '../components/QuestionFrame';
 import RequirementsFrame from '../components/RequirementsFrame';
 import UploadedMaterial from '../components/UploadedMaterial';
 import SchoolAffiliationFrame from '../components/SchoolAffiliationFrame';
-
-const DEV_MODE = !!import.meta.env.VITE_DEV_AUTH_EMAIL;
-
-const DEV_APPLICATION: Application = {
-  appId: 1,
-  email: 'janedoe@gmail.com',
-  discipline: DISCIPLINE_VALUES.Psychiatry_or_Psychiatric_NP_PA,
-  appStatus: AppStatus.APP_SUBMITTED,
-  mondayAvailability: '12pm and on every other week',
-  tuesdayAvailability: 'approximately 10am-3pm',
-  wednesdayAvailability: 'no availability',
-  thursdayAvailability: 'maybe before 10am',
-  fridayAvailability: 'Sometime between 4-6',
-  saturdayAvailability: 'no availability',
-  experienceType: ExperienceType.BS,
-  interest: [
-    InterestArea.MEDICAL_RESPITE_INPATIENT,
-    InterestArea.FAMILY_AND_YOUTH_SERVICES,
-  ],
-  license: 'nursing license',
-  phone: '123-456-7890',
-  applicantType: ApplicantType.LEARNER,
-  referred: false,
-  weeklyHours: 20,
-  pronouns: 'she/her',
-  nonEnglishLangs: 'spoken chinese only',
-  desiredExperience: 'I want to give back to the boston community',
-  resume: 'janedoe_resume_2_6_2026.pdf',
-  coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
-  emergencyContactName: 'Bob Doe',
-  emergencyContactPhone: '111-111-1111',
-  emergencyContactRelationship: 'Mother',
-  heardAboutFrom: [],
-};
-
-const DEV_LEARNER_INFO: LearnerInfo = {
-  appId: 1,
-  school: School.HARVARD_MEDICAL_SCHOOL,
-  syllabus: 'jane_doe_syllabus.pdf',
-  isSupervisorApplying: false,
-  isLegalAdult: true,
-  courseRequirements: 'Community practicum hours',
-  instructorInfo: 'Dr. Smith, smith@example.com',
-};
 
 const CandidateViewApplication: React.FC = () => {
   const [application, setApplication] = useState<Application | null>(null);
@@ -95,19 +46,6 @@ const CandidateViewApplication: React.FC = () => {
       setLoading(true);
       setError(null);
       console.debug('CandidateViewApplication: load started');
-
-      // Dev mode: use mock data, skip all API calls
-      if (DEV_MODE) {
-        console.debug(
-          'CandidateViewApplication: DEV_MODE enabled, using mocks',
-        );
-        setApplication(DEV_APPLICATION);
-        if (DEV_APPLICATION.applicantType === ApplicantType.LEARNER) {
-          setLearnerInfo(DEV_LEARNER_INFO);
-        }
-        setLoading(false);
-        return;
-      }
 
       try {
         const attributes = await fetchUserAttributes();
@@ -232,9 +170,13 @@ const CandidateViewApplication: React.FC = () => {
               ? application.interest.join(', ')
               : application.interest ?? ''
           }
-          proposedStartDate={''}
-          actualStartDate={''}
-          endDate={''}
+          proposedStartDate={application.proposedStartDate.toString()}
+          actualStartDate={
+            application.actualStartDate
+              ? application.actualStartDate.toString()
+              : '-'
+          }
+          endDate={application.endDate ? application.endDate.toString() : '-'}
           totalTimeRequested={application.weeklyHours + ' hours per week'}
         />
 
