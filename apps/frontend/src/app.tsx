@@ -11,6 +11,7 @@ import { UserType } from './api/types';
 import Login from './containers/login';
 import Signup from './containers/signup';
 import Logout from './containers/logout';
+import FormsPage from '@containers/FormsPage';
 
 export const App: React.FC = () => {
   return (
@@ -50,7 +51,7 @@ export const App: React.FC = () => {
                   path="view-application"
                   element={<CandidateViewApplication />}
                 />
-                <Route path="upload-forms" />
+                <Route path="upload-forms" element={<FormsPage />} />
                 <Route path="settings" />
               </Route>
             </Route>
