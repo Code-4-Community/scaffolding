@@ -4,12 +4,10 @@ import {
   Param,
   ParseIntPipe,
   UseGuards,
-  UseInterceptors,
   Body,
   Post,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateStoryDraftDto } from './dto/create-story-draft.dto';
 import { UpdateStoryDraftDto } from './dto/update-story-draft.dto';
@@ -19,8 +17,6 @@ import { EditRound, SubmissionRound } from './types';
 @ApiTags('StoryDrafts')
 @ApiBearerAuth()
 @Controller('story-drafts')
-@UseGuards(AuthGuard('jwt'))
-@UseInterceptors(CurrentUserInterceptor)
 export class StoryDraftController {
   constructor(private readonly storyDraftService: StoryDraftService) {}
 
