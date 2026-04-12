@@ -13,21 +13,6 @@ export enum AppStatus {
 }
 
 /**
- * Experience type/ level of the applicant, generally in terms of medical experience/ degree
- */
-export enum ExperienceType {
-  BS = 'BS',
-  MS = 'MS',
-  PHD = 'PhD',
-  MD = 'MD',
-  MD_PHD = 'MD PhD',
-  RN = 'RN',
-  NP = 'NP',
-  PA = 'PA',
-  OTHER = 'Other',
-}
-
-/**
  * Applicant's area of interest for the commitment
  */
 export enum InterestArea {
@@ -83,7 +68,7 @@ export const FIELD_LABELS: Record<string, string> = {
   fridayAvailability: 'Friday Availability',
   saturdayAvailability: 'Saturday Availability',
   applicantType: 'Applicant Type',
-  experienceType: 'Experience Type',
+
   interest: 'Areas of Interest',
   license: 'License',
   phone: 'Phone Number',

@@ -3,18 +3,14 @@ import { ArgumentsHost, BadRequestException } from '@nestjs/common';
 import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
-import {
-  AppStatus,
-  ExperienceType,
-  InterestArea,
-  ApplicantType,
-} from './types';
+import { AppStatus, InterestArea, ApplicantType } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
 import { RolesGuard } from '../auth/roles.guard';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../util/email/email.service';
 import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
 import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
+import { NotFoundException } from '@nestjs/common';
 
 jest.mock('../util/aws-exports', () => ({
   __esModule: true,
@@ -46,6 +42,7 @@ const mockApplicationsService: Partial<ApplicationsService> = {
   findById: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
+  updateStatus: jest.fn(),
   delete: jest.fn(),
   findByDiscipline: jest.fn(),
   updateProposedStartDate: jest.fn(),
@@ -70,7 +67,6 @@ const mockApplication: Application = {
   thursdayAvailability: 'maybe before 10am',
   fridayAvailability: 'Sometime between 4-6',
   saturdayAvailability: 'no availability',
-  experienceType: ExperienceType.BS,
   interest: [InterestArea.WOMENS_HEALTH],
   license: 'n/a',
   applicantType: ApplicantType.LEARNER,
@@ -584,6 +580,99 @@ describe('ApplicationsController', () => {
       await expect(
         controller.updateApplicationEndDate(1, updatedEndDate),
       ).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('updateApplicationStatus', () => {
+    it('should call updateStatus with the correct appId and status', async () => {
+      const updatedApplication: Application = {
+        ...mockApplication,
+        appStatus: AppStatus.ACCEPTED,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'updateStatus')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationStatus(1, {
+        appStatus: AppStatus.ACCEPTED,
+      });
+
+      expect(result).toEqual(updatedApplication);
+      expect(mockApplicationsService.updateStatus).toHaveBeenCalledWith(
+        1,
+        AppStatus.ACCEPTED,
+      );
+    });
+
+    it('should call updateStatus with DECLINED status', async () => {
+      const updatedApplication: Application = {
+        ...mockApplication,
+        appStatus: AppStatus.DECLINED,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'updateStatus')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationStatus(1, {
+        appStatus: AppStatus.DECLINED,
+      });
+
+      expect(result).toEqual(updatedApplication);
+      expect(mockApplicationsService.updateStatus).toHaveBeenCalledWith(
+        1,
+        AppStatus.DECLINED,
+      );
+    });
+
+    it('should call updateStatus with NO_AVAILABILITY status', async () => {
+      const updatedApplication: Application = {
+        ...mockApplication,
+        appStatus: AppStatus.NO_AVAILABILITY,
+      };
+
+      jest
+        .spyOn(mockApplicationsService, 'updateStatus')
+        .mockResolvedValue(updatedApplication);
+
+      const result = await controller.updateApplicationStatus(1, {
+        appStatus: AppStatus.NO_AVAILABILITY,
+      });
+
+      expect(result).toEqual(updatedApplication);
+      expect(mockApplicationsService.updateStatus).toHaveBeenCalledWith(
+        1,
+        AppStatus.NO_AVAILABILITY,
+      );
+    });
+
+    it('should throw NotFoundException when application does not exist', async () => {
+      jest
+        .spyOn(mockApplicationsService, 'updateStatus')
+        .mockRejectedValue(
+          new NotFoundException('Application with ID 999 not found'),
+        );
+
+      await expect(
+        controller.updateApplicationStatus(999, {
+          appStatus: AppStatus.ACCEPTED,
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should pass along service errors without information loss', async () => {
+      jest
+        .spyOn(mockApplicationsService, 'updateStatus')
+        .mockRejectedValue(
+          new Error('There was a problem updating the status'),
+        );
+
+      await expect(
+        controller.updateApplicationStatus(1, {
+          appStatus: AppStatus.ACCEPTED,
+        }),
+      ).rejects.toThrow('There was a problem updating the status');
     });
   });
 });
