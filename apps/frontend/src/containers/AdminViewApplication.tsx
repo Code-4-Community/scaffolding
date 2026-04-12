@@ -34,19 +34,6 @@ const AdminViewApplication: React.FC = () => {
 
   const pronouns = application?.pronouns;
   const discipline = application?.discipline;
-  const over18: boolean = learnerInfo?.dateOfBirth
-    ? (() => {
-        const today = new Date();
-        const dob = new Date(learnerInfo.dateOfBirth);
-        let age = today.getFullYear() - dob.getFullYear();
-        const monthDiff = today.getMonth() - dob.getMonth();
-        const dayDiff = today.getDate() - dob.getDate();
-        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-          age--;
-        }
-        return age >= 18;
-      })()
-    : false;
 
   // TODO: derive from actual auth state once auth is wired up
   const isAdmin = true;
@@ -125,7 +112,7 @@ const AdminViewApplication: React.FC = () => {
           experienceType={application.experienceType || 'N/A'}
           email={application.email || 'N/A'}
           phone={application.phone || 'N/A'}
-          over18={over18}
+          over18={learnerInfo?.isLegalAdult}
         />
         <SchoolAffiliationFrame
           schoolName={learnerInfo ? learnerInfo.school : 'N/A'}

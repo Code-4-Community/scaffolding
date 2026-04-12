@@ -8,7 +8,7 @@ interface ApplicationProfileHeaderProps {
   experienceType?: string;
   email?: string;
   phone?: string;
-  over18: boolean;
+  over18?: boolean;
 }
 
 const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
@@ -64,7 +64,7 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
               over18 ? 'bg-green-500' : 'bg-red-500'
             }`}
           >
-            {over18 ? 'Yes' : 'No'}
+            {over18 == false ? 'No' : 'Yes'}
           </span>
         </div>
       </div>
