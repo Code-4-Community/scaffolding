@@ -79,10 +79,10 @@ const FormsPage: React.FC = () => {
         maxW="100%"
         minH="100vh"
         overflowY="auto"
-        pt="20px"
+        pt="75px"
         pr="30px"
         pb="20px"
-        pl="30px"
+        pl="50px"
         gap="25px"
       >
         <Heading fontSize="48px" fontWeight="600">
