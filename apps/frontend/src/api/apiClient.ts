@@ -2,7 +2,13 @@
 import axios, { type AxiosInstance } from 'axios';
 import { getIdToken } from '../auth/cognito';
 import { useCallback, useEffect, useState } from 'react';
-import { Application, AvailabilityFields, LearnerInfo, User } from './types';
+import {
+  Application,
+  AppStatus,
+  AvailabilityFields,
+  LearnerInfo,
+  User,
+} from './types';
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
@@ -57,6 +63,15 @@ export class ApiClient {
       `/api/applications/${appId}/availability`,
       availability,
     ) as Promise<Application>;
+  }
+
+  public async updateApplicationStatus(
+    appId: number,
+    appStatus: AppStatus,
+  ): Promise<Application> {
+    return this.patch(`/api/applications/${appId}/status`, {
+      appStatus,
+    }) as Promise<Application>;
   }
 
   public async getTotalApplicationsCount(): Promise<number> {
