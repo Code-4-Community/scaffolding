@@ -187,7 +187,7 @@ const FormsPage: React.FC = () => {
               hidden
               onChange={onFileChange}
             />
-            <div className="bg-black w-full h-[1px]" />
+            <div className="bg-[#d9d9d9] w-full h-[1px]" />
           </Flex>
         ))}
       </Box>
