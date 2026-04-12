@@ -33,9 +33,6 @@ const AdminViewApplication: React.FC = () => {
   const pronouns = application?.pronouns;
   const discipline = application?.discipline;
 
-  // TODO: derive from actual auth state once auth is wired up
-  const isAdmin = true;
-
   useEffect(() => {
     if (!appId) return;
     setLoading(true);
@@ -157,7 +154,7 @@ const AdminViewApplication: React.FC = () => {
               fridayAvailability: application.fridayAvailability,
               saturdayAvailability: application.saturdayAvailability,
             }}
-            isAdmin={isAdmin}
+            isAdmin={true}
             onUpdate={handleAvailabilityUpdate}
           />
         </Box>

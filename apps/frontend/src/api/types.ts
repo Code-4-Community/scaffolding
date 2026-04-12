@@ -154,10 +154,6 @@ export interface LearnerInfo {
   syllabus?: string;
 }
 
-export interface VolunteerInfo {
-  appId: number;
-}
-
 export enum UserType {
   ADMIN = 'ADMIN',
   STANDARD = 'STANDARD',
