@@ -7,19 +7,26 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminInfoService } from './admin-info.service';
 import { AdminInfo } from './admin-info.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { CreateAdminInfoDto } from './dto/create-admin.dto';
 import { UpdateAdminInfoEmailDto } from './dto/update-admin-email.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserType } from '../users/types';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 /**
  * Controller to expose callable HTTP endpoints to interface
  * extract, and change information about the app's admins.
  */
 @Controller('admin-info')
-@UseInterceptors(CurrentUserInterceptor) // Apply authentication to all routes
+@UseInterceptors(CurrentUserInterceptor)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles(UserType.ADMIN)
 export class AdminInfoController {
   constructor(private readonly adminsService: AdminInfoService) {}
 

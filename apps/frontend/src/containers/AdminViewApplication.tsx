@@ -5,24 +5,37 @@ import { Box, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '@components/AvailabilityTable';
 import { useEffect, useState } from 'react';
 import {
+  AppStatus,
   ApplicantType,
   Application,
   AvailabilityFields,
   LearnerInfo,
+  User,
   UserType,
+  VolunteerInfo,
 } from '@api/types';
 import QuestionFrame from '@components/QuestionFrame';
 import RequirementsFrame from '@components/RequirementsFrame';
 import UploadedMaterial from '@components/UploadedMaterial';
 import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
+
 import EmergencyContactFrame from '@components/EmergencyContactFrame';
+import ApplicationProfileHeader from '@components/ApplicationProfileHeader';
+import ApplicantStageControl from '@components/ApplicantStageControl';
 
 const AdminViewApplication: React.FC = () => {
   const { appId } = useParams<{ appId: string }>();
   const [application, setApplication] = useState<Application | null>(null);
   const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(null);
+  const [volunteerInfo, setVolunteerInfo] = useState<VolunteerInfo | null>(
+    null,
+  );
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const pronouns = application?.pronouns;
+  const discipline = application?.discipline;
 
   // TODO: derive from actual auth state once auth is wired up
   const isAdmin = true;
@@ -40,6 +53,10 @@ const AdminViewApplication: React.FC = () => {
             .then(setLearnerInfo)
             .catch(() => setError('Failed to load learner info'));
         }
+        apiClient
+          .getUser(app.email)
+          .then(setUser)
+          .catch(() => setError('Failed to load user info'));
       })
       .catch(() => setError('Failed to load application'))
       .finally(() => setLoading(false));
@@ -47,6 +64,17 @@ const AdminViewApplication: React.FC = () => {
 
   const handleAvailabilityUpdate = (updated: AvailabilityFields) => {
     setApplication((prev) => (prev ? { ...prev, ...updated } : prev));
+  };
+
+  const handleStatusUpdate = async (nextStatus: AppStatus) => {
+    if (!application) return;
+
+    const updatedApplication = await apiClient.updateApplicationStatus(
+      application.appId,
+      nextStatus,
+    );
+
+    setApplication(updatedApplication);
   };
 
   if (loading) {
@@ -89,6 +117,16 @@ const AdminViewApplication: React.FC = () => {
         overflowY="auto"
         maxH="100vh"
       >
+        <ApplicationProfileHeader
+          firstName={user ? user.firstName : ''}
+          lastName={user ? user.lastName : ''}
+          pronouns={pronouns}
+          discipline={discipline}
+          experienceType={application.experienceType || 'N/A'}
+          email={application.email || 'N/A'}
+          phone={application.phone || 'N/A'}
+          over18={learnerInfo?.isLegalAdult}
+        />
         <SchoolAffiliationFrame
           schoolName={learnerInfo ? learnerInfo.school : 'N/A'}
           schoolDepartment={
@@ -104,6 +142,12 @@ const AdminViewApplication: React.FC = () => {
           actualStartDate={''}
           endDate={''}
           totalTimeRequested={application.weeklyHours + ' hours per week'}
+          statusControl={
+            <ApplicantStageControl
+              value={application.appStatus}
+              onConfirmChange={handleStatusUpdate}
+            />
+          }
         />
 
         <Box>

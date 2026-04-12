@@ -1,0 +1,131 @@
+type AwsExports = {
+  AWSConfig: {
+    accessKeyId?: string;
+    secretAccessKey?: string;
+    bucketName?: string;
+  };
+  CognitoAuthConfig: {
+    userPoolId?: string;
+    clientId?: string;
+    region?: string;
+    clientSecret?: string;
+  };
+};
+
+const ORIGINAL_ENV = { ...process.env };
+
+const ENV_KEYS = [
+  'AWS_ACCESS_KEY_ID',
+  'NX_AWS_ACCESS_KEY',
+  'AWS_SECRET_ACCESS_KEY',
+  'NX_AWS_SECRET_ACCESS_KEY',
+  'AWS_BUCKET_NAME',
+  'COGNITO_APP_CLIENT_ID',
+  'VITE_COGNITO_APP_CLIENT_ID',
+  'COGNITO_CLIENT_SECRET',
+  'COGNITO_USER_POOL_ID',
+  'VITE_COGNITO_USER_POOL_ID',
+  'COGNITO_REGION',
+  'VITE_COGNITO_REGION',
+] as const;
+
+function resetRelevantEnv(): void {
+  for (const key of ENV_KEYS) {
+    delete process.env[key];
+  }
+}
+
+async function loadAwsExports(): Promise<AwsExports> {
+  jest.resetModules();
+  const module = await import('./aws-exports');
+  return module.default as AwsExports;
+}
+
+describe('aws-exports', () => {
+  beforeEach(() => {
+    process.env = { ...ORIGINAL_ENV };
+    resetRelevantEnv();
+  });
+
+  afterAll(() => {
+    process.env = ORIGINAL_ENV;
+  });
+
+  it('loads config when required primary env vars are present', async () => {
+    process.env.AWS_ACCESS_KEY_ID = 'aws-key';
+    process.env.AWS_SECRET_ACCESS_KEY = 'aws-secret';
+    process.env.AWS_BUCKET_NAME = 'app-bucket';
+    process.env.COGNITO_APP_CLIENT_ID = 'cognito-client';
+    process.env.COGNITO_CLIENT_SECRET = 'cognito-secret';
+    process.env.COGNITO_USER_POOL_ID = 'pool-id';
+    process.env.COGNITO_REGION = 'us-west-2';
+
+    const config = await loadAwsExports();
+
+    expect(config.AWSConfig).toEqual({
+      accessKeyId: 'aws-key',
+      secretAccessKey: 'aws-secret',
+      region: 'us-west-2',
+      bucketName: 'app-bucket',
+    });
+    expect(config.CognitoAuthConfig).toEqual({
+      userPoolId: 'pool-id',
+      clientId: 'cognito-client',
+      clientSecret: 'cognito-secret',
+    });
+  });
+
+  it('uses NX and VITE fallback env vars when primary vars are absent', async () => {
+    process.env.NX_AWS_ACCESS_KEY = 'nx-aws-key';
+    process.env.NX_AWS_SECRET_ACCESS_KEY = 'nx-aws-secret';
+    process.env.AWS_BUCKET_NAME = 'fallback-bucket';
+    process.env.VITE_COGNITO_APP_CLIENT_ID = 'vite-client';
+    process.env.COGNITO_CLIENT_SECRET = 'cognito-secret';
+    process.env.VITE_COGNITO_USER_POOL_ID = 'vite-pool';
+    process.env.VITE_COGNITO_REGION = 'eu-west-1';
+
+    const config = await loadAwsExports();
+
+    expect(config.AWSConfig).toEqual({
+      accessKeyId: 'nx-aws-key',
+      secretAccessKey: 'nx-aws-secret',
+      region: 'eu-west-1',
+      bucketName: 'fallback-bucket',
+    });
+    expect(config.CognitoAuthConfig).toEqual({
+      userPoolId: 'vite-pool',
+      clientId: 'vite-client',
+      clientSecret: 'cognito-secret',
+    });
+  });
+
+  it('throws when required AWS env vars are missing', async () => {
+    await expect(loadAwsExports()).rejects.toThrow(
+      'The following environmental variables are missing:AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_BUCKET_NAME,COGNITO_REGION',
+    );
+  });
+
+  it('throws when Cognito region vars are missing', async () => {
+    process.env.AWS_ACCESS_KEY_ID = 'aws-key';
+    process.env.AWS_SECRET_ACCESS_KEY = 'aws-secret';
+    process.env.AWS_BUCKET_NAME = 'app-bucket';
+    process.env.COGNITO_APP_CLIENT_ID = 'cognito-client';
+    process.env.COGNITO_CLIENT_SECRET = 'cognito-secret';
+    process.env.COGNITO_USER_POOL_ID = 'pool-id';
+
+    await expect(loadAwsExports()).rejects.toThrow(
+      'The following environmental variables are missing:COGNITO_REGION',
+    );
+  });
+
+  it('throws when Cognito app client and client secret are missing', async () => {
+    process.env.AWS_ACCESS_KEY_ID = 'aws-key';
+    process.env.AWS_SECRET_ACCESS_KEY = 'aws-secret';
+    process.env.AWS_BUCKET_NAME = 'app-bucket';
+    process.env.COGNITO_REGION = 'us-west-2';
+
+    await expect(loadAwsExports()).rejects.toThrow(
+      'The following environmental variables are missing:COGNITO_APP_CLIENT_ID,COGNITO_CLIENT_SECRET',
+    );
+  });
+});

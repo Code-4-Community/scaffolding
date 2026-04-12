@@ -2,9 +2,9 @@
  * Status of the application in the system/ review process
  */
 export enum AppStatus {
-  APP_SUBMITTED = 'App submitted',
-  IN_REVIEW = 'In review',
-  FORMS_SENT = 'Forms sent',
+  APP_SUBMITTED = 'App Submitted',
+  IN_REVIEW = 'In Review',
+  FORMS_SIGNED = 'Forms Signed',
   ACCEPTED = 'Accepted',
   NO_AVAILABILITY = 'No Availability',
   DECLINED = 'Declined',
@@ -151,7 +151,18 @@ export interface LearnerInfo {
   syllabus?: string;
 }
 
+export interface VolunteerInfo {
+  appId: number;
+}
+
 export enum UserType {
   ADMIN = 'ADMIN',
   STANDARD = 'STANDARD',
+}
+
+export interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  userType: UserType;
 }

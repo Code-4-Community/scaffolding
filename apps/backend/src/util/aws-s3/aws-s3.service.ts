@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import envVars from '../aws-exports';
 
 /**
  * Service to interface with the external object storage service (AWS S3).
@@ -7,30 +8,15 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 @Injectable()
 export class AWSS3Service {
   private client: S3Client;
-  private readonly bucketName = process.env.AWS_BUCKET_NAME;
-  private readonly region: string;
+  private readonly bucketName = envVars.AWSConfig.bucketName;
+  private readonly region = envVars.AWSConfig.region;
 
   constructor() {
-    this.region = process.env.AWS_REGION || 'us-east-2';
-    this.bucketName = process.env.AWS_BUCKET_NAME;
-
-    if (!this.bucketName) {
-      throw new Error(
-        'AWS_BUCKET_NAME is not defined in environment variables',
-      );
-    }
-
-    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-      throw new Error(
-        'AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY is not defined in environment variables',
-      );
-    }
-
     this.client = new S3Client({
       region: this.region,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        accessKeyId: envVars.AWSConfig.accessKeyId,
+        secretAccessKey: envVars.AWSConfig.secretAccessKey,
       },
     });
   }

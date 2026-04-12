@@ -19,7 +19,7 @@ import { UserType } from '../users/types';
 
 const ADMIN_INFO_SEED = [
   {
-    email: 'indie.kitt@northeastern.edu',
+    email: 'superadmin@c4cneu.com',
     discipline: DISCIPLINE_VALUES.RN,
   },
   {
@@ -39,7 +39,7 @@ const CANDIDATE_INFO_SEED: CandidateInfo[] = [
   },
   {
     appId: 2,
-    email: 'johndoe@gmail.com',
+    email: 'standard@c4cneu.com',
   },
   {
     appId: 3,
@@ -57,7 +57,7 @@ const CANDIDATE_INFO_SEED: CandidateInfo[] = [
 
 const USER_SEED: User[] = [
   {
-    email: 'indie.kitt@northeastern.edu',
+    email: 'superadmin@c4cneu.com',
     firstName: 'indie',
     lastName: 'kitt',
     userType: UserType.ADMIN,
@@ -81,7 +81,7 @@ const USER_SEED: User[] = [
     userType: UserType.STANDARD,
   },
   {
-    email: 'johndoe@gmail.com',
+    email: 'standard@c4cneu.com',
     firstName: 'john',
     lastName: 'doe',
     userType: UserType.STANDARD,
@@ -155,7 +155,7 @@ const APPLICATION_SEED: Application[] = [
     license: 'n/a',
     applicantType: ApplicantType.VOLUNTEER,
     phone: '123-456-7890',
-    email: 'johndoe@gmail.com',
+    email: 'standard@c4cneu.com',
     discipline: DISCIPLINE_VALUES.RN,
     referred: false,
     weeklyHours: 20,

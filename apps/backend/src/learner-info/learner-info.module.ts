@@ -3,10 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LearnerInfoController } from './learner-info.controller';
 import { LearnerInfoService } from './learner-info.service';
 import { LearnerInfo } from './learner-info.entity';
+import { AuthModule } from '../auth/auth.module';
+import { UsersModule } from '../users/users.module';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LearnerInfo])],
+  imports: [TypeOrmModule.forFeature([LearnerInfo]), AuthModule, UsersModule],
   controllers: [LearnerInfoController],
-  providers: [LearnerInfoService],
+  providers: [LearnerInfoService, CurrentUserInterceptor],
 })
 export class LearnerInfoModule {}

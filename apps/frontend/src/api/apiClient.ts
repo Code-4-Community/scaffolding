@@ -1,6 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { type AxiosInstance } from 'axios';
+import { getIdToken } from '../auth/cognito';
 import { useCallback, useEffect, useState } from 'react';
-import { Application, AvailabilityFields, LearnerInfo } from './types';
+import {
+  Application,
+  AppStatus,
+  AvailabilityFields,
+  LearnerInfo,
+  VolunteerInfo,
+  User,
+} from './types';
 
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
@@ -10,6 +19,29 @@ export class ApiClient {
 
   constructor() {
     this.axiosInstance = axios.create({ baseURL: defaultBaseUrl });
+    this.axiosInstance.interceptors.request.use(async (config) => {
+      try {
+        const idToken = await getIdToken();
+        if (idToken) {
+          if (!config.headers) config.headers = {} as any;
+          const hasAuth =
+            (config.headers as any).Authorization ||
+            (config.headers as any)['Authorization'];
+          if (!hasAuth) {
+            (config.headers as any)['Authorization'] = `Bearer ${idToken}`;
+            console.debug(
+              'ApiClient: attached Authorization header from getIdToken',
+            );
+          }
+        } else {
+          console.debug('ApiClient: no idToken available from getIdToken');
+        }
+      } catch (err) {
+        console.debug('ApiClient: error while retrieving idToken', err);
+      }
+
+      return config;
+    });
   }
 
   public async getHello(): Promise<string> {
@@ -24,6 +56,14 @@ export class ApiClient {
     return this.get(`/api/learner_info/${appId}`) as Promise<LearnerInfo>;
   }
 
+  public async getVolunteerInfo(appId: number): Promise<VolunteerInfo> {
+    return this.get(`/api/volunteer_info/${appId}`) as Promise<VolunteerInfo>;
+  }
+
+  public async getUser(email: string): Promise<User> {
+    return this.get(`/api/users/email/${email}`) as Promise<User>;
+  }
+
   public async updateAvailability(
     appId: number,
     availability: Partial<AvailabilityFields>,
@@ -32,6 +72,15 @@ export class ApiClient {
       `/api/applications/${appId}/availability`,
       availability,
     ) as Promise<Application>;
+  }
+
+  public async updateApplicationStatus(
+    appId: number,
+    appStatus: AppStatus,
+  ): Promise<Application> {
+    return this.patch(`/api/applications/${appId}/status`, {
+      appStatus,
+    }) as Promise<Application>;
   }
 
   public async getTotalApplicationsCount(): Promise<number> {
@@ -80,6 +129,10 @@ export class ApiClient {
 
   private async delete(path: string): Promise<unknown> {
     return this.axiosInstance.delete(path).then((response) => response.data);
+  }
+
+  public async getCurrentUser(): Promise<User | null> {
+    return this.get('/api/users/me') as Promise<User | null>;
   }
 }
 

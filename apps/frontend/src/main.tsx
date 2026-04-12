@@ -3,6 +3,10 @@ import * as ReactDOM from 'react-dom/client';
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 
 import App from './app';
+import { configureAmplify } from './auth/amplify';
+import './styles.css';
+
+configureAmplify();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

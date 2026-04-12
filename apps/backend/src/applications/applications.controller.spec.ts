@@ -10,10 +10,29 @@ import {
   ApplicantType,
 } from './types';
 import { DISCIPLINE_VALUES } from '../disciplines/disciplines.constants';
+import { RolesGuard } from '../auth/roles.guard';
+import { UsersService } from '../users/users.service';
 import { EmailService } from '../util/email/email.service';
 import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
 import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
 import { NotFoundException } from '@nestjs/common';
+
+jest.mock('../util/aws-exports', () => ({
+  __esModule: true,
+  default: {
+    AWSConfig: {
+      accessKeyId: 'test-access-key',
+      secretAccessKey: 'test-secret-key',
+      region: 'us-east-2',
+      bucket: 'bucket',
+    },
+    CognitoAuthConfig: {
+      userPoolId: 'test-user-pool-id',
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    },
+  },
+}));
 
 const mockEmailService = {
   queueEmail: jest.fn().mockResolvedValue(undefined),
@@ -34,6 +53,14 @@ const mockApplicationsService: Partial<ApplicationsService> = {
   updateProposedStartDate: jest.fn(),
   updateActualStartDate: jest.fn(),
   updateEndDate: jest.fn(),
+};
+
+const mockRolesGuard = {
+  canActivate: jest.fn(() => true),
+};
+
+const mockUsersService = {
+  findOne: jest.fn(),
 };
 
 const mockApplication: Application = {
@@ -94,7 +121,18 @@ describe('ApplicationsController', () => {
           provide: ApplicationsService,
           useValue: mockApplicationsService,
         },
-        { provide: EmailService, useValue: mockEmailService },
+        {
+          provide: RolesGuard,
+          useValue: mockRolesGuard,
+        },
+        {
+          provide: UsersService,
+          useValue: mockUsersService,
+        },
+        {
+          provide: EmailService,
+          useValue: mockEmailService,
+        },
         ApplicationValidationEmailFilter,
         ApplicationCreationErrorFilter,
       ],
