@@ -3,15 +3,28 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
-import { UtilModule } from '../util/util.module';
+import { AuthModule } from '../auth/auth.module';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { UsersModule } from '../users/users.module';
 import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
 import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
+import { UtilModule } from '../util/util.module';
+import { CandidateInfoService } from '../candidate-info/candidate-info.service';
+import { CandidateInfo } from '../candidate-info/candidate-info.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Application]), UtilModule],
+  imports: [
+    TypeOrmModule.forFeature([Application]),
+    TypeOrmModule.forFeature([CandidateInfo]),
+    AuthModule,
+    UsersModule,
+    UtilModule,
+  ],
   controllers: [ApplicationsController],
   providers: [
     ApplicationsService,
+    CandidateInfoService,
+    CurrentUserInterceptor,
     ApplicationValidationEmailFilter,
     ApplicationCreationErrorFilter,
   ],

@@ -7,20 +7,29 @@ import {
   ParseIntPipe,
   UseInterceptors,
   Delete,
+  UseGuards,
+  Logger,
+  Req,
 } from '@nestjs/common';
 import { CandidateInfoService } from './candidate-info.service';
 import { CandidateInfo } from './candidate-info.entity';
 import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
 import { CreateCandidateInfoDto } from './dto/candidate-info.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserType } from '../users/types';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 /**
  * Controller exposing HTTP endpoints to get, create, and change information
  * about the app's CandidateInfo, including start and end dates.
  */
 @Controller('CandidateInfo')
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @UseInterceptors(CurrentUserInterceptor)
 export class CandidateInfoController {
+  private readonly logger = new Logger(CandidateInfoController.name);
+
   constructor(private CandidateInfoService: CandidateInfoService) {}
 
   /**
@@ -32,6 +41,7 @@ export class CandidateInfoController {
    * @throws {BadRequestException} if any fields are invalid.
    */
   @Post()
+  @Roles(UserType.ADMIN)
   async createCandidateInfo(
     @Body()
     createCandidateInfoDto: CreateCandidateInfoDto,
@@ -48,6 +58,7 @@ export class CandidateInfoController {
    * @throws {Error} If the repository throws an error.
    */
   @Get()
+  @Roles(UserType.ADMIN)
   async getAllCandidateInfo(): Promise<CandidateInfo[]> {
     return this.CandidateInfoService.findAll();
   }
@@ -60,9 +71,16 @@ export class CandidateInfoController {
    * @throws {NotFoundException} if the CandidateInfo with the specified email does not exist.
    */
   @Get('email/:email')
+  @Roles(UserType.ADMIN, UserType.STANDARD)
   async getCandidateInfoByEmail(
     @Param('email') email: string,
+    @Req() req: { user?: { email?: string; userType?: string } },
   ): Promise<CandidateInfo> {
+    this.logger.log(
+      `GET /CandidateInfo/email requestedEmail=${email} requesterEmail=${
+        req.user?.email ?? 'unknown'
+      } requesterType=${req.user?.userType ?? 'unknown'}`,
+    );
     return this.CandidateInfoService.findOne(email);
   }
 
@@ -72,6 +90,7 @@ export class CandidateInfoController {
    * @returns The CandidateInfo(s) with the desired appId.
    */
   @Get('/:appId')
+  @Roles(UserType.ADMIN)
   async getCandidateInfoByAppId(
     @Param('appId', ParseIntPipe) appId: number,
   ): Promise<CandidateInfo[]> {
@@ -86,6 +105,7 @@ export class CandidateInfoController {
    * @throws {NotFoundException} if the CandidateInfo with the specified email does not exist.
    */
   @Delete('email/:email')
+  @Roles(UserType.ADMIN)
   async deleteCandidateInfo(
     @Param('email') email: string,
   ): Promise<CandidateInfo> {

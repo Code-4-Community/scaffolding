@@ -13,21 +13,6 @@ export enum AppStatus {
 }
 
 /**
- * Experience type/ level of the applicant, generally in terms of medical experience/ degree
- */
-export enum ExperienceType {
-  BS = 'BS',
-  MS = 'MS',
-  PHD = 'PhD',
-  MD = 'MD',
-  MD_PHD = 'MD PhD',
-  RN = 'RN',
-  NP = 'NP',
-  PA = 'PA',
-  OTHER = 'Other',
-}
-
-/**
  * Applicant's area of interest for the commitment
  */
 export enum InterestArea {
@@ -109,7 +94,6 @@ export interface Application extends AvailabilityFields {
   thursdayAvailability: string;
   fridayAvailability: string;
   saturdayAvailability: string;
-  experienceType: ExperienceType;
   interest: InterestArea[];
   license: string;
   phone: string;
@@ -127,6 +111,7 @@ export interface Application extends AvailabilityFields {
   emergencyContactPhone: string;
   emergencyContactRelationship: string;
   heardAboutFrom: HeardAboutFrom[];
+  endDate?: Date;
 }
 
 /**
@@ -158,9 +143,14 @@ export enum UserType {
   STANDARD = 'STANDARD',
 }
 
-export interface Applicant {
+export interface User {
   email: string;
   firstName: string;
   lastName: string;
   userType: UserType;
+}
+
+export interface CandidateInfo {
+  email: string;
+  appId: number;
 }

@@ -1,19 +1,4 @@
 /**
- * Experience type/ level of the applicant, generally in terms of medical experience/ degree
- */
-export enum ExperienceType {
-  BS = 'BS',
-  MS = 'MS',
-  PHD = 'PhD',
-  MD = 'MD',
-  MD_PHD = 'MD PhD',
-  RN = 'RN',
-  NP = 'NP',
-  PA = 'PA',
-  OTHER = 'Other',
-}
-
-/**
  * Applicant's area of interest for the commitment
  */
 export enum InterestArea {

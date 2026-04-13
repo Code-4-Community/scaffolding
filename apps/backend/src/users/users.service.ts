@@ -64,6 +64,14 @@ export class UsersService {
   }
 
   /**
+   * Returns all users of type standard
+   * @returns Array of users with userType = standard
+   */
+  findStandard(): Promise<User[]> {
+    return this.repo.find({ where: { userType: UserType.STANDARD } });
+  }
+
+  /**
    * Updates a user by email.
    * @param email The email of the user to update.
    * @param attrs Partial attributes to apply.

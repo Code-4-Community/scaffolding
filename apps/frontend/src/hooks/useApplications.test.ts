@@ -4,12 +4,11 @@ import apiClient from '@api/apiClient';
 import { useApplications } from './useApplications';
 import {
   AppStatus,
-  ExperienceType,
   ApplicantType,
   DISCIPLINE_VALUES,
   UserType,
   type Application,
-  type Applicant,
+  type User,
 } from '@api/types';
 
 const mockApplications: Application[] = [
@@ -20,7 +19,6 @@ const mockApplications: Application[] = [
     actualStartDate: '2024-02-01',
     discipline: DISCIPLINE_VALUES.RN,
     appStatus: AppStatus.APP_SUBMITTED,
-    experienceType: ExperienceType.BS,
     interest: [],
     license: 'n/a',
     phone: '123-456-7890',
@@ -47,7 +45,6 @@ const mockApplications: Application[] = [
     proposedStartDate: '2024-03-01',
     discipline: DISCIPLINE_VALUES.SocialWork,
     appStatus: AppStatus.IN_REVIEW,
-    experienceType: ExperienceType.MS,
     interest: [],
     license: 'LCSW',
     phone: '222-333-4444',
@@ -122,7 +119,6 @@ describe('useApplications', () => {
     expect(first.actualStartDate).toBe('2024-02-01');
     expect(first.discipline).toBe(DISCIPLINE_VALUES.RN);
     expect(first.status).toBe(AppStatus.APP_SUBMITTED);
-    expect(first.experienceType).toBe(ExperienceType.BS);
     expect(first.applicantType).toBe(ApplicantType.LEARNER);
 
     const second = result.current.applications[1];

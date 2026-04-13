@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import apiClient from '@api/apiClient';
-import type { Application, Applicant } from '@api/types';
+import type { Application, User } from '@api/types';
 
 export interface ApplicationRow {
   appId: number;
@@ -8,7 +8,6 @@ export interface ApplicationRow {
   email: string;
   proposedStartDate: string;
   actualStartDate: string;
-  experienceType: string;
   discipline: string;
   applicantType: string;
   status: string;
@@ -22,7 +21,7 @@ interface UseApplicationsResult {
 
 function toRows(
   applications: Application[],
-  usersByEmail: Map<string, Applicant>,
+  usersByEmail: Map<string, User>,
 ): ApplicationRow[] {
   return applications.map((app) => {
     const user = usersByEmail.get(app.email);
@@ -34,7 +33,6 @@ function toRows(
       email: app.email,
       proposedStartDate: app.proposedStartDate,
       actualStartDate: app.actualStartDate ?? '',
-      experienceType: app.experienceType,
       discipline: app.discipline,
       applicantType: app.applicantType,
       status: app.appStatus,

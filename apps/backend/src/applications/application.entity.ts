@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 import {
   AppStatus,
-  ExperienceType,
   InterestArea,
   HeardAboutFrom,
   ApplicantType,
@@ -122,14 +121,6 @@ export class Application {
    */
   @Column({ type: 'varchar' })
   saturdayAvailability: string;
-
-  /**
-   * Experience type/ level of the applicant, generally in terms of medical experience or degree.
-   *
-   * Example: ExperienceType.BS.
-   */
-  @Column({ type: 'enum', enum: ExperienceType })
-  experienceType!: ExperienceType;
 
   /**
    * Applicant's area of interest for the commitment.

@@ -26,18 +26,6 @@ export const DISCIPLINE_VALUES = [
   'Other',
 ] as const;
 
-export const ExperienceType = [
-  'BS',
-  'MS',
-  'PhD',
-  'MD',
-  'MD PhD',
-  'RN',
-  'NP',
-  'PA',
-  'Other',
-] as const;
-
 export const STATUS_OPTIONS = Object.entries(StatusPillConfig).map(
   ([value, config]) => ({
     value: value as StatusVariant,
@@ -54,16 +42,12 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
   const [selectedDISCIPLINE_VALUES, setSelectedDISCIPLINE_VALUES] = useState<
     string[]
   >([]);
-  const [selectedExperienceTypes, setSelectedExperienceTypes] = useState<
-    string[]
-  >([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [proposedStartDate, setProposedStartDate] = useState('');
   const [actualStartDate, setActualStartDate] = useState('');
   const [openSections, setOpenSections] = useState<string[]>([
     'Proposed Start Date',
     'Actual Start Date',
-    'Experience Type',
     'Discipline',
     'Discipline Admin Name',
     'Status',
@@ -71,7 +55,6 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
 
   const totalFilters =
     selectedDISCIPLINE_VALUES.length +
-    selectedExperienceTypes.length +
     selectedStatuses.length +
     (proposedStartDate ? 1 : 0) +
     (actualStartDate ? 1 : 0);
@@ -87,7 +70,6 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
   const filterCategories = [
     'Proposed Start Date',
     'Actual Start Date',
-    'Experience Type',
     'Discipline',
     'Discipline Admin Name',
     'Status',
@@ -250,33 +232,6 @@ const FilterPopUp = ({ open, onOpenChange }: FilterPopUpProps) => {
                                   boxShadow: '0 0 0 1px #173685',
                                 }}
                               />
-                            </Stack>
-                          ) : category === 'Experience Type' ? (
-                            <Stack gap="3">
-                              <Fieldset.Root>
-                                <CheckboxGroup
-                                  name="experienceTypes"
-                                  value={selectedExperienceTypes}
-                                  onValueChange={setSelectedExperienceTypes}
-                                >
-                                  <Fieldset.Content>
-                                    <For each={ExperienceType}>
-                                      {(value) => (
-                                        <Checkbox.Root
-                                          key={value}
-                                          value={value}
-                                        >
-                                          <Checkbox.HiddenInput />
-                                          <Checkbox.Control />
-                                          <Checkbox.Label>
-                                            {value}
-                                          </Checkbox.Label>
-                                        </Checkbox.Root>
-                                      )}
-                                    </For>
-                                  </Fieldset.Content>
-                                </CheckboxGroup>
-                              </Fieldset.Root>
                             </Stack>
                           ) : category === 'Discipline' ? (
                             <Stack gap="3">

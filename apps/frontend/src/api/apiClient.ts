@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { type AxiosInstance } from 'axios';
+import { getIdToken } from '../auth/cognito';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Application,
   AppStatus,
   AvailabilityFields,
+  CandidateInfo,
   LearnerInfo,
-  Applicant,
+  User,
 } from './types';
 
 const defaultBaseUrl =
@@ -16,6 +19,29 @@ export class ApiClient {
 
   constructor() {
     this.axiosInstance = axios.create({ baseURL: defaultBaseUrl });
+    this.axiosInstance.interceptors.request.use(async (config) => {
+      try {
+        const idToken = await getIdToken();
+        if (idToken) {
+          if (!config.headers) config.headers = {} as any;
+          const hasAuth =
+            (config.headers as any).Authorization ||
+            (config.headers as any)['Authorization'];
+          if (!hasAuth) {
+            (config.headers as any)['Authorization'] = `Bearer ${idToken}`;
+            console.debug(
+              'ApiClient: attached Authorization header from getIdToken',
+            );
+          }
+        } else {
+          console.debug('ApiClient: no idToken available from getIdToken');
+        }
+      } catch (err) {
+        console.debug('ApiClient: error while retrieving idToken', err);
+      }
+
+      return config;
+    });
   }
 
   public async getHello(): Promise<string> {
@@ -30,12 +56,22 @@ export class ApiClient {
     return this.get(`/api/applications/${appId}`) as Promise<Application>;
   }
 
-  public async getApplicants(): Promise<Applicant[]> {
-    return this.get('/users') as Promise<Applicant[]>;
+  public async getApplicants(): Promise<User[]> {
+    return this.get('/api/users/standard') as Promise<User[]>;
   }
 
   public async getLearnerInfo(appId: number): Promise<LearnerInfo> {
     return this.get(`/api/learner_info/${appId}`) as Promise<LearnerInfo>;
+  }
+
+  public async getCandidateInfoByEmail(email: string): Promise<CandidateInfo> {
+    return this.get(
+      `/api/CandidateInfo/email/${encodeURIComponent(email)}`,
+    ) as Promise<CandidateInfo>;
+  }
+
+  public async getUser(email: string): Promise<User> {
+    return this.get(`/api/users/email/${email}`) as Promise<User>;
   }
 
   public async updateAvailability(
@@ -86,7 +122,32 @@ export class ApiClient {
   }
 
   private async get(path: string): Promise<unknown> {
-    return this.axiosInstance.get(path).then((response) => response.data);
+    console.debug('ApiClient GET: request start', {
+      baseURL: defaultBaseUrl,
+      path,
+    });
+
+    try {
+      const response = await this.axiosInstance.get(path);
+      console.debug('ApiClient GET: request success', {
+        path,
+        status: response.status,
+      });
+      return response.data;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('ApiClient GET: request failed', {
+          path,
+          status: err.response?.status,
+          url: err.config?.url,
+          method: err.config?.method,
+          data: err.response?.data,
+        });
+      } else {
+        console.error('ApiClient GET: request failed', { path, err });
+      }
+      throw err;
+    }
   }
 
   private async post(path: string, body: unknown): Promise<unknown> {
@@ -101,8 +162,12 @@ export class ApiClient {
       .then((response) => response.data);
   }
 
-  private async delete(path: string): Promise<unknown> {
-    return this.axiosInstance.delete(path).then((response) => response.data);
+  public async getCurrentUser(): Promise<User | null> {
+    return this.get('/api/users/me') as Promise<User | null>;
+  }
+
+  public async getCurrentApplication(): Promise<Application | null> {
+    return this.get('/api/applications/me') as Promise<Application | null>;
   }
 }
 

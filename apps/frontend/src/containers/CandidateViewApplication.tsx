@@ -1,79 +1,149 @@
-import NavBar from '@components/NavBar/NavBar';
-import { useParams } from 'react-router-dom';
-import apiClient from '@api/apiClient';
+import NavBar from '../components/NavBar/NavBar';
+import apiClient from '../api/apiClient';
 import { Box, Spinner, Text } from '@chakra-ui/react';
-import AvailabilityTable from '@components/AvailabilityTable';
+import AvailabilityTable from '../components/AvailabilityTable';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
-  AppStatus,
   ApplicantType,
   Application,
-  AvailabilityFields,
   LearnerInfo,
   User,
   UserType,
-} from '@api/types';
-import QuestionFrame from '@components/QuestionFrame';
-import RequirementsFrame from '@components/RequirementsFrame';
-import UploadedMaterial from '@components/UploadedMaterial';
-import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
-
-import EmergencyContactFrame from '@components/EmergencyContactFrame';
+} from '../api/types';
+import QuestionFrame from '../components/QuestionFrame';
+import RequirementsFrame from '../components/RequirementsFrame';
+import UploadedMaterial from '../components/UploadedMaterial';
+import SchoolAffiliationFrame from '../components/SchoolAffiliationFrame';
 import ApplicationProfileHeader from '@components/ApplicationProfileHeader';
-import ApplicantStageControl from '@components/ApplicantStageControl';
 
-const AdminViewApplication: React.FC = () => {
-  const { appId } = useParams<{ appId: string }>();
+const CandidateViewApplication: React.FC = () => {
   const [application, setApplication] = useState<Application | null>(null);
   const [learnerInfo, setLearnerInfo] = useState<LearnerInfo | null>(null);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const pronouns = application?.pronouns;
   const discipline = application?.discipline;
 
   useEffect(() => {
-    if (!appId) return;
-    setLoading(true);
-    apiClient
-      .getApplication(Number(appId))
-      .then((app) => {
-        setApplication(app);
-        if (app?.applicantType === ApplicantType.LEARNER) {
-          apiClient
-            .getLearnerInfo(Number(appId))
-            .then(setLearnerInfo)
-            .catch(() => setError('Failed to load learner info'));
-        }
-        apiClient
-          .getUser(app.email)
+    let cancelled = false;
+
+    const isNotFoundError = (err: unknown): boolean =>
+      axios.isAxiosError(err) && err.response?.status === 404;
+
+    const logAxiosError = (label: string, err: unknown) => {
+      if (axios.isAxiosError(err)) {
+        console.error(label, {
+          status: err.response?.status,
+          url: err.config?.url,
+          method: err.config?.method,
+          data: err.response?.data,
+        });
+        return;
+      }
+
+      console.error(label, err);
+    };
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+      console.debug('CandidateViewApplication: load started');
+
+      try {
+        await apiClient
+          .getCurrentUser()
           .then(setUser)
-          .catch(() => setError('Failed to load user info'));
-      })
-      .catch(() => setError('Failed to load application'))
-      .finally(() => setLoading(false));
-  }, [appId]);
+          .catch(() => setError('Failed to load user'));
 
-  const handleAvailabilityUpdate = (updated: AvailabilityFields) => {
-    setApplication((prev) => (prev ? { ...prev, ...updated } : prev));
-  };
+        if (!user) {
+          setError('Unable to determine user');
+          return;
+        }
 
-  const handleStatusUpdate = async (nextStatus: AppStatus) => {
-    if (!application) return;
+        const candidateInfo = await apiClient
+          .getCandidateInfoByEmail(user.email)
+          .catch(() => setError('Failed to load candidate info'));
 
-    const updatedApplication = await apiClient.updateApplicationStatus(
-      application.appId,
-      nextStatus,
-    );
+        if (!candidateInfo) {
+          setError("Unable to get user's application id");
+          return;
+        }
 
-    setApplication(updatedApplication);
-  };
+        if (cancelled) return;
+        console.debug('CandidateViewApplication: candidate info loaded', {
+          appId: candidateInfo.appId,
+          email: candidateInfo.email,
+        });
+
+        console.debug('CandidateViewApplication: requesting application', {
+          appId: candidateInfo.appId,
+        });
+
+        await apiClient
+          .getCurrentApplication()
+          .then(setApplication)
+          .catch(() => setError('Failed to load application'));
+
+        if (cancelled) return;
+
+        if (!application) {
+          console.debug(
+            '[application] No backend application found for current user',
+          );
+          return null;
+        }
+
+        console.debug('CandidateViewApplication: application loaded', {
+          appId: application.appId,
+          applicantType: application.applicantType,
+        });
+
+        if (application.applicantType === ApplicantType.LEARNER) {
+          try {
+            console.debug('CandidateViewApplication: requesting learner info', {
+              appId: candidateInfo.appId,
+            });
+            const info = await apiClient.getLearnerInfo(candidateInfo.appId);
+            if (!cancelled) {
+              setLearnerInfo(info);
+              console.debug('CandidateViewApplication: learner info loaded', {
+                appId: info.appId,
+              });
+            }
+          } catch (err) {
+            if (!cancelled && !isNotFoundError(err)) {
+              setError('Failed to load learner info');
+            }
+            logAxiosError(
+              'CandidateViewApplication: learner info request failed',
+              err,
+            );
+          }
+        }
+      } catch (err) {
+        logAxiosError('CandidateViewApplication: load failed', err);
+        if (!cancelled) setError('Failed to load application');
+      } finally {
+        console.debug('CandidateViewApplication: load finished', {
+          cancelled,
+        });
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (loading) {
     return (
       <div className="flex flex-row">
-        <NavBar logo="BHCHP" userType={UserType.ADMIN} />
+        <NavBar logo="BHCHP" userType={UserType.STANDARD} />
         <Box p="10" flex="1" display="flex" justifyContent="center" mt="20">
           <Spinner size="xl" />
         </Box>
@@ -81,12 +151,7 @@ const AdminViewApplication: React.FC = () => {
     );
   }
 
-  if (
-    error ||
-    application === null ||
-    (application.applicantType === ApplicantType.LEARNER &&
-      learnerInfo === null)
-  ) {
+  if (error || application === null) {
     return (
       <div className="flex flex-row">
         <NavBar logo="BHCHP" userType={UserType.STANDARD} />
@@ -99,7 +164,7 @@ const AdminViewApplication: React.FC = () => {
 
   return (
     <div className="flex flex-row">
-      <NavBar logo="BHCHP" userType={UserType.ADMIN} />
+      <NavBar logo="BHCHP" userType={UserType.STANDARD} />
       <Box
         id="main-content"
         p="10"
@@ -130,16 +195,14 @@ const AdminViewApplication: React.FC = () => {
               ? application.interest.join(', ')
               : application.interest ?? ''
           }
-          proposedStartDate={''}
-          actualStartDate={''}
-          endDate={''}
-          totalTimeRequested={application.weeklyHours + ' hours per week'}
-          statusControl={
-            <ApplicantStageControl
-              value={application.appStatus}
-              onConfirmChange={handleStatusUpdate}
-            />
+          proposedStartDate={application.proposedStartDate.toString()}
+          actualStartDate={
+            application.actualStartDate
+              ? application.actualStartDate.toString()
+              : '-'
           }
+          endDate={application.endDate ? application.endDate.toString() : '-'}
+          totalTimeRequested={application.weeklyHours + ' hours per week'}
         />
 
         <Box>
@@ -153,8 +216,7 @@ const AdminViewApplication: React.FC = () => {
               fridayAvailability: application.fridayAvailability,
               saturdayAvailability: application.saturdayAvailability,
             }}
-            isAdmin={true}
-            onUpdate={handleAvailabilityUpdate}
+            isAdmin={false}
           />
         </Box>
 
@@ -214,14 +276,9 @@ const AdminViewApplication: React.FC = () => {
             }}
           />
         )}
-        <EmergencyContactFrame
-          name={application.emergencyContactName}
-          phone={application.emergencyContactPhone}
-          relationship={application.emergencyContactRelationship}
-        />
       </Box>
     </div>
   );
 };
 
-export default AdminViewApplication;
+export default CandidateViewApplication;

@@ -42,6 +42,7 @@ export function createMockApiClientModule(
       getApplication: vi.fn(),
       getApplicants: vi.fn().mockResolvedValue([]),
       getLearnerInfo: vi.fn(),
+      getCurrentUser: vi.fn().mockResolvedValue(null),
       updateAvailability: vi.fn(),
       getTotalApplicationsCount: vi.fn().mockResolvedValue(counts.total),
       getInReviewApplicationsCount: vi.fn().mockResolvedValue(counts.inReview),

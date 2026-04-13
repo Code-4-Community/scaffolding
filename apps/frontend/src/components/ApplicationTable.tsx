@@ -5,7 +5,6 @@ const COLUMNS = [
   'Name',
   'Proposed Date',
   'Actual Start Date',
-  'Experience Type',
   'Discipline',
   'Applicant Type',
   'Status',
@@ -35,7 +34,6 @@ export function ApplicationTable({
       application.name.toLowerCase().includes(query) ||
       application.discipline.toLowerCase().includes(query) ||
       application.status.toLowerCase().includes(query) ||
-      application.experienceType.toLowerCase().includes(query) ||
       application.email.toLowerCase().includes(query)
     );
   });
@@ -61,7 +59,6 @@ export function ApplicationTable({
             <Table.Cell>{application.name}</Table.Cell>
             <Table.Cell>{formatDate(application.proposedStartDate)}</Table.Cell>
             <Table.Cell>{formatDate(application.actualStartDate)}</Table.Cell>
-            <Table.Cell>{application.experienceType}</Table.Cell>
             <Table.Cell>{application.discipline}</Table.Cell>
             <Table.Cell>{application.applicantType}</Table.Cell>
             <Table.Cell>{application.status}</Table.Cell>

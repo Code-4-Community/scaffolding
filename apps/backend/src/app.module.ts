@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AWSS3Module } from './aws-s3/aws-s3.module';
+import { AWSS3Module } from './util/aws-s3/aws-s3.module';
 import AppDataSource from './data-source';
 import { UtilModule } from './util/util.module';
 import { ApplicationsModule } from './applications/applications.module';
@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { DisciplinesModule } from './disciplines/disciplines.module';
 import { AdminInfoModule } from './admin-info/admin-info.module';
+import { CandidateInfoModule } from './candidate-info/candidate-info.module';
 
 @Module({
   imports: [
@@ -30,8 +31,8 @@ import { AdminInfoModule } from './admin-info/admin-info.module';
     AWSS3Module,
     TypeOrmModule.forFeature([Application]),
     DisciplinesModule,
+    CandidateInfoModule,
     LearnerInfoModule,
-    ApplicationsModule,
     ApplicationsModule,
   ],
   controllers: [AppController],

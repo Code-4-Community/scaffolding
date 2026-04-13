@@ -2,13 +2,19 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
+  Req,
+  UseGuards,
+  UseInterceptors,
   UseFilters,
+  NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -17,22 +23,37 @@ import { ApiTags } from '@nestjs/swagger';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.request.dto';
 import { UpdateApplicationDisciplineDto } from './dto/update-application-discipline.request.dto';
 import { UpdateApplicationAvailabilityDto } from './dto/update-application-availability.request.dto';
+import { CurrentUserInterceptor } from '../interceptors/current-user.interceptor';
+import { AuthGuard } from '@nestjs/passport';
+import { UserType } from '../users/types';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 import { ApplicationValidationEmailFilter } from './filters/application-validation-email.filter';
 import { ApplicationCreationErrorFilter } from './filters/application-creation-validation.filter';
+import { User } from '../users/user.entity';
+import { CandidateInfoService } from '../candidate-info/candidate-info.service';
 
 /**
  * Controller to expose HTTP endpoints to interface, extract, and change information about the app's applications.
  */
 @ApiTags('Applications')
 @Controller('applications')
+@UseInterceptors(CurrentUserInterceptor)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ApplicationsController {
-  constructor(private applicationsService: ApplicationsService) {}
+  private readonly logger = new Logger(ApplicationsController.name);
+
+  constructor(
+    private applicationsService: ApplicationsService,
+    private candidateInfoService: CandidateInfoService,
+  ) {}
 
   /**
    * Exposes an endpoint to return the total number of applications.
    * @returns Object containing the total application count.
    */
   @Get('count/total')
+  @Roles(UserType.ADMIN)
   async getTotalApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countAll();
     return { count };
@@ -43,6 +64,7 @@ export class ApplicationsController {
    * @returns Object containing the in-review application count.
    */
   @Get('count/in-review')
+  @Roles(UserType.ADMIN)
   async getInReviewApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countInReview();
     return { count };
@@ -53,6 +75,7 @@ export class ApplicationsController {
    * @returns Object containing the rejected application count.
    */
   @Get('count/rejected')
+  @Roles(UserType.ADMIN)
   async getRejectedApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countRejected();
     return { count };
@@ -63,6 +86,7 @@ export class ApplicationsController {
    * @returns Object containing the approved/active application count.
    */
   @Get('count/approved')
+  @Roles(UserType.ADMIN)
   async getApprovedApplicationsCount(): Promise<{ count: number }> {
     const count = await this.applicationsService.countApprovedOrActive();
     return { count };
@@ -74,6 +98,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get()
+  @Roles(UserType.ADMIN)
   async getAllApplications(): Promise<Application[]> {
     return await this.applicationsService.findAll();
   }
@@ -88,6 +113,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get('by-discipline')
+  @Roles(UserType.ADMIN)
   async getApplicationsByDiscipline(
     @Query('discipline') discipline: string,
   ): Promise<Application[]> {
@@ -103,11 +129,25 @@ export class ApplicationsController {
    *         if an application with that id does not exist.
    * @throws {Error} which is unchanged from what repository throws.
    */
-  @Get('/:appId')
+  @Get(':appId(\\d+)')
+  @Roles(UserType.ADMIN, UserType.STANDARD)
   async getApplicationById(
     @Param('appId', ParseIntPipe) appId: number,
+    @Req() req: { user?: { email?: string; userType?: UserType } },
   ): Promise<Application> {
-    return await this.applicationsService.findById(appId);
+    const application = await this.applicationsService.findById(appId);
+
+    // Standard users may only access their own application.
+    if (
+      req.user?.userType === UserType.STANDARD &&
+      req.user.email !== application.email
+    ) {
+      throw new ForbiddenException(
+        'Standard users can only access their own application.',
+      );
+    }
+
+    return application;
   }
 
   /**
@@ -118,6 +158,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Post()
+  @Roles(UserType.ADMIN)
   @UseFilters(ApplicationCreationErrorFilter, ApplicationValidationEmailFilter)
   async createApplication(
     @Body() createApplicationDto: CreateApplicationDto,
@@ -136,13 +177,15 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Patch('/:appId/status')
+  @Roles(UserType.ADMIN)
   async updateApplicationStatus(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateStatusDto: UpdateApplicationStatusDto,
   ): Promise<Application> {
-    return await this.applicationsService.update(appId, {
-      appStatus: updateStatusDto.appStatus,
-    });
+    return await this.applicationsService.updateStatus(
+      appId,
+      updateStatusDto.appStatus,
+    );
   }
 
   /**
@@ -156,6 +199,7 @@ export class ApplicationsController {
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Patch('/:appId/discipline')
+  @Roles(UserType.ADMIN)
   async updateApplicationDiscipline(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateDisciplineDto: UpdateApplicationDisciplineDto,
@@ -174,6 +218,7 @@ export class ApplicationsController {
    * @throws {NotFoundException} if the application does not exist.
    */
   @Patch('/:appId/availability')
+  @Roles(UserType.ADMIN)
   async updateApplicationAvailability(
     @Param('appId', ParseIntPipe) appId: number,
     @Body() updateAvailabilityDto: UpdateApplicationAvailabilityDto,
@@ -191,6 +236,7 @@ export class ApplicationsController {
    *         if the application does not exist.
    */
   @Patch('/:appId/start-date')
+  @Roles(UserType.ADMIN)
   async updateApplicationProposedStartDate(
     @Param('appId', ParseIntPipe) appId: number,
     @Body('proposedStartDate') startDate: string,
@@ -211,6 +257,7 @@ export class ApplicationsController {
    *         if the application does not exist.
    */
   @Patch('/:appId/start-date')
+  @Roles(UserType.ADMIN)
   async updateApplicationActualStartDate(
     @Param('appId', ParseIntPipe) appId: number,
     @Body('actualStartDate') startDate: string,
@@ -231,6 +278,7 @@ export class ApplicationsController {
    *         if the application does not exist.
    */
   @Patch('/:appId/end-date')
+  @Roles(UserType.ADMIN)
   async updateApplicationEndDate(
     @Param('appId', ParseIntPipe) appId: number,
     @Body('endDate') endDate: string,
@@ -251,9 +299,50 @@ export class ApplicationsController {
    * @returns {Application} The application object which has been deleted.
    */
   @Delete('/:appId')
+  @Roles(UserType.ADMIN)
   async deleteApplication(
     @Param('appId', ParseIntPipe) appId: number,
   ): Promise<void> {
     await this.applicationsService.delete(appId);
+  }
+
+  /**
+   * Returns the current database-backend application resolved from the same email of the User Interceptor/ JWT/ Cognito.
+   * @param req: payload with user injected from the Interceptor/ JWT/ Cognito
+   * @returns {Application | null} Returns the Application object or nothing.
+   */
+  @Get('/me')
+  @Roles(UserType.STANDARD)
+  async getCurrentApplication(
+    @Req() req: { user?: User },
+  ): Promise<Application | NotFoundException> {
+    this.logger.log(
+      `GET /applications/me called userType=${
+        req.user?.userType ?? 'missing'
+      } email=${req.user?.email ?? 'missing'}`,
+    );
+
+    if (!req.user || !req.user.userType || !req.user.email) {
+      this.logger.warn(
+        'GET /applications/me missing user context (user, userType, or email).',
+      );
+      return new NotFoundException('No user matching the JWT was found.');
+    }
+
+    try {
+      const candidateInfo = await this.candidateInfoService.findOne(
+        req.user.email,
+      );
+      this.logger.log(
+        `GET /applications/me candidate_info found email=${req.user.email} appId=${candidateInfo.appId}`,
+      );
+      return this.applicationsService.findById(candidateInfo.appId);
+    } catch (error) {
+      this.logger.error(
+        `GET /applications/me failed for email=${req.user.email}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
   }
 }
