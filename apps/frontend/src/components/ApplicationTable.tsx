@@ -23,6 +23,24 @@ function formatDate(dateStr: string): string {
   return `${month}/${day}/${year}`;
 }
 
+function titleCaseName(name?: string): string {
+  if (!name) return '—';
+  const cleaned = name.trim().replace(/\s+/g, ' ');
+  return cleaned
+    .split(' ')
+    .map((part) =>
+      part
+        .split('-')
+        .map((sub) =>
+          sub.length > 0
+            ? sub.charAt(0).toUpperCase() + sub.slice(1).toLowerCase()
+            : sub,
+        )
+        .join('-'),
+    )
+    .join(' ');
+}
+
 export function ApplicationTable({
   applications,
   searchQuery = '',
@@ -56,7 +74,15 @@ export function ApplicationTable({
       <Table.Body>
         {filteredApplications.map((application) => (
           <Table.Row key={application.appId}>
-            <Table.Cell>{application.name}</Table.Cell>
+            <Table.Cell>
+              <a
+                href={`/admin/view-application/${application.appId}`}
+                aria-label={`View application ${application.appId}`}
+                style={{ color: '#0b5fff', textDecoration: 'underline' }}
+              >
+                {titleCaseName(application.name)}
+              </a>
+            </Table.Cell>
             <Table.Cell>{formatDate(application.proposedStartDate)}</Table.Cell>
             <Table.Cell>{formatDate(application.actualStartDate)}</Table.Cell>
             <Table.Cell>{application.discipline}</Table.Cell>
