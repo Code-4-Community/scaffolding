@@ -83,6 +83,8 @@ export interface AvailabilityFields {
 export interface Application extends AvailabilityFields {
   appId: number;
   email: string;
+  proposedStartDate: string;
+  actualStartDate?: string;
   discipline: DISCIPLINE_VALUES;
   otherDisciplineDescription?: string;
   appStatus: AppStatus;
@@ -109,8 +111,6 @@ export interface Application extends AvailabilityFields {
   emergencyContactPhone: string;
   emergencyContactRelationship: string;
   heardAboutFrom: HeardAboutFrom[];
-  proposedStartDate: Date;
-  actualStartDate?: Date;
   endDate?: Date;
 }
 
