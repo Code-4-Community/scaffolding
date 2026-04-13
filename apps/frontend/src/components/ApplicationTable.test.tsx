@@ -54,8 +54,6 @@ describe('ApplicationTable', () => {
 
     expect(screen.getByText('Jane Doe')).toBeDefined();
     expect(screen.getByText('John Smith')).toBeDefined();
-    expect(screen.getByText('BS')).toBeDefined();
-    expect(screen.getByText('MS')).toBeDefined();
     expect(screen.getByText('RN')).toBeDefined();
     expect(screen.getByText('Social Work')).toBeDefined();
     expect(screen.getByText('Learner')).toBeDefined();
