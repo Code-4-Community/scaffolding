@@ -1,8 +1,15 @@
-import { Role } from 'src/users/types';
-import { User } from 'src/users/user.entity';
-import { DeepPartial } from 'typeorm';
+import { Role } from '../users/types';
 
-export const UsersSeed: DeepPartial<User>[] = [
+interface UserSeedItem {
+  id: number;
+  role: Role;
+  firstName: string;
+  lastName: string;
+  email: string;
+  title?: string;
+}
+
+export const UsersSeed: UserSeedItem[] = [
   {
     id: 1,
     role: Role.ADMIN,
@@ -10,7 +17,6 @@ export const UsersSeed: DeepPartial<User>[] = [
     lastName: 'Jacobs',
     email: 'richie.jacobs@gmail.com',
     title: 'Publishing Manager',
-  
   },
   {
     id: 2,
@@ -42,6 +48,46 @@ export const UsersSeed: DeepPartial<User>[] = [
     firstName: 'Tony',
     lastName: 'King',
     email: 'tony.king@gmail.com',
-    title: 'Director of Communications'
+    title: 'Director of Communications',
+  },
+  {
+    id: 6,
+    role: Role.ADMIN,
+    firstName: 'Jordan',
+    lastName: 'Hayes',
+    email: 'jordan.hayes@gmail.com',
+    title: 'Director of Programs',
+  },
+  {
+    id: 7,
+    role: Role.ADMIN,
+    firstName: 'Alex',
+    lastName: 'Rivera',
+    email: 'alex.rivera@gmail.com',
+    title: 'Operations Manager',
+  },
+  {
+    id: 8,
+    role: Role.STANDARD,
+    firstName: 'Sam',
+    lastName: 'Chen',
+    email: 'sam.chen@gmail.com',
+    title: 'Event Coordinator',
+  },
+  {
+    id: 9,
+    role: Role.STANDARD,
+    firstName: 'Maya',
+    lastName: 'Osei',
+    email: 'maya.osei@gmail.com',
+    title: 'School Partner',
+  },
+  {
+    id: 10,
+    role: Role.STANDARD,
+    firstName: 'Chris',
+    lastName: 'Park',
+    email: 'chris.park@gmail.com',
+    title: 'Development Manager',
   },
 ];

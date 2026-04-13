@@ -1,20 +1,30 @@
 import { DataSource } from 'typeorm';
-
 import { Anthology } from 'src/anthology/anthology.entity';
+import { ProductionInfo } from 'src/production-info/production-info.entity';
 import { AnthologiesSeed } from './anthologies.seed';
 
 export async function seedAnthologies(dataSource: DataSource) {
-  const repository = dataSource.getRepository(Anthology);
+  const anthologyRepo = dataSource.getRepository(Anthology);
+  const piRepo = dataSource.getRepository(ProductionInfo);
 
   console.log('Seeding anthologies...');
 
-  for (const data of AnthologiesSeed) {
-    const exists = await repository.findOne({ where: { title: data.title } });
+  for (const { productionInfo: piData, ...data } of AnthologiesSeed) {
+    const exists = await anthologyRepo.findOne({
+      where: { title: data.title },
+    });
 
     if (!exists) {
-      const entity = repository.create(data);
-      await repository.save(entity);
-      console.log(`  ✓ Created anthology: ${entity.title}`);
+      const pi = piRepo.create(piData);
+      const savedPi = await piRepo.save(pi);
+
+      const entity = anthologyRepo.create({ ...data, productionInfo: savedPi });
+      const savedAnthology = await anthologyRepo.save(entity);
+
+      savedPi.anthology = savedAnthology;
+      await piRepo.save(savedPi);
+
+      console.log(`  ✓ Created anthology: ${savedAnthology.title}`);
     } else {
       console.log(`  - Anthology already exists: ${data.title}`);
     }
