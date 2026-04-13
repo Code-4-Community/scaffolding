@@ -59,4 +59,12 @@ export const UsersSeed: DeepPartial<User>[] = [
     email: 'jamie.rivera@gmail.com',
     title: 'Publishing Fellow',
   },
+  {
+    id: 8,
+    role: Role.ADMIN,
+    firstName: 'Gauri',
+    lastName: 'Rajesh',
+    email: 'gauri.ggsr@gmail.com',
+    title: 'Volunteer Assistant',
+  },
 ];

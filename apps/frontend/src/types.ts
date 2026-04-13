@@ -1,10 +1,11 @@
 import { PUB_LEVEL_OPTIONS } from '@containers/archived-publications/filter-modal/constants';
 
 export enum AnthologyStatus {
+  DRAFT = 'Draft',
+  IN_REVISION = 'In Revision',
+  IN_PRODUCTION = 'In Production',
+  PUBLISHED = 'Published',
   ARCHIVED = 'Archived',
-  NOT_STARTED = 'NotStarted',
-  DRAFTING = 'Drafting',
-  CAN_BE_SHARED = 'CanBeShared',
 }
 
 export enum AnthologyPubLevel {
