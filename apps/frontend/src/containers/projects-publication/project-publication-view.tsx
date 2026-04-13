@@ -6,7 +6,10 @@ import NewStoryDraftModal from './new-story-draft-modal';
 import EditStoryDraftModal, {
   EditableStoryDraft,
 } from './edit-story-draft-modal';
+import OmchaiView from './omchai-view';
 import './project-publication-view.css';
+
+type Tab = 'omchai' | 'document-tracker';
 
 interface StoryDraftRow {
   storyDraftId: number;
@@ -28,6 +31,7 @@ const ProjectPublicationView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [anthology, setAnthology] = useState<Anthology | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<Tab>('omchai');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDraft, setEditingDraft] = useState<StoryDraftRow | null>(null);
   const [storyDrafts, setStoryDrafts] = useState<StoryDraftRow[]>([]);
@@ -84,8 +88,10 @@ const ProjectPublicationView: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    loadStoryDrafts();
-  }, [loadStoryDrafts]);
+    if (activeTab === 'document-tracker') {
+      loadStoryDrafts();
+    }
+  }, [activeTab, loadStoryDrafts]);
 
   if (loading) return <div className="ppv-wrapper">Loading...</div>;
   if (!anthology)
@@ -105,74 +111,101 @@ const ProjectPublicationView: React.FC = () => {
         <h1 className="ppv-title">{anthology.title}</h1>
 
         <div className="publication-tabs">
-          <span className="publication-tab publication-tab--active">
+          <button
+            type="button"
+            className={`publication-tab${
+              activeTab === 'omchai' ? ' publication-tab--active' : ''
+            }`}
+            onClick={() => setActiveTab('omchai')}
+          >
+            OMCHAI
+          </button>
+          <button
+            type="button"
+            className={`publication-tab${
+              activeTab === 'document-tracker' ? ' publication-tab--active' : ''
+            }`}
+            onClick={() => setActiveTab('document-tracker')}
+          >
             Document Tracker
-          </span>
+          </button>
         </div>
 
-        <div className="ppv-tab-content">
-          <div className="document-tracker-header">
-            <button
-              type="button"
-              className="publication-create-btn"
-              onClick={() => setIsModalOpen(true)}
-            >
-              New Story Draft
-            </button>
+        {activeTab === 'omchai' && (
+          <div className="ppv-tab-content">
+            <OmchaiView anthologyId={anthology.id} />
           </div>
+        )}
 
-          <table className="document-tracker-table">
-            <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Name in Book</th>
-                <th>Class Period</th>
-                <th>Document Link</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {storyDrafts.length === 0 ? (
+        {activeTab === 'document-tracker' && (
+          <div className="ppv-tab-content">
+            <div className="document-tracker-header">
+              <button
+                type="button"
+                className="publication-create-btn"
+                onClick={() => setIsModalOpen(true)}
+              >
+                New Story Draft
+              </button>
+            </div>
+
+            <table className="document-tracker-table">
+              <thead>
                 <tr>
-                  <td
-                    colSpan={6}
-                    style={{
-                      textAlign: 'center',
-                      color: 'var(--neutral-400)',
-                      padding: '24px',
-                    }}
-                  >
-                    No story drafts yet.
-                  </td>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Name in Book</th>
+                  <th>Class Period</th>
+                  <th>Document Link</th>
+                  <th></th>
                 </tr>
-              ) : (
-                storyDrafts.map((draft) => (
-                  <tr key={draft.storyDraftId}>
-                    <td>{draft.firstName}</td>
-                    <td>{draft.lastName}</td>
-                    <td>{draft.nameInBook}</td>
-                    <td>{draft.classPeriod}</td>
-                    <td>
-                      <a href={draft.docLink} target="_blank" rel="noreferrer">
-                        Open
-                      </a>
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="document-tracker-edit-btn"
-                        onClick={() => setEditingDraft(draft)}
-                      >
-                        Edit
-                      </button>
+              </thead>
+              <tbody>
+                {storyDrafts.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      style={{
+                        textAlign: 'center',
+                        color: 'var(--neutral-400)',
+                        padding: '24px',
+                      }}
+                    >
+                      No story drafts yet.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ) : (
+                  storyDrafts.map((draft) => (
+                    <tr key={draft.storyDraftId}>
+                      <td>{draft.firstName}</td>
+                      <td>{draft.lastName}</td>
+                      <td>{draft.nameInBook}</td>
+                      <td>{draft.classPeriod}</td>
+                      <td>
+                        <a
+                          href={draft.docLink}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Open
+                        </a>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="document-tracker-edit-btn"
+                          onClick={() => setEditingDraft(draft)}
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {isModalOpen && (

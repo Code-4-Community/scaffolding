@@ -4,6 +4,7 @@ import {
   Anthology,
   Author,
   EditRound,
+  OmchaiEntry,
   Story,
   StoryDraft,
   SubmissionRound,
@@ -118,6 +119,14 @@ export class ApiClient {
     return this.post(`/api/story-drafts/${storyDraftId}`, body) as Promise<{
       message: string;
     }>;
+  }
+
+  public async getOmchaiByAnthology(
+    anthologyId: number,
+  ): Promise<OmchaiEntry[]> {
+    return this.get(`/api/omchai/anthology/${anthologyId}`) as Promise<
+      OmchaiEntry[]
+    >;
   }
 
   private async getAuthHeaders(): Promise<Record<string, string>> {
