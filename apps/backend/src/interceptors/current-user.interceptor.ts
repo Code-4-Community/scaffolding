@@ -12,18 +12,29 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
   async intercept(context: ExecutionContext, handler: CallHandler) {
     const request = context.switchToHttp().getRequest();
-    const userEmail = request.user?.email;
+    const cognitoPayload = request.user;
+    console.log('Cognito payload in interceptor:', cognitoPayload);
 
-    if (!userEmail) {
+    if (!cognitoPayload || !cognitoPayload.email) {
       return handler.handle();
     }
 
-    const users = await this.usersService.find(userEmail);
+    const users = await this.usersService.find(cognitoPayload.email);
 
     if (users.length > 0) {
       const user = users[0];
 
       request.user = user;
+    }
+    if (users.length === 0) {
+      const newUser = await this.usersService.create(
+        cognitoPayload.email,
+        cognitoPayload.firstName || 'Unknown',
+        cognitoPayload.lastName || 'Unknown',
+        cognitoPayload.role || 'STANDARD',
+        cognitoPayload.title || 'Unknown',
+      );
+      request.user = newUser;
     }
 
     return handler.handle();
