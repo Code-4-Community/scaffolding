@@ -10,7 +10,6 @@ import RoleHomeRedirect from './auth/RoleHomeRedirect';
 import { UserType } from './api/types';
 import Login from './containers/login';
 import Signup from './containers/signup';
-import Logout from './containers/logout';
 import FormsPage from '@containers/FormsPage';
 
 export const App: React.FC = () => {
@@ -25,7 +24,6 @@ export const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/logout" element={<Logout />} />
 
           <Route element={<RequireAuth />}>
             <Route path="/" element={<RoleHomeRedirect />} />

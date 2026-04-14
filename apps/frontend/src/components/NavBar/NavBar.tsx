@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Heading, Flex, Link, Text } from '@chakra-ui/react';
+import { Box, Heading, Flex } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import NavbarItem from './NavBarItem';
 import {
   FaHouse,
@@ -8,6 +9,7 @@ import {
   FaRightFromBracket,
 } from 'react-icons/fa6';
 import { UserType } from '@api/types';
+import { signOutUser } from '../../auth/cognito';
 
 export type NavBarProps = {
   logo: React.ReactNode;
@@ -15,6 +17,19 @@ export type NavBarProps = {
 };
 
 export default function NavBar({ logo, userType }: NavBarProps) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOutUser();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Sign out failed', err);
+    } finally {
+      navigate('/login', { replace: true });
+    }
+  };
+
   return (
     <Box
       display="flex"
@@ -59,7 +74,7 @@ export default function NavBar({ logo, userType }: NavBarProps) {
       </Box>
 
       <NavbarItem
-        href="/logout"
+        onClick={handleLogout}
         label="Log Out"
         icon={<FaRightFromBracket />}
       />
