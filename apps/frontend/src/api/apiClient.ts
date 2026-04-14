@@ -1,6 +1,14 @@
 import axios, { type AxiosInstance } from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { Anthology, Story } from '../types';
+import {
+  Anthology,
+  Author,
+  EditRound,
+  OmchaiEntry,
+  Story,
+  StoryDraft,
+  SubmissionRound,
+} from '../types';
 import User from './dtos/user.dto';
 import Role from './dtos/role';
 
@@ -58,6 +66,70 @@ export class ApiClient {
     >;
   }
 
+  public async getAuthors(): Promise<Author[]> {
+    return this.get('/api/author/author') as Promise<Author[]>;
+  }
+
+  public async createAuthor(body: {
+    name: string;
+    nameInBook?: string;
+    classPeriod?: string;
+  }): Promise<Author> {
+    return this.post('/api/author/author', body) as Promise<Author>;
+  }
+
+  public async getStoryDrafts(anthologyId: number) {
+    return this.get(`/api/story-drafts/anthology/${anthologyId}`) as Promise<
+      StoryDraft[]
+    >;
+  }
+
+  public async createStoryDraft(body: {
+    authorId: number;
+    anthologyId: number;
+    docLink: string;
+  }): Promise<{ message: string }> {
+    return this.post('/api/story-drafts', body) as Promise<{
+      message: string;
+    }>;
+  }
+
+  public async updateAuthor(
+    authorId: number,
+    body: {
+      name?: string;
+      nameInBook?: string;
+      classPeriod?: string;
+    },
+  ): Promise<Author> {
+    return this.put(`/api/author/author/${authorId}`, body) as Promise<Author>;
+  }
+
+  public async updateStoryDraft(
+    storyDraftId: number,
+    body: {
+      docLink?: string;
+      submissionRound?: SubmissionRound;
+      studentConsent?: boolean;
+      inManuscript?: boolean;
+      editRound?: EditRound;
+      proofread?: boolean;
+      notes?: string[];
+    },
+  ): Promise<{ message: string }> {
+    return this.post(`/api/story-drafts/${storyDraftId}`, body) as Promise<{
+      message: string;
+    }>;
+  }
+
+  public async getOmchaiByAnthology(
+    anthologyId: number,
+  ): Promise<OmchaiEntry[]> {
+    return this.get(`/api/omchai/anthology/${anthologyId}`) as Promise<
+      OmchaiEntry[]
+    >;
+  }
+
   private async getAuthHeaders(): Promise<Record<string, string>> {
     try {
       const session = await fetchAuthSession();
@@ -80,6 +152,13 @@ export class ApiClient {
     const headers = await this.getAuthHeaders();
     return this.axiosInstance
       .post(path, body, { headers })
+      .then((response) => response.data);
+  }
+
+  private async put(path: string, body: unknown): Promise<unknown> {
+    const headers = await this.getAuthHeaders();
+    return this.axiosInstance
+      .put(path, body, { headers })
       .then((response) => response.data);
   }
 
