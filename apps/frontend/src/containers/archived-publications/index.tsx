@@ -13,7 +13,6 @@ import {
 } from '../../types';
 import FilterModal from './filter-modal/FilterModal';
 
-// Import SVG icons
 import SearchIcon from '../../assets/icons/search.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
@@ -22,6 +21,7 @@ import BookmarkIcon from '../../assets/icons/bookmark.svg';
 type PublicationsPageMode = 'archive' | 'projects';
 type ArchiveTab = 'published' | 'archived';
 type ProjectTab =
+  | 'all'
   | 'drafts'
   | 'in-revision'
   | 'in-production'
@@ -30,6 +30,7 @@ type ProjectTab =
 
 interface PublicationsPageProps {
   mode?: PublicationsPageMode;
+  onOpenCreatePublicationModal?: () => void;
 }
 
 const SORT_OPTION_TO_BACKEND: Partial<Record<SortOption, string>> = {
@@ -71,9 +72,6 @@ function buildFilterSortBody(filters: FilterState): FilterSortAnthologyBody {
   return body;
 }
 
-/**
- * Applies search and inventory filters that the backend does not support.
- */
 function applyLocalFilters(
   pubs: Anthology[],
   search: string,
@@ -88,13 +86,14 @@ function applyLocalFilters(
 
   if (filters.inventoryMin) {
     const min = parseInt(filters.inventoryMin, 10);
-    if (!isNaN(min)) {
+    if (!Number.isNaN(min)) {
       result = result.filter((p) => (p.inventory ?? 0) >= min);
     }
   }
+
   if (filters.inventoryMax) {
     const max = parseInt(filters.inventoryMax, 10);
-    if (!isNaN(max)) {
+    if (!Number.isNaN(max)) {
       result = result.filter((p) => (p.inventory ?? Infinity) <= max);
     }
   }
@@ -108,6 +107,7 @@ function isArchiveTab(value: string | undefined): value is ArchiveTab {
 
 function isProjectTab(value: string | undefined): value is ProjectTab {
   return (
+    value === 'all' ||
     value === 'drafts' ||
     value === 'in-revision' ||
     value === 'in-production' ||
@@ -118,20 +118,23 @@ function isProjectTab(value: string | undefined): value is ProjectTab {
 
 export default function ArchivedPublications({
   mode = 'archive',
+  onOpenCreatePublicationModal,
 }: PublicationsPageProps) {
   const [publications, setPublications] = useState<Anthology[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedFilters, setAppliedFilters] =
     useState<FilterState>(DEFAULT_FILTER_STATE);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
   const navigate = useNavigate();
-  const { tab } = useParams<{ tab: string }>();
+  const { tab } = useParams<{ tab?: string }>();
 
   const activeArchiveTab: ArchiveTab = isArchiveTab(tab) ? tab : 'published';
-  const activeProjectTab: ProjectTab = isProjectTab(tab) ? tab : 'drafts';
+  const activeProjectTab: ProjectTab = isProjectTab(tab) ? tab : 'all';
 
   useEffect(() => {
     const body = buildFilterSortBody(appliedFilters);
+
     apiClient
       .filterSortAnthologies(body)
       .then((data) => {
@@ -157,20 +160,32 @@ export default function ArchivedPublications({
       return status === AnthologyStatus.ARCHIVED;
     }
 
+    if (activeProjectTab === 'all') {
+      return true;
+    }
+
     if (activeProjectTab === 'drafts') {
-      return pub.status === AnthologyStatus.NOT_STARTED;
+      return (
+        pub.status === AnthologyStatus.NOT_STARTED ||
+        status === 'Draft' ||
+        status === 'NotStarted'
+      );
     }
 
     if (activeProjectTab === 'in-revision') {
-      return pub.status === AnthologyStatus.DRAFTING;
+      return (
+        pub.status === AnthologyStatus.DRAFTING || status === 'In Revision'
+      );
     }
 
     if (activeProjectTab === 'in-production') {
-      return status === 'InProduction';
+      return status === 'InProduction' || status === 'In Production';
     }
 
     if (activeProjectTab === 'published') {
-      return status === AnthologyStatus.CAN_BE_SHARED || status === 'Published';
+      return (
+        status === AnthologyStatus.CAN_BE_SHARED || status === 'Published'
+      );
     }
 
     if (activeProjectTab === 'archived') {
@@ -188,14 +203,11 @@ export default function ArchivedPublications({
 
   return (
     <div className="archive-wrapper">
-      {/* All Publications Section */}
       <section className="all-publications-section">
         <div className="all-publications-content">
-          {/* Search Header */}
           <div className="publication-search-header">
-            <h2 className="publication-search-title">
-              {mode === 'projects' ? 'Publication Tracker' : 'Library'}
-            </h2>
+            <h2 className="publication-search-title">Publications</h2>
+
             <div className="publication-search-controls">
               <div className="publication-search-input-wrapper">
                 <div className="publication-search-input-content">
@@ -213,6 +225,7 @@ export default function ArchivedPublications({
                   />
                 </div>
               </div>
+
               <button
                 type="button"
                 className="publication-filter-btn publication-filter-btn--text"
@@ -226,17 +239,20 @@ export default function ArchivedPublications({
                 />
                 <span>Filters</span>
               </button>
+
               {mode === 'projects' && (
                 <button
                   type="button"
                   className="publication-create-btn"
-                  aria-label="Create project"
+                  aria-label="Create new publication"
+                  onClick={onOpenCreatePublicationModal}
                 >
-                  Create Project
+                  New Publication
                 </button>
               )}
             </div>
           </div>
+
           {mode === 'archive' && (
             <div className="publication-tabs">
               <NavLink
@@ -257,8 +273,17 @@ export default function ArchivedPublications({
               </NavLink>
             </div>
           )}
+
           {mode === 'projects' && (
             <div className="publication-tabs">
+              <NavLink
+                to="/projects/all"
+                className={({ isActive }) =>
+                  `publication-tab ${isActive ? 'publication-tab--active' : ''}`
+                }
+              >
+                All
+              </NavLink>
               <NavLink
                 to="/projects/drafts"
                 className={({ isActive }) =>
@@ -302,7 +327,6 @@ export default function ArchivedPublications({
             </div>
           )}
 
-          {/* Publication Cards Grid */}
           <div className="publication-cards-grid">
             {filteredPublications.map((pub) => (
               <button
@@ -331,6 +355,7 @@ export default function ArchivedPublications({
                     className="publication-card-bookmark"
                   />
                 </div>
+
                 <div className="publication-card-info">
                   <div className="publication-card-details">
                     <h3 className="publication-card-title">{pub.title}</h3>
@@ -352,7 +377,6 @@ export default function ArchivedPublications({
         </div>
       </section>
 
-      {/* Sort & Filter Modal */}
       {isFilterModalOpen && (
         <FilterModal
           initialFilters={appliedFilters}
