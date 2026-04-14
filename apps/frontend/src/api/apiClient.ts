@@ -181,8 +181,10 @@ export class ApiClient {
     lastName: string;
     email: string;
     role: Role;
+    title: string;
   }): Promise<User> {
-    return this.post('/api/users', body) as Promise<User>;
+    console.log(body);
+    return this.post('/api/auth/admin/users', body) as Promise<User>;
   }
 }
 

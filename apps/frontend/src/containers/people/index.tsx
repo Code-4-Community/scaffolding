@@ -46,6 +46,7 @@ const People: React.FC = () => {
       lastName: string;
       email: string;
       role: Role;
+      title: string;
     }) => apiClient.createUser(form),
     {
       onSuccess: () => {
@@ -97,6 +98,7 @@ const People: React.FC = () => {
                 lastName: string;
                 email: string;
                 role: Role;
+                title: string;
               },
             )
           }

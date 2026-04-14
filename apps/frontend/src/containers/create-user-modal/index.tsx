@@ -7,6 +7,7 @@ interface CreateUserFormState {
   lastName: string;
   email: string;
   role: Role | '';
+  title: string;
 }
 
 interface CreateUserModalProps {
@@ -36,6 +37,7 @@ const INITIAL_FORM: CreateUserFormState = {
   lastName: '',
   email: '',
   role: '',
+  title: '',
 };
 
 export default function CreateUserModal({
@@ -55,6 +57,7 @@ export default function CreateUserModal({
     form.firstName.trim().length > 0 &&
     form.lastName.trim().length > 0 &&
     form.email.trim().length > 0 &&
+    form.title.trim().length > 0 &&
     form.role !== '';
 
   return (
@@ -95,6 +98,14 @@ export default function CreateUserModal({
               placeholder="Enter email address"
               value={form.email}
               onChange={(e) => set('email', e.target.value)}
+            />
+          </Field>
+          <Field label="Title" required>
+            <input
+              className="input"
+              placeholder="Enter title"
+              value={form.title}
+              onChange={(e) => set('title', e.target.value)}
             />
           </Field>
 
