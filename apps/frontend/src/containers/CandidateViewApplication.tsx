@@ -16,6 +16,7 @@ import RequirementsFrame from '../components/RequirementsFrame';
 import UploadedMaterial from '../components/UploadedMaterial';
 import SchoolAffiliationFrame from '../components/SchoolAffiliationFrame';
 import ApplicationProfileHeader from '@components/ApplicationProfileHeader';
+import EmergencyContactFrame from '@components/EmergencyContactFrame';
 
 const CandidateViewApplication: React.FC = () => {
   const [application, setApplication] = useState<Application | null>(null);
@@ -52,19 +53,19 @@ const CandidateViewApplication: React.FC = () => {
       console.debug('CandidateViewApplication: load started');
 
       try {
-        await apiClient
-          .getCurrentUser()
-          .then(setUser)
-          .catch(() => setError('Failed to load user'));
+        const currentUser = await apiClient.getCurrentUser();
+        if (cancelled) return;
 
-        if (!user) {
+        if (!currentUser || !('email' in currentUser) || !currentUser.email) {
           setError('Unable to determine user');
           return;
         }
 
-        const candidateInfo = await apiClient
-          .getCandidateInfoByEmail(user.email)
-          .catch(() => setError('Failed to load candidate info'));
+        setUser(currentUser);
+
+        const candidateInfo = await apiClient.getCandidateInfoByEmail(
+          currentUser.email,
+        );
 
         if (!candidateInfo) {
           setError("Unable to get user's application id");
@@ -81,14 +82,11 @@ const CandidateViewApplication: React.FC = () => {
           appId: candidateInfo.appId,
         });
 
-        await apiClient
-          .getCurrentApplication()
-          .then(setApplication)
-          .catch(() => setError('Failed to load application'));
-
+        const app = await apiClient.getCurrentApplication();
         if (cancelled) return;
+        setApplication(app);
 
-        if (!application) {
+        if (!app) {
           console.debug(
             '[application] No backend application found for current user',
           );
@@ -96,11 +94,11 @@ const CandidateViewApplication: React.FC = () => {
         }
 
         console.debug('CandidateViewApplication: application loaded', {
-          appId: application.appId,
-          applicantType: application.applicantType,
+          appId: app.appId,
+          applicantType: app.applicantType,
         });
 
-        if (application.applicantType === ApplicantType.LEARNER) {
+        if (app.applicantType === ApplicantType.LEARNER) {
           try {
             console.debug('CandidateViewApplication: requesting learner info', {
               appId: candidateInfo.appId,
@@ -276,6 +274,11 @@ const CandidateViewApplication: React.FC = () => {
             }}
           />
         )}
+        <EmergencyContactFrame
+          name={application.emergencyContactName}
+          phone={application.emergencyContactPhone}
+          relationship={application.emergencyContactRelationship}
+        />
       </Box>
     </div>
   );

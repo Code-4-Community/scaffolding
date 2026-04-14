@@ -86,12 +86,12 @@ const ApplicationProfileHeader: React.FC<ApplicationProfileHeaderProps> = ({
           </Text>{' '}
           <Text
             className={`inline-block px-3 py-1 text-sm rounded-full font-semibold text-white ${
-              over18 ? 'bg-green-500' : 'bg-red-500'
+              over18 === false ? 'bg-red-500' : 'bg-green-500'
             }`}
             pl="3"
             pr="3"
           >
-            {over18 == false ? 'No' : 'Yes'}
+            {over18 === false ? 'No' : 'Yes'}
           </Text>
         </div>
       </Box>
