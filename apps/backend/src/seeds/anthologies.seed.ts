@@ -1,17 +1,5 @@
 import { AnthologyPubLevel, AnthologyStatus } from '../anthology/types';
 
-interface ProductionInfoSeedData {
-  binding_type?: string;
-  printed_by?: string;
-  print_run?: number;
-  printing_cost?: number;
-  page_count?: number;
-  cover_image_file_link?: string;
-  design_files_link?: string;
-  dimensions?: string;
-  weight_in_grams?: number;
-}
-
 export interface AnthologySeedItem {
   title: string;
   byline: string;
@@ -28,7 +16,6 @@ export interface AnthologySeedItem {
   isbn?: string;
   shopifyUrl?: string;
   subtitle?: 'A College Essay Anthology';
-  productionInfo: ProductionInfoSeedData;
 }
 
 export const AnthologiesSeed: AnthologySeedItem[] = [
@@ -47,15 +34,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.PUBLISHED,
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/voices-from-the-threshold.png',
-    productionInfo: {
-      binding_type: 'Saddle Stitch',
-      printed_by: 'FlashPrint',
-      print_run: 60,
-      printing_cost: 198.0,
-      page_count: 48,
-      cover_image_file_link:
-        'publications/covers/voices-from-the-threshold.png',
-    },
   },
   {
     title: 'The Color of Saturday',
@@ -72,14 +50,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/color-of-saturday.png',
     shopifyUrl: 'https://writingcenter.org/publications/color-of-saturday',
-    productionInfo: {
-      binding_type: 'Tape Bound/Binding Strips',
-      printed_by: 'FlashPrint',
-      print_run: 80,
-      printing_cost: 224.4,
-      page_count: 36,
-      cover_image_file_link: 'publications/covers/color-of-saturday.png',
-    },
   },
   {
     title: 'What the River Carries',
@@ -97,14 +67,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/what-the-river-carries.png',
     shopifyUrl: 'https://writingcenter.org/publications/what-the-river-carries',
-    productionInfo: {
-      binding_type: 'Tape Bound/Binding Strips',
-      printed_by: 'FlashPrint',
-      print_run: 50,
-      printing_cost: 165.0,
-      page_count: 44,
-      cover_image_file_link: 'publications/covers/what-the-river-carries.png',
-    },
   },
   {
     title: 'Prism Literary Magazine #14: Borrowed and Stolen',
@@ -122,14 +84,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/rubix-14-front.png',
     shopifyUrl: 'https://writingcenter.org/publications/rubix-14',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'Country Press',
-      print_run: 75,
-      printing_cost: 681.75,
-      page_count: 88,
-      cover_image_file_link: 'publications/covers/rubix-14-front.png',
-    },
   },
   {
     title: 'Snapshots at 3AM',
@@ -145,14 +99,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/snapshots-3am.png',
     shopifyUrl: 'https://writingcenter.org/publications/snapshots-3am',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'PaperGraphics',
-      print_run: 320,
-      printing_cost: 1814.4,
-      page_count: 72,
-      cover_image_file_link: 'publications/covers/snapshots-3am.png',
-    },
   },
   {
     title: 'How to Survive a Cafeteria',
@@ -167,14 +113,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.ARCHIVED,
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/how-to-survive-cafeteria.png',
-    productionInfo: {
-      binding_type: 'Tape Bound/Binding Strips',
-      printed_by: 'FlashPrint',
-      print_run: 100,
-      printing_cost: 180.0,
-      page_count: 40,
-      cover_image_file_link: 'publications/covers/how-to-survive-cafeteria.png',
-    },
   },
   {
     title: 'Letters to Nobody',
@@ -190,14 +128,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.IN_REVISION,
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/letters-to-nobody.png',
-    productionInfo: {
-      binding_type: 'Tape Bound/Binding Strips',
-      printed_by: 'FlashPrint',
-      print_run: 80,
-      printing_cost: 249.6,
-      page_count: 52,
-      cover_image_file_link: 'publications/covers/letters-to-nobody.png',
-    },
   },
   {
     title: 'Aftershock',
@@ -215,14 +145,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.SIGNATURE,
     photoUrl: 'publications/covers/aftershock-cover.png',
     shopifyUrl: 'https://writingcenter.org/publications/aftershock',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'PaperGraphics',
-      print_run: 500,
-      printing_cost: 2975.0,
-      page_count: 112,
-      cover_image_file_link: 'publications/covers/aftershock-cover.png',
-    },
   },
   {
     title: 'Bright Noise',
@@ -239,14 +161,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/bright-noise-cover.png',
     shopifyUrl: 'https://writingcenter.org/publications/bright-noise',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'Country Press',
-      print_run: 100,
-      printing_cost: 856.0,
-      page_count: 96,
-      cover_image_file_link: 'publications/covers/bright-noise-cover.png',
-    },
   },
   {
     title: "Tomorrow's Almanac",
@@ -262,14 +176,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/tomorrows-almanac.png',
     shopifyUrl: 'https://writingcenter.org/publications/tomorrows-almanac',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'PaperGraphics',
-      print_run: 320,
-      printing_cost: 1830.4,
-      page_count: 76,
-      cover_image_file_link: 'publications/covers/tomorrows-almanac.png',
-    },
   },
   {
     title: 'Prism Literary Magazine #15: Memory Palace',
@@ -287,14 +193,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/rubix-15-front.png',
     shopifyUrl: 'https://writingcenter.org/publications/rubix-15',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'Country Press',
-      print_run: 75,
-      printing_cost: 697.5,
-      page_count: 92,
-      cover_image_file_link: 'publications/covers/rubix-15-front.png',
-    },
   },
   {
     title: 'Not Guilty',
@@ -312,14 +210,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.SIGNATURE,
     photoUrl: 'publications/covers/not-guilty-cover.png',
     shopifyUrl: 'https://writingcenter.org/publications/not-guilty',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'PaperGraphics',
-      print_run: 500,
-      printing_cost: 2950.0,
-      page_count: 108,
-      cover_image_file_link: 'publications/covers/not-guilty-cover.png',
-    },
   },
   {
     title: 'Unlocked',
@@ -336,14 +226,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/unlocked-cover.png',
     shopifyUrl: 'https://writingcenter.org/publications/unlocked',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'Marquis',
-      print_run: 500,
-      printing_cost: 2950.0,
-      page_count: 128,
-      cover_image_file_link: 'publications/covers/unlocked-cover.png',
-    },
   },
   {
     title: 'Burn and Bloom',
@@ -360,14 +242,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.SIGNATURE,
     photoUrl: 'publications/covers/burn-and-bloom-cover.png',
     shopifyUrl: 'https://writingcenter.org/publications/burn-and-bloom',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'PaperGraphics',
-      print_run: 500,
-      printing_cost: 2900.0,
-      page_count: 116,
-      cover_image_file_link: 'publications/covers/burn-and-bloom-cover.png',
-    },
   },
   {
     title: 'Civic Creatures',
@@ -385,14 +259,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.SIGNATURE,
     photoUrl: 'publications/covers/civic-creatures-cover.png',
     shopifyUrl: 'https://writingcenter.org/publications/civic-creatures',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'PaperGraphics',
-      print_run: 500,
-      printing_cost: 2975.0,
-      page_count: 120,
-      cover_image_file_link: 'publications/covers/civic-creatures-cover.png',
-    },
   },
   {
     title: 'The Weight of a Suitcase',
@@ -409,14 +275,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.PUBLISHED,
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/weight-of-suitcase.png',
-    productionInfo: {
-      binding_type: 'Saddle Stitch',
-      printed_by: 'FlashPrint',
-      print_run: 60,
-      printing_cost: 192.0,
-      page_count: 46,
-      cover_image_file_link: 'publications/covers/weight-of-suitcase.png',
-    },
   },
   {
     title: 'Every Map Lies',
@@ -433,14 +291,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/every-map-lies.png',
     shopifyUrl: 'https://writingcenter.org/publications/every-map-lies',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'Marquis',
-      print_run: 200,
-      printing_cost: 1380.0,
-      page_count: 78,
-      cover_image_file_link: 'publications/covers/every-map-lies.png',
-    },
   },
   {
     title: 'The Night Kitchen',
@@ -458,14 +308,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/night-kitchen.png',
     shopifyUrl: 'https://writingcenter.org/publications/night-kitchen',
-    productionInfo: {
-      binding_type: 'Tape Bound/Binding Strips',
-      printed_by: 'FlashPrint',
-      print_run: 50,
-      printing_cost: 180.0,
-      page_count: 46,
-      cover_image_file_link: 'publications/covers/night-kitchen.png',
-    },
   },
   {
     title: 'Hard Pivot',
@@ -483,14 +325,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     pubLevel: AnthologyPubLevel.PERFECT_BOUND,
     photoUrl: 'publications/covers/hard-pivot.png',
     shopifyUrl: 'https://writingcenter.org/publications/hard-pivot',
-    productionInfo: {
-      binding_type: 'Perfect Bound',
-      printed_by: 'Marquis',
-      print_run: 400,
-      printing_cost: 2400.0,
-      page_count: 122,
-      cover_image_file_link: 'publications/covers/hard-pivot.png',
-    },
   },
   {
     title: 'The Space Between Languages',
@@ -509,14 +343,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     photoUrl: 'publications/covers/space-between-languages.png',
     shopifyUrl:
       'https://writingcenter.org/publications/space-between-languages',
-    productionInfo: {
-      binding_type: 'Tape Bound/Binding Strips',
-      printed_by: 'FlashPrint',
-      print_run: 50,
-      printing_cost: 187.5,
-      page_count: 48,
-      cover_image_file_link: 'publications/covers/space-between-languages.png',
-    },
   },
   {
     title: 'Hallway Dispatches',
@@ -531,14 +357,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.PUBLISHED,
     pubLevel: AnthologyPubLevel.ZINE,
     photoUrl: 'publications/covers/hallway-dispatches.png',
-    productionInfo: {
-      binding_type: 'Saddle Stitch',
-      printed_by: 'FlashPrint',
-      print_run: 40,
-      printing_cost: 48.0,
-      page_count: 24,
-      cover_image_file_link: 'publications/covers/hallway-dispatches.png',
-    },
   },
   {
     title: 'Field Notes From the T',
@@ -553,13 +371,5 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.IN_PRODUCTION,
     pubLevel: AnthologyPubLevel.ZINE,
     photoUrl: 'publications/covers/field-notes-from-the-t.png',
-    productionInfo: {
-      binding_type: 'Saddle Stitch',
-      printed_by: 'FlashPrint',
-      print_run: 50,
-      printing_cost: 55.0,
-      page_count: 20,
-      cover_image_file_link: 'publications/covers/field-notes-from-the-t.png',
-    },
   },
 ];

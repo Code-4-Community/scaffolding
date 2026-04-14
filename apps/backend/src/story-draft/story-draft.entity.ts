@@ -47,9 +47,6 @@ export class StoryDraft {
   @Column('text', { array: true })
   notes: string[];
 
-  @Column()
-  classPeriod: string;
-
   @OneToOne(() => Story, (story) => story.storyDraft)
   @JoinColumn({ name: 'story_id' })
   story: Relation<Story>;

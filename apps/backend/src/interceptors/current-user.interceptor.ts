@@ -13,7 +13,6 @@ export class CurrentUserInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, handler: CallHandler) {
     const request = context.switchToHttp().getRequest();
     const cognitoPayload = request.user;
-    console.log('Cognito payload in interceptor:', cognitoPayload);
 
     if (!cognitoPayload || !cognitoPayload.email) {
       return handler.handle();
