@@ -152,9 +152,7 @@ export default function ArchivedPublications({
 
     if (mode === 'archive') {
       if (activeArchiveTab === 'published') {
-        return (
-          status === AnthologyStatus.CAN_BE_SHARED || status === 'Published'
-        );
+        return status === AnthologyStatus.PUBLISHED || status === 'Published';
       }
 
       return status === AnthologyStatus.ARCHIVED;
@@ -165,17 +163,11 @@ export default function ArchivedPublications({
     }
 
     if (activeProjectTab === 'drafts') {
-      return (
-        pub.status === AnthologyStatus.NOT_STARTED ||
-        status === 'Draft' ||
-        status === 'NotStarted'
-      );
+      return pub.status === AnthologyStatus.DRAFT;
     }
 
     if (activeProjectTab === 'in-revision') {
-      return (
-        pub.status === AnthologyStatus.DRAFTING || status === 'In Revision'
-      );
+      return pub.status === AnthologyStatus.IN_REVISION;
     }
 
     if (activeProjectTab === 'in-production') {
@@ -183,9 +175,7 @@ export default function ArchivedPublications({
     }
 
     if (activeProjectTab === 'published') {
-      return (
-        status === AnthologyStatus.CAN_BE_SHARED || status === 'Published'
-      );
+      return status === AnthologyStatus.PUBLISHED || status === 'Published';
     }
 
     if (activeProjectTab === 'archived') {
