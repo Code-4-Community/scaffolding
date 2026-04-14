@@ -16,13 +16,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     try {
       const result = await (super.canActivate(context) as Promise<boolean>);
-    
+
       if (!result) {
         this.logger.warn(`JWT guard denied ${method} ${url}`);
       }
 
       return result;
-    
     } catch (err) {
       this.logger.warn(
         `JWT validation failed for ${method} ${url}: ${err.message}`,

@@ -1,4 +1,10 @@
-import { Entity, Column, OneToMany, Relation, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  Relation,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from './types';
 import { Omchai } from 'src/omchai/omchai.entity';
 

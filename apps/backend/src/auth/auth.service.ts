@@ -42,7 +42,7 @@ export class AuthService {
     firstName: string,
     lastName: string,
     role: string,
-    title: string
+    title: string,
   ): Promise<void> {
     // user pool is configured with email aliases, so Username can't be an email value.
     const generatedUsername = `managed-${Date.now()}-${Math.random()
