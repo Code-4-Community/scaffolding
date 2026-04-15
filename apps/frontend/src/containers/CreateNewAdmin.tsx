@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -6,12 +6,14 @@ import {
   Heading,
   HStack,
   Input,
+  Popover,
   chakra,
   Text,
 } from '@chakra-ui/react';
 import { FaUserPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '@components/NavBar/NavBar';
+import ConfirmationPopoverContent from '@components/ConfirmationPopoverContent';
 import { DISCIPLINE_VALUES, UserType } from '@api/types';
 
 const CreateNewAdmin: React.FC = () => {
@@ -21,6 +23,8 @@ const CreateNewAdmin: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [discipline, setDiscipline] = useState('');
+  const [isConfirmPopoverOpen, setIsConfirmPopoverOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const canConfirm = useMemo(() => {
     return (
@@ -45,6 +49,19 @@ const CreateNewAdmin: React.FC = () => {
       lastName,
       discipline,
     });
+    setIsConfirmPopoverOpen(false);
+    setShowSuccess(true);
+  };
+
+  useEffect(() => {
+    if (!showSuccess) return;
+
+    const t = setTimeout(() => setShowSuccess(false), 4500);
+    return () => clearTimeout(t);
+  }, [showSuccess]);
+
+  const onCloseConfirmPopover = () => {
+    setIsConfirmPopoverOpen(false);
   };
 
   return (
@@ -52,6 +69,43 @@ const CreateNewAdmin: React.FC = () => {
       <NavBar logo="BHCHP" userType={UserType.ADMIN} />
 
       <Box id="main-content" p="20" flex="1" overflowY="auto" bg="#F3F3F3">
+        {showSuccess && (
+          <Box
+            position="fixed"
+            top="20px"
+            right="20px"
+            zIndex={9999}
+            bg="white"
+            border="1px solid rgba(0,0,0,0.08)"
+            boxShadow="0 6px 18px rgba(0,0,0,0.12)"
+            borderRadius="8px"
+            px="16px"
+            py="10px"
+            display="flex"
+            alignItems="center"
+            gap="12px"
+          >
+            <Box
+              width="28px"
+              height="28px"
+              borderRadius="full"
+              bg="#E7EEFF"
+              color="#4C6EDB"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              fontSize="14px"
+            >
+              !
+            </Box>
+            <Box>
+              <Text fontWeight="700">Admin submitted</Text>
+              <Text fontSize="12px">
+                You have successfully submitted a new admin.
+              </Text>
+            </Box>
+          </Box>
+        )}
         <Heading size="2xl" mb="6">
           Create Admin
         </Heading>
@@ -191,17 +245,34 @@ const CreateNewAdmin: React.FC = () => {
             >
               Cancel
             </Button>
-            <Button
-              bg={canConfirm ? '#204AA0' : '#AAB1BE'}
-              color="white"
-              _hover={canConfirm ? { bg: '#163C86' } : {}}
-              onClick={onConfirm}
-              disabled={!canConfirm}
-              borderRadius="6px"
-              p="6"
+            <Popover.Root
+              open={isConfirmPopoverOpen}
+              onOpenChange={(details) => setIsConfirmPopoverOpen(details.open)}
+              positioning={{ placement: 'top' }}
             >
-              Confirm
-            </Button>
+              <Popover.Trigger asChild>
+                <Button
+                  bg={canConfirm ? '#204AA0' : '#AAB1BE'}
+                  color="white"
+                  _hover={canConfirm ? { bg: '#163C86' } : {}}
+                  disabled={!canConfirm}
+                  borderRadius="6px"
+                  p="6"
+                >
+                  Confirm
+                </Button>
+              </Popover.Trigger>
+
+              <ConfirmationPopoverContent
+                variant="compact"
+                titleLines={['Confirmation']}
+                message="Are you sure you would like to submit?"
+                confirmText="Yes"
+                cancelText="No"
+                onConfirm={onConfirm}
+                onCancel={onCloseConfirmPopover}
+              />
+            </Popover.Root>
           </Flex>
         </Box>
       </Box>
