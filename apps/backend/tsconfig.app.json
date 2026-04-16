@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["node"],
+    "types": ["node", "multer"],
     "emitDecoratorMetadata": true,
     "target": "es2021",
     "module": "commonjs", // ← add this
