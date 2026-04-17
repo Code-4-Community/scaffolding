@@ -130,7 +130,13 @@ export class AnthologyController {
     const ext = file.originalname.split('.').pop() || 'jpg';
     const key = `images/${id}-${Date.now()}.${ext}`;
 
-    const url = await this.s3Service.uploadFile(file.buffer, key, file.mimetype);
-    return this.anthologyService.update(id, { photoUrl: url } as any);
+    const url = await this.s3Service.uploadFile(
+      file.buffer,
+      key,
+      file.mimetype,
+    );
+    return this.anthologyService.update(id, {
+      photoUrl: url,
+    } as UpdateAnthologyDto);
   }
 }
