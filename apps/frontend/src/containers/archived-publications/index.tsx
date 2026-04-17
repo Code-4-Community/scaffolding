@@ -17,6 +17,7 @@ import SearchIcon from '../../assets/icons/search.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
 import MenuDotsIcon from '../../assets/icons/menu-dots.svg';
 import BookmarkIcon from '../../assets/icons/bookmark.svg';
+import CreatePublicationModal from '@containers/create-publication-modal';
 
 type PublicationsPageMode = 'archive' | 'projects';
 type ArchiveTab = 'published' | 'archived';
@@ -30,7 +31,6 @@ type ProjectTab =
 
 interface PublicationsPageProps {
   mode?: PublicationsPageMode;
-  onOpenCreatePublicationModal?: () => void;
 }
 
 const SORT_OPTION_TO_BACKEND: Partial<Record<SortOption, string>> = {
@@ -118,13 +118,13 @@ function isProjectTab(value: string | undefined): value is ProjectTab {
 
 export default function ArchivedPublications({
   mode = 'archive',
-  onOpenCreatePublicationModal,
 }: PublicationsPageProps) {
   const [publications, setPublications] = useState<Anthology[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedFilters, setAppliedFilters] =
     useState<FilterState>(DEFAULT_FILTER_STATE);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [createPubModalOpen, setCreatePubModalOpen] = useState(false);
 
   const navigate = useNavigate();
   const { tab } = useParams<{ tab?: string }>();
@@ -235,7 +235,7 @@ export default function ArchivedPublications({
                   type="button"
                   className="publication-create-btn"
                   aria-label="Create new publication"
-                  onClick={onOpenCreatePublicationModal}
+                  onClick={() => setCreatePubModalOpen(true)}
                 >
                   New Publication
                 </button>
@@ -372,6 +372,13 @@ export default function ArchivedPublications({
           initialFilters={appliedFilters}
           onApply={(filters) => setAppliedFilters(filters)}
           onClose={() => setIsFilterModalOpen(false)}
+        />
+      )}
+      {createPubModalOpen && (
+        <CreatePublicationModal
+          onClose={() => setCreatePubModalOpen(false)}
+          onSave={() => setCreatePubModalOpen(false)}
+          teamMembers={[]}
         />
       )}
     </div>

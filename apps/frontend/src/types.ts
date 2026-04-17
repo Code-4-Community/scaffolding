@@ -145,21 +145,22 @@ export interface Anthology {
   themes?: string[];
   isbn?: string;
   shopify_url?: string;
-
-  // Missing from backend
   subtitle?: string;
   byline?: string;
-  praise_quotes?: string;
-  foreword_author?: string;
-  age_category?: string;
-  dimensions?: string;
-  binding_type?: string;
-  page_count?: number;
-  print_run?: number;
-  printed_by?: string;
-  number_of_students?: number;
-  printing_cost?: string;
-  weight?: string;
-  // Inventory breakdown locations
-  inventory_locations?: Record<string, number>;
+}
+
+export interface CreateNewPublicationDto {
+  title: string;
+  publicationLevel: AnthologyPubLevel;
+  themes: string[];
+  genres: string[];
+  publicationDate: string;
+  description: string;
+  // list of user emails
+  owners: string[];
+  managers: string[];
+  consulted: string[];
+  helpers: string[];
+  approvers: string[];
+  informed: string[];
 }

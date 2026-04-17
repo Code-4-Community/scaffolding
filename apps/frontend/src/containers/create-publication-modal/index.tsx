@@ -1,10 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './styles.css';
 import { THEMES, OMCHAI_ROLES, OmchaiRole } from './constants';
+import User from '@api/dtos/user.dto';
+import apiClient from '@api/apiClient';
+import { PROGRAM_OPTIONS } from '@containers/archived-publications/filter-modal/constants';
 
 export interface PublicationFormState {
   title: string;
   publicationType: string;
+  programs: string[];
   themes: string[];
   genres: string[];
   publicationDate: string;
@@ -55,6 +59,7 @@ const GENRES = [
 const INITIAL_FORM: PublicationFormState = {
   title: '',
   publicationType: '',
+  programs: [],
   themes: [],
   genres: [],
   publicationDate: '',
@@ -265,7 +270,9 @@ function UserSearchableMultiSelect({
                 >
                   <div className="multiselect__user-meta">
                     <span>{user.name}</span>
-                    <span className="multiselect__user-email">{user.email}</span>
+                    <span className="multiselect__user-email">
+                      {user.email}
+                    </span>
                   </div>
                   <input
                     type="checkbox"
@@ -305,10 +312,19 @@ function Field({ label, required = false, children }: FieldProps) {
 export default function CreatePublicationModal({
   onClose,
   onSave,
-  teamMembers = [],
 }: CreatePublicationModalProps) {
   const [tab, setTab] = useState<0 | 1>(0);
   const [form, setForm] = useState<PublicationFormState>(INITIAL_FORM);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    apiClient
+      .getUsers()
+      .then((data) => setUsers(data as User[]))
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const set = <K extends keyof PublicationFormState>(
     key: K,
@@ -383,13 +399,22 @@ export default function CreatePublicationModal({
                   ))}
                 </select>
               </Field>
-
               <Field label="Theme(s)" required>
                 <SearchableMultiSelect
                   options={THEMES}
                   selected={form.themes}
                   onChange={(value) => set('themes', value)}
                   placeholder="Search for a theme..."
+                  tagClass="multiselect__tag--theme"
+                  selectedOptionClass="multiselect__option--selected-theme"
+                />
+              </Field>
+              <Field label="Program(s)" required>
+                <SearchableMultiSelect
+                  options={PROGRAM_OPTIONS.map((o) => o.displayLabel)}
+                  selected={form.programs}
+                  onChange={(value) => set('programs', value)}
+                  placeholder="Search for a program..."
                   tagClass="multiselect__tag--theme"
                   selectedOptionClass="multiselect__option--selected-theme"
                 />
@@ -424,15 +449,16 @@ export default function CreatePublicationModal({
               {OMCHAI_ROLES.map(({ key, label }: OmchaiRole) => (
                 <Field key={key} label={label} required>
                   <UserSearchableMultiSelect
-                    users={teamMembers}
+                    users={users.map((u) => ({
+                      name: u.firstName + ' ' + u.lastName,
+                      email: u.email,
+                    }))}
                     selected={form[key]}
                     onChange={(value) => set(key, value)}
                     placeholder="Search by name or email..."
                   />
                 </Field>
               ))}
-
-              {DescriptionField}
             </>
           )}
         </div>

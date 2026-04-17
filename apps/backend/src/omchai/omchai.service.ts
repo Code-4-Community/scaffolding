@@ -35,4 +35,5 @@ export class OmchaiService {
     Object.assign(omchai, updateOmchaiDto);
     return this.repo.save(omchai);
   }
+
 }

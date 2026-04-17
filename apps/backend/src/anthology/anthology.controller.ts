@@ -20,11 +20,16 @@ import { OmchaiRole } from 'src/omchai/omchai.entity';
 import { CreateAnthologyDto } from './dtos/create-anthology.dto';
 import { UpdateAnthologyDto } from './dtos/update-anthology.dto';
 import { Role } from 'src/users/types';
+import { CreateNewPublicationDto } from './dtos/create-new-publication.dto';
+import { AnthologyStatus } from './types';
+import { OmchaiService } from 'src/omchai/omchai.service';
 
 @ApiTags('Anthologies')
 @Controller('anthologies')
 export class AnthologyController {
-  constructor(private readonly anthologyService: AnthologyService) {}
+  constructor(
+    private readonly anthologyService: AnthologyService,
+  ) {}
 
   @Post('filter-sort')
   filterSort(@Body() dto: FilterSortAnthologyDto): Promise<Anthology[]> {
@@ -85,5 +90,27 @@ export class AnthologyController {
     @Body() updateAnthologyDto: UpdateAnthologyDto,
   ): Promise<Anthology> {
     return this.anthologyService.update(id, updateAnthologyDto);
+  }
+
+  @ApiBearerAuth()
+  @UserStatus(Role.ADMIN)
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async createNewPublication(
+    @Body() createNewPublicationDto: CreateNewPublicationDto,
+  ): Promise<Anthology> {
+    // create publication
+    const anthology = await this.anthologyService.create(
+      createNewPublicationDto.title,
+      createNewPublicationDto.description,
+      AnthologyStatus.DRAFT,
+      createNewPublicationDto.publicationLevel,
+    );
+
+    
+    // create omchai assignments
+    // TO DO!!
+
+    return anthology;
   }
 }

@@ -26,4 +26,5 @@ export class OmchaiController {
   update(@Param('id') id: string, @Body() editOmchaiDto: EditOmchaiDto) {
     return this.omchaiService.update(+id, editOmchaiDto);
   }
+
 }

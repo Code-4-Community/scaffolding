@@ -3,6 +3,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import {
   Anthology,
   Author,
+  CreateNewPublicationDto,
   EditRound,
   OmchaiEntry,
   Story,
@@ -185,6 +186,14 @@ export class ApiClient {
   }): Promise<User> {
     console.log(body);
     return this.post('/api/auth/admin/users', body) as Promise<User>;
+  }
+
+  public async createNewPublication(body: CreateNewPublicationDto): Promise<Anthology> {
+    return this.post('/api/anthologies', body) as Promise<Anthology>;
+  }
+
+  public async createAnthology(body: {}): Promise<Anthology> {
+    return this.post('/api/anthologies', body) as Promise<Anthology>;
   }
 }
 
