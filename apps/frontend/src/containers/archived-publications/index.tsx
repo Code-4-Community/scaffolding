@@ -377,7 +377,9 @@ export default function ArchivedPublications({
       {createPubModalOpen && (
         <CreatePublicationModal
           onClose={() => setCreatePubModalOpen(false)}
-          onSave={() => setCreatePubModalOpen(false)}
+          onSave={() => {
+            setCreatePubModalOpen(false);
+          }}
           teamMembers={[]}
         />
       )}

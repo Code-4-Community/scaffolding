@@ -4,6 +4,12 @@ import { THEMES, OMCHAI_ROLES, OmchaiRole } from './constants';
 import User from '@api/dtos/user.dto';
 import apiClient from '@api/apiClient';
 import { PROGRAM_OPTIONS } from '@containers/archived-publications/filter-modal/constants';
+import {
+  AnthologyPubLevel,
+  AnthologyStatus,
+  CreateAnthologyDto,
+  CreateBatchOmchaiAssignmentsDto,
+} from '../../types';
 
 export interface PublicationFormState {
   title: string;
@@ -13,15 +19,16 @@ export interface PublicationFormState {
   genres: string[];
   publicationDate: string;
   description: string;
-  owner: string[];
-  manager: string[];
-  consulted: string[];
-  helper: string[];
-  approver: string[];
-  informed: string[];
+  owner: number[];
+  manager: number[];
+  consulted: number[];
+  helper: number[];
+  approver: number[];
+  informed: number[];
 }
 
 interface TeamMemberOption {
+  id: number;
   name: string;
   email: string;
 }
@@ -33,10 +40,10 @@ interface CreatePublicationModalProps {
 }
 
 const PUBLICATION_TYPES = [
-  { value: 'level0', label: 'Level 0 (Zines)' },
-  { value: 'level1', label: 'Level 1 (Chapbooks)' },
-  { value: 'level2', label: 'Level 2 (Perfect Bound)' },
-  { value: 'level3', label: 'Level 3 (Signature Publications)' },
+  { value: 'Zine', label: 'Level 0 (Zines)' },
+  { value: 'Chapbook', label: 'Level 1 (Chapbooks)' },
+  { value: 'PerfectBound', label: 'Level 2 (Perfect Bound)' },
+  { value: 'Signature', label: 'Level 3 (Signature Publications)' },
 ];
 
 const GENRES = [
@@ -175,8 +182,8 @@ function SearchableMultiSelect({
 
 interface UserSearchableMultiSelectProps {
   users: TeamMemberOption[];
-  selected: string[];
-  onChange: (val: string[]) => void;
+  selected: number[];
+  onChange: (val: number[]) => void;
   placeholder: string;
 }
 
@@ -200,7 +207,7 @@ function UserSearchableMultiSelect({
     );
   }, [users, query]);
 
-  const toggle = (value: string) => {
+  const toggle = (value: number) => {
     onChange(
       selected.includes(value)
         ? selected.filter((s) => s !== value)
@@ -208,9 +215,7 @@ function UserSearchableMultiSelect({
     );
   };
 
-  const selectedUsers = users.filter((user) =>
-    selected.includes(`${user.name} <${user.email}>`),
-  );
+  const selectedUsers = users.filter((user) => selected.includes(user.id));
 
   return (
     <div className="multiselect__wrapper">
@@ -228,7 +233,7 @@ function UserSearchableMultiSelect({
                 <button
                   type="button"
                   className="multiselect__tag-remove"
-                  onClick={() => toggle(value)}
+                  onClick={() => toggle(user.id)}
                   aria-label={`Remove ${user.name}`}
                 >
                   ×
@@ -256,8 +261,8 @@ function UserSearchableMultiSelect({
         <div className="multiselect__options-list">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => {
-              const value = `${user.name} <${user.email}>`;
-              const isSelected = selected.includes(value);
+              const value = user.id;
+              const isSelected = selected.includes(user.id);
 
               return (
                 <button
@@ -317,6 +322,41 @@ export default function CreatePublicationModal({
   const [form, setForm] = useState<PublicationFormState>(INITIAL_FORM);
   const [users, setUsers] = useState<User[]>([]);
 
+  async function handleSaveForm() {
+    onSave(form);
+    console.log(form);
+
+    // create body for anthology and omchai api calls
+    const createAnthologyBody: CreateAnthologyDto = {
+      status: AnthologyStatus.DRAFT,
+      title: form.title,
+      pub_level: form.publicationType as AnthologyPubLevel,
+      themes: form.themes,
+      genres: form.genres,
+      description: form.description,
+      programs: form.programs,
+      publicationDate: form.publicationDate,
+      isbn: '',
+    };
+
+    const anthology = await apiClient.createAnthology(createAnthologyBody);
+
+    const createBatchOmchaiAssignmentsBody: CreateBatchOmchaiAssignmentsDto = {
+      anthology_id: anthology.id,
+      datetime_assigned: new Date().toISOString(),
+      owners: form.owner,
+      managers: form.manager,
+      consulted: form.consulted,
+      helpers: form.helper,
+      approvers: form.approver,
+      informed: form.informed,
+    };
+
+    await apiClient.createBatchOmchaiAssignments(
+      createBatchOmchaiAssignmentsBody,
+    );
+  }
+
   useEffect(() => {
     apiClient
       .getUsers()
@@ -336,12 +376,7 @@ export default function CreatePublicationModal({
   const tab1Valid =
     form.title.trim().length > 0 &&
     form.publicationType.length > 0 &&
-    form.themes.length > 0 &&
-    form.genres.length > 0;
-
-  const tab2Valid = OMCHAI_ROLES.every(
-    (role: OmchaiRole) => form[role.key].length > 0,
-  );
+    form.publicationDate.length > 0;
 
   const DescriptionField = (
     <Field label="Description">
@@ -399,7 +434,7 @@ export default function CreatePublicationModal({
                   ))}
                 </select>
               </Field>
-              <Field label="Theme(s)" required>
+              <Field label="Theme(s)">
                 <SearchableMultiSelect
                   options={THEMES}
                   selected={form.themes}
@@ -409,7 +444,7 @@ export default function CreatePublicationModal({
                   selectedOptionClass="multiselect__option--selected-theme"
                 />
               </Field>
-              <Field label="Program(s)" required>
+              <Field label="Program(s)">
                 <SearchableMultiSelect
                   options={PROGRAM_OPTIONS.map((o) => o.displayLabel)}
                   selected={form.programs}
@@ -420,7 +455,7 @@ export default function CreatePublicationModal({
                 />
               </Field>
 
-              <Field label="Genre(s)" required>
+              <Field label="Genre(s)">
                 <SearchableMultiSelect
                   options={GENRES}
                   selected={form.genres}
@@ -432,7 +467,7 @@ export default function CreatePublicationModal({
               </Field>
 
               <div className="field-row">
-                <Field label="Publication Date">
+                <Field label="Publication Date" required>
                   <input
                     className="input"
                     type="date"
@@ -447,11 +482,12 @@ export default function CreatePublicationModal({
           ) : (
             <>
               {OMCHAI_ROLES.map(({ key, label }: OmchaiRole) => (
-                <Field key={key} label={label} required>
+                <Field key={key} label={label}>
                   <UserSearchableMultiSelect
                     users={users.map((u) => ({
                       name: u.firstName + ' ' + u.lastName,
                       email: u.email,
+                      id: u.id,
                     }))}
                     selected={form[key]}
                     onChange={(value) => set(key, value)}
@@ -478,8 +514,8 @@ export default function CreatePublicationModal({
             <button
               type="button"
               className="btn btn--primary"
-              onClick={tab === 0 ? () => setTab(1) : () => onSave(form)}
-              disabled={tab === 0 ? !tab1Valid : !tab2Valid}
+              onClick={tab === 0 ? () => setTab(1) : () => handleSaveForm()}
+              disabled={!tab1Valid}
             >
               {tab === 0 ? 'Next' : 'Save as Draft'}
             </button>

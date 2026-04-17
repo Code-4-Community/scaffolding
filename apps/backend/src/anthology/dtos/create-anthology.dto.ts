@@ -25,6 +25,10 @@ export class CreateAnthologyDto {
   @IsEnum(AnthologyStatus)
   status: AnthologyStatus;
 
+  @ApiProperty({ description: 'Projected publication date of the anthology' })
+  @IsString()
+  publicationDate: Date;
+
   @ApiProperty({
     description: 'Publication level of the anthology',
     enum: AnthologyPubLevel,
@@ -59,10 +63,9 @@ export class CreateAnthologyDto {
   @ApiProperty({ description: 'Theme of the anthology' })
   @IsArray()
   @IsString({ each: true })
-  theme: string[];
+  themes: string[];
 
-  @ApiPropertyOptional({ description: 'ISBN of the anthology' })
-  @IsOptional()
+  @ApiProperty({ description: 'ISBN of the anthology' })
   @IsString()
   isbn?: string;
 

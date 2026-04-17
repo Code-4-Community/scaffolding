@@ -149,18 +149,28 @@ export interface Anthology {
   byline?: string;
 }
 
-export interface CreateNewPublicationDto {
+export interface CreateAnthologyDto {
   title: string;
-  publicationLevel: AnthologyPubLevel;
+  pub_level: AnthologyPubLevel;
+  status: AnthologyStatus;
   themes: string[];
   genres: string[];
   publicationDate: string;
   description: string;
-  // list of user emails
-  owners: string[];
-  managers: string[];
-  consulted: string[];
-  helpers: string[];
-  approvers: string[];
-  informed: string[];
+  programs: string[];
+  photoUrl?: string;
+  isbn: string;
+  shopifyUrl?: string;
+  inventory?: number;
+}
+
+export interface CreateBatchOmchaiAssignmentsDto {
+  anthology_id: number;
+  datetime_assigned: string;
+  owners: number[];
+  managers: number[];
+  consulted: number[];
+  helpers: number[];
+  approvers: number[];
+  informed: number[];
 }
