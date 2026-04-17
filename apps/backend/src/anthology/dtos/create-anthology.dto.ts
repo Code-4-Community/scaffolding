@@ -25,6 +25,10 @@ export class CreateAnthologyDto {
   @IsEnum(AnthologyStatus)
   status: AnthologyStatus;
 
+  @ApiProperty({ description: 'Projected publication date of the anthology' })
+  @IsString()
+  publicationDate: Date;
+
   @ApiProperty({
     description: 'Publication level of the anthology',
     enum: AnthologyPubLevel,
@@ -37,7 +41,6 @@ export class CreateAnthologyDto {
     description: 'Programs associated with the anthology',
     type: [String],
   })
-  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   programs?: string[];
@@ -52,18 +55,17 @@ export class CreateAnthologyDto {
   @IsString()
   photo_url?: string;
 
-  @ApiPropertyOptional({ description: 'Genre of the anthology' })
-  @IsOptional()
-  @IsString()
-  genre?: string;
+  @ApiProperty({ description: 'Genre of the anthology' })
+  @IsArray()
+  @IsString({ each: true })
+  genres: string[];
 
-  @ApiPropertyOptional({ description: 'Theme of the anthology' })
-  @IsOptional()
-  @IsString()
-  theme?: string;
+  @ApiProperty({ description: 'Theme of the anthology' })
+  @IsArray()
+  @IsString({ each: true })
+  themes: string[];
 
-  @ApiPropertyOptional({ description: 'ISBN of the anthology' })
-  @IsOptional()
+  @ApiProperty({ description: 'ISBN of the anthology' })
   @IsString()
   isbn?: string;
 

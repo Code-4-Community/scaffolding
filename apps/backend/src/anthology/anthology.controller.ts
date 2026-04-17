@@ -36,6 +36,7 @@ interface UploadedFileType {
   buffer: Buffer;
   size: number;
 }
+import { AnthologyPubLevel, AnthologyStatus } from './types';
 
 @ApiTags('Anthologies')
 @Controller('anthologies')
@@ -87,8 +88,8 @@ export class AnthologyController {
     return this.anthologyService.create(
       createAnthologyDto.title,
       createAnthologyDto.description,
-      createAnthologyDto.status,
-      createAnthologyDto.pub_level,
+      createAnthologyDto.status as AnthologyStatus,
+      createAnthologyDto.pub_level as AnthologyPubLevel,
       createAnthologyDto.programs,
       createAnthologyDto.photo_url,
       createAnthologyDto.isbn,

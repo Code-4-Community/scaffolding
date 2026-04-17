@@ -3,6 +3,8 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import {
   Anthology,
   Author,
+  CreateAnthologyDto,
+  CreateBatchOmchaiAssignmentsDto,
   EditRound,
   OmchaiEntry,
   Story,
@@ -220,6 +222,18 @@ export class ApiClient {
   }): Promise<User> {
     console.log(body);
     return this.post('/api/auth/admin/users', body) as Promise<User>;
+  }
+
+  public async createAnthology(body: CreateAnthologyDto): Promise<Anthology> {
+    return this.post('/api/anthologies', body) as Promise<Anthology>;
+  }
+
+  public async createBatchOmchaiAssignments(
+    body: CreateBatchOmchaiAssignmentsDto,
+  ): Promise<OmchaiEntry[]> {
+    return this.post('/api/omchai/batch-assignments', body) as Promise<
+      OmchaiEntry[]
+    >;
   }
 }
 

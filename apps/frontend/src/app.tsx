@@ -104,17 +104,6 @@ export const App: React.FC = () => {
   }, []);
 
   return <RouterProvider router={router} />;
-  /* for temp testing of create publication modal */
-  /* return (
-    <>
-    <RouterProvider router={router} />
-    <CreatePublicationModal
-    onClose={() => {}}
-    onSave={() => {}}
-    />
-    </>
-    );
-  */
 };
 
 export default App;

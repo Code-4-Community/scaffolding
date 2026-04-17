@@ -14,6 +14,18 @@ export class OmchaiService {
     return this.repo.save(omchai);
   }
 
+  async createMany(createOmchaiDtos: CreateOmchaiDto[]) {
+    const omchais = await this.repo
+      .createQueryBuilder()
+      .insert()
+      .into(Omchai)
+      .values(createOmchaiDtos)
+      .orIgnore()
+      .execute();
+
+    return omchais;
+  }
+
   findAll() {
     return this.repo.find();
   }

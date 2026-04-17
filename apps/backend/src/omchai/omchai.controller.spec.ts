@@ -5,12 +5,34 @@ import { CreateOmchaiDto } from './dtos/create-omchai.dto';
 import { EditOmchaiDto } from './dtos/edit-omchai.dto';
 import { OmchaiRole } from './omchai.entity';
 
+const omchaiDto1: CreateOmchaiDto = {
+  anthology_id: 1,
+  user_id: 1,
+  role: OmchaiRole.OWNER,
+  datetime_assigned: new Date(),
+};
+
+const omchaiDto2: CreateOmchaiDto = {
+  anthology_id: 2,
+  user_id: 1,
+  role: OmchaiRole.MANAGER,
+  datetime_assigned: new Date(),
+};
+
+const omchaiDto3: CreateOmchaiDto = {
+  anthology_id: 3,
+  user_id: 2,
+  role: OmchaiRole.CONSULTED,
+  datetime_assigned: new Date(),
+};
+
 describe('OmchaiController', () => {
   let controller: OmchaiController;
   let service: OmchaiService;
 
   const mockOmchaiService = {
     create: jest.fn(),
+    createMany: jest.fn(),
     findAll: jest.fn(),
     findByAnthologyId: jest.fn(),
     update: jest.fn(),
@@ -41,17 +63,12 @@ describe('OmchaiController', () => {
 
   describe('create', () => {
     it('should create an omchai', () => {
-      const dto: CreateOmchaiDto = {
-        anthology_id: 1,
-        user_id: 1,
-        role: OmchaiRole.OWNER,
-        datetime_assigned: new Date(),
-      };
+      
       mockOmchaiService.create.mockReturnValue('created');
 
-      const result = controller.create(dto);
+      const result = controller.create(omchaiDto1);
 
-      expect(service.create).toHaveBeenCalledWith(dto);
+      expect(service.create).toHaveBeenCalledWith(omchaiDto1);
       expect(result).toBe('created');
     });
   });
