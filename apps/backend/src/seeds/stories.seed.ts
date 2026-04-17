@@ -82,7 +82,7 @@ export const StoriesSeed: StorySeedItem[] = [
     studentBio:
       'Jamal is a 12th-grade playwright and Youth Arts & Books Program alumnus.',
     theme: 'Community and Resilience',
-    anthologyTitle: 'Aftershock',
+    anthologyTitle: "I'll Light Up My Own Sky",
     authorName: 'Jamal Washington',
   },
   {
@@ -92,7 +92,8 @@ export const StoriesSeed: StorySeedItem[] = [
     studentBio:
       'Abdullah expanded his writing practice from personal narrative to music criticism this year.',
     theme: 'Music and Identity',
-    anthologyTitle: 'Bright Noise',
+    anthologyTitle:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/RUBIX.webp',
     authorName: 'Abdullah Syed Abid',
   },
   {

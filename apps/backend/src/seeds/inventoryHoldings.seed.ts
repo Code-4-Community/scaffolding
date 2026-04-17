@@ -67,33 +67,33 @@ export const InventoryHoldingsSeed: InventoryHoldingSeedItem[] = [
     numCopies: 20,
   },
 
-  // Aftershock (YABP+YLAB, Signature, 500 print run)
+  // I'll Light Up My Own Sky
   {
-    anthologyTitle: 'Aftershock',
-    inventoryName: '826 Columbus Ave',
-    numCopies: 200,
+    anthologyTitle: "I'll Light Up My Own Sky",
+    inventoryName: 'Dev/Commons Office (1865 Columbus)',
+    numCopies: 76,
   },
   {
-    anthologyTitle: 'Aftershock',
-    inventoryName: "Holland Writers' Room Library",
-    numCopies: 50,
+    anthologyTitle: "I'll Light Up My Own Sky",
+    inventoryName: 'The Hub (1989 Columbus)',
+    numCopies: 400,
   },
   {
-    anthologyTitle: 'Aftershock',
-    inventoryName: 'Administrative Office',
-    numCopies: 28,
+    anthologyTitle: "I'll Light Up My Own Sky",
+    inventoryName: 'Archived',
+    numCopies: 3,
+  },
+  {
+    anthologyTitle: "I'll Light Up My Own Sky",
+    inventoryName: "Holland Writers' Room",
+    numCopies: 2,
   },
 
-  // Bright Noise (OB, Perfect Bound, 100 print run)
+  // Rubix Literary Magazine #12 - Futures (OB, Perfect Bound, 100 print run)
   {
-    anthologyTitle: 'Bright Noise',
+    anthologyTitle: ' Rubix Literary Magazine #12 - Futures',
     inventoryName: "O'Bryant Writers' Room",
-    numCopies: 80,
-  },
-  {
-    anthologyTitle: 'Bright Noise',
-    inventoryName: 'Administrative Office',
-    numCopies: 1,
+    numCopies: 18,
   },
 
   // Prism Literary Magazine #15 (OB, DRAFT)
@@ -132,16 +132,11 @@ export const InventoryHoldingsSeed: InventoryHoldingSeedItem[] = [
     numCopies: 62,
   },
 
-  // Burn and Bloom (YABP+YLAB, Signature, 500 print run)
+  // Utopia vs. Dystopia (YABP+YLAB, Signature, 500 print run)
   {
-    anthologyTitle: 'Burn and Bloom',
-    inventoryName: '826 Columbus Ave',
-    numCopies: 200,
-  },
-  {
-    anthologyTitle: 'Burn and Bloom',
-    inventoryName: 'Administrative Office',
-    numCopies: 19,
+    anthologyTitle: 'Utopia vs. Dystopia',
+    inventoryName: "O'Bryant Writers' Room",
+    numCopies: 23,
   },
 
   // Civic Creatures (YABP+YLAB, Signature, IN_REVISION)
@@ -161,18 +156,6 @@ export const InventoryHoldingsSeed: InventoryHoldingSeedItem[] = [
     anthologyTitle: 'The Weight of a Suitcase',
     inventoryName: 'Administrative Office',
     numCopies: 10,
-  },
-
-  // Every Map Lies (In-School, Perfect Bound, 200 print run)
-  {
-    anthologyTitle: 'Every Map Lies',
-    inventoryName: '826 Columbus Ave',
-    numCopies: 100,
-  },
-  {
-    anthologyTitle: 'Every Map Lies',
-    inventoryName: 'Administrative Office',
-    numCopies: 8,
   },
 
   // Hard Pivot (OB, Perfect Bound, 400 print run)

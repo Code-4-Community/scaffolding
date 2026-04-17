@@ -23,6 +23,23 @@ export interface FilterSortAnthologyBody {
 const defaultBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000';
 
+/** Backend returns camelCase (`photoUrl`); UI expects `photo_url` in several places. */
+function normalizeAnthology(raw: unknown): Anthology {
+  if (!raw || typeof raw !== 'object') {
+    return raw as Anthology;
+  }
+  const o = raw as Record<string, unknown>;
+  const url =
+    (typeof o.photo_url === 'string' ? o.photo_url : undefined) ??
+    (typeof o.photoUrl === 'string' ? o.photoUrl : undefined);
+  return { ...(o as Anthology), photo_url: url, photoUrl: url };
+}
+
+function normalizeAnthologies(raw: unknown): Anthology[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map(normalizeAnthology);
+}
+
 export class ApiClient {
   private axiosInstance: AxiosInstance;
 
@@ -43,11 +60,13 @@ export class ApiClient {
   }
 
   public async getAnthologies(): Promise<Anthology[]> {
-    return this.get('/api/anthologies') as Promise<Anthology[]>;
+    const data = await this.get('/api/anthologies');
+    return normalizeAnthologies(data);
   }
 
   public async getAnthology(id: string | number): Promise<Anthology> {
-    return this.get(`/api/anthologies/${id}`) as Promise<Anthology>;
+    const data = await this.get(`/api/anthologies/${id}`);
+    return normalizeAnthology(data);
   }
 
   public async getStoriesByAnthology(
@@ -61,9 +80,8 @@ export class ApiClient {
   public async filterSortAnthologies(
     body: FilterSortAnthologyBody,
   ): Promise<Anthology[]> {
-    return this.post('/api/anthologies/filter-sort', body) as Promise<
-      Anthology[]
-    >;
+    const data = await this.post('/api/anthologies/filter-sort', body);
+    return normalizeAnthologies(data);
   }
 
   public async getAuthors(): Promise<Author[]> {
@@ -128,6 +146,23 @@ export class ApiClient {
     return this.get(`/api/omchai/anthology/${anthologyId}`) as Promise<
       OmchaiEntry[]
     >;
+  }
+
+  public async uploadAnthologyCoverImage(
+    anthologyId: number,
+    file: File,
+  ): Promise<Anthology> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const headers = await this.getAuthHeaders();
+    return this.axiosInstance
+      .patch(`/api/anthologies/${anthologyId}/cover-image`, formData, {
+        headers: {
+          ...headers,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => normalizeAnthology(response.data));
   }
 
   private async getAuthHeaders(): Promise<Record<string, string>> {

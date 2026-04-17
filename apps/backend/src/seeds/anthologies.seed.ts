@@ -130,39 +130,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     photoUrl: 'publications/covers/letters-to-nobody.png',
   },
   {
-    title: 'Aftershock',
-    byline:
-      'Written by the Youth Literary Advisory Board and Youth Arts & Books Program at 826 Boston',
-    description:
-      'When a series of floods devastates a fictional coastal city, four teenagers must navigate bureaucracy, broken infrastructure, and fractured friendships. Aftershock is a devised theater piece written and performed by teen writers, exploring how communities fracture — and how they heal.',
-    genres: ['Civic Engagement', 'Scriptwriting', 'Performance Art'],
-    themes: ['Climate Change', 'Disaster', 'Community', 'Resilience'],
-    triggers: [],
-    publishedDate: new Date('2025-01-31'),
-    programs: ['YABP', 'YLAB'],
-    sponsors: ['Coastal Arts Collaborative'],
-    status: AnthologyStatus.PUBLISHED,
-    pubLevel: AnthologyPubLevel.SIGNATURE,
-    photoUrl: 'publications/covers/aftershock-cover.png',
-    shopifyUrl: 'https://writingcenter.org/publications/aftershock',
-  },
-  {
-    title: 'Bright Noise',
-    byline: 'From the Art and Writing Club at Eastside High School',
-    description:
-      "Music is everywhere — in headphones, in hallways, in memory. Bright Noise is Eastside High's interdisciplinary literary magazine, pairing student poems and essays with original illustrations. This year's contributors explore the songs that raised them and the sounds they're making on their own.",
-    genres: ['Poetry', 'Visual Art', 'Essays'],
-    themes: ['Music', 'Sound', 'Culture', 'Self-Expression'],
-    triggers: [],
-    publishedDate: new Date('2025-05-15'),
-    programs: ['OB'],
-    sponsors: ['Art & Writing Club'],
-    status: AnthologyStatus.PUBLISHED,
-    pubLevel: AnthologyPubLevel.PERFECT_BOUND,
-    photoUrl: 'publications/covers/bright-noise-cover.png',
-    shopifyUrl: 'https://writingcenter.org/publications/bright-noise',
-  },
-  {
     title: "Tomorrow's Almanac",
     byline: 'Written by the Youth Literary Advisory Board',
     description:
@@ -228,22 +195,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     shopifyUrl: 'https://writingcenter.org/publications/unlocked',
   },
   {
-    title: 'Burn and Bloom',
-    byline:
-      'Written by the Youth Literary Advisory Board and Youth Arts & Books Program',
-    description:
-      'After fire, flowers grow. Burn and Bloom is a collection of poems and personal essays from teen writers who have experienced loss, disruption, or failure — and found a way to keep growing. Raw, honest, and ultimately hopeful.',
-    genres: ['Poetry', 'Personal Narratives'],
-    themes: ['Resilience', 'Transformation', 'Trauma', 'Growth'],
-    triggers: ['Trauma', 'Loss'],
-    publishedDate: new Date('2025-04-15'),
-    programs: ['YABP', 'YLAB'],
-    status: AnthologyStatus.PUBLISHED,
-    pubLevel: AnthologyPubLevel.SIGNATURE,
-    photoUrl: 'publications/covers/burn-and-bloom-cover.png',
-    shopifyUrl: 'https://writingcenter.org/publications/burn-and-bloom',
-  },
-  {
     title: 'Civic Creatures',
     byline:
       'Written by the Youth Literary Advisory Board and Youth Arts & Books Program',
@@ -275,22 +226,6 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.PUBLISHED,
     pubLevel: AnthologyPubLevel.CHAPBOOK,
     photoUrl: 'publications/covers/weight-of-suitcase.png',
-  },
-  {
-    title: 'Every Map Lies',
-    byline: 'Written by 10th-Grade Students',
-    description:
-      'Maps tell stories — but whose? In Every Map Lies, students examine the maps they grew up with and ask what was left out, who drew the borders, and what a more honest map of their world might look like.',
-    genres: ['Civic Engagement', 'Essays', 'Nonfiction'],
-    themes: ['Geography', 'History', 'Power', 'Cartography', 'Colonialism'],
-    triggers: [],
-    publishedDate: new Date('2025-06-05'),
-    programs: ['In-School'],
-    sponsors: ['Mr. Chen'],
-    status: AnthologyStatus.PUBLISHED,
-    pubLevel: AnthologyPubLevel.PERFECT_BOUND,
-    photoUrl: 'publications/covers/every-map-lies.png',
-    shopifyUrl: 'https://writingcenter.org/publications/every-map-lies',
   },
   {
     title: 'The Night Kitchen',
@@ -371,5 +306,220 @@ export const AnthologiesSeed: AnthologySeedItem[] = [
     status: AnthologyStatus.IN_PRODUCTION,
     pubLevel: AnthologyPubLevel.ZINE,
     photoUrl: 'publications/covers/field-notes-from-the-t.png',
+  },
+  {
+    title: 'Walk a Mile in Our Shoes',
+    byline: 'Personal Narrative by 9th Grade Students at Boston International',
+    description:
+      'Writing this book was fun and helpful for us, as we are happy to read about other students at BINcA. Getting to know their experiences and walk a mile in their shoes makes us feel important, like we are part of something great.',
+    genres: ['Nonfiction', 'Personal Narratives', 'Prose'],
+    themes: [
+      'Culture',
+      'Family',
+      'Identity',
+      'The Future',
+      'Goals',
+      'Immigration',
+      'Tradition',
+    ],
+    triggers: ['Profanity', 'Physical or Verbal Abuse'],
+    publishedDate: new Date('2025-12-17'),
+    programs: ['BINcA'],
+    status: AnthologyStatus.PUBLISHED,
+    pubLevel: AnthologyPubLevel.CHAPBOOK,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/walk_a_mile.webp',
+  },
+  {
+    title: 'Utopia vs. Dystopia',
+    byline:
+      'Written by 10th-grade students in Ms. Shin’s English class at the John D. O’Bryant School of Mathematics and Science.',
+    description:
+      "'Through our stories, we want to explore what it feels to be human and how society sometimes forgets what humanity actually is.' Utopia vs. Dystopia: The Future We're Heading Toward is a collection of dystopian flash fiction stories written by 10th-grade students in Ms. Shin's English class at the John D. O'Bryant School of Mathematics and Science.",
+    genres: ['Fiction', 'Flash Fiction'],
+    themes: ['Dystopia/Utopia'],
+    triggers: [],
+    publishedDate: new Date('2025-06-30'),
+    programs: ['OB'],
+    status: AnthologyStatus.PUBLISHED,
+    pubLevel: AnthologyPubLevel.CHAPBOOK,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/UtopiaDystopia.webp',
+  },
+  {
+    title: "I'll Light Up My Own Sky",
+    byline: 'Written by Boston Graduates, 2021-2025',
+    description:
+      'A seemingly ordinary conversation, a personal failure, or a fleeting moment of doubt—when examined through the lens of reflection—can become the foundation of powerful storytelling.' +
+      'I’ll Light Up My Own Sky is a collection of college essays written by graduates from 2021-2025. While their stories explore common themes, each essay remains infused with the distinct voice of its author.' +
+      'In this collection, readers will come across nuanced perspectives on home, obstacles large and small, the value of building relationships with mentors, and young people reckoning with the age-old question: Who am I now, and who might I become?' +
+      'As they navigate the next chapter of their lives, students remind readers to remain open-minded in the face of newness, resilient in the face of struggle, self-empowered in the face of negativity, and hopeful even when it seems impossible.',
+    genres: [
+      'College Essays',
+      'Personal Narratives',
+      'Essays',
+      'Multilingual',
+      'Identity',
+    ],
+    themes: ['College Essay', 'Identity'],
+    triggers: [],
+    publishedDate: new Date('2025-06-30'),
+    programs: ['In-School'],
+    status: AnthologyStatus.PUBLISHED,
+    pubLevel: AnthologyPubLevel.PERFECT_BOUND,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/Ill_Light_Up_My_Own_Sky.webp',
+  },
+  {
+    title: 'To The People Like Us',
+    byline:
+      'Written by the Youth Literary Advisory Board at 826 Boston' +
+      'Produced and staged by White Snake Projects',
+    description:
+      'In To The People Like Us, teen activist Constanza, aided by her vacillating friend Malakai, organizes her neighborhood against the Sirleaf Corporation, who intends to build a new development by razing their apartments and bodega. Indigo, a newcomer to the neighborhood, attempts to make friends with them and joins their protest group. Sparks fly when Constanza makes a discovery about Indigo that changes all of their relationships with each other. ',
+    genres: [
+      'Civic Engagement',
+      'Multilingual',
+      'Opera',
+      'Performance Art',
+      'Scriptwriting',
+    ],
+    themes: [
+      'Climate Change',
+      'Culture',
+      'Freedom of Expression',
+      'Gentrification',
+      'Identity',
+      'Neighborhood',
+      'Oppression',
+      'Power',
+    ],
+    triggers: [],
+    publishedDate: new Date('2025-06-28'),
+    programs: ['YABP', 'YLAB'],
+    status: AnthologyStatus.DRAFT,
+    pubLevel: AnthologyPubLevel.SIGNATURE,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/people_like_us.webp',
+  },
+  {
+    title: 'I Am Bravery Itself',
+    byline:
+      'By the Dr. Albert D. Holland High School of Technology’s Exploration Academy',
+    description:
+      'The middle school cohort at the Dr. Albert D. Holland High School of Technology’s is named the Exploration Academy. Aptly, in this collection, the Exploration Academy students take a deep dive into selfhood, using class projects ranging from portraits to poetry as inspiration.',
+    genres: ['Multilingual', 'Personal Narratives', 'Poetry', 'Prose'],
+    themes: ['Identity', 'The Future'],
+    triggers: [],
+    publishedDate: new Date('2025-06-01'),
+    programs: ['Holland (Burke)'],
+    status: AnthologyStatus.DRAFT,
+    pubLevel: AnthologyPubLevel.CHAPBOOK,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/I_Am_Bravery_Itself.webp',
+  },
+  {
+    title: 'In Everday Things',
+    byline: 'Written by the Youth Literary Advisory Board at 826 Boston',
+    description:
+      '“The simplest things can be the greatest gifts; the smallest of moments can be the most memorable; the most consequential.”' +
+      'In Everyday Things is a collection of stories, memories, and poetry from the brilliant minds of the Youth Literary Advisory Board at 826 Boston. From the gift of life to the gift of friendship, each story illuminates how event the smallest acts of kindness can change a life forever. ' +
+      '"Our objective in making this anthology was to explore and celebrate the gifts that shape us…We sought to create a collection that reflects the diversity of our experience as young writers.” — Letter from the Youth Literary Advisory Board',
+    genres: ['Fiction', 'Nonfiction', 'Poetry', 'Prose', 'Short Stories'],
+    themes: ['Identity', 'gifts'],
+    triggers: [],
+    publishedDate: new Date('2025-05-30'),
+    programs: ['YLAB'],
+    status: AnthologyStatus.DRAFT,
+    pubLevel: AnthologyPubLevel.PERFECT_BOUND,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/in_everyday_things.webp',
+  },
+  {
+    title: 'Nothing Suspicious Was Going On',
+    byline: 'Written by the Youth Literary Advisory Board at 826 Boston',
+    description:
+      'Nothing out of the ordinary here. No missing notebooks, or mysterious scratches, and definitely' +
+      'no secret spies. Just a regular collection of stories...right?' +
+      'Written by After-School and Evening Tutoring students at 826 Boston, Nothing Suspicious Was Going On is a thrilling collection of bite-sized mysteries. Whether it’s a missing dog or a mistaken identity, the stories in this chapbook promise clever twists, endless detectives, and plenty of mischief. But don’t be fooled. Something suspicious is definitely going on…',
+    genres: ['Fiction', 'Mystery'],
+    themes: ['Creative Writing', 'Mystery', 'Short Stories'],
+    triggers: [],
+    publishedDate: new Date('2025-05-22'),
+    programs: ['After-School Tutoring', 'OOST'],
+    status: AnthologyStatus.IN_PRODUCTION,
+    pubLevel: AnthologyPubLevel.CHAPBOOK,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/nothing_suspicious.webp',
+  },
+  {
+    title: 'Who Are You?',
+    byline: '11-grade students from the Margarita Muñiz Academy',
+    description:
+      'Join students from the Margarita Muñiz Academy as they explore identity through vibrant, personal artwork. More than just an art collection, Who Are You? is a testament to the power of creative expression. In just three weeks, these young creators transformed personal memories, cultural experiences, and individual dreams into visual stories that invite you to see the world differently. Each artwork is a reflection of a young person’s experience and understanding of themselves. These students aren’t just making art; they’re discovering themselves. ',
+    genres: ['Visual Art'],
+    themes: ['Culture', 'Identity'],
+    triggers: [],
+    publishedDate: new Date('2025-04-01'),
+    programs: ['Muniz'],
+    status: AnthologyStatus.IN_PRODUCTION,
+    pubLevel: AnthologyPubLevel.PERFECT_BOUND,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/WhoAreYoucoverfinal.webp',
+  },
+  {
+    title: 'The Great Cost of Freedom',
+    byline:
+      'written by 9th-grade students at Boston International Newcomers Academy',
+    description:
+      'We pay a great cost for our freedom. Join young authors from Boston International Newcomers Academy as they investigate what it meant to resist oppression throughout history. From the colonization of North America, to the Haitian Revolution, to the battles we fight in the present day, The Great Cost of Freedom explores themes of freedom through essays, poetry, artwork, and graphic design.',
+    genres: ['Essays', 'Nonfiction', 'Personal Narratives', 'Visual Art'],
+    themes: ['Oppression', 'Overcoming', 'Power'],
+    triggers: [],
+    publishedDate: new Date('2024-10-31'),
+    programs: ['BINcA'],
+    status: AnthologyStatus.IN_PRODUCTION,
+    pubLevel: AnthologyPubLevel.PERFECT_BOUND,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/WhoAreYoucoverfinal.webp',
+  },
+  {
+    title: 'Us, From the Inside and Out',
+    byline:
+      'Written by Tenth Grade Students from Edward M. Kennedy Academy for Health Careers',
+    description:
+      'Trilingual Poetry Written by Tenth Grade Students from Edward M. Kennedy Academy for Health Careers',
+    genres: ['Poetry', 'Multilingual'],
+    themes: [],
+    triggers: [],
+    publishedDate: new Date('2024-06-01'),
+    programs: ['EMK'],
+    status: AnthologyStatus.IN_REVISION,
+    pubLevel: AnthologyPubLevel.CHAPBOOK,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/UsFromtheInsideandOut.webp',
+  },
+  {
+    title: 'Rubix Literay Magazine #12 - Futures',
+    byline:
+      'students from the John D. O’Bryant School of Mathematics and Science',
+    description:
+      'Annual literary magazine publication, featuring poems, essays, and art around the theme "Futures”',
+    genres: [
+      'Nonfiiction',
+      'Poetry',
+      'Prose',
+      'Essays',
+      'Visual Art',
+      'Personal Narratives',
+    ],
+    themes: ['The Future'],
+    triggers: [],
+    publishedDate: new Date('2024-05-30'),
+    programs: ['OB'],
+    status: AnthologyStatus.PUBLISHED,
+    pubLevel: AnthologyPubLevel.ZINE,
+    photoUrl:
+      'https://c4c-826boston-dev.s3.us-east-1.amazonaws.com/images/RUBIX.webp',
   },
 ];

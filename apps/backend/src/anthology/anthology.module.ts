@@ -5,9 +5,15 @@ import { AnthologyService } from './anthology.service';
 import { Anthology } from './anthology.entity';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { AwsS3Module } from '../aws/aws-s3.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Anthology]), AuthModule, UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([Anthology]),
+    AuthModule,
+    UsersModule,
+    AwsS3Module,
+  ],
   controllers: [AnthologyController],
   providers: [AnthologyService],
   exports: [AnthologyService],

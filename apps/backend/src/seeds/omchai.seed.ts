@@ -180,59 +180,59 @@ export const OmchaiSeed: OmchaiSeedItem[] = [
     datetimeAssigned: new Date('2024-10-01'),
   },
 
-  // Anthology 8 (Aftershock) — all 6 roles
+  // Anthology 8 (I'll Light Up My Own Sky) — all 6 roles
   {
-    anthologyTitle: 'Aftershock',
+    anthologyTitle: "I'll Light Up My Own Sky",
     userId: 1,
     role: OmchaiRole.OWNER,
     datetimeAssigned: new Date('2024-09-01'),
   },
   {
-    anthologyTitle: 'Aftershock',
+    anthologyTitle: "I'll Light Up My Own Sky",
     userId: 2,
     role: OmchaiRole.MANAGER,
     datetimeAssigned: new Date('2024-09-01'),
   },
   {
-    anthologyTitle: 'Aftershock',
+    anthologyTitle: "I'll Light Up My Own Sky",
     userId: 3,
     role: OmchaiRole.CONSULTED,
     datetimeAssigned: new Date('2024-09-01'),
   },
   {
-    anthologyTitle: 'Aftershock',
+    anthologyTitle: "I'll Light Up My Own Sky",
     userId: 9,
     role: OmchaiRole.HELPER,
     datetimeAssigned: new Date('2024-09-01'),
   },
   {
-    anthologyTitle: 'Aftershock',
+    anthologyTitle: "I'll Light Up My Own Sky",
     userId: 5,
     role: OmchaiRole.APPROVER,
     datetimeAssigned: new Date('2024-09-01'),
   },
   {
-    anthologyTitle: 'Aftershock',
+    anthologyTitle: "I'll Light Up My Own Sky",
     userId: 10,
     role: OmchaiRole.INFORMED,
     datetimeAssigned: new Date('2024-09-01'),
   },
 
-  // Anthology 9 (Bright Noise) — partial
+  // Anthology 9 (Rubix Literary Magazine #12 - Futures) — partial
   {
-    anthologyTitle: 'Bright Noise',
+    anthologyTitle: 'Rubix Literary Magazine #12 - Futures',
     userId: 4,
     role: OmchaiRole.OWNER,
     datetimeAssigned: new Date('2025-01-10'),
   },
   {
-    anthologyTitle: 'Bright Noise',
+    anthologyTitle: 'Rubix Literary Magazine #12 - Futures',
     userId: 1,
     role: OmchaiRole.MANAGER,
     datetimeAssigned: new Date('2025-01-10'),
   },
   {
-    anthologyTitle: 'Bright Noise',
+    anthologyTitle: 'Rubix Literary Magazine #12 - Futures',
     userId: 9,
     role: OmchaiRole.HELPER,
     datetimeAssigned: new Date('2025-01-10'),
@@ -284,21 +284,21 @@ export const OmchaiSeed: OmchaiSeedItem[] = [
     datetimeAssigned: new Date('2025-01-20'),
   },
 
-  // Anthology 14 (Burn and Bloom) — partial
+  // Anthology 14 (Utopia vs. Dystopia) — partial
   {
-    anthologyTitle: 'Burn and Bloom',
+    anthologyTitle: 'Utopia vs. Dystopia',
     userId: 1,
     role: OmchaiRole.OWNER,
     datetimeAssigned: new Date('2024-10-15'),
   },
   {
-    anthologyTitle: 'Burn and Bloom',
+    anthologyTitle: 'Utopia vs. Dystopia',
     userId: 8,
     role: OmchaiRole.MANAGER,
     datetimeAssigned: new Date('2024-10-15'),
   },
   {
-    anthologyTitle: 'Burn and Bloom',
+    anthologyTitle: 'Utopia vs. Dystopia',
     userId: 2,
     role: OmchaiRole.CONSULTED,
     datetimeAssigned: new Date('2024-10-15'),
@@ -424,21 +424,21 @@ export const OmchaiSeed: OmchaiSeedItem[] = [
     datetimeAssigned: new Date('2024-08-01'),
   },
 
-  // Anthology 17 (Every Map Lies)
+  // Anthology 17 (Walk a Mile in Our Shoes)
   {
-    anthologyTitle: 'Every Map Lies',
+    anthologyTitle: 'Walk a Mile in Our Shoes',
     userId: 10,
     role: OmchaiRole.OWNER,
     datetimeAssigned: new Date('2025-01-05'),
   },
   {
-    anthologyTitle: 'Every Map Lies',
+    anthologyTitle: 'Walk a Mile in Our Shoes',
     userId: 7,
     role: OmchaiRole.CONSULTED,
     datetimeAssigned: new Date('2025-01-05'),
   },
   {
-    anthologyTitle: 'Every Map Lies',
+    anthologyTitle: 'Walk a Mile in Our Shoes',
     userId: 3,
     role: OmchaiRole.HELPER,
     datetimeAssigned: new Date('2025-01-05'),
