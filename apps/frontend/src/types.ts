@@ -1,4 +1,4 @@
-import { PUB_LEVEL_OPTIONS } from '@containers/archived-publications/filter-modal/constants';
+//import { PUB_LEVEL_OPTIONS } from '@containers/archived-publications/filter-modal/constants';
 
 export enum AnthologyStatus {
   DRAFT = 'Draft',
@@ -141,6 +141,7 @@ export interface Anthology {
   status: AnthologyStatus;
   pub_level: AnthologyPubLevel;
   photo_url?: string;
+  photoUrl?: string;
   genres?: string[];
   themes?: string[];
   isbn?: string;

@@ -318,8 +318,11 @@ const PublicationView: React.FC = () => {
         <div className="publication-header">
           <div className="publication-image">
             <img
-              src={anthology.photo_url || imgFrame69}
+              src={anthology.photo_url || anthology.photoUrl || imgFrame69}
               alt="Publication cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = imgFrame69;
+              }}
             />
           </div>
           <div className="publication-info">

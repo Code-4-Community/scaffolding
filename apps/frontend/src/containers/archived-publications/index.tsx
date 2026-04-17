@@ -334,10 +334,16 @@ export default function ArchivedPublications({
                 <div className="publication-card-image">
                   <img
                     src={
-                      pub.photo_url || '/src/assets/images/covers/booktemp.avif'
+                      pub.photo_url ||
+                      pub.photoUrl ||
+                      '/src/assets/images/covers/booktemp.avif'
                     }
                     alt={pub.title}
                     className="publication-card-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        '/src/assets/images/covers/booktemp.avif';
+                    }}
                   />
                   <img
                     src={BookmarkIcon}
