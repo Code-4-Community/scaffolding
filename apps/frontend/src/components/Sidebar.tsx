@@ -13,16 +13,27 @@ import PeopleIcon from '../assets/icons/people.svg';
 import ChevronRightIcon from '../assets/icons/chevron-right.svg';
 import CollapseArrowIcon from '../assets/icons/collapse-arrow.svg';
 import LogoutIcon from '../assets/icons/logout.svg';
+import { Amplify } from 'aws-amplify';
+import { signOut } from 'aws-amplify/auth';
+import CognitoAuthConfig from '../../../shared/aws-exports';
+import { useNavigate } from 'react-router-dom';
+
+Amplify.configure(CognitoAuthConfig);
 
 const Sidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const [, , user] = useAuth();
+  const navigate = useNavigate();
 
   const isLibraryActive =
     location.pathname.startsWith('/archive') || location.pathname === '/';
   const isAuthorized =
     user?.role === Role.ADMIN || user?.role === Role.STANDARD;
+
+  async function handleSignOut() {
+    await signOut();
+  }
 
   return (
     <aside className={`root-sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -112,12 +123,27 @@ const Sidebar: React.FC = () => {
         </nav>
       </div>
 
-      {/* Logout */}
+      {/* Login/Logout */}
       <div className="sidebar-logout-section">
-        <button type="button" className="sidebar-logout">
-          <img src={LogoutIcon} alt="" className="sidebar-logout-icon" />
-          {!collapsed && <span>Log Out</span>}
-        </button>
+        {user ? (
+          <button
+            type="button"
+            className="sidebar-logout"
+            onClick={handleSignOut}
+          >
+            <img src={LogoutIcon} alt="" className="sidebar-logout-icon" />
+            {!collapsed && <span>Log Out</span>}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="sidebar-logout"
+            onClick={() => navigate('/login')}
+          >
+            <img src={LogoutIcon} alt="" className="sidebar-logout-icon" />
+            {!collapsed && <span>Sign In</span>}
+          </button>
+        )}
       </div>
     </aside>
   );
