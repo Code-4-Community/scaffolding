@@ -32,7 +32,7 @@ function normalizeAnthology(raw: unknown): Anthology {
   const url =
     (typeof o.photo_url === 'string' ? o.photo_url : undefined) ??
     (typeof o.photoUrl === 'string' ? o.photoUrl : undefined);
-  return { ...(o as Anthology), photo_url: url, photoUrl: url };
+  return { ...(o as unknown as Anthology), photo_url: url, photoUrl: url };
 }
 
 function normalizeAnthologies(raw: unknown): Anthology[] {
