@@ -173,5 +173,5 @@ export interface CreateBatchOmchaiAssignmentsDto {
   consulted: number[];
   helpers: number[];
   approvers: number[];
-  informed: number[];
+  informers: number[];
 }

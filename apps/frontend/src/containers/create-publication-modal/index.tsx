@@ -5,6 +5,7 @@ import User from '@api/dtos/user.dto';
 import apiClient from '@api/apiClient';
 import { PROGRAM_OPTIONS } from '@containers/archived-publications/filter-modal/constants';
 import {
+  Anthology,
   AnthologyPubLevel,
   AnthologyStatus,
   CreateAnthologyDto,
@@ -37,6 +38,7 @@ interface CreatePublicationModalProps {
   onClose: () => void;
   onSave: (form: PublicationFormState) => void;
   teamMembers?: TeamMemberOption[];
+  setPublications: React.Dispatch<React.SetStateAction<Anthology[]>>;
 }
 
 const PUBLICATION_TYPES = [
@@ -317,6 +319,7 @@ function Field({ label, required = false, children }: FieldProps) {
 export default function CreatePublicationModal({
   onClose,
   onSave,
+  setPublications
 }: CreatePublicationModalProps) {
   const [tab, setTab] = useState<0 | 1>(0);
   const [form, setForm] = useState<PublicationFormState>(INITIAL_FORM);
@@ -324,37 +327,43 @@ export default function CreatePublicationModal({
 
   async function handleSaveForm() {
     onSave(form);
-    console.log(form);
 
-    // create body for anthology and omchai api calls
-    const createAnthologyBody: CreateAnthologyDto = {
-      status: AnthologyStatus.DRAFT,
-      title: form.title,
-      pub_level: form.publicationType as AnthologyPubLevel,
-      themes: form.themes,
-      genres: form.genres,
-      description: form.description,
-      programs: form.programs,
-      publicationDate: form.publicationDate,
-      isbn: '',
-    };
+    try {
+      // create body for anthology and omchai api calls
+      const createAnthologyBody: CreateAnthologyDto = {
+        status: AnthologyStatus.DRAFT,
+        title: form.title,
+        pub_level: form.publicationType as AnthologyPubLevel,
+        themes: form.themes,
+        genres: form.genres,
+        description: form.description,
+        programs: form.programs,
+        publicationDate: form.publicationDate,
+        isbn: '',
+      };
 
-    const anthology = await apiClient.createAnthology(createAnthologyBody);
+      const anthology = await apiClient.createAnthology(createAnthologyBody);
 
-    const createBatchOmchaiAssignmentsBody: CreateBatchOmchaiAssignmentsDto = {
-      anthology_id: anthology.id,
-      datetime_assigned: new Date().toISOString(),
-      owners: form.owner,
-      managers: form.manager,
-      consulted: form.consulted,
-      helpers: form.helper,
-      approvers: form.approver,
-      informed: form.informed,
-    };
+      const createBatchOmchaiAssignmentsBody: CreateBatchOmchaiAssignmentsDto =
+        {
+          anthology_id: anthology.id,
+          datetime_assigned: new Date().toISOString(),
+          owners: form.owner,
+          managers: form.manager,
+          consulted: form.consulted,
+          helpers: form.helper,
+          approvers: form.approver,
+          informers: form.informed,
+        };
 
-    await apiClient.createBatchOmchaiAssignments(
-      createBatchOmchaiAssignmentsBody,
-    );
+      await apiClient.createBatchOmchaiAssignments(
+        createBatchOmchaiAssignmentsBody,
+      );
+
+      setPublications((prev) => [...prev, { ...anthology, status: AnthologyStatus.DRAFT }]);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   useEffect(() => {

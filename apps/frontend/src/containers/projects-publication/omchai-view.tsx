@@ -55,6 +55,10 @@ const OmchaiView: React.FC<Props> = ({ anthologyId }) => {
     new Set(),
   );
 
+  useEffect(() => {
+    console.log(entries);
+  }, [entries]);
+
   const toggleDescription = (role: OmchaiRole) => {
     setExpandedRoles((prev) => {
       const next = new Set(prev);

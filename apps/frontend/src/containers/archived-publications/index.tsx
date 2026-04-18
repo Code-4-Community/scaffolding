@@ -312,7 +312,7 @@ export default function ArchivedPublications({
                   `publication-tab ${isActive ? 'publication-tab--active' : ''}`
                 }
               >
-                Archived
+                Library
               </NavLink>
             </div>
           )}
@@ -357,7 +357,9 @@ export default function ArchivedPublications({
                     <h3 className="publication-card-title">{pub.title}</h3>
                     <div className="publication-card-meta">
                       <span className="publication-card-modified">
-                        Last modified {MOCK_LAST_MODIFIED}
+                        {pub.published_year
+                          ? `Last modified ${pub.published_year}`
+                          : ''}
                       </span>
                       <img
                         src={MenuDotsIcon}
@@ -382,6 +384,7 @@ export default function ArchivedPublications({
       )}
       {createPubModalOpen && (
         <CreatePublicationModal
+          setPublications={setPublications}
           onClose={() => setCreatePubModalOpen(false)}
           onSave={() => {
             setCreatePubModalOpen(false);
