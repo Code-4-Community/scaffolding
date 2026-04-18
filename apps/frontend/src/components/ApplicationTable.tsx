@@ -1,5 +1,6 @@
 import { Table } from '@chakra-ui/react';
 import type { ApplicationRow } from '@hooks/useApplications';
+import StatusPill, { StatusPillConfig, StatusVariant } from './StatusPill';
 
 const COLUMNS = [
   'Name',
@@ -101,7 +102,11 @@ export function ApplicationTable({
               {formatDesiredExperience(application.desiredExperience)}
             </Table.Cell>
             <Table.Cell>{application.applicantType}</Table.Cell>
-            <Table.Cell>{application.status}</Table.Cell>
+            <Table.Cell>
+              <StatusPill variant={application.status as StatusVariant}>
+                {StatusPillConfig[application.status as StatusVariant].label}
+              </StatusPill>
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
