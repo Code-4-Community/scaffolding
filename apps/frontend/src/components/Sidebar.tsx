@@ -83,30 +83,32 @@ const Sidebar: React.FC = () => {
           </div>
 
           {/* Projects */}
-          <NavLink to="/projects" className="sidebar-nav-item">
-            <div className="sidebar-nav-item-content">
-              <div className="sidebar-nav-item-left">
-                <img
-                  src={ProjectsIcon}
-                  alt=""
-                  className="sidebar-nav-icon"
-                  style={{
-                    filter: isProjectsActive
-                      ? 'brightness(0) saturate(100%) invert(57%) sepia(99%) saturate(456%) hue-rotate(1deg) brightness(98%) contrast(98%)'
-                      : 'none',
-                  }}
-                />
-                {!collapsed && (
-                  <span
-                    className="sidebar-nav-label"
-                    style={{ fontWeight: isProjectsActive ? 700 : 400 }}
-                  >
-                    Projects
-                  </span>
-                )}
+          {isAuthorized && (
+            <NavLink to="/projects" className="sidebar-nav-item">
+              <div className="sidebar-nav-item-content">
+                <div className="sidebar-nav-item-left">
+                  <img
+                    src={ProjectsIcon}
+                    alt=""
+                    className="sidebar-nav-icon"
+                    style={{
+                      filter: isProjectsActive
+                        ? 'brightness(0) saturate(100%) invert(57%) sepia(99%) saturate(456%) hue-rotate(1deg) brightness(98%) contrast(98%)'
+                        : 'none',
+                    }}
+                  />
+                  {!collapsed && (
+                    <span
+                      className="sidebar-nav-label"
+                      style={{ fontWeight: isProjectsActive ? 700 : 400 }}
+                    >
+                      Projects
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          </NavLink>
+            </NavLink>
+          )}
 
           {/* Resources : TODO*/}
           {/* <NavLink to="/resources" className="sidebar-nav-item">
