@@ -4,6 +4,8 @@ import { CreateOmchaiDto } from './dtos/create-omchai.dto';
 import { EditOmchaiDto } from './dtos/edit-omchai.dto';
 import { CreateOmchaiAssignmentsDto } from 'src/anthology/dtos/create-omchai-assignments-dto';
 import { OmchaiRole } from './omchai.entity';
+import { Anthology } from 'src/anthology/anthology.entity';
+import { User } from 'src/users/user.entity';
 
 @Controller('omchai')
 export class OmchaiController {
@@ -18,56 +20,44 @@ export class OmchaiController {
   createBatchAssignments(
     @Body() createOmchaiAssignmentsDto: CreateOmchaiAssignmentsDto,
   ) {
-    // TODO: refactor to be less repetitive
     const createOmchaiDtos: CreateOmchaiDto[] = [];
-    createOmchaiAssignmentsDto.owners.forEach((userId) => {
-      createOmchaiDtos.push({
-        anthology_id: createOmchaiAssignmentsDto.anthology_id,
-        user_id: userId,
-        role: OmchaiRole.OWNER,
-        datetime_assigned: createOmchaiAssignmentsDto.datetime_assigned,
+
+    function createOmchaiDtosByRole(userIds: number[], role: OmchaiRole) {
+      userIds.forEach((userId) => {
+        createOmchaiDtos.push({
+          anthologyId: createOmchaiAssignmentsDto.anthology_id,
+          userId: userId,
+          role: role,
+          datetimeAssigned: createOmchaiAssignmentsDto.datetime_assigned,
+          user: { id: userId } as User,
+          anthology: {
+            id: createOmchaiAssignmentsDto.anthology_id,
+          } as Anthology,
+        });
       });
-    });
-    createOmchaiAssignmentsDto.managers.forEach((userId) => {
-      createOmchaiDtos.push({
-        anthology_id: createOmchaiAssignmentsDto.anthology_id,
-        user_id: userId,
-        role: OmchaiRole.OWNER,
-        datetime_assigned: createOmchaiAssignmentsDto.datetime_assigned,
-      });
-    });
-    createOmchaiAssignmentsDto.consulted.forEach((userId) => {
-      createOmchaiDtos.push({
-        anthology_id: createOmchaiAssignmentsDto.anthology_id,
-        user_id: userId,
-        role: OmchaiRole.OWNER,
-        datetime_assigned: createOmchaiAssignmentsDto.datetime_assigned,
-      });
-    });
-    createOmchaiAssignmentsDto.helpers.forEach((userId) => {
-      createOmchaiDtos.push({
-        anthology_id: createOmchaiAssignmentsDto.anthology_id,
-        user_id: userId,
-        role: OmchaiRole.OWNER,
-        datetime_assigned: createOmchaiAssignmentsDto.datetime_assigned,
-      });
-    });
-    createOmchaiAssignmentsDto.approvers.forEach((userId) => {
-      createOmchaiDtos.push({
-        anthology_id: createOmchaiAssignmentsDto.anthology_id,
-        user_id: userId,
-        role: OmchaiRole.OWNER,
-        datetime_assigned: createOmchaiAssignmentsDto.datetime_assigned,
-      });
-    });
-    createOmchaiAssignmentsDto.informers.forEach((userId) => {
-      createOmchaiDtos.push({
-        anthology_id: createOmchaiAssignmentsDto.anthology_id,
-        user_id: userId,
-        role: OmchaiRole.OWNER,
-        datetime_assigned: createOmchaiAssignmentsDto.datetime_assigned,
-      });
-    });
+    }
+
+    createOmchaiDtosByRole(createOmchaiAssignmentsDto.owners, OmchaiRole.OWNER);
+    createOmchaiDtosByRole(
+      createOmchaiAssignmentsDto.managers,
+      OmchaiRole.MANAGER,
+    );
+    createOmchaiDtosByRole(
+      createOmchaiAssignmentsDto.consulted,
+      OmchaiRole.CONSULTED,
+    );
+    createOmchaiDtosByRole(
+      createOmchaiAssignmentsDto.helpers,
+      OmchaiRole.HELPER,
+    );
+    createOmchaiDtosByRole(
+      createOmchaiAssignmentsDto.approvers,
+      OmchaiRole.APPROVER,
+    );
+    createOmchaiDtosByRole(
+      createOmchaiAssignmentsDto.informers,
+      OmchaiRole.INFORMED,
+    );
 
     return this.omchaiService.createMany(createOmchaiDtos);
   }
