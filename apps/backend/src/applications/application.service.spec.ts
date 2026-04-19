@@ -25,7 +25,7 @@ const dummyApplication: Application = {
   fridayAvailability: 'Sometime between 4-6',
   saturdayAvailability: 'no availability',
   interest: [InterestArea.WOMENS_HEALTH],
-  license: null,
+  license: '',
   applicantType: ApplicantType.LEARNER,
   phone: '123-456-7890',
   email: 'test@example.com',
@@ -53,7 +53,7 @@ const dummyCreateApplicationDto: CreateApplicationDto = {
   fridayAvailability: 'Sometime between 4-6',
   saturdayAvailability: 'no availability',
   interest: [InterestArea.WOMENS_HEALTH],
-  license: null,
+  license: '',
   applicantType: ApplicantType.LEARNER,
   phone: '123-456-7890',
   email: 'test@example.com',
@@ -264,7 +264,7 @@ describe('ApplicationsService', () => {
         fridayAvailability: 'Sometime between 4-6',
         saturdayAvailability: 'no availability',
         interest: [InterestArea.WOMENS_HEALTH],
-        license: null,
+        license: '',
         applicantType: ApplicantType.LEARNER,
         phone: '123-456-7890',
         email: 'test@example.com',
@@ -430,6 +430,52 @@ describe('ApplicationsService', () => {
       await expect(service.create(createApplicationDto)).rejects.toThrow();
     });
 
+    it('should send an email when creating an application', async () => {
+      const savedApplication: Application = {
+        appId: 2,
+        ...dummyCreateApplicationDto,
+        email: 'jane.doe@example.com',
+        proposedStartDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        actualStartDate: undefined,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+
+      const result = await service.create(dummyCreateApplicationDto);
+
+      expect(repository.save).toHaveBeenCalled();
+      expect(result).toEqual(savedApplication);
+      expect(mockEmailService.queueEmail).toHaveBeenCalledWith(
+        savedApplication.email,
+        'Your Application Has Been Received',
+        expect.stringContaining('Thank you for submitting'),
+      );
+    });
+
+    it('should pass along email service errors without information loss', async () => {
+      const savedApplication: Application = {
+        appId: 3,
+        ...dummyCreateApplicationDto,
+        email: 'fail@example.com',
+        proposedStartDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
+        resume: 'janedoe_resume_2_6_2026.pdf',
+        coverLetter: 'janedoe_coverLetter_2_6_2026.pdf',
+        actualStartDate: undefined,
+      };
+
+      mockRepository.save.mockResolvedValue(savedApplication);
+      mockEmailService.queueEmail.mockRejectedValueOnce(
+        new Error('Failed to send email'),
+      );
+
+      await expect(service.create(dummyCreateApplicationDto)).rejects.toThrow(
+        'Failed to send email',
+      );
+    });
     it('should not accept weekly hours greater than one week', async () => {
       const createApplicationDto: CreateApplicationDto = {
         ...dummyCreateApplicationDto,
@@ -849,7 +895,7 @@ describe('ApplicationsService', () => {
           fridayAvailability: 'Sometime between 4-6',
           saturdayAvailability: 'no availability',
           interest: [InterestArea.WOMENS_HEALTH],
-          license: null,
+          license: '',
           proposedStartDate: new Date('2025-11-12'),
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
@@ -878,7 +924,7 @@ describe('ApplicationsService', () => {
           saturdayAvailability: 'no availability',
           interest: [InterestArea.WOMENS_HEALTH],
           proposedStartDate: new Date('2025-11-12'),
-          license: null,
+          license: '',
           applicantType: ApplicantType.LEARNER,
           phone: '123-456-7890',
           email: 'test@example.com',
