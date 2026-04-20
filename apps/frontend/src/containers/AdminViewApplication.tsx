@@ -16,6 +16,7 @@ import {
 import QuestionFrame from '@components/QuestionFrame';
 import RequirementsFrame from '@components/RequirementsFrame';
 import UploadedMaterial from '@components/UploadedMaterial';
+import SignedFormMaterial from '@components/SignedFormMaterial';
 import SchoolAffiliationFrame from '@components/SchoolAffiliationFrame';
 
 import EmergencyContactFrame from '@components/EmergencyContactFrame';
@@ -125,6 +126,17 @@ const AdminViewApplication: React.FC = () => {
             />
           }
         />
+
+        {(application.appStatus === AppStatus.FORMS_SIGNED ||
+          application.appStatus === AppStatus.ACTIVE ||
+          application.appStatus === AppStatus.INACTIVE) && (
+          <SignedFormMaterial
+            frameProps={{
+              signedForm: application.confidentialityForm,
+            }}
+          />
+        )}
+
         <QuestionFrame
           frameProps={{
             question: 'Other than English, what languages do you speak?',

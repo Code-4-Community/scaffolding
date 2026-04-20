@@ -118,6 +118,7 @@ export interface Application extends AvailabilityFields {
   elaborateOtherDiscipline?: string;
   resume: string;
   coverLetter: string;
+  confidentialityForm?: string;
   emergencyContactName: string;
   emergencyContactPhone: string;
   emergencyContactRelationship: string;
@@ -166,6 +167,20 @@ export interface CandidateInfo {
   appId: number;
 }
 
+export interface AdminInfo {
+  email: string;
+  discipline: DISCIPLINE_VALUES;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DisciplineAdmin {
+  firstName: string;
+  lastName: string;
+}
+
+export type DisciplineAdminMap = Record<string, DisciplineAdmin>;
+
 export interface ProvisionAdminRequest {
   email: string;
   firstName: string;
@@ -201,4 +216,19 @@ export interface ProvisionAdminResponse {
     };
   } | null;
   notes: string[];
+}
+
+export interface ConfidentialityTemplateResponse {
+  templateUrl: string;
+}
+
+export interface ConfidentialityFormResponse {
+  fileName: string | null;
+  fileUrl: string | null;
+}
+
+export interface UploadConfidentialityFormResponse {
+  fileName: string;
+  fileUrl: string;
+  appStatus: AppStatus;
 }
