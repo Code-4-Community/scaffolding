@@ -7,6 +7,7 @@ import FormsPage from './FormsPage';
 
 const apiClientMock = vi.hoisted(() => ({
   getCurrentApplication: vi.fn(),
+  getConfidentialityTemplateUrl: vi.fn(),
   getMyConfidentialityForm: vi.fn(),
   uploadMyConfidentialityForm: vi.fn(),
 }));
@@ -14,6 +15,7 @@ const apiClientMock = vi.hoisted(() => ({
 vi.mock('@api/apiClient', () => ({
   default: {
     getCurrentApplication: apiClientMock.getCurrentApplication,
+    getConfidentialityTemplateUrl: apiClientMock.getConfidentialityTemplateUrl,
     getMyConfidentialityForm: apiClientMock.getMyConfidentialityForm,
     uploadMyConfidentialityForm: apiClientMock.uploadMyConfidentialityForm,
   },
@@ -41,15 +43,15 @@ function renderFormsPage() {
 
 describe('FormsPage', () => {
   beforeEach(() => {
-    vi.stubEnv(
-      'VITE_S3_BUCKET_ADDR',
-      'https://bucket.s3.us-east-2.amazonaws.com/',
-    );
     vi.stubGlobal('ResizeObserver', ResizeObserverMock);
     vi.stubGlobal('open', vi.fn());
 
     apiClientMock.getCurrentApplication.mockResolvedValue({
       appStatus: 'Accepted',
+    });
+    apiClientMock.getConfidentialityTemplateUrl.mockResolvedValue({
+      templateUrl:
+        'https://bucket.s3.us-east-2.amazonaws.com/Confidentiality_Form.pdf',
     });
 
     apiClientMock.getMyConfidentialityForm.mockResolvedValue({
@@ -65,7 +67,6 @@ describe('FormsPage', () => {
   });
 
   afterEach(() => {
-    vi.unstubAllEnvs();
     vi.unstubAllGlobals();
     vi.clearAllMocks();
   });
@@ -83,7 +84,7 @@ describe('FormsPage', () => {
     );
   });
 
-  it('uploads a pdf and then shows preview state', async () => {
+  it('uploads a pdf and does not show Preview', async () => {
     const { container } = renderFormsPage();
 
     await screen.findByText('Download Template');
@@ -105,10 +106,26 @@ describe('FormsPage', () => {
       );
     });
 
-    expect(await screen.findByText('Preview')).toBeTruthy();
+    expect(screen.queryByText('Preview')).toBeNull();
   });
 
-  it('hides forms controls for non-accepted/non-active participants', async () => {
+  it('shows preview in active status when a form exists', async () => {
+    apiClientMock.getCurrentApplication.mockResolvedValue({
+      appStatus: 'Active',
+    });
+    apiClientMock.getMyConfidentialityForm.mockResolvedValue({
+      fileName: '1_confidentiality-1713281234567-a1b2c3.pdf',
+      fileUrl:
+        'https://bucket.s3.us-east-2.amazonaws.com/1_confidentiality-1713281234567-a1b2c3.pdf',
+    });
+
+    renderFormsPage();
+
+    expect(await screen.findByText('Preview')).toBeTruthy();
+    expect(screen.queryByText('Upload')).toBeNull();
+  });
+
+  it('hides forms controls for statuses outside upload/download windows', async () => {
     apiClientMock.getCurrentApplication.mockResolvedValue({
       appStatus: 'In Review',
     });
@@ -117,7 +134,7 @@ describe('FormsPage', () => {
 
     expect(
       await screen.findByText(
-        'My Forms is available only for accepted or active volunteers.',
+        'My Forms uploads are available for Accepted and Forms Signed applicants, and downloads are available for Active and Inactive applicants.',
       ),
     ).toBeTruthy();
     expect(screen.queryByText('Download Template')).toBeNull();

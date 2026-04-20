@@ -15,25 +15,11 @@ import apiClient from '@api/apiClient';
 import documentIcon from '../assets/icons/Vector.svg';
 
 const FORM_NAME = 'Confidentiality Form';
-const TEMPLATE_FILE_NAME = 'Confidentiality_Form.pdf';
-
-function normalizeS3BucketAddr(value: string): string {
-  const trimmed = value.trim();
-
-  if (!trimmed) {
-    return '';
-  }
-
-  const withProtocol = /^https?:\/\//i.test(trimmed)
-    ? trimmed
-    : `https://${trimmed}`;
-
-  return withProtocol.endsWith('/') ? withProtocol : `${withProtocol}/`;
-}
-
 const ALLOWED_UPLOAD_STATUSES = new Set<AppStatus>([
   AppStatus.ACCEPTED,
   AppStatus.FORMS_SIGNED,
+]);
+const ALLOWED_DOWNLOAD_STATUSES = new Set<AppStatus>([
   AppStatus.ACTIVE,
   AppStatus.INACTIVE,
 ]);
@@ -41,6 +27,7 @@ const ALLOWED_UPLOAD_STATUSES = new Set<AppStatus>([
 // Interface for a form submission and its form URL
 interface FormSubmission {
   fileName: string;
+  fileUrl: string;
 }
 
 // Custom component for the upload file label
@@ -48,13 +35,14 @@ interface FormSubmission {
 const UploadFileLabel = chakra('label');
 
 const FormsPage: React.FC = () => {
-  const s3BucketAddrRaw = import.meta.env.VITE_S3_BUCKET_ADDR ?? '';
-  const s3BucketAddr = normalizeS3BucketAddr(s3BucketAddrRaw);
   const [submission, setSubmission] = useState<FormSubmission | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isFormsAccessAllowed, setIsFormsAccessAllowed] = useState(true);
+  const [isFormsAccessAllowed, setIsFormsAccessAllowed] = useState(false);
+  const [canUpload, setCanUpload] = useState(false);
+  const [canDownload, setCanDownload] = useState(false);
+  const [templateUrl, setTemplateUrl] = useState('');
 
   useEffect(() => {
     let isMounted = true;
@@ -66,31 +54,54 @@ const FormsPage: React.FC = () => {
       try {
         const currentApplication = await apiClient.getCurrentApplication();
 
-        const isEligibleForForms = Boolean(
-          currentApplication?.appStatus &&
-            ALLOWED_UPLOAD_STATUSES.has(currentApplication.appStatus),
+        const status = currentApplication?.appStatus;
+        const isUploadEligible = Boolean(
+          status && ALLOWED_UPLOAD_STATUSES.has(status),
         );
+        const isDownloadEligible = Boolean(
+          status && ALLOWED_DOWNLOAD_STATUSES.has(status),
+        );
+        const isEligibleForForms = isUploadEligible || isDownloadEligible;
 
         if (isMounted) {
           setIsFormsAccessAllowed(isEligibleForForms);
+          setCanUpload(isUploadEligible);
+          setCanDownload(isDownloadEligible);
         }
 
         if (!isEligibleForForms) {
           if (isMounted) {
             setSubmission(null);
+            setTemplateUrl('');
           }
           return;
         }
 
-        const uploadedForm = await apiClient.getMyConfidentialityForm();
-        if (isMounted) {
-          if (uploadedForm.fileName && uploadedForm.fileUrl) {
-            setSubmission({
-              fileName: uploadedForm.fileName,
-            });
-          } else {
-            setSubmission(null);
+        if (isUploadEligible) {
+          const templateResponse =
+            await apiClient.getConfidentialityTemplateUrl();
+
+          if (isMounted) {
+            setTemplateUrl(templateResponse.templateUrl ?? '');
           }
+        } else if (isMounted) {
+          setTemplateUrl('');
+        }
+
+        if (isDownloadEligible) {
+          const uploadedForm = await apiClient.getMyConfidentialityForm();
+          if (isMounted) {
+            if (uploadedForm.fileName && uploadedForm.fileUrl) {
+              setSubmission({
+                fileName: uploadedForm.fileName,
+                fileUrl: uploadedForm.fileUrl,
+              });
+            } else {
+              setSubmission(null);
+            }
+          }
+        } else if (isMounted) {
+          setSubmission(null);
         }
       } catch {
         if (isMounted) {
@@ -122,6 +133,7 @@ const FormsPage: React.FC = () => {
       const uploadResult = await apiClient.uploadMyConfidentialityForm(file);
       setSubmission({
         fileName: uploadResult.fileName,
+        fileUrl: uploadResult.fileUrl,
       });
     } catch (error) {
       if (
@@ -146,11 +158,8 @@ const FormsPage: React.FC = () => {
     }
   };
 
-  const hasIncompleteForm = !submission;
+  const hasIncompleteForm = canUpload && !submission;
   const fileInputId = 'confidentiality-form-upload';
-  const templateUrl = s3BucketAddr
-    ? `${s3BucketAddr}${TEMPLATE_FILE_NAME}`
-    : '';
 
   return (
     <div className="flex flex-row h-screen">
@@ -212,7 +221,9 @@ const FormsPage: React.FC = () => {
             fontWeight="500"
             color="red"
           >
-            My Forms is available only for accepted or active volunteers.
+            My Forms uploads are available for Accepted and Forms Signed
+            applicants, and downloads are available for Active and Inactive
+            applicants.
           </Text>
         ) : null}
 
@@ -284,7 +295,7 @@ const FormsPage: React.FC = () => {
                 </Flex>
               </Flex>
 
-              {submission ? (
+              {canDownload && submission ? (
                 <Button
                   type="button"
                   display="inline-flex"
@@ -306,15 +317,8 @@ const FormsPage: React.FC = () => {
                   color="#000000"
                   _hover={{ opacity: 0.92 }}
                   onClick={() => {
-                    if (!s3BucketAddr) {
-                      setErrorMessage(
-                        'Preview is not available because VITE_S3_BUCKET_ADDR is not configured.',
-                      );
-                      return;
-                    }
-
                     window.open(
-                      `${s3BucketAddr}${submission.fileName}`,
+                      submission.fileUrl,
                       '_blank',
                       'noopener,noreferrer',
                     );
@@ -323,7 +327,7 @@ const FormsPage: React.FC = () => {
                   Preview
                   <FaEye size="16px" color="#000000" aria-hidden />
                 </Button>
-              ) : (
+              ) : canUpload ? (
                 <Flex gap="4" flexWrap="wrap">
                   <Button
                     type="button"
@@ -387,6 +391,15 @@ const FormsPage: React.FC = () => {
                     <FaUpload size="16px" color="#FFFFFF" aria-hidden />
                   </UploadFileLabel>
                 </Flex>
+              ) : (
+                <Text
+                  fontFamily="Lato, sans-serif"
+                  fontSize="14px"
+                  fontWeight="500"
+                  color="#525252"
+                >
+                  No uploaded confidentiality form is available to download yet.
+                </Text>
               )}
 
               <input

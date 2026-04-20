@@ -48,9 +48,13 @@ export function createMockApiClientModule(
       getConfidentialityTemplateUrl: vi.fn().mockResolvedValue({
         templateUrl: 'https://example.com/Confidentiality_Form.pdf',
       }),
-      getMyConfidentialityForm: vi
-        .fn()
-        .mockRejectedValue(new Error('not found')),
+      getMyConfidentialityForm: vi.fn().mockResolvedValue({
+        fileName: null,
+        fileUrl: null,
+      }),
+      // New API methods used by `useApplications` and admin views
+      getAdminInfoByEmail: vi.fn().mockResolvedValue(null),
+      getApplicationsByDiscipline: vi.fn().mockResolvedValue([]),
       uploadMyConfidentialityForm: vi.fn(),
       provisionAdmin:
         overrides?.provisionAdmin ?? vi.fn().mockResolvedValue(undefined),

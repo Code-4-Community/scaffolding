@@ -1,6 +1,6 @@
 import NavBar from '../components/NavBar/NavBar';
 import apiClient from '../api/apiClient';
-import { Box, Spinner, Text } from '@chakra-ui/react';
+import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
 import AvailabilityTable from '../components/AvailabilityTable';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -11,9 +11,12 @@ import {
   User,
   UserType,
 } from '../api/types';
+import DocumentDownloadCard, {
+  type DocumentDownloadItem,
+} from '../components/DocumentDownloadCard';
+import { toS3FolderUrl } from '../utils/s3';
 import QuestionFrame from '../components/QuestionFrame';
 import RequirementsFrame from '../components/RequirementsFrame';
-import UploadedMaterial from '../components/UploadedMaterial';
 import SchoolAffiliationFrame from '../components/SchoolAffiliationFrame';
 import ApplicationProfileHeader from '@components/ApplicationProfileHeader';
 import EmergencyContactFrame from '@components/EmergencyContactFrame';
@@ -26,6 +29,26 @@ const CandidateViewApplication: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const pronouns = application?.pronouns;
   const discipline = application?.discipline;
+  const uploadedDocuments: DocumentDownloadItem[] = [
+    {
+      variant: 'resume',
+      downloadUrl: toS3FolderUrl(application?.resume, 'resumes'),
+    },
+    {
+      variant: 'coverLetter',
+      downloadUrl: toS3FolderUrl(application?.coverLetter, 'cover-letters'),
+    },
+  ];
+
+  if (
+    application?.applicantType === ApplicantType.LEARNER &&
+    learnerInfo?.syllabus !== undefined
+  ) {
+    uploadedDocuments.push({
+      variant: 'syllabus',
+      downloadUrl: toS3FolderUrl(learnerInfo.syllabus, 'syllabus'),
+    });
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -248,17 +271,12 @@ const CandidateViewApplication: React.FC = () => {
           />
         </Box>
 
-        <UploadedMaterial
-          frameProps={{
-            resume: application.resume,
-            coverLetter: application.coverLetter,
-            syllabus:
-              application.applicantType === ApplicantType.LEARNER &&
-              learnerInfo !== null
-                ? learnerInfo.syllabus
-                : undefined,
-          }}
-        />
+        <Box borderWidth="1px" borderRadius="lg" p={6} bg="white">
+          <Heading as="h2" size="md" mb={4}>
+            Uploaded Material
+          </Heading>
+          <DocumentDownloadCard documents={uploadedDocuments} />
+        </Box>
 
         {application.applicantType === ApplicantType.LEARNER &&
           learnerInfo !== null && (
