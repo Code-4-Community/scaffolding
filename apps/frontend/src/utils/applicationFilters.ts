@@ -28,16 +28,11 @@ interface FilterableApplication {
   actualStartDate: string;
 }
 
-interface SearchableApplication {
+interface SearchableApplication extends FilterableApplication {
   name: string;
   email: string;
-  status: string;
-  discipline: string;
-  disciplineAdminName: string;
   desiredExperience: string;
   applicantType: string;
-  proposedStartDate: string;
-  actualStartDate: string;
 }
 
 export type ApplicationFilterPredicate = (
