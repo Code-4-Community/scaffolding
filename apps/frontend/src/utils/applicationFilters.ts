@@ -132,23 +132,24 @@ export function compileApplicationSearchPredicate(
 
     const proposedFormatted = formatIsoToMmddyyyy(proposedIso);
     const actualFormatted = formatIsoToMmddyyyy(actualIso);
+    const normalizedHaystacks = [
+      application.name,
+      application.email,
+      application.desiredExperience,
+      application.discipline,
+      application.status,
+      application.disciplineAdminName,
+      application.applicantType,
+      proposedIso,
+      proposedFormatted,
+      actualIso,
+      actualFormatted,
+    ]
+      .filter((value): value is string => !!value)
+      .map((value) => normalizeText(value));
 
-    return !!(
-      normalizeText(application.name).includes(normalizedQuery) ||
-      normalizeText(application.email).includes(normalizedQuery) ||
-      normalizeText(application.desiredExperience).includes(normalizedQuery) ||
-      normalizeText(application.discipline).includes(normalizedQuery) ||
-      normalizeText(application.status).includes(normalizedQuery) ||
-      normalizeText(application.disciplineAdminName).includes(
-        normalizedQuery,
-      ) ||
-      normalizeText(application.applicantType).includes(normalizedQuery) ||
-      (proposedIso && normalizeText(proposedIso).includes(normalizedQuery)) ||
-      (proposedFormatted &&
-        normalizeText(proposedFormatted).includes(normalizedQuery)) ||
-      (actualIso && normalizeText(actualIso).includes(normalizedQuery)) ||
-      (actualFormatted &&
-        normalizeText(actualFormatted).includes(normalizedQuery))
+    return normalizedHaystacks.some((value) =>
+      value.includes(normalizedQuery),
     );
   };
 }
