@@ -100,6 +100,19 @@ export function normalizeDateToDay(value?: string): string | undefined {
   return undefined;
 }
 
+function formatIsoToMmddyyyy(iso?: string): string | undefined {
+  if (!iso) {
+    return undefined;
+  }
+
+  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return undefined;
+  }
+
+  return `${match[2]}/${match[3]}/${match[1]}`;
+}
+
 export function countActiveFilters(filters: ApplicationFilters): number {
   return (
     filters.statuses.length +
@@ -123,13 +136,6 @@ export function compileApplicationSearchPredicate(
     const proposedIso = normalizeDateToDay(application.proposedStartDate);
     const actualIso = normalizeDateToDay(application.actualStartDate);
 
-    const formatIsoToMmddyyyy = (iso?: string | undefined) => {
-      if (!iso) return undefined;
-      const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (!m) return undefined;
-      return `${m[2]}/${m[3]}/${m[1]}`;
-    };
-
     const proposedFormatted = formatIsoToMmddyyyy(proposedIso);
     const actualFormatted = formatIsoToMmddyyyy(actualIso);
     const normalizedHaystacks = [
@@ -148,9 +154,7 @@ export function compileApplicationSearchPredicate(
       .filter((value): value is string => !!value)
       .map((value) => normalizeText(value));
 
-    return normalizedHaystacks.some((value) =>
-      value.includes(normalizedQuery),
-    );
+    return normalizedHaystacks.some((value) => value.includes(normalizedQuery));
   };
 }
 
