@@ -77,11 +77,16 @@ export function ApplicationTable({
     [searchQuery],
   );
 
-  const filteredApplications = applications.filter((application) => {
-    return (
-      matchesSearchQuery(application) && matchesStructuredFilters(application)
-    );
-  });
+  const filteredApplications = useMemo(
+    () =>
+      applications.filter((application) => {
+        return (
+          matchesSearchQuery(application) &&
+          matchesStructuredFilters(application)
+        );
+      }),
+    [applications, matchesSearchQuery, matchesStructuredFilters],
+  );
 
   return (
     <Table.Root striped stickyHeader minW="900px">
