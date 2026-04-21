@@ -147,10 +147,25 @@ describe('ApplicationTable', () => {
     expect(screen.queryByText('John Smith')).toBeNull();
   });
 
+  it('should filter applications by search query on discipline admin', () => {
+    renderTable(undefined, 'alex');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+    expect(screen.queryByText('Sam Taylor')).toBeNull();
+  });
+
   it('should be case-insensitive when filtering', () => {
     renderTable(undefined, 'JANE');
 
     expect(screen.getByText('Jane Doe')).toBeDefined();
+  });
+
+  it('should trim and normalize spacing in search query', () => {
+    renderTable(undefined, '  jane   doe  ');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
   });
 
   it('should show all applications when search query is empty', () => {

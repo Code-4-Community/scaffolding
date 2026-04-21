@@ -4,6 +4,7 @@ import type { ApplicationRow } from '@hooks/useApplications';
 import StatusPill, { StatusPillConfig, StatusVariant } from './StatusPill';
 import {
   compileApplicationFilterPredicate,
+  compileApplicationSearchPredicate,
   EMPTY_APPLICATION_FILTERS,
   type ApplicationFilters,
 } from '@utils/applicationFilters';
@@ -71,16 +72,15 @@ export function ApplicationTable({
     [filters],
   );
 
-  const filteredApplications = applications.filter((application) => {
-    const query = searchQuery.toLowerCase();
-    const matchesSearch =
-      !searchQuery ||
-      application.name.toLowerCase().includes(query) ||
-      application.discipline.toLowerCase().includes(query) ||
-      application.status.toLowerCase().includes(query) ||
-      application.email.toLowerCase().includes(query);
+  const matchesSearchQuery = useMemo(
+    () => compileApplicationSearchPredicate(searchQuery),
+    [searchQuery],
+  );
 
-    return matchesSearch && matchesStructuredFilters(application);
+  const filteredApplications = applications.filter((application) => {
+    return (
+      matchesSearchQuery(application) && matchesStructuredFilters(application)
+    );
   });
 
   return (

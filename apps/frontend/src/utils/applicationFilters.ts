@@ -28,8 +28,24 @@ interface FilterableApplication {
   actualStartDate: string;
 }
 
+interface SearchableApplication {
+  name: string;
+  email: string;
+  status: string;
+  discipline: string;
+  disciplineAdminName: string;
+  desiredExperience: string;
+  applicantType: string;
+  proposedStartDate: string;
+  actualStartDate: string;
+}
+
 export type ApplicationFilterPredicate = (
   application: FilterableApplication,
+) => boolean;
+
+export type ApplicationSearchPredicate = (
+  application: SearchableApplication,
 ) => boolean;
 
 function normalizeText(value: string): string {
@@ -97,6 +113,49 @@ export function countActiveFilters(filters: ApplicationFilters): number {
     (normalizeDateToDay(filters.proposedStartDate) ? 1 : 0) +
     (normalizeDateToDay(filters.actualStartDate) ? 1 : 0)
   );
+}
+
+export function compileApplicationSearchPredicate(
+  searchQuery: string,
+): ApplicationSearchPredicate {
+  const normalizedQuery = normalizeText(searchQuery);
+
+  if (!normalizedQuery) {
+    return () => true;
+  }
+
+  return (application: SearchableApplication): boolean => {
+    const proposedIso = normalizeDateToDay(application.proposedStartDate);
+    const actualIso = normalizeDateToDay(application.actualStartDate);
+
+    const formatIsoToMmddyyyy = (iso?: string | undefined) => {
+      if (!iso) return undefined;
+      const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return undefined;
+      return `${m[2]}/${m[3]}/${m[1]}`;
+    };
+
+    const proposedFormatted = formatIsoToMmddyyyy(proposedIso);
+    const actualFormatted = formatIsoToMmddyyyy(actualIso);
+
+    return !!(
+      normalizeText(application.name).includes(normalizedQuery) ||
+      normalizeText(application.email).includes(normalizedQuery) ||
+      normalizeText(application.desiredExperience).includes(normalizedQuery) ||
+      normalizeText(application.discipline).includes(normalizedQuery) ||
+      normalizeText(application.status).includes(normalizedQuery) ||
+      normalizeText(application.disciplineAdminName).includes(
+        normalizedQuery,
+      ) ||
+      normalizeText(application.applicantType).includes(normalizedQuery) ||
+      (proposedIso && normalizeText(proposedIso).includes(normalizedQuery)) ||
+      (proposedFormatted &&
+        normalizeText(proposedFormatted).includes(normalizedQuery)) ||
+      (actualIso && normalizeText(actualIso).includes(normalizedQuery)) ||
+      (actualFormatted &&
+        normalizeText(actualFormatted).includes(normalizedQuery))
+    );
+  };
 }
 
 function matchesDateDirection(
