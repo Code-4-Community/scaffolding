@@ -28,8 +28,19 @@ interface FilterableApplication {
   actualStartDate: string;
 }
 
+interface SearchableApplication extends FilterableApplication {
+  name: string;
+  email: string;
+  desiredExperience: string;
+  applicantType: string;
+}
+
 export type ApplicationFilterPredicate = (
   application: FilterableApplication,
+) => boolean;
+
+export type ApplicationSearchPredicate = (
+  application: SearchableApplication,
 ) => boolean;
 
 function normalizeText(value: string): string {
@@ -89,6 +100,19 @@ export function normalizeDateToDay(value?: string): string | undefined {
   return undefined;
 }
 
+function formatIsoToMmddyyyy(iso?: string): string | undefined {
+  if (!iso) {
+    return undefined;
+  }
+
+  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return undefined;
+  }
+
+  return `${match[2]}/${match[3]}/${match[1]}`;
+}
+
 export function countActiveFilters(filters: ApplicationFilters): number {
   return (
     filters.statuses.length +
@@ -97,6 +121,41 @@ export function countActiveFilters(filters: ApplicationFilters): number {
     (normalizeDateToDay(filters.proposedStartDate) ? 1 : 0) +
     (normalizeDateToDay(filters.actualStartDate) ? 1 : 0)
   );
+}
+
+export function compileApplicationSearchPredicate(
+  searchQuery: string,
+): ApplicationSearchPredicate {
+  const normalizedQuery = normalizeText(searchQuery);
+
+  if (!normalizedQuery) {
+    return () => true;
+  }
+
+  return (application: SearchableApplication): boolean => {
+    const proposedIso = normalizeDateToDay(application.proposedStartDate);
+    const actualIso = normalizeDateToDay(application.actualStartDate);
+
+    const proposedFormatted = formatIsoToMmddyyyy(proposedIso);
+    const actualFormatted = formatIsoToMmddyyyy(actualIso);
+    const normalizedHaystacks = [
+      application.name,
+      application.email,
+      application.desiredExperience,
+      application.discipline,
+      application.status,
+      application.disciplineAdminName,
+      application.applicantType,
+      proposedIso,
+      proposedFormatted,
+      actualIso,
+      actualFormatted,
+    ]
+      .filter((value): value is string => !!value)
+      .map((value) => normalizeText(value));
+
+    return normalizedHaystacks.some((value) => value.includes(normalizedQuery));
+  };
 }
 
 function matchesDateDirection(

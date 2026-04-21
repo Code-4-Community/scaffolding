@@ -147,10 +147,73 @@ describe('ApplicationTable', () => {
     expect(screen.queryByText('John Smith')).toBeNull();
   });
 
+  it('should filter applications by search query on discipline admin', () => {
+    renderTable(undefined, 'alex');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+    expect(screen.queryByText('Sam Taylor')).toBeNull();
+  });
+
   it('should be case-insensitive when filtering', () => {
     renderTable(undefined, 'JANE');
 
     expect(screen.getByText('Jane Doe')).toBeDefined();
+  });
+
+  it('should trim and normalize spacing in search query', () => {
+    renderTable(undefined, '  jane   doe  ');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+  });
+
+  it('should filter applications by desired experience', () => {
+    renderTable(undefined, 'shadowing');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+    expect(screen.queryByText('Sam Taylor')).toBeNull();
+  });
+
+  it('should filter applications by applicant type', () => {
+    renderTable(undefined, 'Learner');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.getByText('Sam Taylor')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+  });
+
+  it('should filter by proposed start date using ISO format', () => {
+    renderTable(undefined, '2026-01-15');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.getByText('Sam Taylor')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+  });
+
+  it('should filter by proposed start date using MM/DD/YYYY format', () => {
+    renderTable(undefined, '01/15/2026');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.getByText('Sam Taylor')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+  });
+
+  it('should filter by actual start date using ISO format', () => {
+    renderTable(undefined, '2026-04-12');
+
+    expect(screen.getByText('Sam Taylor')).toBeDefined();
+    expect(screen.queryByText('Jane Doe')).toBeNull();
+    expect(screen.queryByText('John Smith')).toBeNull();
+  });
+
+  it('should filter by actual start date using MM/DD/YYYY format and ignore missing actuals', () => {
+    renderTable(undefined, '02/01/2026');
+
+    expect(screen.getByText('Jane Doe')).toBeDefined();
+    expect(screen.queryByText('John Smith')).toBeNull();
+    expect(screen.queryByText('Sam Taylor')).toBeNull();
   });
 
   it('should show all applications when search query is empty', () => {
