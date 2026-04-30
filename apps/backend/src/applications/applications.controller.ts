@@ -113,7 +113,7 @@ export class ApplicationsController {
    * @param req The request object from the caller (frontend). Currently not used.
    * @returns A promise of the list of applications with the specified discipline.
    *          Returns an empty array if no applications match the discipline.
-   * @throws {BadRequestException} if the discipline is not a valid DISCIPLINE_VALUES enum value.
+   * @throws {BadRequestException} if the discipline key does not exist in the active discipline catalog.
    * @throws {Error} which is unchanged from what repository throws.
    */
   @Get('by-discipline')
@@ -122,6 +122,26 @@ export class ApplicationsController {
     @Query('discipline') discipline: string,
   ): Promise<Application[]> {
     return await this.applicationsService.findByDiscipline(discipline);
+  }
+
+  /**
+   * Exposes an endpoint to return all applications for a comma-separated discipline list.
+   * @param disciplinesCsv comma-separated discipline keys.
+   * @returns a promise of the list of applications in any provided discipline.
+   * @throws {BadRequestException} if no disciplines are provided or any are invalid.
+   * @throws {Error} which is unchanged from what repository throws.
+   */
+  @Get('by-disciplines')
+  @Roles(UserType.ADMIN)
+  async getApplicationsByDisciplines(
+    @Query('disciplines') disciplinesCsv: string,
+  ): Promise<Application[]> {
+    const disciplines = disciplinesCsv
+      ?.split(',')
+      .map((discipline) => discipline.trim())
+      .filter(Boolean);
+
+    return await this.applicationsService.findByDisciplines(disciplines ?? []);
   }
 
   /**
@@ -199,7 +219,7 @@ export class ApplicationsController {
   /**
    * Exposes an endpoint to update the application's discipline.
    * @param appId The id of the application to modify.
-   * @param updateDisciplineDto Object containing the desired new discipline (must be a valid DISCIPLINE_VALUES enum value).
+   * @param updateDisciplineDto Object containing the desired new discipline key.
    * @param req The request object from the caller (frontend). Currently not used.
    * @returns The updated application object.
    * @throws {NotFoundException} with message 'Application with ID <id> not found'
@@ -297,12 +317,22 @@ export class ApplicationsController {
     );
   }
 
+  /**
+   * Exposes an endpoint to get a signed URL for the confidentiality-form template.
+   * @returns object containing the template URL.
+   */
   @Get('/forms/confidentiality/template')
   @Roles(UserType.STANDARD, UserType.ADMIN)
   async getConfidentialityTemplateUrl(): Promise<{ templateUrl: string }> {
     return this.applicationsService.getConfidentialityTemplateUrl();
   }
 
+  /**
+   * Exposes an endpoint to fetch the current user's confidentiality form metadata.
+   * @param req request context containing the authenticated user.
+   * @returns file metadata if present, otherwise null placeholders.
+   * @throws {NotFoundException} if no user matching the JWT is found.
+   */
   @Get('/me/forms/confidentiality')
   @Roles(UserType.STANDARD)
   async getCurrentUserConfidentialityForm(
@@ -323,6 +353,14 @@ export class ApplicationsController {
     return form;
   }
 
+  /**
+   * Exposes an endpoint to upload the current user's confidentiality form.
+   * @param req request context containing the authenticated user.
+   * @param file uploaded PDF payload.
+   * @returns uploaded file metadata and resulting application status.
+   * @throws {NotFoundException} if no user matching the JWT is found.
+   * @throws {BadRequestException} if file validation fails.
+   */
   @Post('/me/forms/confidentiality')
   @Roles(UserType.STANDARD)
   @UseInterceptors(

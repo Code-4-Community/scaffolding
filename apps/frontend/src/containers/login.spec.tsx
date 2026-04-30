@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import Login from './login';
-import { DISCIPLINE_VALUES, UserType } from '../api/types';
+import { UserType } from '../api/types';
 
 const { signInWithEmailPasswordMock, confirmSignInWithNewPasswordMock } =
   vi.hoisted(() => ({
@@ -27,7 +27,7 @@ const { prefetchDisciplineAdminMapMock } = vi.hoisted(() => ({
 vi.mock('../auth/cognito', () => ({
   signInWithEmailPassword: signInWithEmailPasswordMock,
   confirmSignInWithNewPassword: confirmSignInWithNewPasswordMock,
-  signOutUser: vi.fn(),
+  signOutUser: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('../auth/current-session-user-type', () => ({
@@ -81,10 +81,7 @@ describe('Login', () => {
     await waitFor(() => {
       expect(fetchAndStoreCurrentSessionUserTypeMock).toHaveBeenCalledTimes(1);
     });
-    expect(prefetchDisciplineAdminMapMock).toHaveBeenCalledWith(
-      undefined,
-      Object.values(DISCIPLINE_VALUES),
-    );
+    expect(prefetchDisciplineAdminMapMock).toHaveBeenCalledWith();
     expect(confirmSignInWithNewPasswordMock).not.toHaveBeenCalled();
   });
 

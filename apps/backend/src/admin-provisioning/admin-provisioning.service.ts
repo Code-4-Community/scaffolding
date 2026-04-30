@@ -18,6 +18,7 @@ import { UserType } from '../users/types';
 import { User } from '../users/user.entity';
 import { COGNITO_IDENTITY_PROVIDER } from './cognito.provider';
 import envConfig from '../util/aws-exports';
+import { DisciplinesService } from '../disciplines/disciplines.service';
 
 /**
  * Service for phases 2-5 of the admin provisioning plan.
@@ -30,6 +31,11 @@ import envConfig from '../util/aws-exports';
 export class AdminProvisioningService {
   private readonly logger = new Logger(AdminProvisioningService.name);
 
+  /**
+   * Reads and validates the configured Cognito user pool id.
+   * @returns the Cognito user pool id.
+   * @throws {Error} if the user pool id is not configured.
+   */
   private getCognitoUserPoolId(): string {
     const userPoolId = envConfig.CognitoAuthConfig.userPoolId;
 
@@ -49,6 +55,7 @@ export class AdminProvisioningService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(AdminInfo)
     private readonly adminInfoRepository: Repository<AdminInfo>,
+    private readonly disciplinesService: DisciplinesService,
   ) {}
 
   /**
@@ -135,7 +142,16 @@ export class AdminProvisioningService {
     provisionAdminDto: ProvisionAdminDto,
   ): Promise<DatabaseCreateResult> {
     const normalizedEmail = provisionAdminDto.email.trim().toLowerCase();
+    const disciplines = [
+      ...new Set(
+        provisionAdminDto.disciplines
+          .map((discipline) => discipline.trim().toLowerCase())
+          .filter(Boolean),
+      ),
+    ];
     this.logger.debug(`Creating database admin records for ${normalizedEmail}`);
+
+    await this.disciplinesService.ensureActiveDisciplineKeys(disciplines);
 
     const manager = (
       this.userRepository as Repository<User> & {
@@ -193,7 +209,7 @@ export class AdminProvisioningService {
 
         const adminInfo = transactionalAdminInfoRepository.create({
           email: normalizedEmail,
-          discipline: provisionAdminDto.discipline,
+          disciplines,
         });
         const savedAdminInfo = await transactionalAdminInfoRepository.save(
           adminInfo,
@@ -203,7 +219,7 @@ export class AdminProvisioningService {
           user: savedUser,
           adminInfo: {
             email: savedAdminInfo.email,
-            discipline: savedAdminInfo.discipline,
+            disciplines,
             createdAt: savedAdminInfo.createdAt.toISOString(),
             updatedAt: savedAdminInfo.updatedAt.toISOString(),
           },
@@ -243,7 +259,7 @@ export class AdminProvisioningService {
 
       const adminInfo = this.adminInfoRepository.create({
         email: normalizedEmail,
-        discipline: provisionAdminDto.discipline,
+        disciplines,
       });
       const savedAdminInfo = await this.adminInfoRepository.save(adminInfo);
 
@@ -251,7 +267,7 @@ export class AdminProvisioningService {
         user: savedUser,
         adminInfo: {
           email: savedAdminInfo.email,
-          discipline: savedAdminInfo.discipline,
+          disciplines,
           createdAt: savedAdminInfo.createdAt.toISOString(),
           updatedAt: savedAdminInfo.updatedAt.toISOString(),
         },

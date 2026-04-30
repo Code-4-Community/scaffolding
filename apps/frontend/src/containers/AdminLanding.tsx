@@ -45,6 +45,14 @@ const AdminLanding: React.FC = () => {
     ),
   ).sort((a, b) => a.localeCompare(b));
 
+  const disciplineOptions = Array.from(
+    new Set(
+      applications
+        .map((application) => application.discipline)
+        .filter((discipline) => Boolean(discipline?.trim())),
+    ),
+  ).sort((a, b) => a.localeCompare(b));
+
   function onResetFilters() {
     setApplicationFilters(EMPTY_APPLICATION_FILTERS);
   }
@@ -126,6 +134,7 @@ const AdminLanding: React.FC = () => {
             onFiltersChange={setApplicationFilters}
             onResetFilters={onResetFilters}
             disciplineAdminOptions={disciplineAdminOptions}
+            disciplineOptions={disciplineOptions}
           />
         </Flex>
 

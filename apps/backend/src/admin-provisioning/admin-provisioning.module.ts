@@ -7,12 +7,14 @@ import { User } from '../users/user.entity';
 import { AdminProvisioningController } from './admin-provisioning.controller';
 import { AdminProvisioningService } from './admin-provisioning.service';
 import { cognitoIdentityProviderFactory } from './cognito.provider';
+import { DisciplinesModule } from '../disciplines/disciplines.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, AdminInfo]),
     AuthModule,
     UsersModule,
+    DisciplinesModule,
   ],
   controllers: [AdminProvisioningController],
   providers: [AdminProvisioningService, cognitoIdentityProviderFactory],
