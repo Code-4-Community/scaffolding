@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Table } from '@chakra-ui/react';
+import { useMemo, useState } from 'react';
+import { Button, Input, InputGroup, Table } from '@chakra-ui/react';
 import type { ApplicationRow } from '@hooks/useApplications';
 import StatusPill, { StatusPillConfig, StatusVariant } from './StatusPill';
 import {
@@ -8,6 +8,8 @@ import {
   EMPTY_APPLICATION_FILTERS,
   type ApplicationFilters,
 } from '@utils/applicationFilters';
+import apiClient from '@api/apiClient';
+import { MdEdit } from 'react-icons/md';
 
 const COLUMNS = [
   'Name',
@@ -62,11 +64,23 @@ function formatDesiredExperience(value: string): string {
   return value;
 }
 
+interface isEditingType {
+  appId: number;
+  isBeingEdited: boolean;
+}
+
 export function ApplicationTable({
   applications,
   searchQuery = '',
   filters = EMPTY_APPLICATION_FILTERS,
 }: ApplicationTableProps) {
+  const [applicationsState, setApplicationsState] =
+    useState<ApplicationRow[]>(applications);
+  const [isEditing, setIsEditing] = useState<isEditingType[]>(
+    applications.map(
+      (app) => ({ appId: app.appId, isBeingEdited: false } as isEditingType),
+    ),
+  );
   const matchesStructuredFilters = useMemo(
     () => compileApplicationFilterPredicate(filters),
     [filters],
@@ -87,6 +101,19 @@ export function ApplicationTable({
       }),
     [applications, matchesSearchQuery, matchesStructuredFilters],
   );
+
+  const handleActualStartDateUpdate = async (
+    nextDate: string,
+    application: ApplicationRow,
+  ) => {
+    if (!application) return;
+    const updatedApplication = await apiClient.updateApplicationActualStartDate(
+      application.appId,
+      nextDate,
+    );
+    //    setApplicationsState(updatedApplication); TODO
+    console.log('we clicked the button!');
+  };
 
   return (
     <Table.Root striped stickyHeader minW="900px">
@@ -116,7 +143,19 @@ export function ApplicationTable({
               </a>
             </Table.Cell>
             <Table.Cell>{formatDate(application.proposedStartDate)}</Table.Cell>
-            <Table.Cell>{formatDate(application.actualStartDate)}</Table.Cell>
+            <Table.Cell>
+              <InputGroup
+                width="125px"
+                flex="1"
+                endElement={
+                  <MdEdit
+                    onClick={() => handleActualStartDateUpdate('', application)}
+                  />
+                }
+              >
+                <Input placeholder="MM-DD-YYYY" size="xs" />
+              </InputGroup>
+            </Table.Cell>
             <Table.Cell>
               {formatDesiredExperience(application.desiredExperience)}
             </Table.Cell>
