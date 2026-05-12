@@ -4,10 +4,38 @@ import { Repository } from 'typeorm';
 
 import { User } from './user.entity';
 import { Status } from './types';
+import { EmailsService } from '../aws/ses/email.service';
+import { SendEmailDTO } from '../aws/ses/sendEmail.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    private emailsService: EmailsService,
+  ) {}
+
+  /**
+   * Builds a hardcoded test email addressed to `recipient` and hands it
+   * to EmailsService.sendEmails, exercising the DTO's class-validator
+   * decorators against whatever the caller supplies.
+   */
+  async sendTestEmail(recipient: string) {
+    const imageRes = await fetch('https://placehold.co/200x200/png');
+    const imageBuffer = Buffer.from(await imageRes.arrayBuffer());
+
+    const dto: SendEmailDTO = {
+      toEmails: [recipient],
+      subject: 'Test email',
+      bodyHtml: '<p>This is a test email sent from UsersService.</p>',
+      attachments: [
+        {
+          filename: 'sample.png',
+          content: imageBuffer,
+        },
+      ],
+    };
+    return this.emailsService.sendEmails(dto);
+  }
 
   async create(
     email: string,
