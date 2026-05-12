@@ -21,17 +21,18 @@ async function bootstrap() {
     }),
   );
 
-  if (process.env.SWAGGER_ENABLED === 'TRUE') {
+  const swaggerEnabled = process.env.SWAGGER_ENABLED?.toLowerCase() === 'true';
+
+  if (swaggerEnabled) {
     const config = new DocumentBuilder()
-      // Update with your app's specific name
       .setTitle('[YOUR_APP_NAME] API Docs')
-      // Update with your app's specific description
       .setDescription('Documentation for [YOUR_APP_NAME] API routes')
-      // Add bearer auth for protected routes (Use @ApiBearerAuth() decorator on the controller for the routes that should be protected)
-      .addBearerAuth()
-      // Example tag for a users controller
+      .addBearerAuth({
+        type: 'http',
+        description:
+          '[TL] Replace: how clients obtain a Bearer token for this API.',
+      })
       .addTag('Users', 'Operations on users')
-      // Update with your app's version
       .setVersion('1.0')
       .build();
     const document = SwaggerModule.createDocument(app, config); // Create the Swagger document
