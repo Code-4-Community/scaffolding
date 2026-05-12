@@ -48,7 +48,6 @@ The backend can expose [Swagger UI](https://github.com/swagger-api/swagger-ui) (
 
 **Decorators to know as you add routes!** 
 (import from `@nestjs/swagger`):
-- `@Post, @Get, @Patch, @Delete, etc.`: on top of respective CRUD methods
 - `@ApiProperty()` / `@ApiPropertyOptional()`: on top of DTO fields
 - `@ApiTags('Name')`: on top of controllers to tag them to specific tags/features
 - `@ApiHeader({name: '...', description: '...'})`: on top of individual methods or controllers to define custom headers that are expected as part of the requests to those methods/controllers
