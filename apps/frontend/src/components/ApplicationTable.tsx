@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Input, InputGroup, Table } from '@chakra-ui/react';
 import type { ApplicationRow } from '@hooks/useApplications';
 import StatusPill, { StatusPillConfig, StatusVariant } from './StatusPill';
@@ -6,6 +6,7 @@ import {
   compileApplicationFilterPredicate,
   compileApplicationSearchPredicate,
   EMPTY_APPLICATION_FILTERS,
+  normalizeDateToDay,
   type ApplicationFilters,
 } from '@utils/applicationFilters';
 import apiClient from '@api/apiClient';
@@ -76,6 +77,9 @@ export function ApplicationTable({
 }: ApplicationTableProps) {
   const [applicationsState, setApplicationsState] =
     useState<ApplicationRow[]>(applications);
+  const [actualStartDates, setActualStartDates] = useState<
+    Record<number, string>
+  >({});
   const [isEditing, setIsEditing] = useState<isEditingType[]>(
     applications.map(
       (app) => ({ appId: app.appId, isBeingEdited: false } as isEditingType),
@@ -90,6 +94,19 @@ export function ApplicationTable({
     () => compileApplicationSearchPredicate(searchQuery),
     [searchQuery],
   );
+
+  useEffect(() => {
+    setActualStartDates((prev) => {
+      const next = { ...prev };
+      applications.forEach((application) => {
+        if (next[application.appId] === undefined) {
+          next[application.appId] =
+            normalizeDateToDay(application.actualStartDate) ?? '';
+        }
+      });
+      return next;
+    });
+  }, [applications]);
 
   const filteredApplications = useMemo(
     () =>
@@ -149,11 +166,27 @@ export function ApplicationTable({
                 flex="1"
                 endElement={
                   <MdEdit
-                    onClick={() => handleActualStartDateUpdate('', application)}
+                    onClick={() =>
+                      handleActualStartDateUpdate(
+                        actualStartDates[application.appId] ?? '',
+                        application,
+                      )
+                    }
                   />
                 }
               >
-                <Input placeholder="MM-DD-YYYY" size="xs" />
+                <Input
+                  type="date"
+                  size="xs"
+                  value={actualStartDates[application.appId] ?? ''}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setActualStartDates((prev) => ({
+                      ...prev,
+                      [application.appId]: value,
+                    }));
+                  }}
+                />
               </InputGroup>
             </Table.Cell>
             <Table.Cell>
