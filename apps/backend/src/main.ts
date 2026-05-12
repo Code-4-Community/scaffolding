@@ -21,16 +21,25 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle('Scaffolding API Docs')
-    .setDescription('Documentation for the scaffolding REST API routes')
-    .addBearerAuth()
-    .addTag('Users', 'Operations on users')
-    .addTag('Auth', 'Operations for authentication')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  if (process.env.SWAGGER_ENABLED === 'TRUE') {
+    // Update with your app's specific name, description, tags, and version
+    const config = new DocumentBuilder()
+      .setTitle('[YOUR_APP_NAME] API Docs')
+      .setDescription('Documentation for [YOUR_APP_NAME] API routes')
+      .addBearerAuth()
+      .addTag('Users', 'Operations on users')
+      .addTag('Auth', 'Operations for authentication')
+      // Update with your app's version
+      .setVersion('1.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+    Logger.log(
+      `😎 Swagger is enabled and will be available at: http://localhost:${
+        process.env.PORT || 3000
+      }/api`,
+    );
+  }
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
@@ -39,5 +48,4 @@ async function bootstrap() {
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
   );
 }
-
 bootstrap();
