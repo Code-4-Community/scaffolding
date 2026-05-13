@@ -269,6 +269,37 @@
           ]
         },
         {
+          "file": "apps/backend/src/aws/s3/README.md",
+          "hash": "18156575112040434185"
+        },
+        {
+          "file": "apps/backend/src/aws/s3/aws-s3.module.ts",
+          "hash": "11192449093054414851",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "apps/backend/src/aws/s3/aws-s3.service.spec.ts",
+          "hash": "15909804368819457541",
+          "deps": [
+            "npm:@aws-sdk/client-s3",
+            "npm:aws-sdk-client-mock"
+          ]
+        },
+        {
+          "file": "apps/backend/src/aws/s3/aws-s3.service.ts",
+          "hash": "11395474891523447404",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@aws-sdk/client-s3"
+          ]
+        },
+        {
+          "file": "apps/backend/src/aws/s3/types/s3Buckets.ts",
+          "hash": "16859854977209148074"
+        },
+        {
           "file": "apps/backend/src/data-source.ts",
           "hash": "3183245948966786791",
           "deps": [
@@ -459,7 +490,7 @@
       },
       {
         "file": "example.env",
-        "hash": "12860511992063055700"
+        "hash": "15040672739659544556"
       },
       {
         "file": "jest.config.ts",
@@ -479,7 +510,7 @@
       },
       {
         "file": "package.json",
-        "hash": "15536146442051599451"
+        "hash": "2614124926590994512"
       },
       {
         "file": "shared/.eslintrc.cjs",
@@ -543,9 +574,9 @@
       },
       {
         "file": "yarn.lock",
-        "hash": "10362241085544240281"
+        "hash": "18175447321508146916"
       }
     ]
   },
-  "externalNodesHash": "7430745423911906429"
+  "externalNodesHash": "18051330341436110539"
 }

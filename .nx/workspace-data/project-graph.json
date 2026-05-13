@@ -302,6 +302,33 @@
         "hash": "sha512-lnw+ZM1Io+cJAkReC0NPDjqObL8NtKzKIkdgEEKC8CUmkhurYhedbicN8Y8NYHgG1uLd2GozW3+/QqPRZaN+Lw=="
       }
     },
+    "npm:@aws-crypto/crc32": {
+      "type": "npm",
+      "name": "npm:@aws-crypto/crc32",
+      "data": {
+        "version": "5.2.0",
+        "packageName": "@aws-crypto/crc32",
+        "hash": "sha512-nLbCWqQNgUiwwtFsen1AdzAtvuLRsQS8rYgMuxCrdKf9kOssamGLuPwyTY9wyYblNr9+1XM8v6zoDTPPSIeANg=="
+      }
+    },
+    "npm:@aws-crypto/crc32c": {
+      "type": "npm",
+      "name": "npm:@aws-crypto/crc32c",
+      "data": {
+        "version": "5.2.0",
+        "packageName": "@aws-crypto/crc32c",
+        "hash": "sha512-+iWb8qaHLYKrNvGRbiYRHSdKRWhto5XlZUEBwDjYNf+ly5SVYG6zEoYIdxvf5R3zyeP16w4PLBn3rH1xc74Rag=="
+      }
+    },
+    "npm:@aws-crypto/sha1-browser": {
+      "type": "npm",
+      "name": "npm:@aws-crypto/sha1-browser",
+      "data": {
+        "version": "5.2.0",
+        "packageName": "@aws-crypto/sha1-browser",
+        "hash": "sha512-OH6lveCFfcDjX4dbAvCFSYUjJZjDr/3XJ3xHtjn3Oj5b9RjojQo8npoLeA/bNwkOkrSQ0wgrHzXk4tDRxGKJeg=="
+      }
+    },
     "npm:@aws-crypto/sha256-browser": {
       "type": "npm",
       "name": "npm:@aws-crypto/sha256-browser",
@@ -338,15 +365,6 @@
         "hash": "sha512-iAvUotm021kM33eCdNfwIN//F77/IADDSs58i+MDaOqFrVjZo9bAal0NK7HurRuWLLpF1iLX7gbWrjHjeo+YFg=="
       }
     },
-    "npm:@aws-crypto/util@1.2.2": {
-      "type": "npm",
-      "name": "npm:@aws-crypto/util@1.2.2",
-      "data": {
-        "version": "1.2.2",
-        "packageName": "@aws-crypto/util",
-        "hash": "sha512-H8PjG5WJ4wz0UXAFXeJjWCW1vkvIJ3qUUD+rGRwJ2/hj+xT58Qle2MTql/2MGzkU+1JLAFuR6aJpLAjHwhmwwg=="
-      }
-    },
     "npm:@aws-crypto/util": {
       "type": "npm",
       "name": "npm:@aws-crypto/util",
@@ -354,6 +372,15 @@
         "version": "5.2.0",
         "packageName": "@aws-crypto/util",
         "hash": "sha512-4RkU9EsI6ZpBve5fseQlGNUWKMa1RLPQ1dnjnQoe07ldfIzcsGb5hC5W0Dm7u423KWzawlrpbjXBrXCEv9zazQ=="
+      }
+    },
+    "npm:@aws-crypto/util@1.2.2": {
+      "type": "npm",
+      "name": "npm:@aws-crypto/util@1.2.2",
+      "data": {
+        "version": "1.2.2",
+        "packageName": "@aws-crypto/util",
+        "hash": "sha512-H8PjG5WJ4wz0UXAFXeJjWCW1vkvIJ3qUUD+rGRwJ2/hj+xT58Qle2MTql/2MGzkU+1JLAFuR6aJpLAjHwhmwwg=="
       }
     },
     "npm:@aws-sdk/client-cognito-identity-provider": {
@@ -365,6 +392,15 @@
         "hash": "sha512-etXFv1GDbK4p9hEHG99F5/gap/V9UDcuH5zpKlUkC0yRXzdfDCgUe8qiIQRKPv/ef6/zRAm1zsqR4EUhAI0IvQ=="
       }
     },
+    "npm:@aws-sdk/client-s3": {
+      "type": "npm",
+      "name": "npm:@aws-sdk/client-s3",
+      "data": {
+        "version": "3.1045.0",
+        "packageName": "@aws-sdk/client-s3",
+        "hash": "sha512-fsuO3Y6t+3Ro9Bsg41DKj4Sfy53CGSrhnMldNplWmG8Tx0UbYk+YDa4RD1hVlJpERw4JBmPkl0+J9qlxMh1pcA=="
+      }
+    },
     "npm:@aws-sdk/core": {
       "type": "npm",
       "name": "npm:@aws-sdk/core",
@@ -372,6 +408,15 @@
         "version": "3.974.8",
         "packageName": "@aws-sdk/core",
         "hash": "sha512-njR2qoG6ZuB0kvAS2FyICsFZJ6gmCcf2X/7JcD14sUvGDm26wiZ5BrA6LOiUxKFEF+IVe7kdroxyE00YlkiYsw=="
+      }
+    },
+    "npm:@aws-sdk/crc64-nvme": {
+      "type": "npm",
+      "name": "npm:@aws-sdk/crc64-nvme",
+      "data": {
+        "version": "3.972.7",
+        "packageName": "@aws-sdk/crc64-nvme",
+        "hash": "sha512-QUagVVBbC8gODCF6e1aV0mE2TXWB9Opz4k8EJFdNrujUVQm5R4AjJa1mpOqzwOuROBzqJU9zawzig7M96L8Ejg=="
       }
     },
     "npm:@aws-sdk/credential-provider-env": {
@@ -446,6 +491,33 @@
         "hash": "sha512-lYHFF30DGI20jZcYX8cm6Ns0V7f1dDN6g/MBDLTyD/5iw+bXs3yBr2iAiHDkx4RFU5JgsnZvCHYKiRVPRdmOgw=="
       }
     },
+    "npm:@aws-sdk/middleware-bucket-endpoint": {
+      "type": "npm",
+      "name": "npm:@aws-sdk/middleware-bucket-endpoint",
+      "data": {
+        "version": "3.972.10",
+        "packageName": "@aws-sdk/middleware-bucket-endpoint",
+        "hash": "sha512-Vbc2frZH7wXlMNd+ZZSXUEs/l1Sv8Jj4zUnIfwrYF5lwaLdXHZ9xx4U3rjUcaye3HRhFVc+E5DbBxpRAbB16BA=="
+      }
+    },
+    "npm:@aws-sdk/middleware-expect-continue": {
+      "type": "npm",
+      "name": "npm:@aws-sdk/middleware-expect-continue",
+      "data": {
+        "version": "3.972.10",
+        "packageName": "@aws-sdk/middleware-expect-continue",
+        "hash": "sha512-2Yn0f1Qiq/DjxYR3wfI3LokXnjOhFM7Ssn4LTdFDIxRMCE6I32MAsVnhPX1cUZsuVA9tiZtwwhlSLAtFGxAZlQ=="
+      }
+    },
+    "npm:@aws-sdk/middleware-flexible-checksums": {
+      "type": "npm",
+      "name": "npm:@aws-sdk/middleware-flexible-checksums",
+      "data": {
+        "version": "3.974.16",
+        "packageName": "@aws-sdk/middleware-flexible-checksums",
+        "hash": "sha512-6ru8doI0/XzszqLIPXf0E/V7HhAw1Pu94010XCKYtBUfD0LxF0BuOzrUf8OQGR6j2o6wgKTHUniOmndQycHwCA=="
+      }
+    },
     "npm:@aws-sdk/middleware-host-header": {
       "type": "npm",
       "name": "npm:@aws-sdk/middleware-host-header",
@@ -453,6 +525,15 @@
         "version": "3.972.10",
         "packageName": "@aws-sdk/middleware-host-header",
         "hash": "sha512-IJSsIMeVQ8MMCPbuh1AbltkFhLBLXn7aejzfX5YKT/VLDHn++Dcz8886tXckE+wQssyPUhaXrJhdakO2VilRhg=="
+      }
+    },
+    "npm:@aws-sdk/middleware-location-constraint": {
+      "type": "npm",
+      "name": "npm:@aws-sdk/middleware-location-constraint",
+      "data": {
+        "version": "3.972.10",
+        "packageName": "@aws-sdk/middleware-location-constraint",
+        "hash": "sha512-rI3NZvJcEvjoD0+0PI0iUAwlPw2IlSlhyvgBK/3WkKJQE/YiKFedd9dMN2lVacdNxPNhxL/jzQaKQdrGtQagjQ=="
       }
     },
     "npm:@aws-sdk/middleware-logger": {
@@ -480,6 +561,15 @@
         "version": "3.972.37",
         "packageName": "@aws-sdk/middleware-sdk-s3",
         "hash": "sha512-Km7M+i8DrLArVzrid1gfxeGhYHBd3uxvE77g0s5a52zPSVosxzQBnJ0gwWb6NIp/DOk8gsBMhi7V+cpJG0ndTA=="
+      }
+    },
+    "npm:@aws-sdk/middleware-ssec": {
+      "type": "npm",
+      "name": "npm:@aws-sdk/middleware-ssec",
+      "data": {
+        "version": "3.972.10",
+        "packageName": "@aws-sdk/middleware-ssec",
+        "hash": "sha512-Gli9A0u8EVVb+5bFDGS/QbSVg28w/wpEidg1ggVcSj65BDTdGR6punsOcVjqdiu1i42WHWo51MCvARPIIz9juw=="
       }
     },
     "npm:@aws-sdk/middleware-user-agent": {
@@ -3776,15 +3866,6 @@
         "hash": "sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww=="
       }
     },
-    "npm:@remix-run/router": {
-      "type": "npm",
-      "name": "npm:@remix-run/router",
-      "data": {
-        "version": "1.23.2",
-        "packageName": "@remix-run/router",
-        "hash": "sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w=="
-      }
-    },
     "npm:@rolldown/pluginutils": {
       "type": "npm",
       "name": "npm:@rolldown/pluginutils",
@@ -3830,22 +3911,40 @@
         "hash": "sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ=="
       }
     },
-    "npm:@sinonjs/fake-timers": {
+    "npm:@sinonjs/fake-timers@11.2.2": {
       "type": "npm",
-      "name": "npm:@sinonjs/fake-timers",
+      "name": "npm:@sinonjs/fake-timers@11.2.2",
+      "data": {
+        "version": "11.2.2",
+        "packageName": "@sinonjs/fake-timers",
+        "hash": "sha512-G2piCSxQ7oWOxwGSAyFHfPIsyeJGXYtc6mFbnFA+kRXkiEnTl8c/8jul2S329iFBnDI9HGoeWWAZvuvOkZccgw=="
+      }
+    },
+    "npm:@sinonjs/fake-timers@15.3.2": {
+      "type": "npm",
+      "name": "npm:@sinonjs/fake-timers@15.3.2",
       "data": {
         "version": "15.3.2",
         "packageName": "@sinonjs/fake-timers",
         "hash": "sha512-mrn35Jl2pCpns+mE3HaZa1yPN5EYCRgiMI+135COjr2hr8Cls9DXqIZ57vZe2cz7y2XVSq92tcs6kGQcT1J8Rw=="
       }
     },
-    "npm:@sinonjs/fake-timers@15.4.0": {
+    "npm:@sinonjs/fake-timers": {
       "type": "npm",
-      "name": "npm:@sinonjs/fake-timers@15.4.0",
+      "name": "npm:@sinonjs/fake-timers",
       "data": {
         "version": "15.4.0",
         "packageName": "@sinonjs/fake-timers",
         "hash": "sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA=="
+      }
+    },
+    "npm:@sinonjs/samsam": {
+      "type": "npm",
+      "name": "npm:@sinonjs/samsam",
+      "data": {
+        "version": "8.0.3",
+        "packageName": "@sinonjs/samsam",
+        "hash": "sha512-hw6HbX+GyVZzmaYNh82Ecj1vdGZrqVIn/keDTg63IgAwiQPO+xCz99uG6Woqgb4tM0mUiFENKZ4cqd7IX94AXQ=="
       }
     },
     "npm:@smithy/config-resolver": {
@@ -3866,6 +3965,15 @@
         "hash": "sha512-x7BlLbUFL8NWCGjMF9C+1N5cVCxcPa7g6Tv9B4A2luWx3be3oU8hQ96wIwxe/s7OhIzvoJH73HAUSg5JXVlEtQ=="
       }
     },
+    "npm:@smithy/core@3.24.1": {
+      "type": "npm",
+      "name": "npm:@smithy/core@3.24.1",
+      "data": {
+        "version": "3.24.1",
+        "packageName": "@smithy/core",
+        "hash": "sha512-3mT7o4qQyUWttYnVK3A0Z/u3Xha3E81tXn32Tz6vjZiUXhBrkEivpw1hBYfh84iFF9CSzkBU9Y1DJ3Q6RQ231g=="
+      }
+    },
     "npm:@smithy/credential-provider-imds": {
       "type": "npm",
       "name": "npm:@smithy/credential-provider-imds",
@@ -3873,6 +3981,33 @@
         "version": "4.2.14",
         "packageName": "@smithy/credential-provider-imds",
         "hash": "sha512-Au28zBN48ZAoXdooGUHemuVBrkE+Ie6RPmGNIAJsFqj33Vhb6xAgRifUydZ2aY+M+KaMAETAlKk5NC5h1G7wpg=="
+      }
+    },
+    "npm:@smithy/eventstream-serde-browser": {
+      "type": "npm",
+      "name": "npm:@smithy/eventstream-serde-browser",
+      "data": {
+        "version": "4.3.1",
+        "packageName": "@smithy/eventstream-serde-browser",
+        "hash": "sha512-X7MyI1fu8M84IPKk49kO4kb27Mqp6un9/0o/MsA1ngZ5OxxWKGUxPS3S/AJ9q1cPVTSGmRcbaGNfGUSsflTJkg=="
+      }
+    },
+    "npm:@smithy/eventstream-serde-config-resolver": {
+      "type": "npm",
+      "name": "npm:@smithy/eventstream-serde-config-resolver",
+      "data": {
+        "version": "4.4.1",
+        "packageName": "@smithy/eventstream-serde-config-resolver",
+        "hash": "sha512-JZGbSXaBk7JY8VPzsh66ksJ0nTWXbApduFDkA/pEl3aTm2EoAiUZE1Iltp6c+X1bB8kxPQW0mHDfVdYCpWTOzg=="
+      }
+    },
+    "npm:@smithy/eventstream-serde-node": {
+      "type": "npm",
+      "name": "npm:@smithy/eventstream-serde-node",
+      "data": {
+        "version": "4.3.1",
+        "packageName": "@smithy/eventstream-serde-node",
+        "hash": "sha512-6Cn4xTNVxn9PWTHSbvf8zmcDhQW8lrLE1Xq5CJgmX6wEvdjS2S0KuE79Aiznv/jx51jpFJ98OuWyE+Bt+oG1MQ=="
       }
     },
     "npm:@smithy/fetch-http-handler": {
@@ -3884,6 +4019,15 @@
         "hash": "sha512-bXOvQzaSm6MnmLaWA1elgfQcAtN4UP3vXqV97bHuoOrHQOJiLT3ds6o9eo5bqd0TJfRFpzdGnDQdW3FACiAVdw=="
       }
     },
+    "npm:@smithy/hash-blob-browser": {
+      "type": "npm",
+      "name": "npm:@smithy/hash-blob-browser",
+      "data": {
+        "version": "4.3.1",
+        "packageName": "@smithy/hash-blob-browser",
+        "hash": "sha512-2fbltQVQYmGd0OzPv2oDMRF0pxkzeIx8cbpx2x6W3UJWGaEyUzVPxF4d0sDXZ/r2obg+RbTyhTidXWlPDsKRKw=="
+      }
+    },
     "npm:@smithy/hash-node": {
       "type": "npm",
       "name": "npm:@smithy/hash-node",
@@ -3891,6 +4035,15 @@
         "version": "4.2.14",
         "packageName": "@smithy/hash-node",
         "hash": "sha512-8ZBDY2DD4wr+GGjTpPtiglEsqr0lUP+KHqgZcWczFf6qeZ/YRjMIOoQWVQlmwu7EtxKTd8YXD8lblmYcpBIA1g=="
+      }
+    },
+    "npm:@smithy/hash-stream-node": {
+      "type": "npm",
+      "name": "npm:@smithy/hash-stream-node",
+      "data": {
+        "version": "4.3.1",
+        "packageName": "@smithy/hash-stream-node",
+        "hash": "sha512-4NOnngIoXngbJw9By3u8KXRgqt4vYATpAobNBnNWxOREP7JY3kB0bUmbBNhZ7dtZV/b4auO1eFMD4cLj9OauVg=="
       }
     },
     "npm:@smithy/invalid-dependency": {
@@ -3918,6 +4071,15 @@
         "version": "4.2.2",
         "packageName": "@smithy/is-array-buffer",
         "hash": "sha512-n6rQ4N8Jj4YTQO3YFrlgZuwKodf4zUFs7EJIWH86pSCWBaAtAGBFfCM7Wx6D2bBJ2xqFNxGBSrUWswT3M0VJow=="
+      }
+    },
+    "npm:@smithy/md5-js": {
+      "type": "npm",
+      "name": "npm:@smithy/md5-js",
+      "data": {
+        "version": "4.3.1",
+        "packageName": "@smithy/md5-js",
+        "hash": "sha512-98NalujRdzv6ggVQNYPWpL2K57UKeUB8roIr61u6+JiHd7KUlMQ+sn/vk6IG4XxEjw2vlC7eu/xjYXshUE4XXg=="
       }
     },
     "npm:@smithy/middleware-content-length": {
@@ -4215,6 +4377,15 @@
         "version": "4.2.2",
         "packageName": "@smithy/util-utf8",
         "hash": "sha512-75MeYpjdWRe8M5E3AW0O4Cx3UadweS+cwdXjwYGBW5h/gxxnbeZ877sLPX/ZJA9GVTlL/qG0dXP29JWFCD1Ayw=="
+      }
+    },
+    "npm:@smithy/util-waiter": {
+      "type": "npm",
+      "name": "npm:@smithy/util-waiter",
+      "data": {
+        "version": "4.4.1",
+        "packageName": "@smithy/util-waiter",
+        "hash": "sha512-G/gWDykZNL0NVcd1qXkoKm45jxJECp6q53DSomM5QKMsyAMEsGksVq+HwgonqYxfFJEzzHi6ljtWKXVS1pl0/Q=="
       }
     },
     "npm:@smithy/uuid": {
@@ -4881,6 +5052,24 @@
         "version": "2.2.0",
         "packageName": "@types/serve-static",
         "hash": "sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ=="
+      }
+    },
+    "npm:@types/sinon": {
+      "type": "npm",
+      "name": "npm:@types/sinon",
+      "data": {
+        "version": "17.0.4",
+        "packageName": "@types/sinon",
+        "hash": "sha512-RHnIrhfPO3+tJT0s7cFaXGZvsL4bbR3/k7z3P312qMS4JaS2Tk+KiwiLx1S0rQ56ERj00u1/BtdyVd0FY+Pdew=="
+      }
+    },
+    "npm:@types/sinonjs__fake-timers@15.0.1": {
+      "type": "npm",
+      "name": "npm:@types/sinonjs__fake-timers@15.0.1",
+      "data": {
+        "version": "15.0.1",
+        "packageName": "@types/sinonjs__fake-timers",
+        "hash": "sha512-Ko2tjWJq8oozHzHV+reuvS5KYIRAokHnGbDwGh/J64LntgpbuylF74ipEL24HCyRjf9FOlBiBHWBR1RlVKsI1w=="
       }
     },
     "npm:@types/sinonjs__fake-timers": {
@@ -6071,6 +6260,15 @@
         "hash": "sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ=="
       }
     },
+    "npm:aws-sdk-client-mock": {
+      "type": "npm",
+      "name": "npm:aws-sdk-client-mock",
+      "data": {
+        "version": "4.1.0",
+        "packageName": "aws-sdk-client-mock",
+        "hash": "sha512-h/tOYTkXEsAcV3//6C1/7U4ifSpKyJvb6auveAepqqNJl6TdZaPFEtKjBQNf8UxQdDP850knB2i/whq4zlsxJw=="
+      }
+    },
     "npm:aws-sign2": {
       "type": "npm",
       "name": "npm:aws-sign2",
@@ -7259,6 +7457,15 @@
         "hash": "sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w=="
       }
     },
+    "npm:cookie@1.1.1": {
+      "type": "npm",
+      "name": "npm:cookie@1.1.1",
+      "data": {
+        "version": "1.1.1",
+        "packageName": "cookie",
+        "hash": "sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ=="
+      }
+    },
     "npm:copy-anything": {
       "type": "npm",
       "name": "npm:copy-anything",
@@ -7824,6 +8031,15 @@
         "version": "4.0.4",
         "packageName": "diff",
         "hash": "sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ=="
+      }
+    },
+    "npm:diff@5.2.2": {
+      "type": "npm",
+      "name": "npm:diff@5.2.2",
+      "data": {
+        "version": "5.2.2",
+        "packageName": "diff",
+        "hash": "sha512-vtcDfH3TOjP8UekytvnHH1o1P4FcUdt4eQ1Y+Abap1tk/OB2MWQvcwS2ClCd1zuIhc3JKOx6p3kod8Vfys3E+A=="
       }
     },
     "npm:dir-glob": {
@@ -11165,6 +11381,15 @@
         "hash": "sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ=="
       }
     },
+    "npm:just-extend": {
+      "type": "npm",
+      "name": "npm:just-extend",
+      "data": {
+        "version": "6.2.0",
+        "packageName": "just-extend",
+        "hash": "sha512-cYofQu2Xpom82S6qD778jBDpwvvy39s1l/hrYij2u9AMdQcGRpaBu6kY4mVhuno5kJVi1DAz4aiphA2WI1/OAw=="
+      }
+    },
     "npm:jwa": {
       "type": "npm",
       "name": "npm:jwa",
@@ -12191,6 +12416,15 @@
         "hash": "sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw=="
       }
     },
+    "npm:nise": {
+      "type": "npm",
+      "name": "npm:nise",
+      "data": {
+        "version": "6.1.5",
+        "packageName": "nise",
+        "hash": "sha512-SnRDPDBjxZZoU2n0+gzzLtSvo1OZo7j6jnbXsoh3AFxEGhaFU7ZF0TmefuKERq79wxR2U+MPn7ArW+Tl+clC3A=="
+      }
+    },
     "npm:no-case": {
       "type": "npm",
       "name": "npm:no-case",
@@ -12839,18 +13073,18 @@
         "hash": "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA=="
       }
     },
-    "npm:path-to-regexp": {
+    "npm:path-to-regexp@3.3.0": {
       "type": "npm",
-      "name": "npm:path-to-regexp",
+      "name": "npm:path-to-regexp@3.3.0",
       "data": {
         "version": "3.3.0",
         "packageName": "path-to-regexp",
         "hash": "sha512-qyCH421YQPS2WFDxDjftfc1ZR5WKQzVzqsp4n9M2kQhVOo/ByahFoUNJfl58kOcEGfQ//7weFTDhm+ss8Ecxgw=="
       }
     },
-    "npm:path-to-regexp@8.4.2": {
+    "npm:path-to-regexp": {
       "type": "npm",
-      "name": "npm:path-to-regexp@8.4.2",
+      "name": "npm:path-to-regexp",
       "data": {
         "version": "8.4.2",
         "packageName": "path-to-regexp",
@@ -13824,18 +14058,18 @@
       "type": "npm",
       "name": "npm:react-router-dom",
       "data": {
-        "version": "6.30.3",
+        "version": "7.15.0",
         "packageName": "react-router-dom",
-        "hash": "sha512-pxPcv1AczD4vso7G4Z3TKcvlxK7g7TNt3/FNGMhfqyntocvYKj+GCatfigGDjbLozC4baguJ0ReCigoDJXb0ag=="
+        "hash": "sha512-VcrVg64Fo8nwBvDscajG8gRTLIuTC6N50nb22l2HOOV4PTOHgoGp8mUjy9wLiHYoYTSYI36tUnXZgasSRFZorQ=="
       }
     },
     "npm:react-router": {
       "type": "npm",
       "name": "npm:react-router",
       "data": {
-        "version": "6.30.3",
+        "version": "7.15.0",
         "packageName": "react-router",
-        "hash": "sha512-XRnlbKMTmktBkjCLE8/XcZFlnHvr2Ltdr1eJX4idL55/9BbORzyZEaIkBFDhFGCEWBBItsVrDxwx3gnisMitdw=="
+        "hash": "sha512-HW9vYwuM8f4yx66Izy8xfrzCM+SBJluoZcCbww9A1TySax11S5Vgw6fi3ZjMONw9J4gQwngL7PzkyIpJJpJ7RQ=="
       }
     },
     "npm:react": {
@@ -14612,6 +14846,15 @@
         "hash": "sha512-x0RTqQel6g5SY7Lg6ZreMmsOzncHFU7nhnRWkKgWuMTu5NN0DR5oruckMqRvacAN9d5w6ARnRBXl9xhDCgfMeA=="
       }
     },
+    "npm:set-cookie-parser": {
+      "type": "npm",
+      "name": "npm:set-cookie-parser",
+      "data": {
+        "version": "2.7.2",
+        "packageName": "set-cookie-parser",
+        "hash": "sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw=="
+      }
+    },
     "npm:set-function-length": {
       "type": "npm",
       "name": "npm:set-function-length",
@@ -14745,6 +14988,15 @@
         "version": "4.1.0",
         "packageName": "signal-exit",
         "hash": "sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw=="
+      }
+    },
+    "npm:sinon": {
+      "type": "npm",
+      "name": "npm:sinon",
+      "data": {
+        "version": "18.0.1",
+        "packageName": "sinon",
+        "hash": "sha512-a2N2TDY1uGviajJ6r4D1CyRAkzE9NNVlYOV1wX5xQDuAk0ONgzgRl0EjCQuRCPxOwp13ghsMwt9Gdldujs39qw=="
       }
     },
     "npm:sirv": {
@@ -16855,6 +17107,16 @@
       },
       {
         "source": "backend",
+        "target": "npm:@aws-sdk/client-s3",
+        "type": "static"
+      },
+      {
+        "source": "backend",
+        "target": "npm:aws-sdk-client-mock",
+        "type": "static"
+      },
+      {
+        "source": "backend",
         "target": "npm:typeorm",
         "type": "static"
       },
@@ -17024,6 +17286,72 @@
         "type": "static"
       }
     ],
+    "npm:@aws-crypto/crc32": [
+      {
+        "source": "npm:@aws-crypto/crc32",
+        "target": "npm:@aws-crypto/util",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/crc32",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/crc32",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-crypto/crc32c": [
+      {
+        "source": "npm:@aws-crypto/crc32c",
+        "target": "npm:@aws-crypto/util",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/crc32c",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/crc32c",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-crypto/sha1-browser": [
+      {
+        "source": "npm:@aws-crypto/sha1-browser",
+        "target": "npm:@aws-crypto/supports-web-crypto",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/sha1-browser",
+        "target": "npm:@aws-crypto/util",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/sha1-browser",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/sha1-browser",
+        "target": "npm:@aws-sdk/util-locate-window",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/sha1-browser",
+        "target": "npm:@smithy/util-utf8@2.3.0",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/sha1-browser",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
     "npm:@aws-crypto/sha256-browser": [
       {
         "source": "npm:@aws-crypto/sha256-browser",
@@ -17102,23 +17430,6 @@
         "type": "static"
       }
     ],
-    "npm:@aws-crypto/util@1.2.2": [
-      {
-        "source": "npm:@aws-crypto/util@1.2.2",
-        "target": "npm:@aws-sdk/types",
-        "type": "static"
-      },
-      {
-        "source": "npm:@aws-crypto/util@1.2.2",
-        "target": "npm:@aws-sdk/util-utf8-browser",
-        "type": "static"
-      },
-      {
-        "source": "npm:@aws-crypto/util@1.2.2",
-        "target": "npm:tslib@1.14.1",
-        "type": "static"
-      }
-    ],
     "npm:@aws-crypto/util": [
       {
         "source": "npm:@aws-crypto/util",
@@ -17133,6 +17444,23 @@
       {
         "source": "npm:@aws-crypto/util",
         "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-crypto/util@1.2.2": [
+      {
+        "source": "npm:@aws-crypto/util@1.2.2",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/util@1.2.2",
+        "target": "npm:@aws-sdk/util-utf8-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-crypto/util@1.2.2",
+        "target": "npm:tslib@1.14.1",
         "type": "static"
       }
     ],
@@ -17333,6 +17661,283 @@
         "type": "static"
       }
     ],
+    "npm:@aws-sdk/client-s3": [
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-crypto/sha1-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-crypto/sha256-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-crypto/sha256-js",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/core",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/credential-provider-node",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-expect-continue",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-flexible-checksums",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-host-header",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-location-constraint",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-logger",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-recursion-detection",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-sdk-s3",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-ssec",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/middleware-user-agent",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/region-config-resolver",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/signature-v4-multi-region",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/util-endpoints",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/util-user-agent-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@aws-sdk/util-user-agent-node",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/config-resolver",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/core",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/eventstream-serde-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/eventstream-serde-config-resolver",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/eventstream-serde-node",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/fetch-http-handler",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/hash-blob-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/hash-node",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/hash-stream-node",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/invalid-dependency",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/md5-js",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/middleware-content-length",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/middleware-endpoint",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/middleware-retry",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/middleware-serde",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/middleware-stack",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/node-config-provider",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/node-http-handler",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/protocol-http",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/smithy-client",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/url-parser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-base64",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-body-length-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-body-length-node",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-defaults-mode-browser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-defaults-mode-node",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-endpoints",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-middleware",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-retry",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-stream",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-utf8",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:@smithy/util-waiter",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/client-s3",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
     "npm:@aws-sdk/core": [
       {
         "source": "npm:@aws-sdk/core",
@@ -17401,6 +18006,18 @@
       },
       {
         "source": "npm:@aws-sdk/core",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-sdk/crc64-nvme": [
+      {
+        "source": "npm:@aws-sdk/crc64-nvme",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/crc64-nvme",
         "target": "npm:tslib",
         "type": "static"
       }
@@ -17771,6 +18388,137 @@
         "type": "static"
       }
     ],
+    "npm:@aws-sdk/middleware-bucket-endpoint": [
+      {
+        "source": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "target": "npm:@aws-sdk/util-arn-parser",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "target": "npm:@smithy/node-config-provider",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "target": "npm:@smithy/protocol-http",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "target": "npm:@smithy/util-config-provider",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-bucket-endpoint",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-sdk/middleware-expect-continue": [
+      {
+        "source": "npm:@aws-sdk/middleware-expect-continue",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-expect-continue",
+        "target": "npm:@smithy/protocol-http",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-expect-continue",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-expect-continue",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-sdk/middleware-flexible-checksums": [
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@aws-crypto/crc32",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@aws-crypto/crc32c",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@aws-crypto/util",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@aws-sdk/core",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@aws-sdk/crc64-nvme",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@smithy/is-array-buffer",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@smithy/node-config-provider",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@smithy/protocol-http",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@smithy/util-middleware",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@smithy/util-stream",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:@smithy/util-utf8",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-flexible-checksums",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
     "npm:@aws-sdk/middleware-host-header": [
       {
         "source": "npm:@aws-sdk/middleware-host-header",
@@ -17789,6 +18537,23 @@
       },
       {
         "source": "npm:@aws-sdk/middleware-host-header",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-sdk/middleware-location-constraint": [
+      {
+        "source": "npm:@aws-sdk/middleware-location-constraint",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-location-constraint",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-location-constraint",
         "target": "npm:tslib",
         "type": "static"
       }
@@ -17905,6 +18670,23 @@
       },
       {
         "source": "npm:@aws-sdk/middleware-sdk-s3",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@aws-sdk/middleware-ssec": [
+      {
+        "source": "npm:@aws-sdk/middleware-ssec",
+        "target": "npm:@aws-sdk/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-ssec",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@aws-sdk/middleware-ssec",
         "target": "npm:tslib",
         "type": "static"
       }
@@ -20760,7 +21542,7 @@
       },
       {
         "source": "npm:@jest/fake-timers",
-        "target": "npm:@sinonjs/fake-timers",
+        "target": "npm:@sinonjs/fake-timers@15.3.2",
         "type": "static"
       },
       {
@@ -20792,7 +21574,7 @@
       },
       {
         "source": "npm:@jest/fake-timers@30.4.1",
-        "target": "npm:@sinonjs/fake-timers@15.4.0",
+        "target": "npm:@sinonjs/fake-timers",
         "type": "static"
       },
       {
@@ -22010,7 +22792,7 @@
       },
       {
         "source": "npm:@nestjs/core",
-        "target": "npm:path-to-regexp",
+        "target": "npm:path-to-regexp@3.3.0",
         "type": "static"
       },
       {
@@ -22037,7 +22819,7 @@
       },
       {
         "source": "npm:@nestjs/platform-express",
-        "target": "npm:path-to-regexp@8.4.2",
+        "target": "npm:path-to-regexp",
         "type": "static"
       },
       {
@@ -22123,7 +22905,7 @@
       },
       {
         "source": "npm:@nestjs/swagger",
-        "target": "npm:path-to-regexp",
+        "target": "npm:path-to-regexp@3.3.0",
         "type": "static"
       },
       {
@@ -24067,6 +24849,20 @@
         "type": "static"
       }
     ],
+    "npm:@sinonjs/fake-timers@11.2.2": [
+      {
+        "source": "npm:@sinonjs/fake-timers@11.2.2",
+        "target": "npm:@sinonjs/commons",
+        "type": "static"
+      }
+    ],
+    "npm:@sinonjs/fake-timers@15.3.2": [
+      {
+        "source": "npm:@sinonjs/fake-timers@15.3.2",
+        "target": "npm:@sinonjs/commons",
+        "type": "static"
+      }
+    ],
     "npm:@sinonjs/fake-timers": [
       {
         "source": "npm:@sinonjs/fake-timers",
@@ -24074,10 +24870,15 @@
         "type": "static"
       }
     ],
-    "npm:@sinonjs/fake-timers@15.4.0": [
+    "npm:@sinonjs/samsam": [
       {
-        "source": "npm:@sinonjs/fake-timers@15.4.0",
+        "source": "npm:@sinonjs/samsam",
         "target": "npm:@sinonjs/commons",
+        "type": "static"
+      },
+      {
+        "source": "npm:@sinonjs/samsam",
+        "target": "npm:type-detect",
         "type": "static"
       }
     ],
@@ -24165,6 +24966,23 @@
         "type": "static"
       }
     ],
+    "npm:@smithy/core@3.24.1": [
+      {
+        "source": "npm:@smithy/core@3.24.1",
+        "target": "npm:@aws-crypto/crc32",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/core@3.24.1",
+        "target": "npm:@smithy/types",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/core@3.24.1",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
     "npm:@smithy/credential-provider-imds": [
       {
         "source": "npm:@smithy/credential-provider-imds",
@@ -24188,6 +25006,42 @@
       },
       {
         "source": "npm:@smithy/credential-provider-imds",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@smithy/eventstream-serde-browser": [
+      {
+        "source": "npm:@smithy/eventstream-serde-browser",
+        "target": "npm:@smithy/core@3.24.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/eventstream-serde-browser",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@smithy/eventstream-serde-config-resolver": [
+      {
+        "source": "npm:@smithy/eventstream-serde-config-resolver",
+        "target": "npm:@smithy/core@3.24.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/eventstream-serde-config-resolver",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@smithy/eventstream-serde-node": [
+      {
+        "source": "npm:@smithy/eventstream-serde-node",
+        "target": "npm:@smithy/core@3.24.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/eventstream-serde-node",
         "target": "npm:tslib",
         "type": "static"
       }
@@ -24219,6 +25073,18 @@
         "type": "static"
       }
     ],
+    "npm:@smithy/hash-blob-browser": [
+      {
+        "source": "npm:@smithy/hash-blob-browser",
+        "target": "npm:@smithy/core@3.24.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/hash-blob-browser",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
     "npm:@smithy/hash-node": [
       {
         "source": "npm:@smithy/hash-node",
@@ -24237,6 +25103,18 @@
       },
       {
         "source": "npm:@smithy/hash-node",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@smithy/hash-stream-node": [
+      {
+        "source": "npm:@smithy/hash-stream-node",
+        "target": "npm:@smithy/core@3.24.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/hash-stream-node",
         "target": "npm:tslib",
         "type": "static"
       }
@@ -24263,6 +25141,18 @@
     "npm:@smithy/is-array-buffer": [
       {
         "source": "npm:@smithy/is-array-buffer",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
+    "npm:@smithy/md5-js": [
+      {
+        "source": "npm:@smithy/md5-js",
+        "target": "npm:@smithy/core@3.24.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/md5-js",
         "target": "npm:tslib",
         "type": "static"
       }
@@ -24878,6 +25768,18 @@
         "type": "static"
       }
     ],
+    "npm:@smithy/util-waiter": [
+      {
+        "source": "npm:@smithy/util-waiter",
+        "target": "npm:@smithy/core@3.24.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:@smithy/util-waiter",
+        "target": "npm:tslib",
+        "type": "static"
+      }
+    ],
     "npm:@smithy/uuid": [
       {
         "source": "npm:@smithy/uuid",
@@ -25489,6 +26391,13 @@
       {
         "source": "npm:@types/serve-static@2.2.0",
         "target": "npm:@types/node@25.6.0",
+        "type": "static"
+      }
+    ],
+    "npm:@types/sinon": [
+      {
+        "source": "npm:@types/sinon",
+        "target": "npm:@types/sinonjs__fake-timers@15.0.1",
         "type": "static"
       }
     ],
@@ -26745,6 +27654,23 @@
       {
         "source": "npm:available-typed-arrays",
         "target": "npm:possible-typed-array-names",
+        "type": "static"
+      }
+    ],
+    "npm:aws-sdk-client-mock": [
+      {
+        "source": "npm:aws-sdk-client-mock",
+        "target": "npm:@types/sinon",
+        "type": "static"
+      },
+      {
+        "source": "npm:aws-sdk-client-mock",
+        "target": "npm:sinon",
+        "type": "static"
+      },
+      {
+        "source": "npm:aws-sdk-client-mock",
+        "target": "npm:tslib",
         "type": "static"
       }
     ],
@@ -35616,6 +36542,28 @@
         "type": "static"
       }
     ],
+    "npm:nise": [
+      {
+        "source": "npm:nise",
+        "target": "npm:@sinonjs/commons",
+        "type": "static"
+      },
+      {
+        "source": "npm:nise",
+        "target": "npm:@sinonjs/fake-timers",
+        "type": "static"
+      },
+      {
+        "source": "npm:nise",
+        "target": "npm:just-extend",
+        "type": "static"
+      },
+      {
+        "source": "npm:nise",
+        "target": "npm:path-to-regexp",
+        "type": "static"
+      }
+    ],
     "npm:no-case": [
       {
         "source": "npm:no-case",
@@ -37994,11 +38942,6 @@
     "npm:react-router-dom": [
       {
         "source": "npm:react-router-dom",
-        "target": "npm:@remix-run/router",
-        "type": "static"
-      },
-      {
-        "source": "npm:react-router-dom",
         "target": "npm:react-router",
         "type": "static"
       }
@@ -38006,7 +38949,12 @@
     "npm:react-router": [
       {
         "source": "npm:react-router",
-        "target": "npm:@remix-run/router",
+        "target": "npm:cookie@1.1.1",
+        "type": "static"
+      },
+      {
+        "source": "npm:react-router",
+        "target": "npm:set-cookie-parser",
         "type": "static"
       }
     ],
@@ -38334,7 +39282,7 @@
       },
       {
         "source": "npm:router",
-        "target": "npm:path-to-regexp@8.4.2",
+        "target": "npm:path-to-regexp",
         "type": "static"
       }
     ],
@@ -39049,6 +39997,38 @@
       {
         "source": "npm:side-channel",
         "target": "npm:side-channel-weakmap",
+        "type": "static"
+      }
+    ],
+    "npm:sinon": [
+      {
+        "source": "npm:sinon",
+        "target": "npm:@sinonjs/commons",
+        "type": "static"
+      },
+      {
+        "source": "npm:sinon",
+        "target": "npm:@sinonjs/fake-timers@11.2.2",
+        "type": "static"
+      },
+      {
+        "source": "npm:sinon",
+        "target": "npm:@sinonjs/samsam",
+        "type": "static"
+      },
+      {
+        "source": "npm:sinon",
+        "target": "npm:diff@5.2.2",
+        "type": "static"
+      },
+      {
+        "source": "npm:sinon",
+        "target": "npm:nise",
+        "type": "static"
+      },
+      {
+        "source": "npm:sinon",
+        "target": "npm:supports-color@7.2.0",
         "type": "static"
       }
     ],
@@ -41681,5 +42661,5 @@
   },
   "version": "6.0",
   "errors": [],
-  "computedAt": 1778682951283
+  "computedAt": 1778684119358
 }
