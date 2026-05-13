@@ -28,9 +28,9 @@ describe('AWSS3Service', () => {
 
   describe('createLink', () => {
     it('should construct the correct S3 URL', () => {
-      const url = service.createLink('youth123', 'assignment456', testBucket);
+      const url = service.createLink('some-key.pdf', testBucket);
       expect(url).toBe(
-        `https://${testBucket}.s3.${region}.amazonaws.com/youth123-assignment456.pdf`,
+        `https://${testBucket}.s3.${region}.amazonaws.com/some-key.pdf`,
       );
     });
   });

@@ -41,12 +41,7 @@ export class AWSS3Service {
     return bucketNames[bucket];
   }
 
-  createLink(
-    youthId: string,
-    assignmentId: string,
-    bucketName: string,
-  ): string {
-    const key = `${youthId}-${assignmentId}.pdf`;
+  createLink(key: string, bucketName: string): string {
     return `https://${bucketName}.s3.${this.region}.amazonaws.com/${key}`;
   }
 
