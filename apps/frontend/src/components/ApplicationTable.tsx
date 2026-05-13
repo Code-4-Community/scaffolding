@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Input, InputGroup, Table } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  Input,
+  InputGroup,
+  Spacer,
+  Table,
+} from '@chakra-ui/react';
 import type { ApplicationRow } from '@hooks/useApplications';
 import StatusPill, { StatusPillConfig, StatusVariant } from './StatusPill';
 import {
@@ -11,6 +18,7 @@ import {
 } from '@utils/applicationFilters';
 import apiClient from '@api/apiClient';
 import { MdEdit } from 'react-icons/md';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const COLUMNS = [
   'Name',
@@ -65,26 +73,16 @@ function formatDesiredExperience(value: string): string {
   return value;
 }
 
-interface isEditingType {
-  appId: number;
-  isBeingEdited: boolean;
-}
-
 export function ApplicationTable({
   applications,
   searchQuery = '',
   filters = EMPTY_APPLICATION_FILTERS,
 }: ApplicationTableProps) {
-  const [applicationsState, setApplicationsState] =
-    useState<ApplicationRow[]>(applications);
+  const navigate = useNavigate();
   const [actualStartDates, setActualStartDates] = useState<
     Record<number, string>
   >({});
-  const [isEditing, setIsEditing] = useState<isEditingType[]>(
-    applications.map(
-      (app) => ({ appId: app.appId, isBeingEdited: false } as isEditingType),
-    ),
-  );
+  const [editingIds, setEditingIds] = useState<Set<number>>(new Set());
   const matchesStructuredFilters = useMemo(
     () => compileApplicationFilterPredicate(filters),
     [filters],
@@ -149,45 +147,58 @@ export function ApplicationTable({
       </Table.Header>
       <Table.Body>
         {filteredApplications.map((application) => (
-          <Table.Row key={application.appId}>
-            <Table.Cell>
-              <a
-                href={`/admin/view-application/${application.appId}`}
-                aria-label={`View application ${application.appId}`}
-                style={{ color: '#0b5fff', textDecoration: 'underline' }}
-              >
-                {titleCaseName(application.name)}
-              </a>
-            </Table.Cell>
+          <Table.Row
+            key={application.appId}
+            onClick={() =>
+              navigate(`/admin/view-application/${application.appId}`)
+            }
+            transition="background-color 120ms ease-in-out"
+            _hover={{ backgroundColor: '#DBEAFE' }}
+          >
+            <Table.Cell>{titleCaseName(application.name)}</Table.Cell>
             <Table.Cell>{formatDate(application.proposedStartDate)}</Table.Cell>
             <Table.Cell>
-              <InputGroup
-                width="125px"
-                flex="1"
-                endElement={
-                  <MdEdit
-                    onClick={() =>
+              <Flex align="center">
+                {editingIds.has(application.appId) ? (
+                  <InputGroup width="115px" flex="1">
+                    <Input
+                      type="date"
+                      size="xs"
+                      value={actualStartDates[application.appId] ?? ''}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setActualStartDates((prev) => ({
+                          ...prev,
+                          [application.appId]: value,
+                        }));
+                      }}
+                    />
+                  </InputGroup>
+                ) : (
+                  formatDate(actualStartDates[application.appId])
+                )}
+                <Spacer />
+                <MdEdit
+                  onClick={() => {
+                    if (editingIds.has(application.appId)) {
                       handleActualStartDateUpdate(
                         actualStartDates[application.appId] ?? '',
                         application,
-                      )
+                      );
+
+                      setEditingIds((prev) => {
+                        const next = new Set(prev);
+                        next.delete(application.appId);
+                        return next;
+                      });
+                    } else {
+                      setEditingIds((prev) =>
+                        new Set(prev).add(application.appId),
+                      );
                     }
-                  />
-                }
-              >
-                <Input
-                  type="date"
-                  size="xs"
-                  value={actualStartDates[application.appId] ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setActualStartDates((prev) => ({
-                      ...prev,
-                      [application.appId]: value,
-                    }));
                   }}
                 />
-              </InputGroup>
+              </Flex>
             </Table.Cell>
             <Table.Cell>
               {formatDesiredExperience(application.desiredExperience)}
