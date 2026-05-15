@@ -52,7 +52,7 @@ The backend can expose [Swagger UI](https://github.com/swagger-api/swagger-ui) (
 - `@ApiTags('Name')`: on top of controllers to tag them to specific tags/features
 - `@ApiHeader({name: '...', description: '...'})`: on top of individual methods or controllers to define custom headers that are expected as part of the requests to those methods/controllers
 - `@ApiResponse({ status: '...', description: '...' })`: to define a custom HTTP response.
-  - Prebuilt helpers (fixed status in the spec): `@ApiOkResponse` (200), `@ApiCreatedResponse` (201), `@ApiNotFoundResponse` (404), [additional `@Api*Response` shortcuts](https://docs.nestjs.com/openapi/decorators)
+  - Prebuilt helpers (fixed status in the spec): `@ApiOkResponse` (200), `@ApiCreatedResponse` (201), `@ApiNotFoundResponse` (404), [additional `@Api*Response` shortcuts](https://docs.nestjs.com/openapi/operations#responses)
 
 [More Decorators](https://docs.nestjs.com/openapi/decorators).
 
