@@ -14,11 +14,8 @@ export class UsersService {
     private emailsService: EmailsService,
   ) {}
 
-  /**
-   * Builds a hardcoded test email addressed to `recipient` and hands it
-   * to EmailsService.sendEmails, exercising the DTO's class-validator
-   * decorators against whatever the caller supplies.
-   */
+  // Example endpoint for email sending (DO NOT DEPLOY THIS)
+  /*
   async sendTestEmail(recipient: string) {
     const imageRes = await fetch('https://placehold.co/200x200/png');
     const imageBuffer = Buffer.from(await imageRes.arrayBuffer());
@@ -36,6 +33,7 @@ export class UsersService {
     };
     return this.emailsService.sendEmails(dto);
   }
+  */
 
   async create(
     email: string,

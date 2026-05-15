@@ -123,5 +123,64 @@ describe('EmailsService', () => {
         }
       }
     });
+
+    it('returns all results, in order, when some recipients succeed and others fail', async () => {
+      process.env.SEND_AUTOMATED_EMAILS = 'true';
+
+      const dto: SendEmailDTO = {
+        toEmails: [
+          'ok1@example.com',
+          'bad1@example.com',
+          'ok2@example.com',
+          'bad2@example.com',
+        ],
+        subject: 'Hello',
+        bodyHtml: '<p>Hi</p>',
+      };
+
+      const wrapperResults: SendEmailResult[] = [
+        {
+          recipient: 'ok1@example.com',
+          status: 'sent',
+          output: {
+            MessageId: 'msg-1',
+            $metadata: { httpStatusCode: 200 },
+          } as SendEmailCommandOutput,
+        },
+        {
+          recipient: 'bad1@example.com',
+          status: 'failed',
+          error: 'SES rejected: invalid recipient',
+        },
+        {
+          recipient: 'ok2@example.com',
+          status: 'sent',
+          output: {
+            MessageId: 'msg-2',
+            $metadata: { httpStatusCode: 200 },
+          } as SendEmailCommandOutput,
+        },
+        {
+          recipient: 'bad2@example.com',
+          status: 'failed',
+          error: 'SES rejected: throttled',
+        },
+      ];
+      mockWrapper.sendEmails.mockResolvedValue(wrapperResults);
+
+      const result = (await service.sendEmails(dto)) as SendEmailResult[];
+
+      // No recipient should be silently dropped: one result per input address,
+      // in the same order, with the right status for each.
+      expect(result).toHaveLength(dto.toEmails.length);
+      expect(result.map((r) => r.recipient)).toEqual(dto.toEmails);
+      expect(result.map((r) => r.status)).toEqual([
+        'sent',
+        'failed',
+        'sent',
+        'failed',
+      ]);
+      expect(result).toEqual(wrapperResults);
+    });
   });
 });

@@ -33,8 +33,11 @@ export class UsersController {
     return this.usersService.remove(parseInt(id));
   }
 
+  // Example endpoint for email sending (DO NOT DEPLOY THIS)
+  /*
   @Post('/test-email')
   sendTestEmail(@Body() body: { recipient: string }) {
     return this.usersService.sendTestEmail(body.recipient);
   }
+  */
 }
