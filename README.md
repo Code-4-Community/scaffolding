@@ -34,6 +34,28 @@ To run both the frontend and backend with one command:
 nx run-many -t serve -p frontend backend
 ```
 
+## Swagger
+
+The backend can expose [Swagger UI](https://github.com/swagger-api/swagger-ui) (built from an OpenAPI document via [`@nestjs/swagger`](https://docs.nestjs.com/openapi/introduction)) so you can browse and try HTTP routes without reading controller code first.
+
+**Turn it on:** In `.env` at the repo root (copy from [`example.env`](example.env)), set `SWAGGER_ENABLED=true`. Restart the backend (`nx serve backend`), then open **http://localhost:3000/api** for the UI. 
+
+**Turn it off:** Unset `SWAGGER_ENABLED` or set it to `false`.
+
+**TL TODOS:** 
+1. In [`apps/backend/src/main.ts`](apps/backend/src/main.ts), replace `[YOUR_APP_NAME]` and other `[TL]` strings, adjust `.addTag()` entries to match your controllers, 
+2. Add `@ApiBearerAuth()` onto the controller or handler for specifically protected routes. `addBearerAuth()` only states that the application supports authentication via HTTP Bearer in the Authorization header, it doesn't mark specific routes as protected. [Learn more](https://docs.nestjs.com/openapi/security#bearer-authentication)
+
+**Decorators to know as you add routes!** 
+(import from `@nestjs/swagger`):
+- `@ApiProperty()` / `@ApiPropertyOptional()`: on top of DTO fields
+- `@ApiTags('Name')`: on top of controllers to tag them to specific tags/features
+- `@ApiHeader({name: '...', description: '...'})`: on top of individual methods or controllers to define custom headers that are expected as part of the requests to those methods/controllers
+- `@ApiResponse({ status: '...', description: '...' })`: to define a custom HTTP response.
+  - Prebuilt helpers (fixed status in the spec): `@ApiOkResponse` (200), `@ApiCreatedResponse` (201), `@ApiNotFoundResponse` (404), [additional `@Api*Response` shortcuts](https://docs.nestjs.com/openapi/operations#responses)
+
+[More Decorators](https://docs.nestjs.com/openapi/decorators).
+
 ## Other commands
 
 Run `git submodule update --remote` to pull the latest changes from the component library
