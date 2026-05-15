@@ -42,25 +42,27 @@ NX_DB_HOST=localhost
 NX_DB_PORT=5432
 NX_DB_USERNAME=postgres
 NX_DB_PASSWORD=postgres
-NX_DB_DATABASE=jumpstart
+NX_DB_DATABASE=[DB NAME HERE]
 ```
 
 **Run migrations:**
 
 ```bash
-npm run migration:run
+yarn migration:run
 ```
 
 To generate a new migration after changing entities:
 
 ```bash
-npm run migration:generate --name=your_migration_name
+name=your_migration_name yarn migration:generate
 ```
+
+> **Windows users:** The `name=...` syntax above only works on Mac/Linux. On Windows, run `set name=your_migration_name && yarn migration:generate` in Command Prompt, or `$env:name="your_migration_name"; yarn migration:generate` in PowerShell.
 
 To revert the most recent migration:
 
 ```bash
-npm run migration:revert
+yarn migration:revert
 ```
 
 ## Start the app
