@@ -2,7 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 import Bottleneck from 'bottleneck';
-import { AmazonSESWrapper, SendEmailResult } from './awsSes.wrapper';
+import { SendEmailCommandOutput } from '@aws-sdk/client-sesv2';
+import { AmazonSESWrapper } from './awsSes.wrapper';
 import { SendEmailDTO } from './sendEmail.dto';
 
 @Injectable()
@@ -19,7 +20,8 @@ export class EmailsService {
   }
 
   /**
-   * Sends a separate email to each recipient in the DTO through Amazon SES.
+   * Sends a single email through Amazon SES to `dto.toEmail`, with optional
+   * `ccEmails` and `bccEmails`.
    *
    * Sends are rate-limited to approximately 14 per second to stay under
    * the SES per-account send quota.
@@ -33,12 +35,13 @@ export class EmailsService {
    * set to 'true'.
    *
    * @param dto the email payload - validated against SendEmailDTO's decorators
-   * @returns one SendEmailResult per recipient (sent or failed), or void when skipped
+   * @returns the SES response on success, or void when sending is skipped
    * @throws ValidationError[] if the DTO fails validation
+   * @throws Error if SES rejects the send
    */
-  public async sendEmails(
+  public async sendEmail(
     dto: SendEmailDTO,
-  ): Promise<SendEmailResult[] | void> {
+  ): Promise<SendEmailCommandOutput | void> {
     // Since most emails are sent service-to-service, NestJS's global ValidationPipe
     // (which runs on a @Body() dto in a controller) never actually occurs
     //
@@ -52,7 +55,7 @@ export class EmailsService {
     }
 
     return this.limiter.schedule(() =>
-      this.amazonSESWrapper.sendEmails(validated),
+      this.amazonSESWrapper.sendEmail(validated),
     );
   }
 }

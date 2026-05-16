@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
-  ArrayMinSize,
   ArrayUnique,
   IsArray,
   IsEmail,
@@ -62,12 +61,23 @@ export class EmailAttachmentDto {
  * Input shape for EmailsService.sendEmails. All validation lives here
  */
 export class SendEmailDTO {
+  @IsEmail()
+  @Length(1, 255)
+  toEmail!: string;
+
   @IsArray()
-  @ArrayMinSize(1)
+  @IsOptional()
   @ArrayUnique()
   @IsEmail({}, { each: true })
   @Length(1, 255, { each: true })
-  toEmails!: string[];
+  ccEmails?: string[];
+
+  @IsArray()
+  @IsOptional()
+  @ArrayUnique()
+  @IsEmail({}, { each: true })
+  @Length(1, 255, { each: true })
+  bccEmails?: string[];
 
   @IsString()
   @IsNotEmpty()

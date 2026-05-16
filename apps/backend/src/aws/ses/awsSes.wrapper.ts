@@ -7,14 +7,7 @@ import {
 import MailComposer from 'nodemailer/lib/mail-composer';
 import Mail from 'nodemailer/lib/mailer';
 import { AMAZON_SES_CLIENT } from './awsSesClient.factory';
-import { EmailAttachmentDto, SendEmailDTO } from './sendEmail.dto';
-
-/**
- * Outcome of attempting to send to one recipient. Discriminated by `status`
- */
-export type SendEmailResult =
-  | { recipient: string; status: 'sent'; output: SendEmailCommandOutput }
-  | { recipient: string; status: 'failed'; error: string };
+import { SendEmailDTO } from './sendEmail.dto';
 
 @Injectable()
 export class AmazonSESWrapper {
@@ -30,67 +23,35 @@ export class AmazonSESWrapper {
   }
 
   /**
-   * Sends a separate email to each recipient in the DTO via Amazon SES, so
-   * recipients cannot see each other's addresses. Every recipient is
-   * attempted The caller gets one SendEmailResult per recipient in
-   * input order describing whether the send succeeded or failed.
+   * Sends a single email via Amazon SES to `dto.toEmail`, with optional
+   * `ccEmails` and `bccEmails`. Composes a MIME message (so attachments are
+   * supported) and dispatches it via SendEmailCommand.
    *
    * @param dto the email payload
-   * @returns one SendEmailResult per recipient, in input order
-   */
-  async sendEmails(dto: SendEmailDTO): Promise<SendEmailResult[]> {
-    const results: SendEmailResult[] = [];
-    // Send emails one at a time, recording each outcome so a partial failure
-    // doesn't silently drop the recipients that come after it.
-    for (const recipient of dto.toEmails) {
-      try {
-        const output = await this.sendOne(
-          recipient,
-          dto.subject,
-          dto.bodyHtml,
-          dto.attachments,
-        );
-        results.push({ recipient, status: 'sent', output });
-      } catch (err) {
-        results.push({
-          recipient,
-          status: 'failed',
-          error: err instanceof Error ? err.message : String(err),
-        });
-      }
-    }
-    return results;
-  }
-
-  /**
-   * Sends a single email to one recipient. Composes the MIME message (so
-   * attachments are supported) and dispatches it via SendEmailCommand.
-   * Used internally by sendEmails to fan out one message per recipient.
-   *
-   * @param recipient the recipient address
-   * @param subject the subject of the email
-   * @param bodyHtml the HTML body of the email
-   * @param attachments any attachments to include in the email
    * @returns the SES response, containing MessageId (SES's unique id for the sent message)
    * and metadata (HTTP status, AWS request id, retry counts)
    * @throws Error if MIME composition fails (bad attachment, oversized payload)
    * or if SES rejects the send (bad recipient, throttling, unverified sender, quota exceeded).
    */
-  private async sendOne(
-    recipient: string,
-    subject: string,
-    bodyHtml: string,
-    attachments?: EmailAttachmentDto[],
-  ): Promise<SendEmailCommandOutput> {
+  async sendEmail(dto: SendEmailDTO): Promise<SendEmailCommandOutput> {
     const mailOptions: Mail.Options = {
       from: this.senderEmail,
-      to: recipient,
-      subject,
-      html: bodyHtml,
+      to: dto.toEmail,
+      subject: dto.subject,
+      html: dto.bodyHtml,
     };
 
-    if (attachments) {
-      mailOptions.attachments = attachments.map((a) => ({
+    // cc is visible: set in MIME headers so recipients see who was cc'd.
+    if (dto.ccEmails && dto.ccEmails.length > 0) {
+      mailOptions.cc = dto.ccEmails;
+    }
+    // bcc is hidden: deliberately NOT set on mailOptions — doing so would
+    // emit a `Bcc:` header in the raw MIME and leak the list to every
+    // recipient. SES delivers to bcc addresses via Destination.BccAddresses
+    // below without ever touching the headers.
+
+    if (dto.attachments) {
+      mailOptions.attachments = dto.attachments.map((a) => ({
         filename: a.filename,
         content: a.content,
       }));
@@ -99,7 +60,13 @@ export class AmazonSESWrapper {
     try {
       const messageData = await new MailComposer(mailOptions).compile().build();
       const command = new SendEmailCommand({
-        Destination: { ToAddresses: [recipient] },
+        Destination: {
+          ToAddresses: [dto.toEmail],
+          ...(dto.ccEmails &&
+            dto.ccEmails.length > 0 && { CcAddresses: dto.ccEmails }),
+          ...(dto.bccEmails &&
+            dto.bccEmails.length > 0 && { BccAddresses: dto.bccEmails }),
+        },
         Content: { Raw: { Data: messageData } },
       });
       return await this.client.send(command);

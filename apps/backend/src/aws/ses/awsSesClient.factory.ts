@@ -11,6 +11,10 @@ export const AMAZON_SES_CLIENT = 'AMAZON_SES_CLIENT';
 export const AmazonSESClientFactory: Provider<SESv2Client> = {
   provide: AMAZON_SES_CLIENT,
   useFactory: () => {
+    // Create dummy client that is never used when email sending is set to false
+    if (process.env.SEND_AUTOMATED_EMAILS !== 'true') {
+      return new SESv2Client({});
+    }
     const region = process.env.AWS_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
     const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;

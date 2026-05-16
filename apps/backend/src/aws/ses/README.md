@@ -1,6 +1,6 @@
 # SES Email Module
 
-Thin wrapper around Amazon SES v2 for sending transactional emails (with optional attachments) from the backend. Validates input via `SendEmailDTO`, rate-limits sends, and fans out one message per recipient so recipients never see each other's addresses.
+Thin wrapper around Amazon SES v2 for sending transactional emails (with optional attachments, cc, and bcc) from the backend. Validates input via `SendEmailDTO` and rate-limits sends. Each call delivers one email to a single primary recipient (`toEmail`), with cc visible in MIME headers and bcc hidden.
 
 ## Injecting `EmailsService`
 
@@ -33,16 +33,16 @@ Thin wrapper around Amazon SES v2 for sending transactional emails (with optiona
 
      async notify(recipient: string) {
        const dto: SendEmailDTO = {
-         toEmails: [recipient],
+         toEmail: recipient,
          subject: 'Welcome',
          bodyHtml: '<p>Hi there.</p>',
        };
-       return this.emailsService.sendEmails(dto);
+       return this.emailsService.sendEmail(dto);
      }
    }
    ```
 
-`EmailsService.sendEmails` validates the DTO against its class-validator decorators on every call (since service-to-service calls bypass Nest's global `ValidationPipe`), so passing a plain object is fine — there's no need to call `plainToInstance` yourself.
+`EmailsService.sendEmail` validates the DTO against its class-validator decorators on every call (since service-to-service calls bypass Nest's global `ValidationPipe`), so passing a plain object is fine — there's no need to call `plainToInstance` yourself.
 
 ## Verifying a sender identity in SES
 
@@ -62,5 +62,5 @@ If you swap `AWS_SES_SENDER_EMAIL` later, the new address must be verified separ
 
 A boolean env var (`'true'` to enable, anything else to disable) that gates real SES dispatch.
 
-- When `SEND_AUTOMATED_EMAILS === 'true'`: `sendEmails` runs DTO validation, then schedules the send through the rate limiter, then calls SES. Returns one `SendEmailResult` per recipient.
-- When `SEND_AUTOMATED_EMAILS` is unset or any other value: `sendEmails` still runs DTO validation (so a bad payload still throws), then logs a warning (`SEND_AUTOMATED_EMAILS is not "true". Email not sent.`) and returns `void` without contacting SES.
+- When `SEND_AUTOMATED_EMAILS === 'true'`: `sendEmail` runs DTO validation, then schedules the send through the rate limiter, then calls SES. Returns the `SendEmailCommandOutput` from SES (MessageId + metadata).
+- When `SEND_AUTOMATED_EMAILS` is unset or any other value: `sendEmail` still runs DTO validation (so a bad payload still throws), then logs a warning (`SEND_AUTOMATED_EMAILS is not "true". Email not sent.`) and returns `void` without contacting SES.

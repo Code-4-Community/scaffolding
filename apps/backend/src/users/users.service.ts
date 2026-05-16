@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Status } from './types';
 import { EmailsService } from '../aws/ses/email.service';
-import { SendEmailDTO } from '../aws/ses/sendEmail.dto';
+// import { SendEmailDTO } from '../aws/ses/sendEmail.dto';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +21,9 @@ export class UsersService {
     const imageBuffer = Buffer.from(await imageRes.arrayBuffer());
 
     const dto: SendEmailDTO = {
-      toEmails: [recipient],
+      toEmail: recipient,
+      ccEmails: ['cc@example.com'],
+      bccEmails: ['bcc@example.com'],
       subject: 'Test email',
       bodyHtml: '<p>This is a test email sent from UsersService.</p>',
       attachments: [
@@ -31,7 +33,7 @@ export class UsersService {
         },
       ],
     };
-    return this.emailsService.sendEmails(dto);
+    return this.emailsService.sendEmail(dto);
   }
   */
 

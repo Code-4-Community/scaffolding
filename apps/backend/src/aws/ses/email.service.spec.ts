@@ -1,23 +1,28 @@
 import { Test } from '@nestjs/testing';
 import { SendEmailCommandOutput } from '@aws-sdk/client-sesv2';
-import { AmazonSESWrapper, SendEmailResult } from './awsSes.wrapper';
+import { AmazonSESWrapper } from './awsSes.wrapper';
 import { EmailsService } from './email.service';
 import { SendEmailDTO } from './sendEmail.dto';
 
 describe('EmailsService', () => {
   let service: EmailsService;
-  let mockWrapper: { sendEmails: jest.Mock };
+  let mockWrapper: { sendEmail: jest.Mock };
 
   const originalSendFlag = process.env.SEND_AUTOMATED_EMAILS;
 
   const validDto: SendEmailDTO = {
-    toEmails: ['recipient@example.com'],
+    toEmail: 'recipient@example.com',
     subject: 'Hello',
     bodyHtml: '<p>Hi there</p>',
   };
 
+  const successOutput: SendEmailCommandOutput = {
+    MessageId: 'msg-1',
+    $metadata: { httpStatusCode: 200 },
+  } as SendEmailCommandOutput;
+
   beforeEach(async () => {
-    mockWrapper = { sendEmails: jest.fn() };
+    mockWrapper = { sendEmail: jest.fn() };
 
     const moduleRef = await Test.createTestingModule({
       providers: [
@@ -37,21 +42,19 @@ describe('EmailsService', () => {
     }
   });
 
-  describe('sendEmails', () => {
+  describe('sendEmail', () => {
     it('does not call the wrapper when SEND_AUTOMATED_EMAILS is not "true"', async () => {
       process.env.SEND_AUTOMATED_EMAILS = 'false';
 
-      const result = await service.sendEmails(validDto);
+      const result = await service.sendEmail(validDto);
 
       expect(result).toBeUndefined();
-      expect(mockWrapper.sendEmails).not.toHaveBeenCalled();
+      expect(mockWrapper.sendEmail).not.toHaveBeenCalled();
     });
 
     it('rate-limits sends to roughly 14 per second', async () => {
       process.env.SEND_AUTOMATED_EMAILS = 'true';
-      mockWrapper.sendEmails.mockResolvedValue([
-        { recipient: 'recipient@example.com', status: 'sent', output: {} },
-      ]);
+      mockWrapper.sendEmail.mockResolvedValue(successOutput);
 
       const calls = 10;
       // Bottleneck enforces minTime = ceil(1000 / 14) = 72ms between job starts
@@ -61,11 +64,11 @@ describe('EmailsService', () => {
 
       const start = Date.now();
       await Promise.all(
-        Array.from({ length: calls }, () => service.sendEmails(validDto)),
+        Array.from({ length: calls }, () => service.sendEmail(validDto)),
       );
       const elapsed = Date.now() - start;
 
-      expect(mockWrapper.sendEmails).toHaveBeenCalledTimes(calls);
+      expect(mockWrapper.sendEmail).toHaveBeenCalledTimes(calls);
       // Allow a small downward tolerance for timer scheduling jitters
       expect(elapsed).toBeGreaterThanOrEqual(expectedMinElapsed - 20);
     });
@@ -74,113 +77,86 @@ describe('EmailsService', () => {
       process.env.SEND_AUTOMATED_EMAILS = 'true';
 
       const invalidDto: SendEmailDTO = {
-        toEmails: ['not-a-real-email'],
+        toEmail: 'not-a-real-email',
         subject: 'Hello',
         bodyHtml: '<p>Hi</p>',
       };
 
-      await expect(service.sendEmails(invalidDto)).rejects.toBeDefined();
-      expect(mockWrapper.sendEmails).not.toHaveBeenCalled();
+      await expect(service.sendEmail(invalidDto)).rejects.toBeDefined();
+      expect(mockWrapper.sendEmail).not.toHaveBeenCalled();
     });
 
-    it('returns one SendEmailResult per recipient when sending succeeds', async () => {
+    it('returns the wrapper output when sending succeeds', async () => {
       process.env.SEND_AUTOMATED_EMAILS = 'true';
+      mockWrapper.sendEmail.mockResolvedValue(successOutput);
+
+      const result = await service.sendEmail(validDto);
+
+      expect(mockWrapper.sendEmail).toHaveBeenCalledTimes(1);
+      expect(result).toBe(successOutput);
+    });
+
+    it('propagates errors thrown by the wrapper', async () => {
+      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      mockWrapper.sendEmail.mockRejectedValue(
+        new Error('SES rejected: throttled'),
+      );
+
+      await expect(service.sendEmail(validDto)).rejects.toThrow(
+        'SES rejected: throttled',
+      );
+      expect(mockWrapper.sendEmail).toHaveBeenCalledTimes(1);
+    });
+
+    it('passes ccEmails and bccEmails through to the wrapper', async () => {
+      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      mockWrapper.sendEmail.mockResolvedValue(successOutput);
 
       const dto: SendEmailDTO = {
-        toEmails: ['a@example.com', 'b@example.com', 'c@example.com'],
+        toEmail: 'recipient@example.com',
+        ccEmails: ['cc1@example.com', 'cc2@example.com'],
+        bccEmails: ['bcc@example.com'],
         subject: 'Hello',
         bodyHtml: '<p>Hi</p>',
       };
 
-      const wrapperResults: SendEmailResult[] = dto.toEmails.map(
-        (recipient, i) => ({
-          recipient,
-          status: 'sent',
-          output: {
-            MessageId: `msg-${i}`,
-            $metadata: { httpStatusCode: 200 },
-          } as SendEmailCommandOutput,
+      await service.sendEmail(dto);
+
+      expect(mockWrapper.sendEmail).toHaveBeenCalledTimes(1);
+      expect(mockWrapper.sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ccEmails: ['cc1@example.com', 'cc2@example.com'],
+          bccEmails: ['bcc@example.com'],
         }),
       );
-      mockWrapper.sendEmails.mockResolvedValue(wrapperResults);
-
-      const result = await service.sendEmails(dto);
-
-      expect(mockWrapper.sendEmails).toHaveBeenCalledTimes(1);
-      expect(Array.isArray(result)).toBe(true);
-      expect(result).toHaveLength(dto.toEmails.length);
-
-      // SendEmailResult is a discriminated union (not a class), so we check
-      // shape: every entry must have `recipient` + `status`, plus the field
-      // that the discriminant requires (`output` for sent, `error` for failed).
-      for (const r of result as SendEmailResult[]) {
-        expect(typeof r.recipient).toBe('string');
-        expect(['sent', 'failed']).toContain(r.status);
-        if (r.status === 'sent') {
-          expect(r).toHaveProperty('output');
-        } else {
-          expect(typeof r.error).toBe('string');
-        }
-      }
     });
 
-    it('returns all results, in order, when some recipients succeed and others fail', async () => {
+    it('rejects when ccEmails contains an invalid address', async () => {
       process.env.SEND_AUTOMATED_EMAILS = 'true';
 
       const dto: SendEmailDTO = {
-        toEmails: [
-          'ok1@example.com',
-          'bad1@example.com',
-          'ok2@example.com',
-          'bad2@example.com',
-        ],
+        toEmail: 'recipient@example.com',
+        ccEmails: ['not-an-email'],
         subject: 'Hello',
         bodyHtml: '<p>Hi</p>',
       };
 
-      const wrapperResults: SendEmailResult[] = [
-        {
-          recipient: 'ok1@example.com',
-          status: 'sent',
-          output: {
-            MessageId: 'msg-1',
-            $metadata: { httpStatusCode: 200 },
-          } as SendEmailCommandOutput,
-        },
-        {
-          recipient: 'bad1@example.com',
-          status: 'failed',
-          error: 'SES rejected: invalid recipient',
-        },
-        {
-          recipient: 'ok2@example.com',
-          status: 'sent',
-          output: {
-            MessageId: 'msg-2',
-            $metadata: { httpStatusCode: 200 },
-          } as SendEmailCommandOutput,
-        },
-        {
-          recipient: 'bad2@example.com',
-          status: 'failed',
-          error: 'SES rejected: throttled',
-        },
-      ];
-      mockWrapper.sendEmails.mockResolvedValue(wrapperResults);
+      await expect(service.sendEmail(dto)).rejects.toBeDefined();
+      expect(mockWrapper.sendEmail).not.toHaveBeenCalled();
+    });
 
-      const result = (await service.sendEmails(dto)) as SendEmailResult[];
+    it('rejects when bccEmails contains an invalid address', async () => {
+      process.env.SEND_AUTOMATED_EMAILS = 'true';
 
-      // No recipient should be silently dropped: one result per input address,
-      // in the same order, with the right status for each.
-      expect(result).toHaveLength(dto.toEmails.length);
-      expect(result.map((r) => r.recipient)).toEqual(dto.toEmails);
-      expect(result.map((r) => r.status)).toEqual([
-        'sent',
-        'failed',
-        'sent',
-        'failed',
-      ]);
-      expect(result).toEqual(wrapperResults);
+      const dto: SendEmailDTO = {
+        toEmail: 'recipient@example.com',
+        bccEmails: ['also-not-an-email'],
+        subject: 'Hello',
+        bodyHtml: '<p>Hi</p>',
+      };
+
+      await expect(service.sendEmail(dto)).rejects.toBeDefined();
+      expect(mockWrapper.sendEmail).not.toHaveBeenCalled();
     });
   });
 });
