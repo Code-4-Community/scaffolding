@@ -11,16 +11,12 @@ import { SendEmailDTO } from './sendEmail.dto';
 
 @Injectable()
 export class AmazonSESWrapper {
-  private readonly senderEmail: string;
-
   /**
    * @param client SESv2 client from `awsSesClient.factory.ts`
    */
-  constructor(@Inject(AMAZON_SES_CLIENT) private readonly client: SESv2Client) {
-    const senderEmail = process.env.AWS_SES_SENDER_EMAIL;
-    if (!senderEmail) throw new Error('AWS_SES_SENDER_EMAIL is not defined');
-    this.senderEmail = senderEmail;
-  }
+  constructor(
+    @Inject(AMAZON_SES_CLIENT) private readonly client: SESv2Client,
+  ) {}
 
   /**
    * Sends a single email via Amazon SES to `dto.toEmail`, with optional
@@ -34,8 +30,11 @@ export class AmazonSESWrapper {
    * or if SES rejects the send (bad recipient, throttling, unverified sender, quota exceeded).
    */
   async sendEmail(dto: SendEmailDTO): Promise<SendEmailCommandOutput> {
+    const senderEmail = process.env.AWS_SES_SENDER_EMAIL;
+    if (!senderEmail) throw new Error('AWS_SES_SENDER_EMAIL is not defined');
+
     const mailOptions: Mail.Options = {
-      from: this.senderEmail,
+      from: senderEmail,
       to: dto.toEmail,
       subject: dto.subject,
       html: dto.bodyHtml,
