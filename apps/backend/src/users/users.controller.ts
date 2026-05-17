@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
   ParseIntPipe,
+  Post,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -30,4 +32,12 @@ export class UsersController {
   removeUser(@Param('id') id: string) {
     return this.usersService.remove(parseInt(id));
   }
+
+  // Example endpoint for email sending (DO NOT DEPLOY THIS)
+  /*
+  @Post('/test-email')
+  sendTestEmail(@Body() body: { recipient: string }) {
+    return this.usersService.sendTestEmail(body.recipient);
+  }
+  */
 }
