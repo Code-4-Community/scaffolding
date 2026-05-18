@@ -81,7 +81,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
     "jest": "^30.3.0",
-    "jsdom": "^22.1.0",
+    "jsdom": "^29.1.1",
     "lint-staged": "^14.0.1",
     "nx": "^16.8.1",
     "nx-cloud": "^16.4.0",
