@@ -4,7 +4,7 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import {
   configureAmplify,
   cognitoInformationPresent,
-} from '../auth/auth.config';
+} from './auth/auth.config';
 import App from './app';
 
 const root = ReactDOM.createRoot(

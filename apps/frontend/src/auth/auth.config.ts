@@ -1,7 +1,7 @@
 import { Amplify } from 'aws-amplify';
 
-const userPoolId = process.env.VITE_COGNITO_USER_POOL_ID;
-const userPoolClientId = process.env.VITE_COGNITO_USER_POOL_CLIENT_ID;
+const userPoolId = import.meta.env.VITE_COGNITO_USER_POOL_ID;
+const userPoolClientId = import.meta.env.VITE_COGNITO_USER_POOL_CLIENT_ID;
 
 // Fail out if the values are not set in the environment variables even if they exist
 function isNonEmptyEnv(value: string | undefined): value is string {
