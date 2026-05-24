@@ -1,4 +1,4 @@
-## QUICKSTART: Enable Authentication
+## QUICKSTART: 
 
 Copy placeholders from the repo root `example.env` into `.env` (or your deployment secrets):
 
@@ -96,7 +96,14 @@ The guard sets `request.user` to the verified JWT payload (`CognitoJwtPayload`: 
 - Audience: each token carries **one** of these — ID tokens use `aud`; access tokens use `client_id` (Cognito does not put `aud` on access tokens). The guard accepts either claim matching `COGNITO_CLIENT_ID`. Amplify API calls typically send the **access** token (see below).
 
 > [!IMPORTANT]
-> By default, both ID and access tokens are accepted. If your project requires restricting to a specific token type, add a `token_use` check in `isAudienceValid` and delete the other (id or access) check.
+> By default, both ID and access tokens are checked for and accepted. Cognito can be used for both Authentication (ID) and Authorization (Access), if you want to restrict to one specific use, add a `token_use` check in `isAudienceValid` and delete the other (id or access) check.
+
+> [!WARNING]
+> Do not use the **ID token** for API authorization. ID tokens are intended for your 
+> client application to establish who the user is: passing them to a backend API 
+> exposes identity claims unnecessarily and confuses authentication with authorization. 
+> Backend APIs should validate **access tokens** only. See the `token_use` check in 
+> `isAudienceValid` below to enforce this.
 
 ```typescript
 function isAudienceValid(payload: CognitoJwtPayload, clientId: string): boolean {
