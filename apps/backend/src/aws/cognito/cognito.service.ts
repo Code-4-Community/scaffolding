@@ -5,7 +5,8 @@ import { isAuthEnabled } from './cognito.config';
 
 @Injectable()
 export class CognitoService {
-  // Gets the user from the request
+  // Extracts the verified JWT payload from request.user, as set by CognitoJWTGuard.
+  // Returns null if auth is disabled or no valid token was attached.
   getUser(request: Request): CognitoJwtPayload | null {
     // If authentication is not enabled, return null
     if (!isAuthEnabled()) {
