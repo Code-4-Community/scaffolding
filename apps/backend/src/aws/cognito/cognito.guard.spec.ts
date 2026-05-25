@@ -240,12 +240,10 @@ describe('CognitoJWTGuard', () => {
       expect(jwt.verify).not.toHaveBeenCalled();
       expect(request.user).toBeUndefined();
     });
-  });
-
-  describe('when env variables are missing', () => {
     it('rejects routes when COGNITO_CLIENT_ID is missing', async () => {
       process.env.COGNITO_USER_POOL_ID = ACTIVE_ENV.COGNITO_USER_POOL_ID;
       process.env.COGNITO_REGION = ACTIVE_ENV.COGNITO_REGION;
+      delete process.env.COGNITO_CLIENT_ID;
 
       const { context } = createContext('Bearer token');
 
@@ -258,6 +256,7 @@ describe('CognitoJWTGuard', () => {
     it('rejects routes when COGNITO_REGION is missing', async () => {
       process.env.COGNITO_USER_POOL_ID = ACTIVE_ENV.COGNITO_USER_POOL_ID;
       process.env.COGNITO_CLIENT_ID = ACTIVE_ENV.COGNITO_CLIENT_ID;
+      delete process.env.COGNITO_REGION;
 
       const { context } = createContext('Bearer token');
 
