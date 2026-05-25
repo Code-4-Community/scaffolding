@@ -6,7 +6,7 @@ export interface CognitoJwtPayload {
   'cognito:groups'?: string[]; // Groups (ex: ['admin', 'user'])
   iss: string; // Issuer (ex: https://cognito-idp.<Region>.amazonaws.com/<your user pool ID>)
   token_use?: 'id' | 'access'; // Token use (ID or access token from Cognito)
-  aud?: string; // Audience: Client ID this token is intended for (ex: <your client ID>)
+  aud?: string | string[]; // Audience: Client ID this token is intended for (ex: <your client ID>)
   client_id?: string; // Client ID used during authentication (ex: <your client ID>)
   exp: number; // Expiration time (Unix timestamp)
   iat: number; // Issued at time (Unix timestamp)

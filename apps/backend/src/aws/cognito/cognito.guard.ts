@@ -18,13 +18,20 @@ function isAudienceValid(
   payload: CognitoJwtPayload,
   clientId: string,
 ): boolean {
+  // Check Client ID
   if (payload.client_id === clientId) {
     return true;
   }
+
+  // Check Aud
   const aud = payload.aud;
   if (typeof aud === 'string') {
     return aud === clientId;
   }
+  if (Array.isArray(aud)) {
+    return aud.includes(clientId);
+  }
+
   return false;
 }
 
