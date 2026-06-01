@@ -8,11 +8,15 @@ import {
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { AWSS3Service } from './aws-s3.service';
+import { s3Buckets } from './types/s3Buckets';
+import { S3UploadInput } from './types/s3UploadInput';
 
 const s3Mock = mockClient(S3Client);
 
 describe('AWSS3Service', () => {
   const testBucket = 'test-bucket';
+  // s3Buckets is empty in the scaffold; cast a sentinel value for tests.
+  const testBucketEnum = 'TEST_BUCKET' as unknown as s3Buckets;
   const region = 'us-east-2';
 
   let service: AWSS3Service;
@@ -24,27 +28,21 @@ describe('AWSS3Service', () => {
 
     s3Mock.reset();
     service = new AWSS3Service();
-  });
-
-  describe('createLink', () => {
-    it('should construct the correct S3 URL', () => {
-      const url = service.createLink('some-key.pdf', testBucket);
-      expect(url).toBe(
-        `https://${testBucket}.s3.${region}.amazonaws.com/some-key.pdf`,
-      );
-    });
+    jest.spyOn(service, 'mapBucket').mockReturnValue(testBucket);
   });
 
   describe('upload', () => {
+    const validInput: S3UploadInput = {
+      fileBuffer: Buffer.from('test'),
+      fileName: 'file.pdf',
+      mimeType: 'application/pdf',
+      bucket: testBucketEnum,
+    };
+
     it('should upload file and return correct URL', async () => {
       s3Mock.on(PutObjectCommand).resolves({});
 
-      const url = await service.upload(
-        Buffer.from('test'),
-        'file.pdf',
-        'application/pdf',
-        testBucket,
-      );
+      const url = await service.upload(validInput);
 
       const commandCall = s3Mock.call(0);
       const uploadedKey = (commandCall.args[0] as PutObjectCommand).input.Key;
@@ -59,14 +57,57 @@ describe('AWSS3Service', () => {
     it('should throw error on upload failure', async () => {
       s3Mock.on(PutObjectCommand).rejects(new Error('fail'));
 
-      await expect(
-        service.upload(
-          Buffer.from('test'),
-          'file.pdf',
-          'application/pdf',
-          testBucket,
-        ),
-      ).rejects.toThrow('File upload to AWS failed: Error: fail');
+      await expect(service.upload(validInput)).rejects.toThrow(
+        'File upload to AWS failed: Error: fail',
+      );
+    });
+
+    describe('validateUploadInput', () => {
+      it('should throw if fileBuffer is empty', async () => {
+        await expect(
+          service.upload({ ...validInput, fileBuffer: Buffer.alloc(0) }),
+        ).rejects.toThrow('File buffer cannot be empty');
+      });
+
+      it('should throw if fileBuffer exceeds 100MB', async () => {
+        const oversized = Buffer.alloc(100 * 1024 * 1024 + 1);
+        await expect(
+          service.upload({ ...validInput, fileBuffer: oversized }),
+        ).rejects.toThrow(
+          'File size exceeds the maximum allowed size of 100MB',
+        );
+      });
+
+      it('should throw if fileName is empty', async () => {
+        await expect(
+          service.upload({ ...validInput, fileName: '   ' }),
+        ).rejects.toThrow('File name cannot be empty');
+      });
+
+      it('should throw if fileName contains illegal characters', async () => {
+        await expect(
+          service.upload({ ...validInput, fileName: 'bad<file>.pdf' }),
+        ).rejects.toThrow('File name contains illegal characters');
+      });
+
+      it('should throw if fileName contains path traversal', async () => {
+        await expect(
+          service.upload({ ...validInput, fileName: '..file.pdf' }),
+        ).rejects.toThrow('File name cannot contain path traversal sequences');
+      });
+
+      it('should throw if mimeType is empty', async () => {
+        await expect(
+          service.upload({ ...validInput, mimeType: '' }),
+        ).rejects.toThrow('MIME type cannot be empty');
+      });
+
+      it('should throw if bucket env var is missing', async () => {
+        jest.spyOn(service, 'mapBucket').mockReturnValue('');
+        await expect(service.upload(validInput)).rejects.toThrow(
+          'Missing required environment variable for S3 bucket',
+        );
+      });
     });
   });
 
@@ -82,6 +123,14 @@ describe('AWSS3Service', () => {
       const result = await service.getImageData('photo.jpg', testBucket);
 
       expect(result).toBe(imageBytes);
+    });
+
+    it('should return null when response body is missing', async () => {
+      s3Mock.on(GetObjectCommand).resolves({ Body: undefined });
+
+      const result = await service.getImageData('photo.jpg', testBucket);
+
+      expect(result).toBeNull();
     });
 
     it('should return null for NoSuchKey', async () => {

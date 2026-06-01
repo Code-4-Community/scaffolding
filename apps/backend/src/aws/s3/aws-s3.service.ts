@@ -7,15 +7,25 @@ import {
   S3ServiceException,
 } from '@aws-sdk/client-s3';
 import { s3Buckets } from './types/s3Buckets';
+import { S3UploadInput } from './types/s3UploadInput';
+
+const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
+// eslint-disable-next-line no-control-regex
+const ILLEGAL_FILENAME_CHARS = /[<>:"/\\|?*\x00-\x1F]/;
 
 @Injectable()
 export class AWSS3Service {
   private readonly client: S3Client;
   private readonly region: string;
+  private readonly bucketNames: Record<s3Buckets, string>;
   private readonly logger = new Logger(AWSS3Service.name);
 
   constructor() {
     this.region = process.env.AWS_REGION ?? 'us-east-2';
+
+    // Add one entry per bucket in s3Buckets enum.
+    // Example: [s3Buckets.DOCUMENTS]: process.env.AWS_DOCUMENTS_BUCKET_NAME,
+    this.bucketNames = {} as Record<s3Buckets, string>;
 
     for (const bucket of Object.values(s3Buckets) as unknown as s3Buckets[]) {
       if (!this.mapBucket(bucket)) {
@@ -35,26 +45,16 @@ export class AWSS3Service {
   }
 
   mapBucket(bucket: s3Buckets): string {
-    // Add one entry per bucket in s3Buckets enum.
-    // Example: [s3Buckets.DOCUMENTS]: process.env.AWS_DOCUMENTS_BUCKET_NAME,
-    const bucketNames: Record<s3Buckets, string> = {};
-    return bucketNames[bucket];
+    return this.bucketNames[bucket];
   }
 
-  createLink(key: string, bucketName: string): string {
-    return `https://${bucketName}.s3.${this.region}.amazonaws.com/${key}`;
-  }
-
-  async upload(
-    fileBuffer: Buffer,
-    fileName: string,
-    mimeType: string,
-    bucket: string,
-  ): Promise<string> {
+  async upload(input: S3UploadInput): Promise<string> {
+    const bucketName = this.validateUploadInput(input);
+    const { fileBuffer, fileName, mimeType } = input;
     try {
       const uniqueFileName = this.buildUniqueFileName(fileName);
       const command = new PutObjectCommand({
-        Bucket: bucket,
+        Bucket: bucketName,
         Key: uniqueFileName,
         Body: fileBuffer,
         ContentType: mimeType,
@@ -62,10 +62,42 @@ export class AWSS3Service {
 
       await this.client.send(command);
 
-      return `https://${bucket}.s3.${this.region}.amazonaws.com/${uniqueFileName}`;
+      return `https://${bucketName}.s3.${this.region}.amazonaws.com/${uniqueFileName}`;
     } catch (error) {
       throw new Error('File upload to AWS failed: ' + error);
     }
+  }
+
+  private validateUploadInput(input: S3UploadInput): string {
+    if (!input.fileBuffer || input.fileBuffer.length === 0) {
+      throw new Error('File buffer cannot be empty');
+    }
+    if (input.fileBuffer.length > MAX_FILE_SIZE_BYTES) {
+      throw new Error(
+        `File size exceeds the maximum allowed size of ${
+          MAX_FILE_SIZE_BYTES / (1024 * 1024)
+        }MB`,
+      );
+    }
+    if (!input.fileName || input.fileName.trim().length === 0) {
+      throw new Error('File name cannot be empty');
+    }
+    if (ILLEGAL_FILENAME_CHARS.test(input.fileName)) {
+      throw new Error('File name contains illegal characters');
+    }
+    if (input.fileName.includes('..')) {
+      throw new Error('File name cannot contain path traversal sequences');
+    }
+    if (!input.mimeType || input.mimeType.trim().length === 0) {
+      throw new Error('MIME type cannot be empty');
+    }
+    const bucketName = this.mapBucket(input.bucket);
+    if (!bucketName) {
+      throw new Error(
+        `Missing required environment variable for S3 bucket: ${input.bucket}`,
+      );
+    }
+    return bucketName;
   }
 
   async getImageData(
@@ -75,6 +107,9 @@ export class AWSS3Service {
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: objectKey });
       const response = await this.client.send(command);
+      if (!response.Body) {
+        return null;
+      }
       return await response.Body.transformToByteArray();
     } catch (error) {
       if (error instanceof NoSuchKey) {
