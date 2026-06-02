@@ -8,7 +8,8 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 | `COGNITO_CLIENT_ID` | App client ID used to validate `aud` / `client_id` on tokens |
 | `COGNITO_REGION` | AWS region (builds JWKS issuer URL) |
 
-Leave `COGNITO_USER_POOL_ID` unset to disable auth via JWT enforcement entirely
+> [!IMPORTANT]
+> If any Cognito env variables are unset: `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `COGNITO_REGION`, authentication via JWT enforcement is **disabled entirely**
 
 ### Auth model
 
@@ -20,7 +21,8 @@ Leave `COGNITO_USER_POOL_ID` unset to disable auth via JWT enforcement entirely
 
 Import `CognitoModule` into `AppModule` (Already ). This enables auth app-wide and exports `CognitoService` for reading `request.user`:
 
-Note: This has already been implemented by default
+> [!IMPORTANT]
+> Note: This has already been implemented by default
 
 ```typescript
 @Module({
