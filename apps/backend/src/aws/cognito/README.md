@@ -6,15 +6,21 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 |----------|---------|
 | `COGNITO_USER_POOL_ID` | User pool ID; **must be set** to turn the guard on |
 | `COGNITO_CLIENT_ID` | App client ID used to validate `aud` / `client_id` on tokens |
-| `COGNITO_REGION` | AWS region (builds JWKS issuer URL) 
+| `COGNITO_REGION` | AWS region (builds JWKS issuer URL) |
 
 Leave `COGNITO_USER_POOL_ID` unset to disable auth via JWT enforcement entirely
 
-### Using Cognito in your app:
+### Auth model
 
-There are two options for implementing the Cognito authentication guard in your app:
+- **Verification** — `CognitoJWTGuard` is the only component that validates JWTs (signature, issuer, audience). Do not add a second Passport/JWKS path for the same user pool.
+- **Global guard** — `CognitoModule` registers `CognitoJWTGuard` as an `APP_GUARD`, so every route is protected by default. You do **not** need `@UseGuards(CognitoJWTGuard)` on controllers when using this setup.
+- **`request.user`** — After a successful check, the guard sets `request.user` to the decoded JWT payload (`CognitoJwtPayload`: `sub`, `email`, `client_id`, `cognito:groups`, `token_use`, etc.). It is **not** a database user row; resolve local users in your services via `sub` or `email` if needed.
 
-1. Import `CognitoModule` into `AppModule` to protect all modules throughout the application:
+### Using Cognito in your app (recommended + implemented: global guard)
+
+Import `CognitoModule` into `AppModule` (Already ). This enables auth app-wide and exports `CognitoService` for reading `request.user`:
+
+Note: This has already been implemented by default
 
 ```typescript
 @Module({
@@ -23,7 +29,16 @@ There are two options for implementing the Cognito authentication guard in your 
 export class AppModule {}
 ```
 
-2. Import `CognitoJWTGuard` and `CognitoService` into individual modules, then apply the guard with `@UseGuards`:
+New controllers are protected automatically. Opt out with `@Public()` (see below). Read the caller with `CognitoService.getUser(req)` or `req.user` after the guard runs.
+
+### Alternate setup: per-module or per-route guard
+
+If you **do not** register `APP_GUARD` in `CognitoModule` (or you remove that provider), you can import the guard only where needed:
+
+1. Add `CognitoJWTGuard` and `CognitoService` to the module `providers` array (and import `CognitoModule` or register those providers yourself).
+2. Apply `@UseGuards(CognitoJWTGuard)` on a controller or individual route.
+
+**Per controller** — all routes on the controller:
 
 ```typescript
 @Module({
@@ -31,11 +46,7 @@ export class AppModule {}
   providers: [CognitoJWTGuard, CognitoService],
 })
 export class UsersModule {}
-```
 
-   - **Per controller** — all routes in the controller go through the guard:
-
-```typescript
 @Controller('users')
 @UseGuards(CognitoJWTGuard)
 export class UsersController {
@@ -44,7 +55,7 @@ export class UsersController {
 }
 ```
 
-   - **Per route** — only decorated handlers are protected:
+**Per route** — only decorated handlers:
 
 ```typescript
 @Controller('users')
@@ -57,7 +68,6 @@ export class UsersController {
   ...
 }
 ```
-
 
 ### Public Routes
 Use the `@Public()` decorator on routes that are technically protected, but don't require authentication. i.e. health checks, webhooks, or unauthenticated entry points:
@@ -76,18 +86,19 @@ export class HealthController {
 ```
 
 ### `CognitoService.getUser()`
-Inject `CognitoService` in controllers or services to extract decoded token payload from the request
+
+Inject `CognitoService` to extract the same `CognitoJwtPayload` decoded token payload the guard attached to `request.user`:
 
 ```typescript
 @Get('me')
 me(@Req() req: Request) {
   const user = this.cognitoService.getUser(req);
-  // null when auth is disabled, or no valid token was attached
+  // null when auth env is incomplete/disabled, or when request.user was never set
   return user;
 }
 ```
 
-The guard sets `request.user` to the verified JWT payload (`CognitoJwtPayload`: `sub`, `email`, `cognito:groups`, etc.).
+Returns `null` if Cognito auth is disabled (missing env) or if no verified token was attached. On protected routes with a valid Bearer token, it returns the JWT claims object.
 
 ## Token validation
 
