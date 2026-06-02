@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, workspaceRoot, '');
   process.env.VITE_COGNITO_USER_POOL_ID = env.COGNITO_USER_POOL_ID ?? '';
   process.env.VITE_COGNITO_USER_POOL_CLIENT_ID = env.COGNITO_CLIENT_ID ?? '';
+  process.env.VITE_COGNITO_REGION = env.COGNITO_REGION ?? '';
 
   return {
     cacheDir: '../../node_modules/.vite/frontend',
