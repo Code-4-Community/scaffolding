@@ -42,3 +42,7 @@ Thumbs.db
 *.env
 *.env.*
 !example.env
+
+# SQLite database files
+*.sqlite
+*.sqlite3
