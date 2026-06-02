@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
+import jwksClient, { JwksClient } from 'jwks-rsa';
 import { Request } from 'express';
 
 import { IS_PUBLIC_KEY } from './cognito.decorator';
@@ -44,6 +44,8 @@ function extractBearerToken(request: Request): string | undefined {
 
 @Injectable()
 export class CognitoJWTGuard implements CanActivate {
+  private jwks?: JwksClient;
+
   constructor(private readonly reflector: Reflector) {}
 
   // Whether or not the request is allowed to proceed
@@ -70,7 +72,7 @@ export class CognitoJWTGuard implements CanActivate {
     }
 
     // Verify the token and attach the JWT payload to request.user
-    const payload = await this.verifyToken(token);
+    const payload: CognitoJwtPayload = await this.verifyToken(token);
     (request as Request & { user: CognitoJwtPayload }).user = payload;
     return true;
   }
@@ -79,17 +81,20 @@ export class CognitoJWTGuard implements CanActivate {
   private verifyToken(token: string): Promise<CognitoJwtPayload> {
     // If the region, user pool ID, or client ID is not set, throw an unauthorized exception by default
     const config = getCognitoConfig();
+
     if (!config) {
       throw new UnauthorizedException();
     }
 
     // Set up JWKS client to get the public key for the token to verify the JWT token signature
-    const client = jwksClient({
+    this.jwks ??= jwksClient({
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
       jwksUri: `${config.issuer}/.well-known/jwks.json`,
     });
+
+    const client = this.jwks;
 
     // Function to get the public key for the token to verify the JWT token signature
     const getKey: jwt.GetPublicKeyOrSecret = (header, callback) => {
