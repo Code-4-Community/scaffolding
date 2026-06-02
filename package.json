@@ -58,7 +58,7 @@
     "@nx/eslint-plugin-nx": "^16.0.0-beta.1",
     "@nx/jest": "^22.7.1",
     "@nx/linter": "^19.8.4",
-    "@nx/react": "^16.8.1",
+    "@nx/react": "^22.7.5",
     "@nx/vite": "^16.8.1",
     "@nx/webpack": "^22.7.1",
     "@testing-library/react": "^15.0.7",
