@@ -1,6 +1,10 @@
 // Checks if the authentication is enabled
 export function isAuthEnabled(): boolean {
-  return isNonEmptyEnv(process.env.COGNITO_USER_POOL_ID);
+  return (
+    isNonEmptyEnv(process.env.COGNITO_USER_POOL_ID) &&
+    isNonEmptyEnv(process.env.COGNITO_CLIENT_ID) &&
+    isNonEmptyEnv(process.env.COGNITO_REGION)
+  );
 }
 
 // Gets the Cognito configuration information
@@ -14,11 +18,7 @@ export function getCognitoConfig(): {
   const userPoolId = process.env.COGNITO_USER_POOL_ID;
   const clientId = process.env.COGNITO_CLIENT_ID;
 
-  if (
-    !isNonEmptyEnv(region) ||
-    !isNonEmptyEnv(userPoolId) ||
-    !isNonEmptyEnv(clientId)
-  ) {
+  if (!isAuthEnabled()) {
     return null;
   }
 
