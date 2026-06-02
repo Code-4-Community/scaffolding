@@ -20,18 +20,18 @@ export const cognitoInformationPresent =
 
 // Configure amplify with cognito if the information is present in the environment variables
 export function configureAmplify(): void {
-  if (!isNonEmptyEnv(userPoolId)) {
+  if (!cognitoInformationPresent) {
     return;
   }
-  if (!isNonEmptyEnv(userPoolClientId)) {
-    return;
-  }
+
+  const poolId: string = userPoolId;
+  const clientId: string = userPoolClientId;
 
   Amplify.configure({
     Auth: {
       Cognito: {
-        userPoolId,
-        userPoolClientId,
+        userPoolId: poolId,
+        userPoolClientId: clientId,
       },
     },
   });
