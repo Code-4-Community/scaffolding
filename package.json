@@ -94,6 +94,7 @@
     "vitest": "^0.32.0"
   },
   "resolutions": {
-    "listr2": "8"
+    "listr2": "8",
+    "@nx/eslint-plugin/@typescript-eslint/utils": "6.21.0"
   }
 }
