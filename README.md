@@ -10,6 +10,61 @@ Clone this repo and run `yarn` at the root to install this project's dependencie
 
 You can optionally install `nx` globally with `npm install -g nx` - if you don't, you'll just need to prefix the commands below with `npx` (e.g. `npx nx serve frontend`).
 
+### Database Setup
+
+This project uses PostgreSQL. You'll need a running Postgres instance before starting the backend.
+
+**Option A — Docker (recommended for local dev):**
+
+```bash
+docker run --name scaffolding-db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=[DB NAME HERE] \
+  -p 5432:5432 \
+  -d postgres:15
+```
+
+**Option B — pgAdmin / existing Postgres install:**
+
+Create a new database (e.g. `jumpstart`) through pgAdmin or `psql`.
+
+**Configure connection strings:**
+
+Copy `example.env` to `.env` and fill in your credentials:
+
+```bash
+cp example.env .env
+```
+
+```env
+NX_DB_HOST=localhost
+NX_DB_PORT=5432
+NX_DB_USERNAME=postgres
+NX_DB_PASSWORD=postgres
+NX_DB_DATABASE=[DB NAME HERE]
+```
+
+**Run migrations:**
+
+```bash
+yarn migration:run
+```
+
+To generate a new migration after changing entities:
+
+```bash
+name=your_migration_name yarn migration:generate
+```
+
+> **Windows users:** The `name=...` syntax above only works on Mac/Linux. On Windows, run `set name=your_migration_name && yarn migration:generate` in Command Prompt, or `$env:name="your_migration_name"; yarn migration:generate` in PowerShell.
+
+To revert the most recent migration:
+
+```bash
+yarn migration:revert
+```
+
 ## Start the app
 
 To start the development server run `nx serve frontend`. Open your browser and navigate to http://localhost:4200/. Happy coding!

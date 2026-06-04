@@ -43,3 +43,8 @@ Thumbs.db
 *.env
 *.env.*
 !example.env.nx/workspace-data/
+!example.env
+
+# SQLite database files
+*.sqlite
+*.sqlite3
