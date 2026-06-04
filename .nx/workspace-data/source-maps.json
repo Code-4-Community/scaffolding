@@ -342,11 +342,11 @@
       "apps/frontend/project.json",
       "nx/core/project-json"
     ],
-    "targets.serve.options.buildTarget": [
+    "targets.serve.options.cwd": [
       "apps/frontend/project.json",
       "nx/core/project-json"
     ],
-    "targets.serve.options.proxyConfig": [
+    "targets.serve.options.commands": [
       "apps/frontend/project.json",
       "nx/core/project-json"
     ],
@@ -354,11 +354,7 @@
       "apps/frontend/project.json",
       "nx/core/project-json"
     ],
-    "targets.serve.configurations.development.buildTarget": [
-      "apps/frontend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.serve.configurations.development.hmr": [
+    "targets.serve.configurations.development.commands": [
       "apps/frontend/project.json",
       "nx/core/project-json"
     ],
@@ -366,11 +362,7 @@
       "apps/frontend/project.json",
       "nx/core/project-json"
     ],
-    "targets.serve.configurations.production.buildTarget": [
-      "apps/frontend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.serve.configurations.production.hmr": [
+    "targets.serve.configurations.production.commands": [
       "apps/frontend/project.json",
       "nx/core/project-json"
     ],
