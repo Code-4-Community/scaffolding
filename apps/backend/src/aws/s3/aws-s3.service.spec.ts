@@ -8,15 +8,15 @@ import {
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { AWSS3Service } from './aws-s3.service';
-import { s3Buckets } from './types/s3Buckets';
+import { S3Buckets } from './types/s3Buckets';
 import { S3UploadInput } from './types/s3UploadInput';
 
 const s3Mock = mockClient(S3Client);
 
 describe('AWSS3Service', () => {
   const testBucket = 'test-bucket';
-  // s3Buckets is empty in the scaffold; cast a sentinel value for tests.
-  const testBucketEnum = 'TEST_BUCKET' as unknown as s3Buckets;
+  // S3Buckets is empty in the scaffold; cast a sentinel value for tests.
+  const testBucketEnum = 'TEST_BUCKET' as unknown as S3Buckets;
   const region = 'us-east-2';
 
   let service: AWSS3Service;
@@ -25,10 +25,28 @@ describe('AWSS3Service', () => {
     process.env.AWS_ACCESS_KEY = 'test-access-key';
     process.env.AWS_SECRET_KEY = 'test-secret-key';
     process.env.AWS_REGION = region;
+    process.env.AWS_TEST_BUCKET_NAME = testBucket;
 
     s3Mock.reset();
     service = new AWSS3Service();
-    jest.spyOn(service, 'mapBucket').mockReturnValue(testBucket);
+
+    service['bucketNames'][testBucketEnum] = testBucket;
+  });
+
+  describe('constructor', () => {
+    it('should throw if AWS_ACCESS_KEY is missing', () => {
+      delete process.env.AWS_ACCESS_KEY;
+      expect(() => new AWSS3Service()).toThrow(
+        'Missing required environment variable: AWS_ACCESS_KEY',
+      );
+    });
+
+    it('should throw if AWS_SECRET_KEY is missing', () => {
+      delete process.env.AWS_SECRET_KEY;
+      expect(() => new AWSS3Service()).toThrow(
+        'Missing required environment variable: AWS_SECRET_KEY',
+      );
+    });
   });
 
   describe('upload', () => {
@@ -102,8 +120,44 @@ describe('AWSS3Service', () => {
         ).rejects.toThrow('MIME type cannot be empty');
       });
 
+      it('should throw if mimeType is not in the allowed list', async () => {
+        await expect(
+          service.upload({
+            ...validInput,
+            mimeType: 'application/octet-stream',
+          }),
+        ).rejects.toThrow('MIME type not allowed: application/octet-stream');
+      });
+
+      it('should accept all allowed MIME types', async () => {
+        s3Mock.on(PutObjectCommand).resolves({});
+        const allowedTypes = [
+          'image/jpeg',
+          'image/png',
+          'image/gif',
+          'image/webp',
+          'image/svg+xml',
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'text/plain',
+          'text/csv',
+          'video/mp4',
+          'audio/mpeg',
+        ];
+        for (const mimeType of allowedTypes) {
+          await expect(
+            service.upload({ ...validInput, mimeType }),
+          ).resolves.toBeDefined();
+        }
+      });
+
       it('should throw if bucket env var is missing', async () => {
-        jest.spyOn(service, 'mapBucket').mockReturnValue('');
+        // Remove the manually injected name so the lookup fails as expected.
+        delete service['bucketNames'][testBucketEnum];
+
         await expect(service.upload(validInput)).rejects.toThrow(
           'Missing required environment variable for S3 bucket',
         );
@@ -155,10 +209,16 @@ describe('AWSS3Service', () => {
         }
       }
       s3Mock.on(GetObjectCommand).rejects(new TestS3Exception());
+      const loggerErrorSpy = jest
+        .spyOn(service['logger'], 'error')
+        .mockImplementation(() => undefined);
 
       const result = await service.getImageData('photo.jpg', testBucket);
 
       expect(result).toBeNull();
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        `S3 error retrieving object: key=photo.jpg, bucket=${testBucket}, error=Access denied`,
+      );
     });
 
     it('should rethrow non-S3 errors', async () => {

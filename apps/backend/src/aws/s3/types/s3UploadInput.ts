@@ -1,8 +1,8 @@
-import { s3Buckets } from './s3Buckets';
+import { S3Buckets } from './s3Buckets';
 
 export interface S3UploadInput {
   fileBuffer: Buffer;
   fileName: string;
   mimeType: string;
-  bucket: s3Buckets;
+  bucket: S3Buckets;
 }

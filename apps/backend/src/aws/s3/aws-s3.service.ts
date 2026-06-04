@@ -6,18 +6,36 @@ import {
   S3Client,
   S3ServiceException,
 } from '@aws-sdk/client-s3';
-import { s3Buckets } from './types/s3Buckets';
+import { S3Buckets } from './types/s3Buckets';
 import { S3UploadInput } from './types/s3UploadInput';
 
 const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
 // eslint-disable-next-line no-control-regex
 const ILLEGAL_FILENAME_CHARS = /[<>:"/\\|?*\x00-\x1F]/;
 
+// Extend or restrict this list to match your project's upload requirements.
+const ALLOWED_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/svg+xml',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'text/csv',
+  'video/mp4',
+  'audio/mpeg',
+]);
+
 @Injectable()
 export class AWSS3Service {
   private readonly client: S3Client;
   private readonly region: string;
-  private readonly bucketNames: Record<s3Buckets, string>;
+  private readonly bucketNames: Record<S3Buckets, string>;
   private readonly logger = new Logger(AWSS3Service.name);
 
   constructor() {
@@ -25,27 +43,30 @@ export class AWSS3Service {
 
     // Add one entry per bucket in s3Buckets enum.
     // Example: [s3Buckets.DOCUMENTS]: process.env.AWS_DOCUMENTS_BUCKET_NAME,
-    this.bucketNames = {} as Record<s3Buckets, string>;
+    this.bucketNames = {} as Record<S3Buckets, string>;
 
-    for (const bucket of Object.values(s3Buckets) as unknown as s3Buckets[]) {
-      if (!this.mapBucket(bucket)) {
+    for (const bucket of Object.values(S3Buckets) as unknown as S3Buckets[]) {
+      if (!this.bucketNames[bucket]) {
         throw new Error(
           `Missing required environment variable for S3 bucket: ${bucket}`,
         );
       }
     }
 
+    const accessKeyId = process.env.AWS_ACCESS_KEY;
+    const secretAccessKey = process.env.AWS_SECRET_KEY;
+
+    if (!accessKeyId) {
+      throw new Error('Missing required environment variable: AWS_ACCESS_KEY');
+    }
+    if (!secretAccessKey) {
+      throw new Error('Missing required environment variable: AWS_SECRET_KEY');
+    }
+
     this.client = new S3Client({
       region: this.region,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY ?? '',
-        secretAccessKey: process.env.AWS_SECRET_KEY ?? '',
-      },
+      credentials: { accessKeyId, secretAccessKey },
     });
-  }
-
-  mapBucket(bucket: s3Buckets): string {
-    return this.bucketNames[bucket];
   }
 
   async upload(input: S3UploadInput): Promise<string> {
@@ -91,7 +112,10 @@ export class AWSS3Service {
     if (!input.mimeType || input.mimeType.trim().length === 0) {
       throw new Error('MIME type cannot be empty');
     }
-    const bucketName = this.mapBucket(input.bucket);
+    if (!ALLOWED_MIME_TYPES.has(input.mimeType)) {
+      throw new Error(`MIME type not allowed: ${input.mimeType}`);
+    }
+    const bucketName = this.bucketNames[input.bucket];
     if (!bucketName) {
       throw new Error(
         `Missing required environment variable for S3 bucket: ${input.bucket}`,
