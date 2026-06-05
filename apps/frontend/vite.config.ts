@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
   process.env.VITE_COGNITO_REGION = env.COGNITO_REGION ?? '';
 
   return {
+    root: __dirname,
     cacheDir: '../../node_modules/.vite/frontend',
     envDir: workspaceRoot,
 
