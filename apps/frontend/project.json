@@ -21,20 +21,18 @@
       }
     },
     "serve": {
-      "executor": "@nx/vite:dev-server",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build",
-        "proxyConfig": "apps/frontend/proxy.conf.json"
+        "cwd": "apps/frontend",
+        "commands": ["vite --port=4200"]
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development",
-          "hmr": true
+          "commands": ["vite --port=4200 --mode=development"]
         },
         "production": {
-          "buildTarget": "frontend:build:production",
-          "hmr": false
+          "commands": ["vite --port=4200 --mode=production"]
         }
       }
     },
@@ -62,7 +60,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/frontend/**/*.{ts,tsx,js,jsx}"]
