@@ -20,7 +20,7 @@
   "private": true,
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.1058.0",
-    "@aws-sdk/client-sesv2": "^3.1048.0",
+    "@aws-sdk/client-sesv2": "^3.1063.0",
     "@nestjs/cli": "^10.1.17",
     "@nestjs/common": "^10.0.2",
     "@nestjs/config": "^4.0.4",
