@@ -10,29 +10,18 @@ import jwksClient, { JwksClient } from 'jwks-rsa';
 import { Request } from 'express';
 
 import { IS_PUBLIC_KEY } from './cognito.decorator';
-import { CognitoJwtPayload } from './cognito.types';
+import { AccessTokenPayload, isAccessTokenPayload } from './cognito.types';
 import { getCognitoConfig, isAuthEnabled } from './cognito.config';
 
-// Checks if client id or audience returned matches your own COGNITO_CLIENT_ID
-function isAudienceValid(
-  payload: CognitoJwtPayload,
+// Checks if the token is an access token and client id returned matches your own COGNITO_CLIENT_ID
+function isAccessTokenValid(
+  payload: AccessTokenPayload,
   clientId: string,
 ): boolean {
-  // Check Client ID
-  if (payload.client_id === clientId) {
-    return true;
+  if (payload.token_use !== 'access') {
+    return false;
   }
-
-  // Check Aud
-  const aud = payload.aud;
-  if (typeof aud === 'string') {
-    return aud === clientId;
-  }
-  if (Array.isArray(aud)) {
-    return aud.includes(clientId);
-  }
-
-  return false;
+  return payload.client_id === clientId;
 }
 
 // Extracts the bearer token from the request's Authorization header
@@ -48,14 +37,27 @@ export class CognitoJWTGuard implements CanActivate {
 
   constructor(private readonly reflector: Reflector) {}
 
-  // Whether or not the request is allowed to proceed
+  /**
+   * Determines whether the current request is allowed to proceed to the route handler.
+   *
+   * Access is granted without verification when authentication is disabled or when the
+   * route (handler or controller) is marked public via the {@link IS_PUBLIC_KEY} metadata.
+   * Otherwise, the bearer token is extracted from the `Authorization` header and verified
+   * against the Cognito user pool's JWKS endpoint; on success the decoded
+   * {@link AccessTokenPayload} is attached to `request.user` for downstream handlers.
+   *
+   * @param context - The current execution context provided by NestJS.
+   * @returns `true` when the request is allowed to proceed.
+   * @throws {UnauthorizedException} If no bearer token is present, the Cognito
+   *   configuration is missing, or the token fails signature/claim verification.
+   */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // If authentication is not enabled, allow the request to proceed
     if (!isAuthEnabled()) {
       return true;
     }
 
-    // If the route is public (Either the route is marked as public or the controller/handler is marked as public), allow the request to proceed
+    // Check if the route is marked as public
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -64,24 +66,21 @@ export class CognitoJWTGuard implements CanActivate {
       return true;
     }
 
-    // Extract the bearer token from the request's Authorization header
+    // Extract the bearer token from the request's Authorization header and verify
     const request = context.switchToHttp().getRequest<Request>();
     const token = extractBearerToken(request);
     if (!token) {
       throw new UnauthorizedException();
     }
-
-    // Verify the token and attach the JWT payload to request.user
-    const payload: CognitoJwtPayload = await this.verifyToken(token);
-    (request as Request & { user: CognitoJwtPayload }).user = payload;
+    const payload: AccessTokenPayload = await this.verifyToken(token);
+    (request as Request & { user: AccessTokenPayload }).user = payload;
     return true;
   }
 
   // Verifies the token against user pool JWKS endpoint, and returns the JWT payload if the token is valid
-  private verifyToken(token: string): Promise<CognitoJwtPayload> {
+  private verifyToken(token: string): Promise<AccessTokenPayload> {
     // If the region, user pool ID, or client ID is not set, throw an unauthorized exception by default
     const config = getCognitoConfig();
-
     if (!config) {
       throw new UnauthorizedException();
     }
@@ -96,7 +95,6 @@ export class CognitoJWTGuard implements CanActivate {
 
     const client = this.jwks;
 
-    // Function to get the public key for the token to verify the JWT token signature
     const getKey: jwt.GetPublicKeyOrSecret = (header, callback) => {
       const kid = header.kid; // The key ID (kid) from the JWT header
       if (!kid) {
@@ -122,10 +120,12 @@ export class CognitoJWTGuard implements CanActivate {
             reject(new UnauthorizedException());
             return;
           }
-          // If the token is valid, return the JWT payload
-          const payload = decoded as CognitoJwtPayload;
-          // If the audience is not our own client ID, return an unauthorized exception
-          if (!isAudienceValid(payload, config.clientId)) {
+          if (!isAccessTokenPayload(decoded)) {
+            reject(new UnauthorizedException());
+            return;
+          }
+          const payload = decoded;
+          if (!isAccessTokenValid(payload, config.clientId)) {
             reject(new UnauthorizedException());
             return;
           }
