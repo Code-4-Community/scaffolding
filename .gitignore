@@ -33,7 +33,6 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-/.nx/workspace-data
 /.nx
 
 # System Files
@@ -43,7 +42,6 @@ Thumbs.db
 # Environment file
 *.env
 *.env.*
-!example.env.nx/workspace-data/
 !example.env
 
 # SQLite database files
