@@ -28,7 +28,7 @@
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^11.1.19",
     "@nestjs/swagger": "^7.1.12",
-    "@nestjs/typeorm": "^10.0.0",
+    "@nestjs/typeorm": "^11.0.1",
     "@nx/eslint": "22.7.5",
     "@types/pg": "^8.15.5",
     "amazon-cognito-identity-js": "^6.3.5",
