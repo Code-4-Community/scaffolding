@@ -1,15 +1,16 @@
 ## Scaffolding auth flow
 Some key concepts you'll need to know are:
-- **Authentication (authn)** = *"who are you?"* -> ex: Distinguishing a known user from an unknown one
-- **Authorization (authz)** = *"what are you allowed to do?"* -> ex: Distinguishing admin access vs normal user access to routes
+- **Authentication (authn)** = *"who are you?"* -> ex: distinguishing a known user from an unknown one
+- **Authorization (authz)** = *"what are you allowed to do?"* -> ex: distinguishing admin access vs normal user access to routes
 
 1. **Unauthenticated user hits the app.** A user opens the frontend with no token. If they call a protected (Non Public) backend route, `CognitoJWTGuard` finds no `Authorization: Bearer <token>` header and responds `401 Unauthorized`.
 
 2. **User authenticates with Cognito** The frontend sends the user's credentials to Cognito. Cognito verifies the credentials and *authenticates* the user. This happens entirely between the client and Cognito. Our backend is not involved and never sees the password.
 
-3. **Cognito issues tokens.** On success, Cognito returns signed JWTs, including:
-   - an **ID token** — describes *who the user is* (identity claims), meant for the frontend.
-   - an **access token** — the *authorization* credential, meant to be sent to backend APIs and checked by the `CognitoJWTGuard`. (See [Token validation](#token-validation))
+3. **Cognito issues tokens.** On success, Cognito returns separate signed JWTs for the following:
+   - **ID token**: describes *who the user is* (identity claims), meant for the frontend.
+   - **access token**: the *authorization* credential, meant to be sent to backend APIs and checked by the `CognitoJWTGuard`. (See [Token validation](#token-validation))
+   - **refresh token**: used to obtain fresh ID/access tokens when they expire.
 
 4. **Frontend calls the backend with the access token.** The client attaches it on every request as a header: `Authorization: Bearer <access_token>`.
 
