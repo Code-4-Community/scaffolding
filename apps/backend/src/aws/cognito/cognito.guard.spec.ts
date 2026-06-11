@@ -4,7 +4,7 @@ import * as jwt from 'jsonwebtoken';
 
 import { IS_PUBLIC_KEY } from './cognito.decorator';
 import { CognitoJWTGuard } from './cognito.guard';
-import { CognitoJwtPayload } from './cognito.types';
+import { AccessTokenPayload } from './cognito.types';
 
 jest.mock('jsonwebtoken');
 // Fake the jwks-rsa module to return a mock public key
@@ -34,17 +34,45 @@ function setActiveEnv(): void {
   Object.assign(process.env, ACTIVE_ENV);
 }
 
-// Helper to simulate execution context when request hits a route
+// Builds a structurally valid Cognito access token payload (sub/iss/exp/iat present).
+// Pass overrides to set the client_id/token_use claims or to break a required claim.
+function buildPayload(
+  overrides: Partial<AccessTokenPayload> = {},
+): Record<string, unknown> {
+  return {
+    sub: 'user-1',
+    iss: `https://cognito-idp.${ACTIVE_ENV.COGNITO_REGION}.amazonaws.com/${ACTIVE_ENV.COGNITO_USER_POOL_ID}`,
+    exp: 9999999999,
+    iat: 1,
+    ...overrides,
+  };
+}
+
+// Makes the mocked jwt.verify succeed with the given decoded value.
+function mockVerifyResolves(decoded: unknown): void {
+  (jwt.verify as jest.Mock).mockImplementation(
+    (_token, _getKey, _options, callback) => callback(null, decoded),
+  );
+}
+
+// Makes the mocked jwt.verify fail with the given error.
+function mockVerifyRejects(error: Error): void {
+  (jwt.verify as jest.Mock).mockImplementation(
+    (_token, _getKey, _options, callback) => callback(error, undefined),
+  );
+}
+
+// Builds ExecutionContext and request with given Authorization header so the guard can be exercised
 function createContext(authorization?: string): {
   context: ExecutionContext;
-  request: Request & { user?: CognitoJwtPayload };
+  request: Request & { user?: AccessTokenPayload };
 } {
-  // Request with authorization header (if provided)
+  // Build request with authorization header (if provided)
   const request = {
     headers: authorization ? { authorization } : {},
-  } as Request & { user?: CognitoJwtPayload };
+  } as Request & { user?: AccessTokenPayload };
 
-  // Execution context with switchToHttp method that returns the request
+  // Build execution context with switchToHttp method that returns the request
   const context = {
     switchToHttp: () => ({ getRequest: () => request }),
     getHandler: () => jest.fn(),
@@ -76,177 +104,170 @@ describe('CognitoJWTGuard', () => {
       setActiveEnv();
     });
 
-    it('rejects routes without a Bearer token', async () => {
-      const { context } = createContext();
+    // Rejections that happen before jwt.verify is ever called, based purely on
+    // the Authorization header.
+    describe('Bearer token extraction', () => {
+      it('rejects routes without a Bearer token', async () => {
+        const { context } = createContext();
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(jwt.verify).not.toHaveBeenCalled();
+      });
+
+      it('rejects routes with non-Bearer authorization', async () => {
+        const { context } = createContext('Basic abc1234567890');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(jwt.verify).not.toHaveBeenCalled();
+      });
+
+      it('rejects routes with an empty Bearer token', async () => {
+        const { context } = createContext('Bearer ');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(jwt.verify).not.toHaveBeenCalled();
+      });
+
+      it('rejects routes with a whitespace-only Bearer token', async () => {
+        const { context } = createContext('Bearer    ');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(jwt.verify).not.toHaveBeenCalled();
+      });
     });
 
-    it('rejects routes with non-Bearer authorization', async () => {
-      const { context } = createContext('Basic abc1234567890');
+    // Rejections from jwt.verify itself or from a decoded value that is not a
+    // well-formed access token payload object.
+    describe('token verification and payload shape', () => {
+      it('rejects routes when token verification fails', async () => {
+        mockVerifyRejects(new Error('invalid signature'));
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-      expect(jwt.verify).not.toHaveBeenCalled();
-    });
+        const { context } = createContext('Bearer bad-token');
 
-    it('rejects routes with empty Bearer token', async () => {
-      const { context } = createContext('Bearer ');
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-      expect(jwt.verify).not.toHaveBeenCalled();
-    });
+      it('rejects routes when the decoded token is a string', async () => {
+        mockVerifyResolves('not-an-object');
 
-    it('rejects routes with an invalid token', async () => {
-      (jwt.verify as jest.Mock).mockImplementation(
-        (_token, _getKey, _options, callback) => {
-          callback(new Error('invalid signature'), undefined);
-        },
-      );
+        const { context } = createContext('Bearer weird-token');
 
-      const { context } = createContext('Bearer bad-token');
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-    });
-
-    it('allows routes with a valid access token (client_id)', async () => {
-      const payload: CognitoJwtPayload = {
-        sub: 'user-1',
-        client_id: ACTIVE_ENV.COGNITO_CLIENT_ID,
-        token_use: 'access',
-        iss: `https://cognito-idp.${ACTIVE_ENV.COGNITO_REGION}.amazonaws.com/${ACTIVE_ENV.COGNITO_USER_POOL_ID}`,
-        exp: 9999999999,
-        iat: 1,
-      };
-      (jwt.verify as jest.Mock).mockImplementation(
-        (_token, _getKey, _options, callback) => {
-          callback(null, payload);
-        },
-      );
-
-      const { context, request } = createContext('Bearer access-token');
-
-      await expect(guard.canActivate(context)).resolves.toBe(true);
-      expect(request.user).toEqual(payload);
-    });
-
-    it('rejects routes when client_id does not match', async () => {
-      (jwt.verify as jest.Mock).mockImplementation(
-        (_token, _getKey, _options, callback) => {
-          callback(null, {
-            sub: 'user-1',
-            client_id: 'wrong-client-id',
+      it('rejects routes when the payload is missing a required claim', async () => {
+        // sub is required; an otherwise-valid access token without it must be rejected.
+        mockVerifyResolves(
+          buildPayload({
+            sub: undefined,
             token_use: 'access',
-            iss: `https://cognito-idp.${ACTIVE_ENV.COGNITO_REGION}.amazonaws.com/${ACTIVE_ENV.COGNITO_USER_POOL_ID}`,
-            exp: 9999999999,
-            iat: 1,
-          });
-        },
-      );
+            client_id: ACTIVE_ENV.COGNITO_CLIENT_ID,
+          }),
+        );
 
-      const { context } = createContext('Bearer access-token');
+        const { context } = createContext('Bearer malformed-token');
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
     });
 
-    it('allows routes with a valid ID token (aud)', async () => {
-      const payload: CognitoJwtPayload = {
-        sub: 'user-1',
-        aud: ACTIVE_ENV.COGNITO_CLIENT_ID,
-        token_use: 'id',
-        iss: `https://cognito-idp.${ACTIVE_ENV.COGNITO_REGION}.amazonaws.com/${ACTIVE_ENV.COGNITO_USER_POOL_ID}`,
-        exp: 9999999999,
-        iat: 1,
-      };
-      (jwt.verify as jest.Mock).mockImplementation(
-        (_token, _getKey, _options, callback) => {
-          callback(null, payload);
-        },
-      );
+    // Rejections from the access-token authorization checks: the token must be
+    // an access token (token_use) whose client_id matches our app client.
+    describe('token type and value validation', () => {
+      it('rejects ID tokens (token_use is not "access")', async () => {
+        // Only access tokens are accepted; an ID token carrying the right
+        // client_id must still be rejected.
+        mockVerifyResolves(
+          buildPayload({
+            token_use: 'id' as AccessTokenPayload['token_use'],
+            client_id: ACTIVE_ENV.COGNITO_CLIENT_ID,
+          }),
+        );
 
-      const { context, request } = createContext('Bearer id-token');
+        const { context } = createContext('Bearer id-token');
 
-      await expect(guard.canActivate(context)).resolves.toBe(true);
-      expect(request.user).toEqual(payload);
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
+
+      it('rejects access tokens whose client_id does not match', async () => {
+        mockVerifyResolves(
+          buildPayload({ token_use: 'access', client_id: 'wrong-client-id' }),
+        );
+
+        const { context } = createContext('Bearer access-token');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
+
+      it('rejects access tokens with no client_id claim', async () => {
+        mockVerifyResolves(buildPayload({ token_use: 'access' }));
+
+        const { context } = createContext('Bearer access-token');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
+
+      it('allows routes with a valid access token (client_id)', async () => {
+        const payload = buildPayload({
+          client_id: ACTIVE_ENV.COGNITO_CLIENT_ID,
+          token_use: 'access',
+        });
+        mockVerifyResolves(payload);
+
+        const { context, request } = createContext('Bearer access-token');
+
+        await expect(guard.canActivate(context)).resolves.toBe(true);
+        expect(request.user).toEqual(payload);
+      });
     });
 
-    it('rejects routes when audience does not match client id', async () => {
-      (jwt.verify as jest.Mock).mockImplementation(
-        (_token, _getKey, _options, callback) => {
-          callback(null, {
-            sub: 'user-1',
-            aud: 'wrong-client',
-            iss: `https://cognito-idp.${ACTIVE_ENV.COGNITO_REGION}.amazonaws.com/${ACTIVE_ENV.COGNITO_USER_POOL_ID}`,
-            exp: 9999999999,
-            iat: 1,
-          });
-        },
-      );
+    // Routes marked @Public bypass token extraction and verification entirely.
+    describe('@Public routes', () => {
+      beforeEach(() => {
+        reflector.getAllAndOverride.mockImplementation(
+          (key) => key === IS_PUBLIC_KEY,
+        );
+      });
 
-      const { context } = createContext('Bearer token');
+      it('allows @Public routes without a token', async () => {
+        const { context, request } = createContext();
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-    });
+        await expect(guard.canActivate(context)).resolves.toBe(true);
+        expect(jwt.verify).not.toHaveBeenCalled();
+        expect(request.user).toBeUndefined();
+      });
 
-    it('rejects routes when payload has no audience claim', async () => {
-      (jwt.verify as jest.Mock).mockImplementation(
-        (_token, _getKey, _options, callback) => {
-          callback(null, {
-            sub: 'user-1',
-            iss: `https://cognito-idp.${ACTIVE_ENV.COGNITO_REGION}.amazonaws.com/${ACTIVE_ENV.COGNITO_USER_POOL_ID}`,
-            exp: 9999999999,
-            iat: 1,
-          });
-        },
-      );
+      it('allows @Public routes without verifying any bearer token', async () => {
+        const { context, request } = createContext('Bearer bad-token');
 
-      const { context } = createContext('Bearer token');
-
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-    });
-
-    it('allows @Public routes without a token', async () => {
-      reflector.getAllAndOverride.mockImplementation(
-        (key) => key === IS_PUBLIC_KEY,
-      );
-
-      const { context } = createContext();
-
-      await expect(guard.canActivate(context)).resolves.toBe(true);
-      expect(jwt.verify).not.toHaveBeenCalled();
-    });
-
-    it('allows @Public routes with any bearer token', async () => {
-      reflector.getAllAndOverride.mockImplementation(
-        (key) => key === IS_PUBLIC_KEY,
-      );
-
-      const { context, request } = createContext('Bearer bad-token');
-
-      await expect(guard.canActivate(context)).resolves.toBe(true);
-      expect(jwt.verify).not.toHaveBeenCalled();
-      expect(request.user).toBeUndefined();
+        await expect(guard.canActivate(context)).resolves.toBe(true);
+        expect(jwt.verify).not.toHaveBeenCalled();
+        expect(request.user).toBeUndefined();
+      });
     });
   });
 
   describe('when auth is inactive', () => {
-    beforeEach(() => {
-      delete process.env.COGNITO_USER_POOL_ID;
-    });
-
     it('allows requests without a token', async () => {
       const { context } = createContext();
 
@@ -254,45 +275,26 @@ describe('CognitoJWTGuard', () => {
       expect(jwt.verify).not.toHaveBeenCalled();
     });
 
-    it('allows requests with a bearer token', async () => {
-      const { context, request } = createContext('Bearer bad-token');
+    it('ignores a bearer token when auth is disabled', async () => {
+      const { context, request } = createContext('Bearer any-token');
 
       await expect(guard.canActivate(context)).resolves.toBe(true);
       expect(jwt.verify).not.toHaveBeenCalled();
       expect(request.user).toBeUndefined();
     });
 
-    it('allows routes when COGNITO_USER_POOL_ID is missing (auth disabled)', async () => {
-      process.env.COGNITO_CLIENT_ID = ACTIVE_ENV.COGNITO_CLIENT_ID;
-      process.env.COGNITO_REGION = ACTIVE_ENV.COGNITO_REGION;
-      delete process.env.COGNITO_USER_POOL_ID;
+    // Auth requires all three env vars; a single missing one disables it.
+    it.each(ENV_KEYS)(
+      'disables auth when %s is missing',
+      async (missingKey) => {
+        setActiveEnv();
+        delete process.env[missingKey];
 
-      const { context } = createContext('Bearer token');
+        const { context } = createContext('Bearer token');
 
-      await expect(guard.canActivate(context)).resolves.toBe(true);
-      expect(jwt.verify).not.toHaveBeenCalled();
-    });
-
-    it('allows routes when COGNITO_CLIENT_ID is missing (auth disabled)', async () => {
-      process.env.COGNITO_USER_POOL_ID = ACTIVE_ENV.COGNITO_USER_POOL_ID;
-      process.env.COGNITO_REGION = ACTIVE_ENV.COGNITO_REGION;
-      delete process.env.COGNITO_CLIENT_ID;
-
-      const { context } = createContext('Bearer token');
-
-      await expect(guard.canActivate(context)).resolves.toBe(true);
-      expect(jwt.verify).not.toHaveBeenCalled();
-    });
-
-    it('allows routes when COGNITO_REGION is missing (auth disabled)', async () => {
-      process.env.COGNITO_USER_POOL_ID = ACTIVE_ENV.COGNITO_USER_POOL_ID;
-      process.env.COGNITO_CLIENT_ID = ACTIVE_ENV.COGNITO_CLIENT_ID;
-      delete process.env.COGNITO_REGION;
-
-      const { context } = createContext('Bearer token');
-
-      await expect(guard.canActivate(context)).resolves.toBe(true);
-      expect(jwt.verify).not.toHaveBeenCalled();
-    });
+        await expect(guard.canActivate(context)).resolves.toBe(true);
+        expect(jwt.verify).not.toHaveBeenCalled();
+      },
+    );
   });
 });
