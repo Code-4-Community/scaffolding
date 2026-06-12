@@ -41,7 +41,7 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 
 - **Verification** — `CognitoJWTGuard` is the only component that validates JWTs (signature, issuer, audience). 
 - **Global guard** — `CognitoModule` registers `CognitoJWTGuard` as an `APP_GUARD`, so every route is protected by default. You do **not** need `@UseGuards(CognitoJWTGuard)` on controllers when using this setup.
-- **`request.user`** — After a successful check, the guard sets `request.user` to the decoded JWT payload (`CognitoJwtPayload`: `sub`, `client_id`, `cognito:groups`, `token_use`, etc.)
+- **`request.user`** — After a successful check, the guard sets `request.user` to the decoded JWT payload (`AccessTokenPayload`: `sub`, `client_id`, `cognito:groups`, `token_use`, etc.)
 
 ### Using Cognito in your app (recommended + implemented: global guard)
 
@@ -77,7 +77,7 @@ export class HealthController {
 
 ### `CognitoService.getUser()`
 
-Inject `CognitoService` to extract the same `CognitoJwtPayload` decoded token payload the guard attached to `request.user`:
+Inject `CognitoService` to extract the same `AccessTokenPayload` decoded token payload the guard attached to `request.user`:
 
 ```typescript
 @Get('me')
@@ -106,7 +106,7 @@ The guard validates access tokens by
 > Do not use the ID token for API authorization. ID tokens are intended for your client application to establish who the user is; passing them to a backend API exposes identity claims unnecessarily and confuses authentication with authorization. Backend APIs should validate access tokens only. The token_use check in isAccessTokenValid below enforces this.
 
 ```
-function isAccessTokenValid(payload: CognitoJwtPayload, clientId: string): boolean {
+function isAccessTokenValid(payload: AccessTokenPayload, clientId: string): boolean {
   if (payload.token_use !== 'access') return false;
   return payload.client_id === clientId;
 }
