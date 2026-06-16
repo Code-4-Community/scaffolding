@@ -67,7 +67,7 @@
     "@nx/webpack": "22.7.5",
     "@testing-library/react": "^15.0.7",
     "@types/jest": "^30.0.0",
-    "@types/node": "^18.14.2",
+    "@types/node": "^25.9.3",
     "@types/nodemailer": "^8.0.0",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
