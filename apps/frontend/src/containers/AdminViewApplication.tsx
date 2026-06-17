@@ -4,10 +4,12 @@ import apiClient from '@api/apiClient';
 import {
   Badge,
   Box,
+  Button,
   Flex,
   Heading,
   Spinner,
   Text,
+  Textarea,
   VStack,
 } from '@chakra-ui/react';
 import AvailabilityTable from '@components/AvailabilityTable';
@@ -187,6 +189,26 @@ const AdminViewApplication: React.FC = () => {
       nextDate,
     );
     setApplication(updatedApplication);
+  };
+
+  const [internalNotes, setInternalNotes] = useState<string>(
+    application?.internalNotes ?? '',
+  );
+  const [notesSaving, setNotesSaving] = useState(false);
+
+  useEffect(() => {
+    setInternalNotes(application?.internalNotes ?? '');
+  }, [application]);
+
+  const handleInternalNotesUpdate = async () => {
+    if (!application) return;
+    setNotesSaving(true);
+    const updatedApplication = await apiClient.updateApplicationInternalNotes(
+      application.appId,
+      internalNotes,
+    );
+    setApplication(updatedApplication);
+    setNotesSaving(false);
   };
 
   if (loading) {
@@ -445,6 +467,30 @@ const AdminViewApplication: React.FC = () => {
           phone={application.emergencyContactPhone}
           relationship={application.emergencyContactRelationship}
         />
+
+        <Box borderWidth="1px" borderRadius="lg" p={6} bg="orange.50">
+          <Heading as="h2" size="md" mb={1}>
+            Internal Notes
+          </Heading>
+          <Text fontSize="sm" color="orange.700" mb={3}>
+            Admin only — not visible to applicants.
+          </Text>
+          <Textarea
+            value={internalNotes}
+            onChange={(e) => setInternalNotes(e.target.value)}
+            placeholder="Add internal notes about this applicant..."
+            bg="white"
+            rows={4}
+          />
+          <Button
+            mt={3}
+            colorScheme="orange"
+            loading={notesSaving}
+            onClick={handleInternalNotesUpdate}
+          >
+            Save Notes
+          </Button>
+        </Box>
       </Box>
     </Flex>
   );
