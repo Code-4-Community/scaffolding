@@ -168,12 +168,6 @@ function parseDateOnly(value: string, label: string): Date {
   return parsed;
 }
 
-const STATUS_EMAIL_SUBJECTS: Partial<Record<AppStatus, string>> = {
-  [AppStatus.ACCEPTED]: 'Your Application Has Been Updated',
-  [AppStatus.DECLINED]: 'Your Application Has Been Updated',
-  [AppStatus.NO_AVAILABILITY]: 'Your Application Has Been Updated',
-};
-
 const buildEmailBody = (
   appStatus: AppStatus,
   name: string,
@@ -181,11 +175,28 @@ const buildEmailBody = (
   const greeting = `Hello ${name},<br><br>`;
   switch (appStatus) {
     case AppStatus.ACCEPTED:
-      return `${greeting}Congratulations! Your application has been accepted. Please complete your forms in the MyForms tab on your applicant portal.<br><br>Thank you,<br>BHCHP Team`;
+      return `
+      ${greeting}Congratulations! Your application has been accepted. Please complete your forms in the MyForms tab on your applicant portal.<br>
+      <br>After these forms are completed, our team will follow up with additional information regarding placement and next steps.<br>
+      <br>If you have any questions, you may reach out to education@bhchp.org<br>
+      <br>Thank you,
+      <br>Boston Health Care for the Homeless Program
+      `;
     case AppStatus.DECLINED:
-      return `${greeting}We regret to inform you that your application has not been accepted at this time.<br><br>Thank you,<br>BHCHP Team`;
+      return `${greeting}
+      Thank you for your interest in Boston Health Care for the Homeless Program and for taking the time to submit an application.<br><br>We regret to inform you that your application has not been accepted at this time.<br>
+      <br>We appreciate your interest in supporting our mission and wish you the best in your future endeavors.<br>
+      <br>Thank you,
+      <br>Boston Health Care for the Homeless Program
+      `;
     case AppStatus.NO_AVAILABILITY:
-      return `${greeting}We wanted to inform you that there is currently no availability at this time.<br><br>Thank you,<br>BHCHP Team`;
+      return `${greeting}
+      Thank you for your interest in Boston Health Care for the Homeless Program.<br>
+      <br>After reviewing your application, we found that you are a qualified candidate. Unfortunately, there is no availability at this time. We will retain your application and will reach out if an opening becomes available.<br>
+      <br>We appreciate your interest in supporting our work and hope to connect again in the future.<br>
+      <br>Thank you,
+      <br>Boston Health Care for the Homeless Program
+      `;
     default:
       return undefined;
   }
@@ -747,7 +758,7 @@ export class ApplicationsService {
     application.appStatus = appStatus;
     const updated = await this.applicationRepository.save(application);
 
-    const subject = STATUS_EMAIL_SUBJECTS[appStatus];
+    const subject = 'Your Application Has Been Updated';
     if (subject) {
       let name = 'Applicant';
       try {
