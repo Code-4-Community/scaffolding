@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Brackets, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { Readable } from 'stream';
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.request.dto';
@@ -18,6 +18,24 @@ import { DisciplinesService } from '../disciplines/disciplines.service';
 import { CandidateProvisioningService } from './candidate-provisioning.service';
 import { User } from '../users/user.entity';
 import { LearnerInfo } from '../learner-info/learner-info.entity';
+import { PaginatedResult } from '../common/paginated-result.interface';
+import { ApplicationQueryDto } from './dto/application-query.dto';
+
+/**
+ * Columns returned by the paginated list endpoints. Only the fields the admin
+ * table renders are selected, so the bulk of each row (availability strings,
+ * resume/cover-letter, emergency contact, enum arrays, etc.) is never serialized.
+ */
+const APPLICATION_LIST_COLUMNS: (keyof Application)[] = [
+  'appId',
+  'email',
+  'proposedStartDate',
+  'actualStartDate',
+  'discipline',
+  'desiredExperience',
+  'applicantType',
+  'appStatus',
+];
 
 type ApplicationExportRawRow = {
   appId: number;
@@ -377,12 +395,25 @@ export class ApplicationsService {
   }
 
   /**
-   * Returns all applications in the repository.
-   * @returns A promise resolving to all applications in the repository.
+   * Returns a single page of applications, projected to the list columns.
+   * @param query pagination options (page, limit). Defaults to page 1, limit 25.
+   * @returns A promise resolving to the page of applications plus the total count.
    * @throws {Error} which is unchanged from what repository throws.
    */
-  async findAll(): Promise<Application[]> {
-    return await this.applicationRepository.find();
+  async findAll(
+    query: ApplicationQueryDto = new ApplicationQueryDto(),
+  ): Promise<PaginatedResult<Application>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 25;
+
+    const [data, total] = await this.applicationRepository.findAndCount({
+      select: APPLICATION_LIST_COLUMNS,
+      order: { appId: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return { data, total, page, limit };
   }
 
   /**
@@ -490,13 +521,18 @@ export class ApplicationsService {
   }
 
   /**
-   * Returns applications that belong to any of the provided disciplines.
+   * Returns a single page of applications belonging to any of the provided disciplines,
+   * projected to the list columns.
    * @param disciplines discipline keys to filter by.
-   * @returns matching applications across all provided disciplines.
+   * @param query pagination options (page, limit). Defaults to page 1, limit 25.
+   * @returns matching page of applications plus the total count across all pages.
    * @throws {BadRequestException} if no disciplines are provided or keys are invalid/inactive.
    * @throws {Error} anything that the repository throws.
    */
-  async findByDisciplines(disciplines: string[]): Promise<Application[]> {
+  async findByDisciplines(
+    disciplines: string[],
+    query: ApplicationQueryDto = new ApplicationQueryDto(),
+  ): Promise<PaginatedResult<Application>> {
     const uniqueDisciplines = [
       ...new Set(
         disciplines
@@ -511,8 +547,162 @@ export class ApplicationsService {
 
     await this.disciplinesService.ensureActiveDisciplineKeys(uniqueDisciplines);
 
-    return this.applicationRepository.find({
-      where: { discipline: In(uniqueDisciplines) },
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 25;
+
+    const qb = this.applicationRepository
+      .createQueryBuilder('app')
+      .select(APPLICATION_LIST_COLUMNS.map((column) => `app.${column}`))
+      .where('app.discipline IN (:...disciplines)', {
+        disciplines: uniqueDisciplines,
+      });
+
+    this.applyApplicationFilters(qb, query);
+
+    const [data, total] = await qb
+      .orderBy('app.appId', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return { data, total, page, limit };
+  }
+
+  /**
+   * Applies the optional free-text search and structured filters from the query
+   * to a list query builder. Search is matched across every searchable
+   * application column including columns the table does not display.
+   * @param qb the query builder to mutate (aliased `app`).
+   * @param query the validated query parameters.
+   */
+  private applyApplicationFilters(
+    qb: SelectQueryBuilder<Application>,
+    query: ApplicationQueryDto,
+  ): void {
+    const search = query.search?.trim();
+    if (search) {
+      const q = `%${search}%`;
+      qb.andWhere(
+        new Brackets((where) => {
+          where
+            // Plain text columns (includes off-table fields).
+            .where('"app"."email" ILIKE :q', { q })
+            .orWhere('"app"."phone" ILIKE :q', { q })
+            .orWhere('"app"."discipline" ILIKE :q', { q })
+            .orWhere('"app"."otherDisciplineDescription" ILIKE :q', { q })
+            .orWhere('"app"."license" ILIKE :q', { q })
+            .orWhere('"app"."pronouns" ILIKE :q', { q })
+            .orWhere('"app"."nonEnglishLangs" ILIKE :q', { q })
+            .orWhere('"app"."desiredExperience" ILIKE :q', { q })
+            .orWhere('"app"."elaborateOtherDiscipline" ILIKE :q', { q })
+            .orWhere('"app"."referredEmail" ILIKE :q', { q })
+            .orWhere('"app"."emergencyContactName" ILIKE :q', { q })
+            .orWhere('"app"."emergencyContactPhone" ILIKE :q', { q })
+            .orWhere('"app"."emergencyContactRelationship" ILIKE :q', { q })
+            .orWhere('"app"."mondayAvailability" ILIKE :q', { q })
+            .orWhere('"app"."tuesdayAvailability" ILIKE :q', { q })
+            .orWhere('"app"."wednesdayAvailability" ILIKE :q', { q })
+            .orWhere('"app"."thursdayAvailability" ILIKE :q', { q })
+            .orWhere('"app"."fridayAvailability" ILIKE :q', { q })
+            .orWhere('"app"."saturdayAvailability" ILIKE :q', { q })
+            // Enum columns (cast to text).
+            .orWhere('CAST("app"."appStatus" AS text) ILIKE :q', { q })
+            .orWhere('CAST("app"."applicantType" AS text) ILIKE :q', { q })
+            // Numeric column (cast to text).
+            .orWhere('CAST("app"."weeklyHours" AS text) ILIKE :q', { q })
+            // Enum array columns (flattened to text).
+            .orWhere(`array_to_string("app"."interest", ' ') ILIKE :q`, { q })
+            .orWhere(`array_to_string("app"."heardAboutFrom", ' ') ILIKE :q`, {
+              q,
+            })
+            // Date/timestamp columns (match both ISO and the displayed MM/DD/YYYY).
+            .orWhere(
+              `to_char("app"."proposedStartDate", 'YYYY-MM-DD') ILIKE :q`,
+              {
+                q,
+              },
+            )
+            .orWhere(
+              `to_char("app"."proposedStartDate", 'MM/DD/YYYY') ILIKE :q`,
+              {
+                q,
+              },
+            )
+            .orWhere(
+              `to_char("app"."actualStartDate", 'YYYY-MM-DD') ILIKE :q`,
+              {
+                q,
+              },
+            )
+            .orWhere(
+              `to_char("app"."actualStartDate", 'MM/DD/YYYY') ILIKE :q`,
+              {
+                q,
+              },
+            )
+            .orWhere(`to_char("app"."createdAt", 'YYYY-MM-DD') ILIKE :q`, { q })
+            .orWhere(`to_char("app"."createdAt", 'MM/DD/YYYY') ILIKE :q`, { q })
+            .orWhere(`to_char("app"."updatedAt", 'YYYY-MM-DD') ILIKE :q`, { q })
+            .orWhere(`to_char("app"."updatedAt", 'MM/DD/YYYY') ILIKE :q`, {
+              q,
+            });
+        }),
+      );
+    }
+
+    if (query.statuses?.length) {
+      qb.andWhere('"app"."appStatus" IN (:...statuses)', {
+        statuses: query.statuses,
+      });
+    }
+
+    this.applyDateFilter(
+      qb,
+      'proposedStartDate',
+      query.proposedStartDate,
+      query.proposedStartDateDirection,
+    );
+    this.applyDateFilter(
+      qb,
+      'actualStartDate',
+      query.actualStartDate,
+      query.actualStartDateDirection,
+    );
+    this.applyDateFilter(
+      qb,
+      'createdAt',
+      query.createdAt,
+      query.createdAtDirection,
+    );
+    this.applyDateFilter(
+      qb,
+      'updatedAt',
+      query.updatedAt,
+      query.updatedAtDirection,
+    );
+  }
+
+  /**
+   * Adds a single inclusive day-granularity date bound to the query builder.
+   * @param qb the query builder to mutate (aliased `app`).
+   * @param field the application date/timestamp column to bound.
+   * @param date the bound in YYYY-MM-DD form, or undefined to skip.
+   * @param direction `before` (on or before) or `after` (on or after, default).
+   */
+  private applyDateFilter(
+    qb: SelectQueryBuilder<Application>,
+    field: 'proposedStartDate' | 'actualStartDate' | 'createdAt' | 'updatedAt',
+    date: string | undefined,
+    direction: 'before' | 'after' = 'after',
+  ): void {
+    if (!date) {
+      return;
+    }
+
+    const operator = direction === 'before' ? '<=' : '>=';
+    const param = `${field}Bound`;
+    qb.andWhere(`CAST("app"."${field}" AS date) ${operator} :${param}`, {
+      [param]: date,
     });
   }
 
