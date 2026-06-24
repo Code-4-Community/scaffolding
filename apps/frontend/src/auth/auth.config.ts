@@ -27,14 +27,11 @@ export function configureAmplify(): void {
     return;
   }
 
-  const poolId: string = userPoolId;
-  const clientId: string = userPoolClientId;
-
   Amplify.configure({
     Auth: {
       Cognito: {
-        userPoolId: poolId,
-        userPoolClientId: clientId,
+        userPoolId: userPoolId,
+        userPoolClientId: userPoolClientId,
       },
     },
   });
