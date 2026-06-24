@@ -32,11 +32,9 @@ export function getCognitoConfig(): {
 
 // Checks if the value is a non-empty string
 function isNonEmptyEnv(value: string | undefined): value is string {
-  if (value === undefined || value === '') {
+  if (value === undefined) {
     return false;
   }
   const normalized = value.trim().toLowerCase();
-  return (
-    normalized !== '' && normalized !== 'null' && normalized !== 'undefined'
-  );
+  return normalized !== '';
 }

@@ -15,7 +15,7 @@ Some key concepts you'll need to know are:
 4. **Frontend calls the backend with the access token.** The client attaches it on every request as a header: `Authorization: Bearer <access_token>`.
 
 5. **The Guard checks the token.** `CognitoJWTGuard` runs on every route (it's registered as a global `APP_GUARD`). For each request it:
-   - lets the request through immediately if auth is disabled (Cognito env vars unset or the route is marked `@Public()`)
+   - lets the request through immediately if auth is disabled (Cognito env vars unset) or if the route is marked `@Public()` (intentional bypass)
    - extracts and verifies the Bearer token, then checks the RS256 signature against the pool's public keys (JWKS), the issuer, expiration, that `token_use === 'access'`, and that `client_id` matches our app client.
 
 6. **Allow or deny.**
@@ -39,7 +39,8 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 
 ### Auth model
 
-- **Verification** — `CognitoJWTGuard` is the only component that validates JWTs (signature, issuer, audience). 
+- **Verification** — `CognitoJWTGuard` is the only component that validates JWTs (See [Token validation](#token-validation))
+- The 
 - **Global guard** — `CognitoModule` registers `CognitoJWTGuard` as an `APP_GUARD`, so every route is protected by default. You do **not** need `@UseGuards(CognitoJWTGuard)` on controllers when using this setup.
 - **`request.user`** — After a successful check, the guard sets `request.user` to the decoded JWT payload (`AccessTokenPayload`: `sub`, `client_id`, `cognito:groups`, `token_use`, etc.)
 
