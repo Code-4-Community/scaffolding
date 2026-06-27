@@ -5,10 +5,9 @@ export interface AccessTokenPayload {
   'cognito:groups'?: string[]; // Groups (ex: ['admin', 'user'])
   iss: string; // Issuer (ex: https://cognito-idp.<Region>.amazonaws.com/<your user pool ID>)
   token_use: 'access'; // Token use (ID or access token from Cognito)
-  client_id?: string; // Client ID used during authentication (ex: <your client ID>)
+  client_id: string; // Client ID used during authentication (ex: <your client ID>)
   exp: number; // Expiration time (Unix timestamp)
   iat: number; // Issued at time (Unix timestamp)
-  email?: string; // Email (ex: test@example.com)
 }
 
 /**
@@ -28,7 +27,13 @@ export function isAccessTokenPayload(
     typeof payload.sub === 'string' &&
     typeof payload.iss === 'string' &&
     typeof payload.token_use === 'string' &&
+    payload.token_use === 'access' &&
+    typeof payload.client_id === 'string' &&
     typeof payload.exp === 'number' &&
-    typeof payload.iat === 'number'
+    typeof payload.iat === 'number' &&
+    // Cognito Groups is either undefined or an array of strings
+    (payload['cognito:groups'] === undefined ||
+      (Array.isArray(payload['cognito:groups']) &&
+        payload['cognito:groups'].every((g) => typeof g === 'string')))
   );
 }

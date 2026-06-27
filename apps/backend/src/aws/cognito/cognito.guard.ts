@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -33,7 +34,9 @@ function extractBearerToken(request: Request): string | undefined {
 
 @Injectable()
 export class CognitoJWTGuard implements CanActivate {
+  private readonly logger = new Logger(CognitoJWTGuard.name);
   private jwks?: JwksClient;
+  private authDisabledWarned = false;
 
   constructor(private readonly reflector: Reflector) {}
 
@@ -54,6 +57,11 @@ export class CognitoJWTGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // If authentication is not enabled, allow the request to proceed
     if (!isAuthEnabled()) {
+      // Warn once so it's clear that auth is being bypassed without flooding the logs
+      if (!this.authDisabledWarned) {
+        this.logger.warn('Authentication is disabled for this route');
+        this.authDisabledWarned = true;
+      }
       return true;
     }
 
@@ -70,7 +78,7 @@ export class CognitoJWTGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = extractBearerToken(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No bearer token provided');
     }
     const payload: AccessTokenPayload = await this.verifyToken(token);
     (request as Request & { user: AccessTokenPayload }).user = payload;
@@ -81,7 +89,10 @@ export class CognitoJWTGuard implements CanActivate {
   private verifyToken(token: string): Promise<AccessTokenPayload> {
     // If the region, user pool ID, or client ID is not set, throw an unauthorized exception by default
     const config = getCognitoConfig();
+    // If Cognito variables are not set, config returns as null,
+    // should get cuaght beforehand by isAuthEnabled() but if not, throw error and log
     if (!config) {
+      this.logger.warn('Cognito configuration is not set');
       throw new UnauthorizedException();
     }
 
@@ -115,17 +126,30 @@ export class CognitoJWTGuard implements CanActivate {
         getKey,
         { issuer: config.issuer, algorithms: ['RS256'] }, // AWS Cognito signs tokens with RS256 algorithm
         (err, decoded) => {
-          // If verification fails, return an unauthorized exception
+          // Verification failures are logged with their reason internally, but the
+          // client only ever receives a generic UnauthorizedException so we don't
+          // leak details about why the token was rejected.
           if (err || !decoded || typeof decoded === 'string') {
+            this.logger.warn(
+              `Token verification failed: ${
+                err?.message ?? 'token could not be decoded'
+              }`,
+            );
             reject(new UnauthorizedException());
             return;
           }
           if (!isAccessTokenPayload(decoded)) {
+            this.logger.warn(
+              'Token rejected: decoded payload is not a valid access token payload',
+            );
             reject(new UnauthorizedException());
             return;
           }
           const payload = decoded;
           if (!isAccessTokenValid(payload, config.clientId)) {
+            this.logger.warn(
+              'Token rejected: token_use is not "access" or client_id does not match the configured Cognito client ID',
+            );
             reject(new UnauthorizedException());
             return;
           }
