@@ -20,7 +20,7 @@ Some key concepts you'll need to know are:
 
 6. **Allow or deny.**
    - **Valid token** → the guard attaches the decoded claims to `request.user` and the request proceeds to the controller -> Read with `CognitoService.getUser(req)`.
-   - **Missing or invalid token** (bad signature, expired, wrong token type, wrong client) → `401 Unauthorized`, and the controller never runs.
+   - **Missing or invalid token** (bad signature, expired, wrong token type, wrong client) → `401 Unauthorized`, and the controller never runs. The guard logs the specific rejection reason server-side (e.g. `Token verification failed: jwt expired`), but the client always receives a generic `401 Unauthorized` except when the request has no Bearer token at all, in which case the response carries the message `No bearer token provided`.
 
 So: **every route is protected by default, a request is allowed only if it carries a valid Cognito access token or if the route is marked `@Public()`, which skips the check entirely.** Public routes are for things that must work without a login, like health checks, webhooks, or the login entry point itself.
 
@@ -35,12 +35,11 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 | `COGNITO_REGION` | AWS region |
 
 > [!IMPORTANT]
-> If any Cognito env variables are unset: `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `COGNITO_REGION`, authentication via JWT enforcement is **disabled entirely**
+> If any Cognito env variables are unset: `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `COGNITO_REGION`, authentication via JWT enforcement is **disabled entirely**. When auth is disabled the guard logs a warning once (`Authentication is disabled for this route`) so it's clear requests are being let through unverified, without flooding the logs.
 
 ### Auth model
 
 - **Verification** — `CognitoJWTGuard` is the only component that validates JWTs (See [Token validation](#token-validation))
-- The 
 - **Global guard** — `CognitoModule` registers `CognitoJWTGuard` as an `APP_GUARD`, so every route is protected by default. You do **not** need `@UseGuards(CognitoJWTGuard)` on controllers when using this setup.
 - **`request.user`** — After a successful check, the guard sets `request.user` to the decoded JWT payload (`AccessTokenPayload`: `sub`, `client_id`, `cognito:groups`, `token_use`, etc.)
 
@@ -98,7 +97,8 @@ The guard validates access tokens by
 - Signature: RS256; iss must match the pool.
 - Expiration: exp is enforced automatically by jsonwebtoken.verify 
 - token_use: must equal `access`. This is what rejects an ID token presented to the backend.
-- client_id: must equal `COGNITO_CLIENT_ID`. On access tokens the app client ID lives in the client_id claim 
+- client_id: must equal `COGNITO_CLIENT_ID`. On access tokens the app client ID lives in the client_id claim
+- payload shape: `isAccessTokenPayload` rejects the token unless the required claims are present and well-typed — `sub`/`iss` are strings, `token_use === 'access'`, `client_id` is a string, `exp`/`iat` are numbers, and `cognito:groups` (if present) is an array of strings.
 
 > [!IMPORTANT]
 > The scaffold accepts access tokens only, by design. Backend APIs are resource servers and authorize requests using access tokens; ID tokens are for the frontend to establish who the user is. The token_use check in isAccessTokenValid (below) is what enforces the access-token-only rule.
