@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { AccessTokenPayload } from './cognito.types';
 import { isAuthEnabled } from './cognito.config';
 
 @Injectable()
 export class CognitoService {
+  private readonly logger = new Logger(CognitoService.name);
+
   /**
    * Retrieves the authenticated user's verified access token payload from the request.
    *
@@ -20,6 +22,9 @@ export class CognitoService {
   getUser(request: Request): AccessTokenPayload | null {
     // If authentication is not enabled, return null
     if (!isAuthEnabled()) {
+      this.logger.debug(
+        'getUser returning null: authentication is disabled (Cognito env variables missing)',
+      );
       return null;
     }
     // The CognitoJWTGuard attaches the verified JWT payload to request.user,
@@ -29,6 +34,13 @@ export class CognitoService {
     };
 
     // user may be undefined if no token was attached; normalize that to null.
-    return authenticatedRequest.user ?? null;
+    if (!authenticatedRequest.user) {
+      this.logger.warn(
+        'getUser returning null: no verified user attached to the request. ' +
+          'Auth is enabled, request bypassed CognitoJWTGuard (a @Public() route) or the guard did not run for this handler.',
+      );
+      return null;
+    }
+    return authenticatedRequest.user;
   }
 }
