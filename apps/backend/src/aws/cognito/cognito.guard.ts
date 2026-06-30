@@ -36,9 +36,15 @@ function extractBearerToken(request: Request): string | undefined {
 export class CognitoJWTGuard implements CanActivate {
   private readonly logger = new Logger(CognitoJWTGuard.name);
   private jwks?: JwksClient;
-  private authDisabledWarned = false;
 
-  constructor(private readonly reflector: Reflector) {}
+  constructor(private readonly reflector: Reflector) {
+    // Auth-enabled status is fixed by env vars at startup, warn once about disabled auth
+    if (!isAuthEnabled()) {
+      this.logger.warn(
+        'Authentication disabled (Cognito env variables missing): all routes are open',
+      );
+    }
+  }
 
   /**
    * Determines whether the current request is allowed to proceed to the route handler.
@@ -57,11 +63,6 @@ export class CognitoJWTGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // If authentication is not enabled, allow the request to proceed
     if (!isAuthEnabled()) {
-      // Warn once so it's clear that auth is being bypassed without flooding the logs
-      if (!this.authDisabledWarned) {
-        this.logger.warn('Authentication is disabled for this route');
-        this.authDisabledWarned = true;
-      }
       return true;
     }
 
