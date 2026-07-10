@@ -1,3 +1,11 @@
+// Resolved Cognito configuration derived from environment variables.
+export interface CognitoConfig {
+  region: string; // AWS region (ex: us-east-1)
+  userPoolId: string; // Cognito user pool ID
+  clientId: string; // Cognito app client ID
+  issuer: string; // Token issuer URL (ex: https://cognito-idp.<region>.amazonaws.com/<userPoolId>)
+}
+
 // We only use access tokens to verify the user's identity and allow access to protected resources.
 // Cognito access token: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-access-token.html
 export interface AccessTokenPayload {
