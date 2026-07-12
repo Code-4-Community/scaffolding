@@ -17,31 +17,3 @@ export interface AccessTokenPayload {
   exp: number; // Expiration time (Unix timestamp)
   iat: number; // Issued at time (Unix timestamp)
 }
-
-/**
- * Runtime type guard for {@link AccessTokenPayload}.
- *
- * @param value - The value to check, typically a decoded JWT payload.
- * @returns `true` if `value` matches the {@link AccessTokenPayload} shape.
- */
-export function isAccessTokenPayload(
-  value: unknown,
-): value is AccessTokenPayload {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-  const payload = value as Record<string, unknown>;
-  return (
-    typeof payload.sub === 'string' &&
-    typeof payload.iss === 'string' &&
-    typeof payload.token_use === 'string' &&
-    payload.token_use === 'access' &&
-    typeof payload.client_id === 'string' &&
-    typeof payload.exp === 'number' &&
-    typeof payload.iat === 'number' &&
-    // Cognito Groups is either undefined or an array of strings
-    (payload['cognito:groups'] === undefined ||
-      (Array.isArray(payload['cognito:groups']) &&
-        payload['cognito:groups'].every((g) => typeof g === 'string')))
-  );
-}

@@ -11,7 +11,7 @@ import jwksClient, { JwksClient } from 'jwks-rsa';
 import { Request } from 'express';
 
 import { IS_PUBLIC_KEY } from './cognito.decorator';
-import { AccessTokenPayload, isAccessTokenPayload } from './cognito.types';
+import { AccessTokenPayload } from './cognito.types';
 import { getCognitoConfig, isAuthEnabled } from './cognito.config';
 
 // Checks if the token is an access token and client id returned matches your own COGNITO_CLIENT_ID
@@ -30,6 +30,32 @@ function extractBearerToken(request: Request): string | undefined {
   const header = request.headers.authorization;
   if (!header?.startsWith('Bearer ')) return undefined;
   return header.slice('Bearer '.length).trim() || undefined;
+}
+
+/**
+ * Runtime type guard for {@link AccessTokenPayload}.
+ *
+ * @param value - The value to check, typically a decoded JWT payload.
+ * @returns `true` if `value` matches the {@link AccessTokenPayload} shape.
+ */
+function isAccessTokenPayload(value: unknown): value is AccessTokenPayload {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const payload = value as Record<string, unknown>;
+  return (
+    typeof payload.sub === 'string' &&
+    typeof payload.iss === 'string' &&
+    typeof payload.token_use === 'string' &&
+    payload.token_use === 'access' &&
+    typeof payload.client_id === 'string' &&
+    typeof payload.exp === 'number' &&
+    typeof payload.iat === 'number' &&
+    // Cognito Groups is either undefined or an array of strings
+    (payload['cognito:groups'] === undefined ||
+      (Array.isArray(payload['cognito:groups']) &&
+        payload['cognito:groups'].every((g) => typeof g === 'string')))
+  );
 }
 
 @Injectable()
