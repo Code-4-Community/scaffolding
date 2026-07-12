@@ -4,26 +4,33 @@ const userPoolId = import.meta.env.VITE_COGNITO_USER_POOL_ID;
 const userPoolClientId = import.meta.env.VITE_COGNITO_USER_POOL_CLIENT_ID;
 const region = import.meta.env.VITE_COGNITO_REGION;
 
-// Fail out if the values are not set in the environment variables even if they exist
-function isNonEmptyEnv(value: string | undefined): value is string {
-  if (value === undefined || value === '') {
+/**
+ * Checks whether an environment variable value is a defined, non-empty string.
+ *
+ * @param value The environment variable value to check.
+ * @returns `true` if the value is a defined, non-empty string; `false` otherwise.
+ *
+ * Also tells TypeScript that provided `value` is a `string` if the function returns true.
+ */
+export function isNonEmptyEnv(value: string | undefined): value is string {
+  if (value === undefined) {
     return false;
   }
-  const normalized = value.trim().toLowerCase();
+  return value.trim() !== '';
+}
+
+// Checks if the authentication is enabled
+export function isAuthEnabled(): boolean {
   return (
-    normalized !== '' && normalized !== 'null' && normalized !== 'undefined'
+    isNonEmptyEnv(userPoolId) &&
+    isNonEmptyEnv(userPoolClientId) &&
+    isNonEmptyEnv(region)
   );
 }
 
-// Check if the cognito information is present in the environment variables
-export const cognitoInformationPresent =
-  isNonEmptyEnv(userPoolId) &&
-  isNonEmptyEnv(userPoolClientId) &&
-  isNonEmptyEnv(region);
-
 // Configure amplify with cognito if the information is present in the environment variables
 export function configureAmplify(): void {
-  if (!cognitoInformationPresent) {
+  if (!isAuthEnabled()) {
     return;
   }
 

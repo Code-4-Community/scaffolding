@@ -1,10 +1,7 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { Authenticator } from '@aws-amplify/ui-react';
-import {
-  configureAmplify,
-  cognitoInformationPresent,
-} from './auth/auth.config';
+import { configureAmplify, isAuthEnabled } from './auth/auth.config';
 import App from './app';
 
 const root = ReactDOM.createRoot(
@@ -15,7 +12,7 @@ const root = ReactDOM.createRoot(
 configureAmplify();
 
 root.render(
-  cognitoInformationPresent ? (
+  isAuthEnabled() ? (
     <Authenticator>
       <StrictMode>
         <App />
