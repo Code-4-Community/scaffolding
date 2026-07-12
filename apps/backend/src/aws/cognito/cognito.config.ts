@@ -16,7 +16,13 @@ export function getCognitoConfig(): CognitoConfig | null {
   const userPoolId = process.env.COGNITO_USER_POOL_ID;
   const clientId = process.env.COGNITO_CLIENT_ID;
 
-  if (!isAuthEnabled()) {
+  if (
+    !(
+      isNonEmptyEnv(process.env.COGNITO_USER_POOL_ID) &&
+      isNonEmptyEnv(process.env.COGNITO_CLIENT_ID) &&
+      isNonEmptyEnv(process.env.COGNITO_REGION)
+    )
+  ) {
     return null;
   }
 
