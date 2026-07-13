@@ -30,7 +30,11 @@ export function isAuthEnabled(): boolean {
 
 // Configure amplify with cognito if the information is present in the environment variables
 export function configureAmplify(): void {
-  if (!isAuthEnabled()) {
+  if (
+    !isNonEmptyEnv(userPoolId) ||
+    !isNonEmptyEnv(userPoolClientId) ||
+    !isNonEmptyEnv(region)
+  ) {
     return;
   }
 
