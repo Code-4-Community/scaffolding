@@ -17,9 +17,20 @@ export class CognitoModule implements OnModuleInit {
 
   onModuleInit() {
     if (!isAuthEnabled()) {
-      this.logger.warn(
-        'Cognito auth disabled: env vars missing. All routes open.',
-      );
+      const message =
+        'Cognito auth disabled: env vars missing. All routes open.';
+      /**
+       * IMPORTANT:
+       * In production, running with auth disabled almost certainly signals a
+       * misconfiguration (missing secrets), so surface it at error level. In
+       * development, running without Cognito is a normal workflow, so a warning
+       * is enough. See this module's README for how to make production fail hard
+       * (throw) instead of merely logging.
+       */
+      // if (process.env.NODE_ENV === 'production') {
+      //   this.logger.error(message);
+      // }
+      this.logger.warn(message);
     } else {
       this.logger.log(`Cognito auth enabled`);
     }

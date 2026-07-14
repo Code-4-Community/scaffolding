@@ -12,12 +12,11 @@ export function getCognitoConfig(): CognitoConfig | null {
   const userPoolId = process.env.COGNITO_USER_POOL_ID;
   const clientId = process.env.COGNITO_CLIENT_ID;
 
+  // Returns null if any of the environment variables are not set
   if (
-    !(
-      isNonEmptyEnv(region) &&
-      isNonEmptyEnv(userPoolId) &&
-      isNonEmptyEnv(clientId)
-    )
+    !isNonEmptyEnv(region) ||
+    !isNonEmptyEnv(userPoolId) ||
+    !isNonEmptyEnv(clientId)
   ) {
     return null;
   }

@@ -11,19 +11,8 @@ import jwksClient, { JwksClient } from 'jwks-rsa';
 import { Request } from 'express';
 
 import { IS_PUBLIC_KEY } from './cognito.decorator';
-import { AccessTokenPayload } from './cognito.types';
-import { getCognitoConfig, isAuthEnabled } from './cognito.config';
-
-// Checks if the token is an access token and client id returned matches your own COGNITO_CLIENT_ID
-function isAccessTokenValid(
-  payload: AccessTokenPayload,
-  clientId: string,
-): boolean {
-  if (payload.token_use !== 'access') {
-    return false;
-  }
-  return payload.client_id === clientId;
-}
+import { AccessTokenPayload, CognitoConfig } from './cognito.types';
+import { getCognitoConfig } from './cognito.config';
 
 // Extracts the bearer token from the request's Authorization header
 function extractBearerToken(request: Request): string | undefined {
@@ -63,14 +52,7 @@ export class CognitoJWTGuard implements CanActivate {
   private readonly logger = new Logger(CognitoJWTGuard.name);
   private jwks?: JwksClient;
 
-  constructor(private readonly reflector: Reflector) {
-    // Auth-enabled status is fixed by env vars at startup, warn once about disabled auth
-    if (!isAuthEnabled()) {
-      this.logger.warn(
-        'Authentication disabled (Cognito env variables missing): all routes are open',
-      );
-    }
-  }
+  constructor(private readonly reflector: Reflector) {}
 
   /**
    * Determines whether the current request is allowed to proceed to the route handler.
@@ -87,8 +69,9 @@ export class CognitoJWTGuard implements CanActivate {
    *   configuration is missing, or the token fails signature/claim verification.
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // If authentication is not enabled, allow the request to proceed
-    if (!isAuthEnabled()) {
+    // Get Cognito config, will return null if auth is not enabled (missing env vars)
+    const config: CognitoConfig = getCognitoConfig();
+    if (!config) {
       return true;
     }
 
@@ -107,17 +90,18 @@ export class CognitoJWTGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException('No bearer token provided');
     }
-    const payload: AccessTokenPayload = await this.verifyToken(token);
+    const payload: AccessTokenPayload = await this.verifyToken(token, config);
     (request as Request & { user: AccessTokenPayload }).user = payload;
     return true;
   }
 
   // Verifies the token against user pool JWKS endpoint, and returns the JWT payload if the token is valid
-  private verifyToken(token: string): Promise<AccessTokenPayload> {
-    // If the region, user pool ID, or client ID is not set, throw an unauthorized exception by default
-    const config = getCognitoConfig();
-    // If Cognito variables are not set, config returns as null,
-    // should get cuaght beforehand by isAuthEnabled() but if not, throw error and log
+  private verifyToken(
+    token: string,
+    config: CognitoConfig,
+  ): Promise<AccessTokenPayload> {
+    // If the region, user pool ID, or client ID is not set, config returns as null, throw an unauthorized exception by default
+    // Should get cuaght beforehand from being called in canActivate() but if not, throw error and log
     if (!config) {
       this.logger.warn('Cognito configuration is not set');
       throw new UnauthorizedException();
@@ -173,9 +157,9 @@ export class CognitoJWTGuard implements CanActivate {
             return;
           }
           const payload = decoded;
-          if (!isAccessTokenValid(payload, config.clientId)) {
+          if (payload.client_id !== config.clientId) {
             this.logger.warn(
-              'Token rejected: token_use is not "access" or client_id does not match the configured Cognito client ID',
+              'Token rejected: client_id does not match the configured Cognito client ID',
             );
             reject(new UnauthorizedException());
             return;
