@@ -27,9 +27,6 @@ export class CognitoModule implements OnModuleInit {
        * is enough. See this module's README for how to make production fail hard
        * (throw) instead of merely logging.
        */
-      // if (process.env.NODE_ENV === 'production') {
-      //   this.logger.error(message);
-      // }
       this.logger.warn(message);
     } else {
       this.logger.log(`Cognito auth enabled`);

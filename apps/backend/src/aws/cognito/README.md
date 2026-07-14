@@ -6,6 +6,7 @@ Some key concepts you'll need to know are:
 1. **Unauthenticated user hits the app.** A user opens the frontend with no token. If they call a protected (Non Public) backend route, `CognitoJWTGuard` finds no `Authorization: Bearer <token>` header and responds `401 Unauthorized`.
 
 2. **User authenticates with Cognito** The frontend sends the user's credentials to Cognito. Cognito verifies the credentials and *authenticates* the user. This happens entirely between the client and Cognito. Our backend is not involved and never sees the password.
+   - On the frontend this login flow is run by [AWS Amplify](https://docs.amplify.aws/). If auth is enabled, `apps/frontend/src/auth/auth.config.ts` (`configureAmplify()`) points Amplify at the user pool, and `apps/frontend/src/main.tsx` wraps the app in Amplify's `<Authenticator>` login gate. 
 
 3. **Cognito issues tokens.** On success, Cognito returns separate signed JWTs for the following:
    - **ID token**: describes *who the user is* (identity claims), meant for the frontend.
@@ -26,7 +27,7 @@ So: **every route is protected by default, a request is allowed only if it carri
 
 ## QUICKSTART: 
 
-Copy placeholders from the repo root `example.env` into `.env` (or your deployment secrets):
+Copy placeholders from the repo root `example.env` into `.env` (or your deployment secrets). These three variables drive **both** the backend and the frontend:
 
 | Variable | Purpose |
 |----------|---------|
@@ -34,8 +35,21 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 | `COGNITO_CLIENT_ID` | The application you are building's own id linked to Cognito used to validate `client_id` on tokens |
 | `COGNITO_REGION` | AWS region |
 
+`apps/frontend/vite.config.ts` re-exports the same three values to the client bundle as `VITE_COGNITO_USER_POOL_ID`, `VITE_COGNITO_USER_POOL_CLIENT_ID`, and `VITE_COGNITO_REGION` at build time, so the client and server always share one source of truth (you never set the `VITE_` variables by hand). Because both sides read the same three values, they can't drift out of sync: set all three and auth is enforced on the backend *and* the login UI appears on the frontend; leave any unset and both fall open.
+
 > [!IMPORTANT]
-> If any Cognito env variables are unset: `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `COGNITO_REGION`, authentication via JWT enforcement is **disabled entirely**. When auth is disabled the guard logs a warning once (`Authentication is disabled for this route`) so it's clear requests are being let through unverified, without flooding the logs.
+> If any Cognito env variable is unset (`COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `COGNITO_REGION`), authentication via JWT enforcement is **disabled entirely** and every route is left open. `getCognitoConfig()` returns `null` when any of the three is missing/empty, and `isAuthEnabled()` is derived from it.
+> At startup `CognitoModule` logs the auth state exactly once (`Cognito auth enabled`, or `Cognito auth disabled: env vars missing. All routes open.`) 
+> The disabled message should be logged at **error** level when `NODE_ENV === 'production'` 
+
+```
+// if (process.env.NODE_ENV === 'production') {
+//   this.logger.error(message);
+// }
+```
+
+> [!WARNING]
+> Disabling auth is a convenience for local development, **not** a safe production state. This scaffold intentionally *logs and continues* (it never blocks startup) so that a fresh clone runs without any Cognito setup. For a real production deployment you should instead **fail hard**: change the disabled branch in `cognito.module.ts` (`onModuleInit`) to `throw new Error(message)` when `NODE_ENV === 'production'` so the app refuses to boot with auth silently off. The frontend mirror in `apps/frontend/src/main.tsx` can be tightened the same way (throw instead of `console.error` under `import.meta.env.PROD`).
 
 ### Auth model
 
@@ -101,15 +115,18 @@ The guard validates access tokens by
 - payload shape: `isAccessTokenPayload` rejects the token unless the required claims are present and well-typed — `sub`/`iss` are strings, `token_use === 'access'`, `client_id` is a string, `exp`/`iat` are numbers, and `cognito:groups` (if present) is an array of strings.
 
 > [!IMPORTANT]
-> The scaffold accepts access tokens only, by design. Backend APIs are resource servers and authorize requests using access tokens; ID tokens are for the frontend to establish who the user is. The token_use check in isAccessTokenValid (below) is what enforces the access-token-only rule.
+> The scaffold accepts access tokens only by design. Backend APIs are resource servers and authorize requests using access tokens; ID tokens are for the frontend to establish who the user is. 
 
 > [!WARNING]
-> Do not use the ID token for API authorization. ID tokens are intended for your client application to establish who the user is; passing them to a backend API exposes identity claims unnecessarily and confuses authentication with authorization. Backend APIs should validate access tokens only. The token_use check in isAccessTokenValid below enforces this.
+> Common Confusion: Do not use the ID token for API authorization. ID tokens are intended for your client application to establish who the user is; passing them to a backend API exposes identity claims unnecessarily and confuses authentication with authorization. Backend APIs should validate access tokens only. 
 
-```
-function isAccessTokenValid(payload: AccessTokenPayload, clientId: string): boolean {
-  if (payload.token_use !== 'access') return false;
-  return payload.client_id === clientId;
+In `cognito.guard.ts`, `isAccessTokenPayload` validates the token type and claim shape, and the guard then checks the client id against the configured `COGNITO_CLIENT_ID`:
+
+```typescript
+// isAccessTokenPayload(...) rejects anything where token_use !== 'access'
+// (alongside the other claim-shape checks), then the guard verifies:
+if (payload.client_id !== config.clientId) {
+  throw new UnauthorizedException();
 }
 ```
 
