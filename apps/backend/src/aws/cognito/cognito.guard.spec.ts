@@ -24,6 +24,13 @@ const ENV_KEYS = [
   'COGNITO_REGION',
 ] as const;
 
+// Only the user pool ID and client ID are required to enable auth. COGNITO_REGION
+// is optional: when unset it is derived from the user pool ID (format <region>_<id>).
+const REQUIRED_ENV_KEYS = [
+  'COGNITO_USER_POOL_ID',
+  'COGNITO_CLIENT_ID',
+] as const;
+
 const ACTIVE_ENV = {
   COGNITO_USER_POOL_ID: 'us-east-2_TestPool',
   COGNITO_CLIENT_ID: 'test-client-id',
@@ -283,8 +290,8 @@ describe('CognitoJWTGuard', () => {
       expect(request.user).toBeUndefined();
     });
 
-    // Auth requires all three env vars; a single missing one disables it.
-    it.each(ENV_KEYS)(
+    // Auth requires the user pool ID and client ID; a single missing one disables it.
+    it.each(REQUIRED_ENV_KEYS)(
       'disables auth when %s is missing',
       async (missingKey) => {
         setActiveEnv();
@@ -296,5 +303,26 @@ describe('CognitoJWTGuard', () => {
         expect(jwt.verify).not.toHaveBeenCalled();
       },
     );
+  });
+
+  // COGNITO_REGION is optional: when unset the config derives it from the user
+  // pool ID, so auth stays active and tokens are still verified.
+  describe('when COGNITO_REGION is missing (region derived)', () => {
+    it('keeps auth active and verifies the token', async () => {
+      setActiveEnv();
+      delete process.env.COGNITO_REGION;
+
+      const payload = buildPayload({
+        client_id: ACTIVE_ENV.COGNITO_CLIENT_ID,
+        token_use: 'access',
+      });
+      mockVerifyResolves(payload);
+
+      const { context, request } = createContext('Bearer access-token');
+
+      await expect(guard.canActivate(context)).resolves.toBe(true);
+      expect(jwt.verify).toHaveBeenCalled();
+      expect(request.user).toEqual(payload);
+    });
   });
 });

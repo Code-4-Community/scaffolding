@@ -2,7 +2,6 @@ import { Amplify } from 'aws-amplify';
 
 const userPoolId = import.meta.env.VITE_COGNITO_USER_POOL_ID;
 const userPoolClientId = import.meta.env.VITE_COGNITO_USER_POOL_CLIENT_ID;
-const region = import.meta.env.VITE_COGNITO_REGION;
 
 /**
  * Checks whether an environment variable value is a defined, non-empty string.
@@ -21,20 +20,12 @@ export function isNonEmptyEnv(value: string | undefined): value is string {
 
 // Checks if the authentication is enabled
 export function isAuthEnabled(): boolean {
-  return (
-    isNonEmptyEnv(userPoolId) &&
-    isNonEmptyEnv(userPoolClientId) &&
-    isNonEmptyEnv(region)
-  );
+  return isNonEmptyEnv(userPoolId) && isNonEmptyEnv(userPoolClientId);
 }
 
 // Configure amplify with cognito if the information is present in the environment variables
 export function configureAmplify(): void {
-  if (
-    !isNonEmptyEnv(userPoolId) ||
-    !isNonEmptyEnv(userPoolClientId) ||
-    !isNonEmptyEnv(region)
-  ) {
+  if (!isNonEmptyEnv(userPoolId) || !isNonEmptyEnv(userPoolClientId)) {
     return;
   }
 

@@ -100,8 +100,9 @@ export class CognitoJWTGuard implements CanActivate {
     token: string,
     config: CognitoConfig,
   ): Promise<AccessTokenPayload> {
-    // If the region, user pool ID, or client ID is not set, config returns as null, throw an unauthorized exception by default
-    // Should get cuaght beforehand from being called in canActivate() but if not, throw error and log
+    // If the user pool ID or client ID is not set, config returns as null, throw an unauthorized exception by default
+    // (region is optional and derived from the user pool ID when unset).
+    // Should get caught beforehand from being called in canActivate() but if not, throw error and log
     if (!config) {
       this.logger.warn('Cognito configuration is not set');
       throw new UnauthorizedException();

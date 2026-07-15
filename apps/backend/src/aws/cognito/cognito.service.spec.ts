@@ -11,6 +11,13 @@ const ENV_KEYS = [
   'COGNITO_REGION',
 ] as const;
 
+// Only the user pool ID and client ID are required to enable auth. COGNITO_REGION
+// is optional: when unset it is derived from the user pool ID (format <region>_<id>).
+const REQUIRED_ENV_KEYS = [
+  'COGNITO_USER_POOL_ID',
+  'COGNITO_CLIENT_ID',
+] as const;
+
 describe('CognitoService', () => {
   describe('getUser', () => {
     let service: CognitoService;
@@ -27,9 +34,9 @@ describe('CognitoService', () => {
       ENV_KEYS.forEach((key) => delete process.env[key]);
     });
 
-    // Auth requires all three env vars; a single missing one disables it,
-    // so getUser returns null regardless of the request.
-    it.each(ENV_KEYS)(
+    // Auth requires the user pool ID and client ID; a single missing one disables
+    // it, so getUser returns null regardless of the request.
+    it.each(REQUIRED_ENV_KEYS)(
       'returns null when %s is missing (auth disabled)',
       (missingKey) => {
         delete process.env[missingKey];
@@ -37,6 +44,24 @@ describe('CognitoService', () => {
         expect(service.getUser({ headers: {} } as TestRequest)).toBeNull();
       },
     );
+
+    // COGNITO_REGION is optional (derived from the user pool ID), so auth stays
+    // enabled without it and getUser still returns an attached payload.
+    it('returns the JWT payload when COGNITO_REGION is missing (region derived)', () => {
+      delete process.env.COGNITO_REGION;
+
+      const payload: AccessTokenPayload = {
+        sub: 'user-1',
+        client_id: 'test-client',
+        token_use: 'access',
+        iss: 'https://cognito-idp.us-east-2.amazonaws.com/us-east-2_TestPool',
+        exp: 9999999999,
+        iat: 1,
+      };
+      const request = { user: payload } as TestRequest;
+
+      expect(service.getUser(request)).toEqual(payload);
+    });
 
     it('returns the JWT payload when auth is active and user is on the request', () => {
       const payload: AccessTokenPayload = {

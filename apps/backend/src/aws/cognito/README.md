@@ -31,14 +31,14 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 
 | Variable | Purpose |
 |----------|---------|
-| `COGNITO_USER_POOL_ID` | Your registered users in Cognito to authenticate with |
-| `COGNITO_CLIENT_ID` | The application you are building's own id linked to Cognito used to validate `client_id` on tokens |
-| `COGNITO_REGION` | AWS region |
+| `COGNITO_USER_POOL_ID` | Your registered users in Cognito to authenticate with (**required**) |
+| `COGNITO_CLIENT_ID` | The application you are building's own id linked to Cognito used to validate `client_id` on tokens (**required**) |
+| `COGNITO_REGION` | AWS region (**optional**) — when unset it is derived from the user pool ID, which is formatted `<region>_<id>` (e.g. `us-east-2_abc123` → `us-east-2`). Set it explicitly only if your pool ID does not encode the region you want. |
 
-`apps/frontend/vite.config.ts` re-exports the same three values to the client bundle as `VITE_COGNITO_USER_POOL_ID`, `VITE_COGNITO_USER_POOL_CLIENT_ID`, and `VITE_COGNITO_REGION` at build time, so the client and server always share one source of truth (you never set the `VITE_` variables by hand). Because both sides read the same three values, they can't drift out of sync: set all three and auth is enforced on the backend *and* the login UI appears on the frontend; leave any unset and both fall open.
+`apps/frontend/vite.config.ts` re-exports the same values to the client bundle as `VITE_COGNITO_USER_POOL_ID`, `VITE_COGNITO_USER_POOL_CLIENT_ID`, and `VITE_COGNITO_REGION` at build time, so the client and server always share one source of truth (you never set the `VITE_` variables by hand). Because both sides read the same values, they can't drift out of sync: set the user pool ID and client ID and auth is enforced on the backend *and* the login UI appears on the frontend; leave either unset and both fall open.
 
 > [!IMPORTANT]
-> If any Cognito env variable is unset (`COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `COGNITO_REGION`), authentication via JWT enforcement is **disabled entirely** and every route is left open. `getCognitoConfig()` returns `null` when any of the three is missing/empty, and `isAuthEnabled()` is derived from it.
+> If `COGNITO_USER_POOL_ID` or `COGNITO_CLIENT_ID` variables are unset, authentication via JWT enforcement is **disabled entirely** and every route is left open. `getCognitoConfig()` returns `null` when either of these two is missing/empty, and `isAuthEnabled()` is derived from it. `COGNITO_REGION` is **not** part of this check — when it is missing the region is derived from the user pool ID, so auth stays enabled.
 > At startup `CognitoModule` logs the auth state exactly once (`Cognito auth enabled`, or `Cognito auth disabled: env vars missing. All routes open.`) 
 > The disabled message should be logged at **error** level when `NODE_ENV === 'production'` 
 
