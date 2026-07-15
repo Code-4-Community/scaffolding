@@ -19,6 +19,7 @@
   },
   "private": true,
   "dependencies": {
+    "@aws-amplify/ui-react": "^6.15.4",
     "@aws-sdk/client-cognito-identity-provider": "^3.1058.0",
     "@aws-sdk/client-sesv2": "^3.1063.0",
     "@aws-sdk/client-s3": "^3.1073.0",
@@ -33,6 +34,7 @@
     "@nx/eslint": "22.7.5",
     "@types/pg": "^8.15.5",
     "amazon-cognito-identity-js": "^6.3.5",
+    "aws-amplify": "^6.17.0",
     "axios": "^1.18.1",
     "bottleneck": "^2.19.5",
     "class-transformer": "^0.5.1",
