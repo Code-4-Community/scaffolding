@@ -15,18 +15,16 @@ export const AmazonSESClientFactory: Provider<SESv2Client> = {
     if (process.env.SEND_AUTOMATED_EMAILS !== 'true') {
       return new SESv2Client({});
     }
-    const region = process.env.AWS_REGION;
-    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-    if (!region) throw new Error('AWS_REGION is not defined');
-    if (!accessKeyId) throw new Error('AWS_ACCESS_KEY_ID is not defined');
-    if (!secretAccessKey)
-      throw new Error('AWS_SECRET_ACCESS_KEY is not defined');
-
+    // If email sending is enabled, EmailsModule.onModuleInit() aborts startup
+    // when these env vars are missing, so a client built with empty-string
+    // fallbacks is never actually used to send mail.
     return new SESv2Client({
-      region,
-      credentials: { accessKeyId, secretAccessKey },
+      region: process.env.AWS_REGION ?? '',
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
+      },
     });
   },
 };

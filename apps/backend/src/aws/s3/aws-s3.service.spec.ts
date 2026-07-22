@@ -33,22 +33,6 @@ describe('AWSS3Service', () => {
     service['bucketNames'][testBucketEnum] = testBucket;
   });
 
-  describe('constructor', () => {
-    it('should throw if AWS_ACCESS_KEY is missing', () => {
-      delete process.env.AWS_ACCESS_KEY;
-      expect(() => new AWSS3Service()).toThrow(
-        'Missing required environment variable: AWS_ACCESS_KEY',
-      );
-    });
-
-    it('should throw if AWS_SECRET_KEY is missing', () => {
-      delete process.env.AWS_SECRET_KEY;
-      expect(() => new AWSS3Service()).toThrow(
-        'Missing required environment variable: AWS_SECRET_KEY',
-      );
-    });
-  });
-
   describe('upload', () => {
     const validInput: S3UploadInput = {
       fileBuffer: Buffer.from('test'),

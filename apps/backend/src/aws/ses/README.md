@@ -62,5 +62,5 @@ If you swap `AWS_SES_SENDER_EMAIL` later, the new address must be verified separ
 
 A boolean env var (`'true'` to enable, anything else — including unset — to disable) that gates real SES dispatch.
 
-- When `SEND_AUTOMATED_EMAILS === 'true'`: `sendEmail` runs DTO validation, then schedules the send through the rate limiter, then calls SES. Returns the `SendEmailCommandOutput` from SES (MessageId + metadata). `AWS_SES_SENDER_EMAIL` must be set at this point, or the send throws.
+- When `SEND_AUTOMATED_EMAILS === 'true'`: `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SES_SENDER_EMAIL` are validated at module initialization (`EmailsModule.onModuleInit`), so the app fails to boot if any are missing while enabled. `sendEmail` runs DTO validation, schedules the send through the rate limiter, then calls SES. Returns the `SendEmailCommandOutput` from SES (MessageId + metadata).
 - When `SEND_AUTOMATED_EMAILS` is unset or any other value: `sendEmail` still runs DTO validation (so a bad payload still throws), then logs a warning (`SEND_AUTOMATED_EMAILS is not "true". Email not sent.`) and returns `void` without contacting SES. Neither `AWS_SES_SENDER_EMAIL` nor the AWS credentials need to be defined — teams not using SES can omit them entirely and the app still boots.
