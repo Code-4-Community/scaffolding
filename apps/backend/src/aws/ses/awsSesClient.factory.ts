@@ -16,7 +16,9 @@ export const AmazonSESClientFactory: Provider<SESv2Client> = {
       return new SESv2Client({});
     }
 
-    // Region and credentials are validated at module initialization (see EmailsModule)
+    // If email sending is enabled, EmailsModule.onModuleInit() aborts startup
+    // when these env vars are missing, so a client built with empty-string
+    // fallbacks is never actually used to send mail.
     return new SESv2Client({
       region: process.env.AWS_REGION ?? '',
       credentials: {
