@@ -13,7 +13,11 @@ Some key concepts you'll need to know are:
    - **access token**: the *authorization* credential, meant to be sent to backend APIs and checked by the `CognitoJWTGuard`. (See [Token validation](#token-validation))
    - **refresh token**: used to obtain fresh ID/access tokens when they expire.
 
-4. **Frontend calls the backend with the access token.** The client attaches it on every request as a header: `Authorization: Bearer <access_token>`.
+4. **Frontend calls the backend with the access token.** The client attaches it on every request as a header: `Authorization: Bearer <access_token>`. This is done once, by an axios request interceptor in `apps/frontend/src/api/apiClient.ts`, so individual API methods never deal with tokens:
+   - it no-ops when auth is disabled, so the scaffold still runs with no Cognito setup
+   - it sends `tokens.accessToken`, never the ID token (the guard rejects `token_use !== 'access'`)
+   - `fetchAuthSession()` returns the cached access token and silently refreshes it when expired, so the 1 hour token lifetime needs no handling
+   - if no one is signed in it sends the request unauthenticated and lets the guard answer `401`
 
 5. **The Guard checks the token.** `CognitoJWTGuard` runs on every route (it's registered as a global `APP_GUARD`). For each request it:
    - lets the request through immediately if auth is disabled (Cognito env vars unset) or if the route is marked `@Public()` (intentional bypass)
@@ -37,16 +41,26 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 
 `apps/frontend/vite.config.ts` re-exports the same values to the client bundle as `VITE_COGNITO_USER_POOL_ID`, `VITE_COGNITO_USER_POOL_CLIENT_ID`, and `VITE_COGNITO_REGION` at build time, so the client and server always share one source of truth (you never set the `VITE_` variables by hand). Because both sides read the same values, they can't drift out of sync: set the user pool ID and client ID and auth is enforced on the backend *and* the login UI appears on the frontend; leave either unset and both fall open.
 
+> [!NOTE]
+> Only the first two are actually consumed by the frontend. `VITE_COGNITO_REGION` is exported for completeness but nothing reads it — Amplify derives the region from the user pool ID prefix, exactly like `getCognitoConfig()` does on the backend.
+>
+> These values are **inlined into the public JS bundle**, which is correct: a user pool ID and a public app client ID are not secrets. Never add a client *secret* to the app client — a browser SPA cannot hold one.
+>
+> Because the vite config loads the root `.env` with no prefix filter, any variable you add there that *starts with* `VITE_` is automatically published to the browser. Keep secrets unprefixed.
+
 > [!IMPORTANT]
 > If `COGNITO_USER_POOL_ID` or `COGNITO_CLIENT_ID` variables are unset, authentication via JWT enforcement is **disabled entirely** and every route is left open. `getCognitoConfig()` returns `null` when either of these two is missing/empty, and `isAuthEnabled()` is derived from it. `COGNITO_REGION` is **not** part of this check — when it is missing the region is derived from the user pool ID, so auth stays enabled.
-> At startup `CognitoModule` logs the auth state exactly once (`Cognito auth enabled`, or `Cognito auth disabled: env vars missing. All routes open.`) 
-> The disabled message should be logged at **error** level when `NODE_ENV === 'production'` 
+> At startup `CognitoModule` logs the auth state exactly once (`Cognito auth enabled`, or `Cognito auth disabled: env vars missing. All routes open.`).
+>
+> The disabled message should be logged at **error** level when `NODE_ENV === 'production'`:
 
 ```
 // if (process.env.NODE_ENV === 'production') {
 //   this.logger.error(message);
 // }
 ```
+
+On the frontend, `apps/frontend/src/main.tsx` logs a `console.error` when auth is disabled in a production build (`import.meta.env.PROD`), since a production bundle with no login gate is almost always a build-time misconfiguration. Vite sets `PROD` from the build mode, so this needs no environment variable of its own.
 
 > [!WARNING]
 > Disabling auth is a convenience for local development, **not** a safe production state. This scaffold intentionally *logs and continues* (it never blocks startup) so that a fresh clone runs without any Cognito setup. For a real production deployment you should instead **fail hard**: change the disabled branch in `cognito.module.ts` (`onModuleInit`) to `throw new Error(message)` when `NODE_ENV === 'production'` so the app refuses to boot with auth silently off. The frontend mirror in `apps/frontend/src/main.tsx` can be tightened the same way (throw instead of `console.error` under `import.meta.env.PROD`).
@@ -59,7 +73,7 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 
 ### Using Cognito in your app (recommended + implemented: global guard)
 
-Import `CognitoModule` into `AppModule` (Already ). This enables auth app-wide and exports `CognitoService` for reading `request.user`:
+`CognitoModule` is already imported into `AppModule`, so there is nothing to wire up. That import is what enables auth app-wide and exports `CognitoService` for reading `request.user`:
 
 > [!IMPORTANT]
 > Note: This has already been implemented by default
@@ -88,6 +102,11 @@ export class HealthController {
   }
 }
 ```
+
+A live example is `apps/backend/src/app.controller.ts`: the scaffold's `GET /api` smoke-test route is `@Public()` so it answers whether or not Cognito is configured.
+
+> [!WARNING]
+> Put `@Public()` on individual handlers, not on the controller class. `@Public()` on a class opens **every** route in it, including ones added months later by someone who never read this file. There is no `@Protected()` decorator to undo it.
 
 ### `CognitoService.getUser()`
 
@@ -135,6 +154,55 @@ if (payload.client_id !== config.clientId) {
 multiple app clients (e.g. a separate web and mobile app sharing one user pool),
 change COGNITO_CLIENT_ID to accept a comma-separated list and validate membership
 in that allowlist instead of simply an equality check.
+
+## Next steps: building on this scaffold
+
+What you get out of the box is **authentication only**: a request either carries a valid access token or it doesn't. Everything below is what each project still has to build, in the order most projects need it.
+
+### 1. Store your users in your own database, keyed on `sub`
+
+Cognito is an identity provider, not your users table. Give your user entity a unique `cognito_sub` column and join on it. Use `sub` — it is immutable. Do **not** key on email: users change theirs, and you will silently orphan their data.
+
+### 2. Getting the user's email (the first wall almost everyone hits)
+
+The access token has **no `email` claim**, and that is not an oversight — `email` lives on the ID token. `AccessTokenPayload` in `cognito.types.ts` deliberately omits it. You have three options:
+
+- read the ID token client-side and send the email in your own signup request body
+- add a Cognito **Pre-Token-Generation Lambda** to inject a custom claim into the access token
+- look it up server-side with `AdminGetUser` (`@aws-sdk/client-cognito-identity-provider` is already a dependency)
+
+Whichever you pick, **do not** change the guard to accept ID tokens. That collapses the authn/authz distinction this module is built on.
+
+### 3. Add authorization
+
+`cognito:groups` is shape-validated by the guard and then ignored. Today **every authenticated user can reach every non-public route** — there is no admin/user distinction. Build a `@Roles('admin')` decorator plus a guard that reads `request.user['cognito:groups']`. Create the groups in the user pool first; a user's groups only appear in their token after they re-authenticate.
+
+### 4. Add a `@CurrentUser()` param decorator
+
+Every project rewrites `cognitoService.getUser(req)` plus a null check. Wrap it in a param decorator. Prefer one that **throws** when the user is missing: `getUser()` returns `null` both when auth is disabled and on `@Public()` routes, which invites `user?.sub === ownerId` comparisons that quietly evaluate false for unauthenticated callers instead of failing loudly.
+
+### 5. Add logout and 401 handling
+
+There is no `signOut` anywhere in the scaffold. Add one (`import { signOut } from 'aws-amplify/auth'`), plus an axios **response** interceptor in `apiClient.ts` that signs out and redirects when the backend returns 401.
+
+### 6. Before you go to production
+
+- Create your **own** user pool. If you reuse a shared one, register your own app client — the `client_id` equality check is the only thing keeping another project's tokens out.
+- Replace `app.enableCors()` in `main.ts` with an explicit origin allowlist. It currently defaults to `*`.
+- Add `helmet()` for security headers and `@nestjs/throttler` for rate limiting. Neither is installed; there is no limit on repeated 401s today.
+- Confirm `SWAGGER_ENABLED=false`. Swagger mounts at the same path as the global `api` prefix and is served outside the guard pipeline, so enabling it publishes your whole API surface.
+- Set `VITE_API_BASE_URL`. It is never defined, so production builds currently hardcode `http://localhost:3000`.
+- Decide whether self-signup should be open. `<Authenticator>` renders with no props, which shows a **Create Account** tab by default. If you don't want that, pass `hideSignUp` and set `AllowAdminCreateUserOnly` on the pool.
+
+## Hurdles you will run into
+
+- **Every new controller is protected the moment you write it.** Forget `@Public()` on a Stripe or Twilio webhook and it will 401 in production with a generic message and no obvious cause.
+- **Local dev with auth off never exercises the guard.** Set the env vars and re-test before merging anything auth-adjacent, or you will ship code whose auth path has never once run.
+- **A JWKS outage returns 401, not 503.** Clients read that as "bad token" and re-login instead of backing off. The JWKS client allows 5 requests/minute with no stale-key fallback, so a burst of unknown `kid`s can starve legitimate requests during a key rotation.
+- **`client_id` accepts exactly one value.** A second app client (mobile, admin panel) needs the comma-separated allowlist described above.
+- **Tokens live in `localStorage`** (Amplify's default). Any XSS on your origin yields a durable refresh token. Combined with wildcard CORS and no CSP, that is worth a deliberate decision rather than a default.
+- **Changing `.env` requires a frontend rebuild, not just a restart.** The `VITE_` values are inlined at build time and `isAuthEnabled()` is evaluated once at module load.
+- **Groups do not appear until re-login.** Adding a user to a Cognito group does not retroactively change tokens they already hold.
 
 ## Helpful Resources for understanding Auth!
 - The most amazing explanation of authn (OAUTH 2.0) and authz (OIDC) you'll ever watch: https://www.youtube.com/watch?v=996OiexHze0&t=2126s

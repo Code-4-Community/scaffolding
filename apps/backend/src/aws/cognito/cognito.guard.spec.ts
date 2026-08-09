@@ -7,13 +7,16 @@ import { CognitoJWTGuard } from './cognito.guard';
 import { AccessTokenPayload } from './cognito.types';
 
 jest.mock('jsonwebtoken');
+
+// Stands in for the JWKS endpoint lookup. Declared out here (with the `mock`
+// prefix jest requires) so individual tests can make the lookup fail.
+const mockGetSigningKey = jest.fn();
+
 // Fake the jwks-rsa module to return a mock public key
 jest.mock('jwks-rsa', () => ({
   __esModule: true,
   default: jest.fn(() => ({
-    getSigningKey: jest.fn().mockResolvedValue({
-      getPublicKey: () => 'mock-public-key',
-    }),
+    getSigningKey: (kid: string) => mockGetSigningKey(kid),
   })),
 }));
 
@@ -69,6 +72,22 @@ function mockVerifyRejects(error: Error): void {
   );
 }
 
+// Drives the getKey callback that the guard hands to jwt.verify, so the JWKS
+// key-lookup path can be exercised. Resolves verification with `decoded` when
+// the lookup succeeds, and propagates the lookup error when it fails.
+function mockVerifyPerformsKeyLookup(
+  header: Record<string, unknown>,
+  decoded: unknown,
+): void {
+  (jwt.verify as jest.Mock).mockImplementation(
+    (_token, getKey, _options, callback) => {
+      getKey(header, (err: Error | null) =>
+        err ? callback(err, undefined) : callback(null, decoded),
+      );
+    },
+  );
+}
+
 // Builds ExecutionContext and request with given Authorization header so the guard can be exercised
 function createContext(authorization?: string): {
   context: ExecutionContext;
@@ -98,6 +117,10 @@ describe('CognitoJWTGuard', () => {
     reflector = { getAllAndOverride: jest.fn().mockReturnValue(false) };
     guard = new CognitoJWTGuard(reflector as unknown as Reflector);
     (jwt.verify as jest.Mock).mockReset();
+    mockGetSigningKey.mockReset();
+    mockGetSigningKey.mockResolvedValue({
+      getPublicKey: () => 'mock-public-key',
+    });
   });
 
   // Clean up environment variables and call history after each test
@@ -245,6 +268,83 @@ describe('CognitoJWTGuard', () => {
 
         await expect(guard.canActivate(context)).resolves.toBe(true);
         expect(request.user).toEqual(payload);
+      });
+    });
+
+    // The options handed to jwt.verify are what actually pin the cryptography.
+    // Without these assertions, deleting the algorithms allowlist or the issuer
+    // would leave every other test in this file passing.
+    describe('verification options', () => {
+      it('pins the algorithm to RS256 and the issuer to the user pool', async () => {
+        mockVerifyResolves(
+          buildPayload({
+            client_id: ACTIVE_ENV.COGNITO_CLIENT_ID,
+            token_use: 'access',
+          }),
+        );
+
+        const { context } = createContext('Bearer access-token');
+
+        await expect(guard.canActivate(context)).resolves.toBe(true);
+        // An allowlist of exactly ['RS256'] is what makes 'alg: none' and
+        // HS256 algorithm-confusion attacks unusable against this guard.
+        expect(jwt.verify).toHaveBeenCalledWith(
+          'access-token',
+          expect.any(Function),
+          {
+            issuer: `https://cognito-idp.${ACTIVE_ENV.COGNITO_REGION}.amazonaws.com/${ACTIVE_ENV.COGNITO_USER_POOL_ID}`,
+            algorithms: ['RS256'],
+          },
+          expect.any(Function),
+        );
+      });
+    });
+
+    // The signing key is fetched from the pool's JWKS endpoint using the kid in
+    // the (still unverified) token header.
+    describe('JWKS key lookup', () => {
+      it('looks the signing key up by the kid in the token header', async () => {
+        mockVerifyPerformsKeyLookup(
+          { alg: 'RS256', kid: 'key-1' },
+          buildPayload({
+            client_id: ACTIVE_ENV.COGNITO_CLIENT_ID,
+            token_use: 'access',
+          }),
+        );
+
+        const { context } = createContext('Bearer access-token');
+
+        await expect(guard.canActivate(context)).resolves.toBe(true);
+        expect(mockGetSigningKey).toHaveBeenCalledWith('key-1');
+      });
+
+      it('rejects tokens whose header has no kid', async () => {
+        mockVerifyPerformsKeyLookup({ alg: 'RS256' }, undefined);
+
+        const { context } = createContext('Bearer no-kid-token');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(mockGetSigningKey).not.toHaveBeenCalled();
+      });
+
+      // A JWKS outage (or an unknown kid) must deny the request rather than
+      // fall through to accepting it.
+      it('rejects the request when the JWKS lookup fails', async () => {
+        mockGetSigningKey.mockRejectedValue(new Error('connect ETIMEDOUT'));
+        mockVerifyPerformsKeyLookup(
+          { alg: 'RS256', kid: 'unknown-kid' },
+          undefined,
+        );
+
+        const { context, request } = createContext('Bearer access-token');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(mockGetSigningKey).toHaveBeenCalledWith('unknown-kid');
+        expect(request.user).toBeUndefined();
       });
     });
 
