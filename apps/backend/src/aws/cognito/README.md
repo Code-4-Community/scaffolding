@@ -52,13 +52,21 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 > If `COGNITO_USER_POOL_ID` or `COGNITO_CLIENT_ID` variables are unset, authentication via JWT enforcement is **disabled entirely** and every route is left open. `getCognitoConfig()` returns `null` when either of these two is missing/empty, and `isAuthEnabled()` is derived from it. `COGNITO_REGION` is **not** part of this check — when it is missing the region is derived from the user pool ID, so auth stays enabled.
 > At startup `CognitoModule` logs the auth state exactly once (`Cognito auth enabled`, or `Cognito auth disabled: env vars missing. All routes open.`).
 >
-> The disabled message should be logged at **error** level when `NODE_ENV === 'production'`:
+> The disabled message is logged at **error** level when `NODE_ENV === 'production'` and at **warn** level otherwise, because running without Cognito is a normal local workflow but almost always a missing-secrets bug in production:
 
+```typescript
+if (process.env.NODE_ENV === 'production') {
+  this.logger.error(message);
+} else {
+  this.logger.warn(message);
+}
 ```
-// if (process.env.NODE_ENV === 'production') {
-//   this.logger.error(message);
-// }
-```
+
+### You have to set `NODE_ENV` yourself
+
+Nothing in this repo sets it. `@nx/webpack` builds node targets with `mode: 'none'` specifically so `process.env.NODE_ENV` is **not** substituted at build time, which means the compiled backend reads it from the runtime environment. If your deployment never exports it, the check above is inert and a production app with auth off will only warn.
+
+Set it where the process actually starts — the ECS task definition, the Elastic Beanstalk environment config, the systemd unit — rather than in a `.env` baked into the image, so the value tracks the environment rather than the build. `example.env` carries `NODE_ENV=development` as the local default.
 
 On the frontend, `apps/frontend/src/main.tsx` logs a `console.error` when auth is disabled in a production build (`import.meta.env.PROD`), since a production bundle with no login gate is almost always a build-time misconfiguration. Vite sets `PROD` from the build mode, so this needs no environment variable of its own.
 

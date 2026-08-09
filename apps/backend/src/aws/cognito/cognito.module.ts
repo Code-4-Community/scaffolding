@@ -22,12 +22,19 @@ export class CognitoModule implements OnModuleInit {
       /**
        * IMPORTANT:
        * Running without Cognito is a normal development workflow, so a warning
-       * is enough here. In production it almost certainly signals a
-       * misconfiguration (missing secrets) and should be surfaced at error
-       * level instead. See this module's README for that change, and for how to
-       * make production fail hard (throw) rather than merely logging.
+       * is enough there. In production it almost certainly signals a
+       * misconfiguration (missing secrets), so surface it at error level.
+       *
+       * NODE_ENV is read at runtime, not inlined at build time, so this only
+       * escalates if the deploy environment actually exports
+       * NODE_ENV=production. See this module's README for the deployment step
+       * and for how to make production fail hard (throw) rather than log.
        */
-      this.logger.warn(message);
+      if (process.env.NODE_ENV === 'production') {
+        this.logger.error(message);
+      } else {
+        this.logger.warn(message);
+      }
     } else {
       this.logger.log(`Cognito auth enabled`);
     }
