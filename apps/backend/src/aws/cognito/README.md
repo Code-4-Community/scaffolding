@@ -13,7 +13,10 @@ Some key concepts you'll need to know are:
    - **access token**: the *authorization* credential, meant to be sent to backend APIs and checked by the `CognitoJWTGuard`. (See [Token validation](#token-validation))
    - **refresh token**: used to obtain fresh ID/access tokens when they expire.
 
-4. **Frontend calls the backend with the access token.** The client attaches it on every request as a header: `Authorization: Bearer <access_token>`.
+4. **Frontend calls the backend with the access token.** The client attaches it on every request as a header: `Authorization: Bearer <access_token>`. This is done once, by an axios request interceptor in `apps/frontend/src/api/apiClient.ts`, so individual API methods never deal with tokens:
+   - it only sends the request with the access token when auth is enabled, so the scaffold still runs with no Cognito setup
+   - `fetchAuthSession()` returns the cached access token and silently refreshes it when expired, so the 1 hour token lifetime needs no handling
+   - if no one is signed in or if errors occur with fetching the auth session it sends the request unauthenticated and lets the guard answer `401`
 
 5. **The Guard checks the token.** `CognitoJWTGuard` runs on every route (it's registered as a global `APP_GUARD`). For each request it:
    - lets the request through immediately if auth is disabled (Cognito env vars unset) or if the route is marked `@Public()` (intentional bypass)
@@ -49,7 +52,7 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 ```
 
 > [!WARNING]
-> Disabling auth is a convenience for local development, **not** a safe production state. This scaffold intentionally *logs and continues* (it never blocks startup) so that a fresh clone runs without any Cognito setup. For a real production deployment you should instead **fail hard**: change the disabled branch in `cognito.module.ts` (`onModuleInit`) to `throw new Error(message)` when `NODE_ENV === 'production'` so the app refuses to boot with auth silently off. The frontend mirror in `apps/frontend/src/main.tsx` can be tightened the same way (throw instead of `console.error` under `import.meta.env.PROD`).
+> Disabling auth is a convenience for local development, **not** a safe production state. This scaffold _intentionally_ *logs and continues* (it never blocks startup) so that a fresh clone runs without any Cognito setup. For a real production deployment you should instead **fail hard**: change the disabled branch in `cognito.module.ts` (`onModuleInit`) to `throw new Error(message)` when `NODE_ENV === 'production'` so the app refuses to boot with auth silently off. The frontend mirror in `apps/frontend/src/main.tsx` can be tightened the same way (throw instead of `console.error` under `import.meta.env.PROD`).
 
 ### Auth model
 
@@ -59,7 +62,7 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 
 ### Using Cognito in your app (recommended + implemented: global guard)
 
-Import `CognitoModule` into `AppModule` (Already ). This enables auth app-wide and exports `CognitoService` for reading `request.user`:
+`CognitoModule` is already imported into `AppModule`, so there is nothing to wire up. That import is what enables auth app-wide and exports `CognitoService` for reading `request.user`:
 
 > [!IMPORTANT]
 > Note: This has already been implemented by default
