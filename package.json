@@ -39,7 +39,7 @@
     "class-validator": "^0.15.1",
     "global": "^4.4.0",
     "jwks-rsa": "^4.1.0",
-    "listr2": "8",
+    "listr2": "11",
     "nodemailer": "^9.0.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -97,7 +97,7 @@
     "vitest": "^0.32.0"
   },
   "resolutions": {
-    "listr2": "8",
+    "listr2": "11",
     "@nx/eslint-plugin/@typescript-eslint/utils": "6.21.0"
   }
 }
