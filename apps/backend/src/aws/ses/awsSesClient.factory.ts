@@ -12,7 +12,7 @@ export const AmazonSESClientFactory: Provider<SESv2Client> = {
   provide: AMAZON_SES_CLIENT,
   useFactory: () => {
     // Create dummy client that is never used when email sending is set to false
-    if (process.env.SEND_AUTOMATED_EMAILS !== 'true') {
+    if (process.env.SEND_AUTOMATED_EMAILS.toLowerCase() !== 'true') {
       return new SESv2Client({});
     }
 
