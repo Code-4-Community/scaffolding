@@ -53,19 +53,15 @@ export class AWSS3Service {
       }
     }
 
-    const accessKeyId = process.env.AWS_ACCESS_KEY;
-    const secretAccessKey = process.env.AWS_SECRET_KEY;
-
-    if (!accessKeyId) {
-      throw new Error('Missing required environment variable: AWS_ACCESS_KEY');
-    }
-    if (!secretAccessKey) {
-      throw new Error('Missing required environment variable: AWS_SECRET_KEY');
-    }
-
+    // AWS credentials are validated at module initialization (see AWSS3Module).
+    // The ?? '' only satisfies the type checker: if either var were missing,
+    // module init throws and the app never boots, so this client is never used.
     this.client = new S3Client({
       region: this.region,
-      credentials: { accessKeyId, secretAccessKey },
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY ?? '',
+        secretAccessKey: process.env.AWS_SECRET_KEY ?? '',
+      },
     });
   }
 
