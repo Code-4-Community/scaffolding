@@ -12,13 +12,17 @@ export function getCognitoConfig(): CognitoConfig | null {
   const userPoolId = process.env.COGNITO_USER_POOL_ID;
   const clientId = process.env.COGNITO_CLIENT_ID;
 
-  // Returns null if any of the environment variables are not set
+  // Returns null if any of the required environment variables are not set
   if (!isNonEmptyEnv(userPoolId) || !isNonEmptyEnv(clientId)) {
     return null;
   }
 
-  // If region is not set, derive it from the user pool ID (format: <region>_<id>)
+  // COGNITO_REGION is optional: when unset, derive it from the user pool ID
+  // (format: <region>_<id>). Without an underscore there is nothing to derive.
   if (!isNonEmptyEnv(region)) {
+    if (!userPoolId.includes('_')) {
+      return null;
+    }
     region = userPoolId.split('_')[0];
   }
 
