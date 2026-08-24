@@ -74,7 +74,7 @@
     "@typescript-eslint/eslint-plugin": "7",
     "@typescript-eslint/parser": "6",
     "@vitejs/plugin-react": "^4.0.0",
-    "@vitest/ui": "^0.32.0",
+    "@vitest/ui": "^0.34.7",
     "aws-sdk-client-mock": "^4.1.0",
     "cypress": "^15.17.0",
     "eslint": "8.57.1",
