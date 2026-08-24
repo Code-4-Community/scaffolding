@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@eslint/config-array": "^0.23.5",
-    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^10.0.1",
     "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "^10.0.2",
