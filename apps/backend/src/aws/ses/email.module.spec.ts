@@ -1,6 +1,6 @@
-import { EmailsModule } from './email.module';
+import { AWSSESModule } from './email.module';
 
-describe('EmailsModule', () => {
+describe('AWSSESModule', () => {
   const ENV_VARS = [
     'SEND_AUTOMATED_EMAILS',
     'AWS_REGION',
@@ -17,7 +17,9 @@ describe('EmailsModule', () => {
   ] as const;
 
   const originalEnv: Record<string, string | undefined> = {};
-  let module: EmailsModule;
+  let module: AWSSESModule;
+  let warnSpy: jest.SpyInstance;
+  let logSpy: jest.SpyInstance;
 
   beforeEach(() => {
     for (const name of ENV_VARS) {
@@ -31,10 +33,19 @@ describe('EmailsModule', () => {
     process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-access-key';
     process.env.AWS_SES_SENDER_EMAIL = 'sender@example.com';
 
-    module = new EmailsModule();
+    module = new AWSSESModule();
+
+    warnSpy = jest
+      .spyOn(module['logger'], 'warn')
+      .mockImplementation(() => undefined);
+    logSpy = jest
+      .spyOn(module['logger'], 'log')
+      .mockImplementation(() => undefined);
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
+
     for (const name of ENV_VARS) {
       if (originalEnv[name] === undefined) {
         delete process.env[name];
@@ -45,40 +56,69 @@ describe('EmailsModule', () => {
   });
 
   describe('onModuleInit', () => {
-    it('does not throw when all required env vars are set and enabled', () => {
-      expect(() => module.onModuleInit()).not.toThrow();
+    it('logs and does not warn when all required env vars are set and enabled', () => {
+      module.onModuleInit();
+
+      expect(warnSpy).not.toHaveBeenCalled();
+      expect(logSpy).toHaveBeenCalledWith('SES enabled');
     });
 
-    it('does not throw when disabled, even if required vars are missing', () => {
+    it('does not warn when disabled, even if required vars are missing', () => {
       process.env.SEND_AUTOMATED_EMAILS = 'false';
       for (const name of REQUIRED_WHEN_ENABLED) {
         delete process.env[name];
       }
-      expect(() => module.onModuleInit()).not.toThrow();
+
+      module.onModuleInit();
+
+      expect(warnSpy).not.toHaveBeenCalled();
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.stringContaining('SES disabled'),
+      );
     });
 
-    it('does not throw when SEND_AUTOMATED_EMAILS is unset', () => {
+    it('does not warn when SEND_AUTOMATED_EMAILS is unset', () => {
       delete process.env.SEND_AUTOMATED_EMAILS;
       for (const name of REQUIRED_WHEN_ENABLED) {
         delete process.env[name];
       }
-      expect(() => module.onModuleInit()).not.toThrow();
+
+      module.onModuleInit();
+
+      expect(warnSpy).not.toHaveBeenCalled();
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.stringContaining('SES disabled'),
+      );
     });
 
     it.each(REQUIRED_WHEN_ENABLED)(
-      'throws when enabled and %s is missing',
+      'warns when enabled and %s is missing',
       (name) => {
         delete process.env[name];
-        expect(() => module.onModuleInit()).toThrow(
-          `Missing required environment variable: ${name}`,
-        );
+
+        expect(() => module.onModuleInit()).not.toThrow();
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(name));
       },
     );
 
-    it('throws when enabled and a required var is empty/whitespace-only', () => {
+    it('warns when enabled and a required var is empty/whitespace-only', () => {
       process.env.AWS_SES_SENDER_EMAIL = '   ';
-      expect(() => module.onModuleInit()).toThrow(
-        'Missing required environment variable: AWS_SES_SENDER_EMAIL',
+
+      expect(() => module.onModuleInit()).not.toThrow();
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('AWS_SES_SENDER_EMAIL'),
+      );
+    });
+
+    it('lists every missing env var in a single warning', () => {
+      delete process.env.AWS_REGION;
+      delete process.env.AWS_SES_SENDER_EMAIL;
+
+      module.onModuleInit();
+
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('AWS_REGION, AWS_SES_SENDER_EMAIL'),
       );
     });
   });
