@@ -30,8 +30,8 @@ export class AmazonSESWrapper {
    * or if SES rejects the send (bad recipient, throttling, unverified sender, quota exceeded).
    */
   async sendEmail(dto: SendEmailDTO): Promise<SendEmailCommandOutput> {
-    // Validated at module initialization (see EmailsModule) when SES is enabled;
-    // sendEmail is only ever reached when SEND_AUTOMATED_EMAILS is 'true', so senderEmail is guaranteed present here.
+    // Checked at module initialization (see AWSSESModule) when SES is enabled;
+    // sendEmail is only ever reached when SEND_AUTOMATED_EMAILS is 'true', so senderEmail is expected to be present here.
     const senderEmail = process.env.AWS_SES_SENDER_EMAIL ?? '';
 
     const mailOptions: Mail.Options = {
