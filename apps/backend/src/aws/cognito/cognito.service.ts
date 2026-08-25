@@ -20,10 +20,10 @@ export class CognitoService {
    *   if authentication is disabled or no valid token was attached to the request.
    */
   getUser(request: Request): AccessTokenPayload | null {
-    // If authentication is not enabled, return null
+    // If authentication was explicitly disabled, there is no user to return
     if (!isAuthEnabled()) {
       this.logger.debug(
-        'getUser returning null: authentication is disabled (Cognito env variables missing)',
+        'getUser returning null: authentication is disabled (AUTH_DISABLED=true)',
       );
       return null;
     }
