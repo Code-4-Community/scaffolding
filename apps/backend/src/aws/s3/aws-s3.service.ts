@@ -41,21 +41,17 @@ export class AWSS3Service {
   constructor() {
     this.region = process.env.AWS_REGION ?? 'us-east-2';
 
-    // Add one entry per bucket in s3Buckets enum.
-    // Example: [s3Buckets.DOCUMENTS]: process.env.AWS_DOCUMENTS_BUCKET_NAME,
+    // Every bucket in the S3Buckets enum is read from an env var named AWS_<BUCKET>_BUCKET_NAME: 
+    // - e.g. S3Buckets.DOCUMENTS reads AWS_DOCUMENTS_BUCKET_NAME. Add each of those names to REQUIRED_ENV_VARS
     this.bucketNames = {} as Record<S3Buckets, string>;
 
     for (const bucket of Object.values(S3Buckets) as unknown as S3Buckets[]) {
-      if (!this.bucketNames[bucket]) {
-        throw new Error(
-          `Missing required environment variable for S3 bucket: ${bucket}`,
-        );
-      }
+      this.bucketNames[bucket] = process.env[`AWS_${bucket}_BUCKET_NAME`] ?? '';
     }
 
-    // AWS credentials are validated at module initialization (see AWSS3Module).
-    // The ?? '' only satisfies the type checker: if either var were missing,
-    // module init throws and the app never boots, so this client is never used.
+    // AWS credentials are checked at module initialization (see AWSS3Module),
+    // which warns rather than throws. The ?? '' keeps the client constructible
+    // when they are absent; requests against it then fail at the AWS call.
     this.client = new S3Client({
       region: this.region,
       credentials: {
