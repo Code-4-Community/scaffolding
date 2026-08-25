@@ -30,6 +30,8 @@ describe('AWSS3Service', () => {
     s3Mock.reset();
     service = new AWSS3Service();
 
+    // The constructor resolves AWS_<BUCKET>_BUCKET_NAME for every member of
+    // S3Buckets, but the scaffold enum is empty — inject the sentinel by hand.
     service['bucketNames'][testBucketEnum] = testBucket;
   });
 
