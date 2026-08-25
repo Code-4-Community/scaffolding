@@ -16,33 +16,37 @@ AWS_MY_BUCKET_NAME=my-bucket-name
 
 Import `AWSS3Module` once in your root `AppModule`. Because the module is `@Global()`, `AWSS3Service` is injectable in all feature modules without additional imports.
 
-The service throws at startup if any bucket env var is unset, so misconfiguration is caught immediately rather than at runtime.
+Every bucket env var **must** follow the `AWS_<BUCKET>_BUCKET_NAME` format, where `<BUCKET>` is the `S3Buckets` enum member verbatim. `AWSS3Service` builds its bucket lookup from that convention, so a name that doesn't match will never be found.
+
+`AWSS3Module.onModuleInit` logs a warning listing any env var in its `REQUIRED_ENV_VARS` list that is unset or blank.
 
 ## Adding a New Bucket
 
-**1. Add an env var** in `.env` and `example.env`:
+**1. Add an env var** in `.env` and `example.env`, named `AWS_<BUCKET>_BUCKET_NAME`:
 
 ```
 AWS_MY_BUCKET_NAME=my-bucket-name
 ```
 
-**2. Add an entry to the `s3Buckets` enum** (`types/s3Buckets.ts`):
+**2. Add an entry to the `S3Buckets` enum** (`types/s3Buckets.ts`), matching the middle of that env var name:
 
 ```typescript
-export enum s3Buckets {
+export enum S3Buckets {
   MY_BUCKET = 'MY_BUCKET',
 }
 ```
 
-**3. Add a mapping to `mapBucket`** (`aws-s3.service.ts`):
+**3. Add the env var name to `REQUIRED_ENV_VARS`** (`aws-s3.module.ts`), so a missing value is reported at startup:
 
 ```typescript
-const bucketNames: Record<s3Buckets, string> = {
-  [s3Buckets.MY_BUCKET]: process.env.AWS_MY_BUCKET_NAME,
-};
+const REQUIRED_ENV_VARS = [
+  'AWS_ACCESS_KEY',
+  'AWS_SECRET_KEY',
+  'AWS_MY_BUCKET_NAME',
+] as const;
 ```
 
-Because `mapBucket` uses a `Record<s3Buckets, string>`, TypeScript will produce a compile error if you add an enum entry without adding the corresponding mapping — catching missed steps at build time.
+No change to `aws-s3.service.ts` is needed: its constructor resolves `process.env['AWS_' + bucket + '_BUCKET_NAME']` for every member of `S3Buckets`. A bucket whose env var is missing resolves to `''`, and any `upload()` to it throws `Missing required environment variable for S3 bucket: MY_BUCKET`.
 
 ## Required IAM Permissions
 
