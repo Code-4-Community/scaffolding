@@ -1,15 +1,34 @@
 import { Request } from 'express';
 
+import { AuthConfigurationError } from './cognito.config';
 import { CognitoService } from './cognito.service';
 import { AccessTokenPayload } from './cognito.types';
 
 type TestRequest = Request & { user?: AccessTokenPayload };
 
 const ENV_KEYS = [
+  'AUTH_DISABLED',
   'COGNITO_USER_POOL_ID',
   'COGNITO_CLIENT_ID',
   'COGNITO_REGION',
 ] as const;
+
+// Snapshot the auth env once so each test can mutate it freely without
+// clobbering a value the developer had set in their own shell.
+const ORIGINAL_ENV: Record<string, string | undefined> = Object.fromEntries(
+  ENV_KEYS.map((key) => [key, process.env[key]]),
+);
+
+function restoreEnv(): void {
+  ENV_KEYS.forEach((key) => {
+    const original = ORIGINAL_ENV[key];
+    if (original === undefined) {
+      delete process.env[key];
+    } else {
+      process.env[key] = original;
+    }
+  });
+}
 
 // Only the user pool ID and client ID are required to enable auth. COGNITO_REGION
 // is optional: when unset it is derived from the user pool ID (format <region>_<id>).
@@ -23,25 +42,36 @@ describe('CognitoService', () => {
     let service: CognitoService;
 
     beforeEach(() => {
+      delete process.env.AUTH_DISABLED;
       process.env.COGNITO_USER_POOL_ID = 'us-east-2_TestPool';
       process.env.COGNITO_CLIENT_ID = '4h57k9lmno1pqrstuv2wxyz3ab';
       process.env.COGNITO_REGION = 'us-east-2';
       service = new CognitoService();
     });
 
-    // Clean up environment variables after each test
+    // Restore environment variables after each test
     afterEach(() => {
-      ENV_KEYS.forEach((key) => delete process.env[key]);
+      restoreEnv();
     });
 
-    // Auth requires the user pool ID and client ID; a single missing one disables
-    // it, so getUser returns null regardless of the request.
+    // Auth is only ever off by explicit opt-in, in which case there is no user
+    // to return regardless of the request.
+    it('returns null when auth is explicitly disabled', () => {
+      process.env.AUTH_DISABLED = 'true';
+
+      expect(service.getUser({ headers: {} } as TestRequest)).toBeNull();
+    });
+
+    // Without the explicit opt-out an unusable config is a misconfiguration, and
+    // reporting "no user" for it would quietly hide the problem from callers.
     it.each(REQUIRED_ENV_KEYS)(
-      'returns null when %s is missing (auth disabled)',
+      'throws when %s is missing and auth was not disabled',
       (missingKey) => {
         delete process.env[missingKey];
 
-        expect(service.getUser({ headers: {} } as TestRequest)).toBeNull();
+        expect(() => service.getUser({ headers: {} } as TestRequest)).toThrow(
+          AuthConfigurationError,
+        );
       },
     );
 

@@ -2,6 +2,7 @@ import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 
+import { AuthConfigurationError } from './cognito.config';
 import { IS_PUBLIC_KEY } from './cognito.decorator';
 import { CognitoJWTGuard } from './cognito.guard';
 import { AccessTokenPayload } from './cognito.types';
@@ -19,10 +20,27 @@ jest.mock('jwks-rsa', () => ({
 
 // Environment variables to test
 const ENV_KEYS = [
+  'AUTH_DISABLED',
   'COGNITO_USER_POOL_ID',
   'COGNITO_CLIENT_ID',
   'COGNITO_REGION',
 ] as const;
+
+// Snapshot the auth env once so each test can mutate it freely without clobbering a value the developer had set in their own shell.
+const ORIGINAL_ENV: Record<string, string | undefined> = Object.fromEntries(
+  ENV_KEYS.map((key) => [key, process.env[key]]),
+);
+
+function restoreEnv(): void {
+  ENV_KEYS.forEach((key) => {
+    const original = ORIGINAL_ENV[key];
+    if (original === undefined) {
+      delete process.env[key];
+    } else {
+      process.env[key] = original;
+    }
+  });
+}
 
 // Only the user pool ID and client ID are required to enable auth. COGNITO_REGION
 // is optional: when unset it is derived from the user pool ID (format <region>_<id>).
@@ -38,6 +56,7 @@ const ACTIVE_ENV = {
 };
 
 function setActiveEnv(): void {
+  delete process.env.AUTH_DISABLED;
   Object.assign(process.env, ACTIVE_ENV);
 }
 
@@ -102,7 +121,7 @@ describe('CognitoJWTGuard', () => {
 
   // Clean up environment variables and call history after each test
   afterEach(() => {
-    ENV_KEYS.forEach((key) => delete process.env[key]);
+    restoreEnv();
     jest.clearAllMocks();
   });
 
@@ -274,7 +293,12 @@ describe('CognitoJWTGuard', () => {
     });
   });
 
-  describe('when auth is inactive', () => {
+  // Auth is only ever off by explicit opt-in: AUTH_DISABLED=true.
+  describe('when auth is explicitly disabled', () => {
+    beforeEach(() => {
+      process.env.AUTH_DISABLED = 'true';
+    });
+
     it('allows requests without a token', async () => {
       const { context } = createContext();
 
@@ -290,11 +314,14 @@ describe('CognitoJWTGuard', () => {
       expect(request.user).toBeUndefined();
     });
 
-    // Auth requires the user pool ID and client ID; a single missing one disables it.
+    // AUTH_DISABLED wins over a present Cognito config, so a half-configured
+    // environment is still simply disabled rather than misconfigured.
     it.each(REQUIRED_ENV_KEYS)(
-      'disables auth when %s is missing',
+      'stays disabled when %s is missing',
       async (missingKey) => {
+        // setActiveEnv clears the opt-out, so re-assert it after.
         setActiveEnv();
+        process.env.AUTH_DISABLED = 'true';
         delete process.env[missingKey];
 
         const { context } = createContext('Bearer token');
@@ -303,6 +330,46 @@ describe('CognitoJWTGuard', () => {
         expect(jwt.verify).not.toHaveBeenCalled();
       },
     );
+  });
+
+  // Without the explicit opt-out, an unusable Cognito config must never fall back to letting requests through unverified.
+  describe('when auth is misconfigured', () => {
+    it.each(REQUIRED_ENV_KEYS)(
+      'rejects requests when %s is missing and auth was not disabled',
+      async (missingKey) => {
+        setActiveEnv();
+        delete process.env[missingKey];
+
+        const { context, request } = createContext('Bearer token');
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          AuthConfigurationError,
+        );
+        expect(jwt.verify).not.toHaveBeenCalled();
+        expect(request.user).toBeUndefined();
+      },
+    );
+
+    it('rejects requests when no auth environment is configured at all', async () => {
+      ENV_KEYS.forEach((key) => delete process.env[key]);
+
+      const { context } = createContext('Bearer token');
+
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        AuthConfigurationError,
+      );
+    });
+
+    it('rejects requests when AUTH_DISABLED has an unrecognized value', async () => {
+      setActiveEnv();
+      process.env.AUTH_DISABLED = 'ture';
+
+      const { context } = createContext('Bearer token');
+
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        AuthConfigurationError,
+      );
+    });
   });
 
   // COGNITO_REGION is optional: when unset the config derives it from the user
