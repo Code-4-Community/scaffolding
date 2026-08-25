@@ -19,7 +19,7 @@ Some key concepts you'll need to know are:
    - if no one is signed in or if errors occur with fetching the auth session it sends the request unauthenticated and lets the guard answer `401`
 
 5. **The Guard checks the token.** `CognitoJWTGuard` runs on every route (it's registered as a global `APP_GUARD`). For each request it:
-   - lets the request through immediately if auth is disabled (Cognito env vars unset) or if the route is marked `@Public()` (intentional bypass)
+   - lets the request through immediately if auth is explicitly disabled (`AUTH_DISABLED=true`) or if the route is marked `@Public()` (intentional bypass)
    - extracts and verifies the Bearer token, then checks the RS256 signature against the pool's public keys (JWKS), the issuer, expiration, that `token_use === 'access'`, and that `client_id` matches our app client.
 
 6. **Allow or deny.**
@@ -30,29 +30,23 @@ So: **every route is protected by default, a request is allowed only if it carri
 
 ## QUICKSTART: 
 
-Copy placeholders from the repo root `example.env` into `.env` (or your deployment secrets). These three variables drive **both** the backend and the frontend:
+Copy placeholders from the repo root `example.env` into `.env` (or your deployment secrets). The `COGNITO_*` variables drive **both** the backend and the frontend:
 
 | Variable | Purpose |
 |----------|---------|
-| `COGNITO_USER_POOL_ID` | Your registered users in Cognito to authenticate with (**required**) |
-| `COGNITO_CLIENT_ID` | The application you are building's own id linked to Cognito used to validate `client_id` on tokens (**required**) |
+| `AUTH_DISABLED` | Set to `true` to run with **no authentication at all** (**required** unless the `COGNITO_*` variables below are set). Only `true` and `false` are accepted. Never `true` in a deployed environment. |
+| `COGNITO_USER_POOL_ID` | Your registered users in Cognito to authenticate with (**required** unless `AUTH_DISABLED=true`) |
+| `COGNITO_CLIENT_ID` | The application you are building's own id linked to Cognito used to validate `client_id` on tokens (**required** unless `AUTH_DISABLED=true`) |
 | `COGNITO_REGION` | AWS region (**optional**) — when unset it is derived from the user pool ID, which is formatted `<region>_<id>` (e.g. `us-east-2_abc123` → `us-east-2`). Set it explicitly only if your pool ID does not encode the region you want. |
 
-`apps/frontend/vite.config.ts` re-exports the same values to the client bundle as `VITE_COGNITO_USER_POOL_ID`, `VITE_COGNITO_USER_POOL_CLIENT_ID`, and `VITE_COGNITO_REGION` at build time, so the client and server always share one source of truth (you never set the `VITE_` variables by hand). Because both sides read the same values, they can't drift out of sync: set the user pool ID and client ID and auth is enforced on the backend *and* the login UI appears on the frontend; leave either unset and both fall open.
+`apps/frontend/vite.config.ts` re-exports the same values to the client bundle as `VITE_COGNITO_USER_POOL_ID`, `VITE_COGNITO_USER_POOL_CLIENT_ID`, and `VITE_COGNITO_REGION` at build time, so the client and server always share one source of truth (you never set the `VITE_` variables by hand). Because both sides read the same values, they can't drift out of sync: set the user pool ID and client ID and auth is enforced on the backend *and* the login UI appears on the frontend.
 
 > [!IMPORTANT]
-> If `COGNITO_USER_POOL_ID` or `COGNITO_CLIENT_ID` variables are unset, authentication via JWT enforcement is **disabled entirely** and every route is left open. `getCognitoConfig()` returns `null` when either of these two is missing/empty, and `isAuthEnabled()` is derived from it. `COGNITO_REGION` is **not** part of this check — when it is missing the region is derived from the user pool ID, so auth stays enabled.
-> At startup `CognitoModule` logs the auth state exactly once (`Cognito auth enabled`, or `Cognito auth disabled: env vars missing. All routes open.`) 
-> The disabled message should be logged at **error** level when `NODE_ENV === 'production'` 
-
-```
-// if (process.env.NODE_ENV === 'production') {
-//   this.logger.error(message);
-// }
-```
+> **Running with auth off requires an explicit opt-in.** `AUTH_DISABLED=true` is the only thing that turns JWT enforcement off. Anything else that leaves the Cognito config unusable is treated as a misconfiguration and the application **refuses to start**
 
 > [!WARNING]
-> Disabling auth is a convenience for local development, **not** a safe production state. This scaffold _intentionally_ *logs and continues* (it never blocks startup) so that a fresh clone runs without any Cognito setup. For a real production deployment you should instead **fail hard**: change the disabled branch in `cognito.module.ts` (`onModuleInit`) to `throw new Error(message)` when `NODE_ENV === 'production'` so the app refuses to boot with auth silently off. The frontend mirror in `apps/frontend/src/main.tsx` can be tightened the same way (throw instead of `console.error` under `import.meta.env.PROD`).
+> Disabling auth is a convenience for local development, **not** a safe production state. `example.env` ships with `AUTH_DISABLED=true` so that a fresh clone runs without any Cognito setup — remove it (or set it to `false`) as soon as you wire up a real user pool, and make sure it is never set in a deployed environment. If Cognito variables are present *and* `AUTH_DISABLED=true`, `CognitoModule` emits a second warning that the configuration is being ignored, which is the case worth grepping deploy logs for.
+> The frontend deliberately does **not** have a mirror of this flag as the security boundary is entirely server-side and it cannot enforce anything
 
 ### Auth model
 
@@ -100,12 +94,12 @@ Inject `CognitoService` to extract the same `AccessTokenPayload` decoded token p
 @Get('me')
 me(@Req() req: Request) {
   const user = this.cognitoService.getUser(req);
-  // null when auth env is incomplete/disabled, or when request.user was never set
+  // null when auth is disabled via AUTH_DISABLED=true, or when request.user was never set
   return user;
 }
 ```
 
-Returns `null` if Cognito auth is disabled (missing env) or if no verified token was attached. On protected routes with a valid Bearer token, it returns the JWT claims object.
+Returns `null` if Cognito auth is disabled (`AUTH_DISABLED=true`) or if no verified token was attached. On protected routes with a valid Bearer token, it returns the JWT claims object.
 
 ## Token validation
 
