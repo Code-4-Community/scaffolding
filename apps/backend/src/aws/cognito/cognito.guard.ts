@@ -69,7 +69,8 @@ export class CognitoJWTGuard implements CanActivate {
    *   configuration is missing, or the token fails signature/claim verification.
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Get Cognito config, will return null if auth is not enabled (missing env vars)
+    // Returns null only when auth was explicitly disabled via AUTH_DISABLED=true;
+    // an unusable Cognito config throws instead of silently opening every route.
     const config: CognitoConfig = getCognitoConfig();
     if (!config) {
       return true;
