@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { EmailsService } from './email.service';
 import { AmazonSESWrapper } from './awsSes.wrapper';
 import { AmazonSESClientFactory } from './awsSesClient.factory';
@@ -15,20 +15,33 @@ const REQUIRED_ENV_VARS_WHEN_ENABLED = [
   providers: [AmazonSESWrapper, AmazonSESClientFactory, EmailsService],
   exports: [EmailsService],
 })
-export class EmailsModule implements OnModuleInit {
+export class AWSSESModule implements OnModuleInit {
+  private readonly logger = new Logger(AWSSESModule.name);
+
   onModuleInit(): void {
     // Email sending is disabled: skip validation so teams not using SES can
     // boot without any AWS config.
     if (process.env.SEND_AUTOMATED_EMAILS?.toLowerCase() !== 'true') {
+      this.logger.log(
+        'SES disabled: SEND_AUTOMATED_EMAILS is not "true". No emails will be sent.',
+      );
       return;
     }
 
-    for (const name of REQUIRED_ENV_VARS_WHEN_ENABLED) {
+    // Treat unset and empty/whitespace-only values as missing.
+    const missing = REQUIRED_ENV_VARS_WHEN_ENABLED.filter((name) => {
       const value = process.env[name];
-      // Treat unset and empty/whitespace-only values as missing.
-      if (!value || value.trim().length === 0) {
-        throw new Error(`Missing required environment variable: ${name}`);
-      }
+      return !value || value.trim().length === 0;
+    });
+
+    if (missing.length > 0) {
+      this.logger.warn(
+        `SES enabled but not fully configured: missing env vars (${missing.join(
+          ', ',
+        )}). Email sends will fail.`,
+      );
+    } else {
+      this.logger.log('SES enabled');
     }
   }
 }
