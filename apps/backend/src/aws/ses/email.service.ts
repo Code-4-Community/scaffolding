@@ -49,8 +49,10 @@ export class EmailsService {
     const validated = plainToInstance(SendEmailDTO, dto);
     await validateOrReject(validated);
 
-    if (process.env.SEND_AUTOMATED_EMAILS !== 'true') {
-      this.logger.warn('SEND_AUTOMATED_EMAILS is not "true". Email not sent.');
+    if (process.env.SEND_AUTOMATED_EMAILS?.toLowerCase() !== 'true') {
+      this.logger.log(
+        'SES disabled: SEND_AUTOMATED_EMAILS is not "true". No emails will be sent.',
+      );
       return;
     }
 
