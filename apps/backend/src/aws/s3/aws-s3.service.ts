@@ -42,7 +42,7 @@ export class AWSS3Service {
     this.region = process.env.AWS_REGION ?? 'us-east-2';
 
     // Every bucket in the S3Buckets enum is read from an env var named AWS_<BUCKET>_BUCKET_NAME:
-    // - e.g. S3Buckets.DOCUMENTS reads AWS_DOCUMENTS_BUCKET_NAME. Add each of those names to REQUIRED_ENV_VARS
+    // - e.g. S3Buckets.DOCUMENTS reads AWS_DOCUMENTS_BUCKET_NAME. Add each of those names to REQUIRED_ENV_VARS_WHEN_ENABLED
     this.bucketNames = {} as Record<S3Buckets, string>;
 
     for (const bucket of Object.values(S3Buckets) as unknown as S3Buckets[]) {

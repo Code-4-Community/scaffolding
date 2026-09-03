@@ -7,6 +7,7 @@ A global NestJS module providing S3 file upload and retrieval via `AWSS3Service`
 Add these variables to `.env` and `example.env`:
 
 ```
+S3_ENABLED=true
 AWS_REGION=us-east-2
 AWS_ACCESS_KEY_ID=your-access-key-id
 AWS_SECRET_ACCESS_KEY=your-secret-access-key
@@ -14,13 +15,19 @@ AWS_SECRET_ACCESS_KEY=your-secret-access-key
 AWS_MY_BUCKET_NAME=my-bucket-name
 ```
 
-`AWS_REGION`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` are shared across every AWS module in this app (S3, SES, …) and use the AWS SDK's standard names — define them once and don't rename them per-service. Only the bucket vars are S3-specific.
+`AWS_REGION`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` are shared across every AWS module in this app (S3, SES, …) and use the AWS SDK's standard names — define them once and don't rename them per-service. Only `S3_ENABLED` and the bucket vars are S3-specific.
 
 Import `AWSS3Module` once in your root `AppModule`. Because the module is `@Global()`, `AWSS3Service` is injectable in all feature modules without additional imports.
 
 Every bucket env var **must** follow the `AWS_<BUCKET>_BUCKET_NAME` format, where `<BUCKET>` is the `S3Buckets` enum member verbatim. `AWSS3Service` builds its bucket lookup from that convention, so a name that doesn't match will never be found.
 
-`AWSS3Module.onModuleInit` logs a warning listing any env var in its `REQUIRED_ENV_VARS` list that is unset or blank.
+## `S3_ENABLED`
+
+`S3_ENABLED` gates the startup config check, mirroring `SEND_AUTOMATED_EMAILS` in the SES module. When it is anything other than `'true'` (case-insensitive), `AWSS3Module.onModuleInit` skips validation entirely and logs `S3 disabled: …`, so a project that doesn't use S3 boots without AWS config and without a warning on every startup.
+
+When it is `'true'`, `onModuleInit` logs a warning listing any env var in its `REQUIRED_ENV_VARS_WHEN_ENABLED` list that is unset or blank.
+
+The flag only controls that check — it does not disable `AWSS3Service`. Calls to `upload()` / `getImageData()` still reach AWS and fail there if credentials are absent.
 
 ## Adding a New Bucket
 
@@ -38,10 +45,10 @@ export enum S3Buckets {
 }
 ```
 
-**3. Add the env var name to `REQUIRED_ENV_VARS`** (`aws-s3.module.ts`), so a missing value is reported at startup:
+**3. Add the env var name to `REQUIRED_ENV_VARS_WHEN_ENABLED`** (`aws-s3.module.ts`), so a missing value is reported at startup when `S3_ENABLED=true`:
 
 ```typescript
-const REQUIRED_ENV_VARS = [
+const REQUIRED_ENV_VARS_WHEN_ENABLED = [
   'AWS_ACCESS_KEY_ID',
   'AWS_SECRET_ACCESS_KEY',
   'AWS_MY_BUCKET_NAME',
