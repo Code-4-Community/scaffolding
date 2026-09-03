@@ -160,15 +160,19 @@ describe('AWSS3Service', () => {
         } as unknown as GetObjectCommandOutput['Body'],
       });
 
-      const result = await service.getImageData('photo.jpg', testBucket);
+      const result = await service.getImageData('photo.jpg', testBucketEnum);
 
+      const commandCall = s3Mock.call(0);
+      expect((commandCall.args[0] as GetObjectCommand).input.Bucket).toBe(
+        testBucket,
+      );
       expect(result).toBe(imageBytes);
     });
 
     it('should return null when response body is missing', async () => {
       s3Mock.on(GetObjectCommand).resolves({ Body: undefined });
 
-      const result = await service.getImageData('photo.jpg', testBucket);
+      const result = await service.getImageData('photo.jpg', testBucketEnum);
 
       expect(result).toBeNull();
     });
@@ -178,7 +182,7 @@ describe('AWSS3Service', () => {
         .on(GetObjectCommand)
         .rejects(new NoSuchKey({ message: 'Not found', $metadata: {} }));
 
-      const result = await service.getImageData('missing.jpg', testBucket);
+      const result = await service.getImageData('missing.jpg', testBucketEnum);
 
       expect(result).toBeNull();
     });
@@ -199,11 +203,11 @@ describe('AWSS3Service', () => {
         .spyOn(service['logger'], 'error')
         .mockImplementation(() => undefined);
 
-      const result = await service.getImageData('photo.jpg', testBucket);
+      const result = await service.getImageData('photo.jpg', testBucketEnum);
 
       expect(result).toBeNull();
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        `S3 error retrieving object: key=photo.jpg, bucket=${testBucket}, error=Access denied`,
+        `S3 error retrieving object: key=photo.jpg, bucket=${testBucketEnum}, error=Access denied`,
       );
     });
 
@@ -211,7 +215,7 @@ describe('AWSS3Service', () => {
       s3Mock.on(GetObjectCommand).rejects(new Error('network error'));
 
       await expect(
-        service.getImageData('photo.jpg', testBucket),
+        service.getImageData('photo.jpg', testBucketEnum),
       ).rejects.toThrow('network error');
     });
   });

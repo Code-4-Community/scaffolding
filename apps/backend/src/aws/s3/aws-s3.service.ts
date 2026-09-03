@@ -118,10 +118,13 @@ export class AWSS3Service {
 
   async getImageData(
     objectKey: string,
-    bucket: string,
+    bucket: S3Buckets,
   ): Promise<Uint8Array | null> {
     try {
-      const command = new GetObjectCommand({ Bucket: bucket, Key: objectKey });
+      const command = new GetObjectCommand({
+        Bucket: this.bucketNames[bucket],
+        Key: objectKey,
+      });
       const response = await this.client.send(command);
       if (!response.Body) {
         return null;
