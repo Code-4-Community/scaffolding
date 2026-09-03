@@ -1,13 +1,32 @@
 import { AWSS3Module } from './aws-s3.module';
 
 describe('AWSS3Module', () => {
+  const ENV_VARS = [
+    'S3_ENABLED',
+    'AWS_ACCESS_KEY_ID',
+    'AWS_SECRET_ACCESS_KEY',
+  ] as const;
+
+  const REQUIRED_WHEN_ENABLED = [
+    'AWS_ACCESS_KEY_ID',
+    'AWS_SECRET_ACCESS_KEY',
+  ] as const;
+
+  const originalEnv: Record<string, string | undefined> = {};
   let module: AWSS3Module;
   let warnSpy: jest.SpyInstance;
   let logSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    for (const name of ENV_VARS) {
+      originalEnv[name] = process.env[name];
+    }
+
+    // Default to a fully-configured, enabled setup; individual tests override.
+    process.env.S3_ENABLED = 'true';
     process.env.AWS_ACCESS_KEY_ID = 'test-access-key';
     process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-key';
+
     module = new AWSS3Module();
 
     warnSpy = jest
@@ -20,51 +39,82 @@ describe('AWSS3Module', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+
+    for (const name of ENV_VARS) {
+      if (originalEnv[name] === undefined) {
+        delete process.env[name];
+      } else {
+        process.env[name] = originalEnv[name];
+      }
+    }
   });
 
-  it('should log and not warn when required env vars are set', () => {
-    module.onModuleInit();
+  describe('onModuleInit', () => {
+    it('logs and does not warn when all required env vars are set and enabled', () => {
+      module.onModuleInit();
 
-    expect(warnSpy).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith('S3 configured');
-  });
+      expect(warnSpy).not.toHaveBeenCalled();
+      expect(logSpy).toHaveBeenCalledWith('S3 enabled');
+    });
 
-  it('should warn if AWS_ACCESS_KEY_ID is missing', () => {
-    delete process.env.AWS_ACCESS_KEY_ID;
+    it('does not warn when disabled, even if required vars are missing', () => {
+      process.env.S3_ENABLED = 'false';
+      for (const name of REQUIRED_WHEN_ENABLED) {
+        delete process.env[name];
+      }
 
-    expect(() => module.onModuleInit()).not.toThrow();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('AWS_ACCESS_KEY_ID'),
+      module.onModuleInit();
+
+      expect(warnSpy).not.toHaveBeenCalled();
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.stringContaining('S3 disabled'),
+      );
+    });
+
+    it('does not warn when S3_ENABLED is unset', () => {
+      delete process.env.S3_ENABLED;
+      for (const name of REQUIRED_WHEN_ENABLED) {
+        delete process.env[name];
+      }
+
+      module.onModuleInit();
+
+      expect(warnSpy).not.toHaveBeenCalled();
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.stringContaining('S3 disabled'),
+      );
+    });
+
+    it.each(REQUIRED_WHEN_ENABLED)(
+      'warns when enabled and %s is missing',
+      (name) => {
+        delete process.env[name];
+
+        expect(() => module.onModuleInit()).not.toThrow();
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(name));
+      },
     );
-  });
 
-  it('should warn if AWS_SECRET_ACCESS_KEY is missing', () => {
-    delete process.env.AWS_SECRET_ACCESS_KEY;
+    it('warns when enabled and a required var is empty/whitespace-only', () => {
+      process.env.AWS_ACCESS_KEY_ID = '   ';
 
-    expect(() => module.onModuleInit()).not.toThrow();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('AWS_SECRET_ACCESS_KEY'),
-    );
-  });
+      expect(() => module.onModuleInit()).not.toThrow();
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('AWS_ACCESS_KEY_ID'),
+      );
+    });
 
-  it('should warn if an env var is whitespace-only', () => {
-    process.env.AWS_ACCESS_KEY_ID = '   ';
+    it('lists every missing env var in a single warning', () => {
+      for (const name of REQUIRED_WHEN_ENABLED) {
+        delete process.env[name];
+      }
 
-    expect(() => module.onModuleInit()).not.toThrow();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('AWS_ACCESS_KEY_ID'),
-    );
-  });
+      module.onModuleInit();
 
-  it('should list every missing env var in a single warning', () => {
-    delete process.env.AWS_ACCESS_KEY_ID;
-    delete process.env.AWS_SECRET_ACCESS_KEY;
-
-    module.onModuleInit();
-
-    expect(warnSpy).toHaveBeenCalledTimes(1);
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY'),
-    );
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY'),
+      );
+    });
   });
 });
