@@ -22,8 +22,8 @@ describe('AWSS3Service', () => {
   let service: AWSS3Service;
 
   beforeEach(() => {
-    process.env.AWS_ACCESS_KEY = 'test-access-key';
-    process.env.AWS_SECRET_KEY = 'test-secret-key';
+    process.env.AWS_ACCESS_KEY_ID = 'test-access-key';
+    process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-key';
     process.env.AWS_REGION = region;
     process.env.AWS_TEST_BUCKET_NAME = testBucket;
 

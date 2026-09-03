@@ -41,7 +41,7 @@ export class AWSS3Service {
   constructor() {
     this.region = process.env.AWS_REGION ?? 'us-east-2';
 
-    // Every bucket in the S3Buckets enum is read from an env var named AWS_<BUCKET>_BUCKET_NAME: 
+    // Every bucket in the S3Buckets enum is read from an env var named AWS_<BUCKET>_BUCKET_NAME:
     // - e.g. S3Buckets.DOCUMENTS reads AWS_DOCUMENTS_BUCKET_NAME. Add each of those names to REQUIRED_ENV_VARS
     this.bucketNames = {} as Record<S3Buckets, string>;
 
@@ -55,8 +55,8 @@ export class AWSS3Service {
     this.client = new S3Client({
       region: this.region,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY ?? '',
-        secretAccessKey: process.env.AWS_SECRET_KEY ?? '',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
       },
     });
   }

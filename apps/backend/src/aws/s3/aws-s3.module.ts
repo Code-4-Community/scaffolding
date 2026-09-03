@@ -2,8 +2,12 @@ import { Global, Logger, Module, OnModuleInit } from '@nestjs/common';
 import { AWSS3Service } from './aws-s3.service';
 
 // Required s3 env values.
-// Add one entry per bucket here: 
-const REQUIRED_ENV_VARS = ['AWS_ACCESS_KEY', 'AWS_SECRET_KEY'] as const;
+// The credentials are the shared AWS ones (also used by the SES module).
+// Add one entry per bucket here:
+const REQUIRED_ENV_VARS = [
+  'AWS_ACCESS_KEY_ID',
+  'AWS_SECRET_ACCESS_KEY',
+] as const;
 
 @Global()
 @Module({

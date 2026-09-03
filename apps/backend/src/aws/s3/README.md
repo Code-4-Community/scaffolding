@@ -8,11 +8,13 @@ Add these variables to `.env` and `example.env`:
 
 ```
 AWS_REGION=us-east-2
-AWS_ACCESS_KEY=your-access-key-id
-AWS_SECRET_KEY=your-secret-access-key
+AWS_ACCESS_KEY_ID=your-access-key-id
+AWS_SECRET_ACCESS_KEY=your-secret-access-key
 # one entry per bucket — see "Adding a New Bucket" below
 AWS_MY_BUCKET_NAME=my-bucket-name
 ```
+
+`AWS_REGION`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` are shared across every AWS module in this app (S3, SES, …) and use the AWS SDK's standard names — define them once and don't rename them per-service. Only the bucket vars are S3-specific.
 
 Import `AWSS3Module` once in your root `AppModule`. Because the module is `@Global()`, `AWSS3Service` is injectable in all feature modules without additional imports.
 
@@ -40,8 +42,8 @@ export enum S3Buckets {
 
 ```typescript
 const REQUIRED_ENV_VARS = [
-  'AWS_ACCESS_KEY',
-  'AWS_SECRET_KEY',
+  'AWS_ACCESS_KEY_ID',
+  'AWS_SECRET_ACCESS_KEY',
   'AWS_MY_BUCKET_NAME',
 ] as const;
 ```
@@ -50,7 +52,7 @@ No change to `aws-s3.service.ts` is needed: its constructor resolves `process.en
 
 ## Required IAM Permissions
 
-The credentials supplied via `AWS_ACCESS_KEY` / `AWS_SECRET_KEY` must have:
+The credentials supplied via `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` must have:
 
 | Permission | Required by |
 |---|---|

@@ -3,7 +3,9 @@ import { EmailsService } from './email.service';
 import { AmazonSESWrapper } from './awsSes.wrapper';
 import { AmazonSESClientFactory } from './awsSesClient.factory';
 
-// Env vars required only when SES dispatch is enabled (SEND_AUTOMATED_EMAILS === 'true')
+// Env vars required only when SES dispatch is enabled (SEND_AUTOMATED_EMAILS === 'true').
+// AWS_REGION and the credentials are the shared AWS ones (also used by the S3 module);
+// only AWS_SES_SENDER_EMAIL is specific to SES.
 const REQUIRED_ENV_VARS_WHEN_ENABLED = [
   'AWS_REGION',
   'AWS_ACCESS_KEY_ID',
