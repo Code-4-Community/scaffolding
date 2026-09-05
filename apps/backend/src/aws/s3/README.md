@@ -23,7 +23,7 @@ Every bucket env var **must** follow the `AWS_<BUCKET>_BUCKET_NAME` format, wher
 
 ## `S3_ENABLED`
 
-`S3_ENABLED` gates the startup config check, mirroring `SEND_AUTOMATED_EMAILS` in the SES module. When it is anything other than `'true'` (case-insensitive), `AWSS3Module.onModuleInit` skips validation entirely and logs `S3 disabled: …`, so a project that doesn't use S3 boots without AWS config and without a warning on every startup.
+`S3_ENABLED` gates the startup config check. When it is anything other than `'true'` (case-insensitive), `AWSS3Module.onModuleInit` skips validation entirely and logs `S3 disabled: …`, so a project that doesn't use S3 boots without AWS config and without a warning on every startup.
 
 When it is `'true'`, `onModuleInit` logs a warning listing any env var in its `REQUIRED_ENV_VARS_WHEN_ENABLED` list that is unset or blank.
 
