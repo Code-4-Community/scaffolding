@@ -8,7 +8,7 @@ describe('EmailsService', () => {
   let service: EmailsService;
   let mockWrapper: { sendEmail: jest.Mock };
 
-  const originalSendFlag = process.env.SEND_AUTOMATED_EMAILS;
+  const originalSendFlag = process.env.SES_ENABLED;
 
   const validDto: SendEmailDTO = {
     toEmail: 'recipient@example.com',
@@ -36,15 +36,15 @@ describe('EmailsService', () => {
 
   afterEach(() => {
     if (originalSendFlag === undefined) {
-      delete process.env.SEND_AUTOMATED_EMAILS;
+      delete process.env.SES_ENABLED;
     } else {
-      process.env.SEND_AUTOMATED_EMAILS = originalSendFlag;
+      process.env.SES_ENABLED = originalSendFlag;
     }
   });
 
   describe('sendEmail', () => {
-    it('does not call the wrapper when SEND_AUTOMATED_EMAILS is not "true"', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'false';
+    it('does not call the wrapper when SES_ENABLED is not "true"', async () => {
+      process.env.SES_ENABLED = 'false';
 
       const result = await service.sendEmail(validDto);
 
@@ -53,7 +53,7 @@ describe('EmailsService', () => {
     });
 
     it('rate-limits sends to roughly 14 per second', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      process.env.SES_ENABLED = 'true';
       mockWrapper.sendEmail.mockResolvedValue(successOutput);
 
       const calls = 10;
@@ -74,7 +74,7 @@ describe('EmailsService', () => {
     });
 
     it('rejects without calling the wrapper when the DTO is invalid', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      process.env.SES_ENABLED = 'true';
 
       const invalidDto: SendEmailDTO = {
         toEmail: 'not-a-real-email',
@@ -87,7 +87,7 @@ describe('EmailsService', () => {
     });
 
     it('returns the wrapper output when sending succeeds', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      process.env.SES_ENABLED = 'true';
       mockWrapper.sendEmail.mockResolvedValue(successOutput);
 
       const result = await service.sendEmail(validDto);
@@ -97,7 +97,7 @@ describe('EmailsService', () => {
     });
 
     it('propagates errors thrown by the wrapper', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      process.env.SES_ENABLED = 'true';
       mockWrapper.sendEmail.mockRejectedValue(
         new Error('SES rejected: throttled'),
       );
@@ -109,7 +109,7 @@ describe('EmailsService', () => {
     });
 
     it('passes ccEmails and bccEmails through to the wrapper', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      process.env.SES_ENABLED = 'true';
       mockWrapper.sendEmail.mockResolvedValue(successOutput);
 
       const dto: SendEmailDTO = {
@@ -132,7 +132,7 @@ describe('EmailsService', () => {
     });
 
     it('rejects when ccEmails contains an invalid address', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      process.env.SES_ENABLED = 'true';
 
       const dto: SendEmailDTO = {
         toEmail: 'recipient@example.com',
@@ -146,7 +146,7 @@ describe('EmailsService', () => {
     });
 
     it('rejects when bccEmails contains an invalid address', async () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'true';
+      process.env.SES_ENABLED = 'true';
 
       const dto: SendEmailDTO = {
         toEmail: 'recipient@example.com',
