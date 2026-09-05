@@ -31,7 +31,7 @@ export class EmailsService {
    * etc.) causes the method to reject with a ValidationError[] before any
    * SES request is made.
    *
-   * Sending is skipped (with a warning) when SEND_AUTOMATED_EMAILS is not
+   * Sending is skipped (with a warning) when SES_ENABLED is not
    * set to 'true'.
    *
    * @param dto the email payload - validated against SendEmailDTO's decorators
@@ -49,8 +49,10 @@ export class EmailsService {
     const validated = plainToInstance(SendEmailDTO, dto);
     await validateOrReject(validated);
 
-    if (process.env.SEND_AUTOMATED_EMAILS !== 'true') {
-      this.logger.warn('SEND_AUTOMATED_EMAILS is not "true". Email not sent.');
+    if (process.env.SES_ENABLED?.toLowerCase() !== 'true') {
+      this.logger.log(
+        'SES disabled: SES_ENABLED is not "true". No emails will be sent.',
+      );
       return;
     }
 

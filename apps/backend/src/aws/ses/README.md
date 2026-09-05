@@ -4,16 +4,16 @@ Thin wrapper around Amazon SES v2 for sending transactional emails (with optiona
 
 ## Injecting `EmailsService`
 
-`EmailsModule` exports `EmailsService`, so any consuming module just needs to import `EmailsModule` and then inject `EmailsService` through the constructor.
+`AWSSESModule` exports `EmailsService`, so any consuming module just needs to import `AWSSESModule` and then inject `EmailsService` through the constructor.
 
-1. **Import `EmailsModule`** in the consuming module:
+1. **Import `AWSSESModule`** in the consuming module:
 
    ```ts
    // users.module.ts
-   import { EmailsModule } from '../aws/ses/email.module';
+   import { AWSSESModule } from '../aws/ses/email.module';
 
    @Module({
-     imports: [TypeOrmModule.forFeature([User]), EmailsModule],
+     imports: [TypeOrmModule.forFeature([User]), AWSSESModule],
      controllers: [UsersController],
      providers: [UsersService],
    })
@@ -58,9 +58,9 @@ To verify a sender:
 
 If you swap `AWS_SES_SENDER_EMAIL` later, the new address must be verified separately — verification is per-identity, not per-account.
 
-## `SEND_AUTOMATED_EMAILS` flag
+## `SES_ENABLED` flag
 
 A boolean env var (`'true'` to enable, anything else — including unset — to disable) that gates real SES dispatch.
 
-- When `SEND_AUTOMATED_EMAILS === 'true'`: `sendEmail` runs DTO validation, then schedules the send through the rate limiter, then calls SES. Returns the `SendEmailCommandOutput` from SES (MessageId + metadata). `AWS_SES_SENDER_EMAIL` must be set at this point, or the send throws.
-- When `SEND_AUTOMATED_EMAILS` is unset or any other value: `sendEmail` still runs DTO validation (so a bad payload still throws), then logs a warning (`SEND_AUTOMATED_EMAILS is not "true". Email not sent.`) and returns `void` without contacting SES. Neither `AWS_SES_SENDER_EMAIL` nor the AWS credentials need to be defined — teams not using SES can omit them entirely and the app still boots.
+- When `SES_ENABLED === 'true'`: `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SES_SENDER_EMAIL` are checked at module initialization (`AWSSESModule.onModuleInit`), which logs a warning listing any that are missing and boots anyway — sends then fail at the SES call. In production a missing var almost certainly means missing secrets: raise that `logger.warn` to `logger.error`, or throw, so the app fails at startup instead. `sendEmail` runs DTO validation, schedules the send through the rate limiter, then calls SES. Returns the `SendEmailCommandOutput` from SES (MessageId + metadata).
+- When `SES_ENABLED` is unset or any other value: `sendEmail` still runs DTO validation (so a bad payload still throws), then logs a warning (`SES_ENABLED is not "true". Email not sent.`) and returns `void` without contacting SES. Neither `AWS_SES_SENDER_EMAIL` nor the AWS credentials need to be defined — teams not using SES can omit them entirely and the app still boots.
