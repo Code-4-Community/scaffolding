@@ -2,6 +2,7 @@ import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { EmailsService } from './email.service';
 import { AmazonSESWrapper } from './awsSes.wrapper';
 import { AmazonSESClientFactory } from './awsSesClient.factory';
+import { getMissingEnvVars } from '../../utils/env';
 
 // Env vars required only when SES dispatch is enabled (SEND_AUTOMATED_EMAILS === 'true').
 // AWS_REGION and the credentials are the shared AWS ones (also used by the S3 module);
@@ -30,11 +31,7 @@ export class AWSSESModule implements OnModuleInit {
       return;
     }
 
-    // Treat unset and empty/whitespace-only values as missing.
-    const missing = REQUIRED_ENV_VARS_WHEN_ENABLED.filter((name) => {
-      const value = process.env[name];
-      return !value || value.trim().length === 0;
-    });
+    const missing = getMissingEnvVars(REQUIRED_ENV_VARS_WHEN_ENABLED);
 
     if (missing.length > 0) {
       this.logger.warn(

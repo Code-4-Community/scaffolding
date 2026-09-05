@@ -1,5 +1,6 @@
 import { Global, Logger, Module, OnModuleInit } from '@nestjs/common';
 import { AWSS3Service } from './aws-s3.service';
+import { getMissingEnvVars } from '../../utils/env';
 
 // Env vars required only when S3 is enabled (S3_ENABLED === 'true').
 // The credentials are the shared AWS ones (also used by the SES module).
@@ -27,11 +28,7 @@ export class AWSS3Module implements OnModuleInit {
       return;
     }
 
-    // Treat unset and empty/whitespace-only values as missing.
-    const missing = REQUIRED_ENV_VARS_WHEN_ENABLED.filter((name) => {
-      const value = process.env[name];
-      return !value || value.trim().length === 0;
-    });
+    const missing = getMissingEnvVars(REQUIRED_ENV_VARS_WHEN_ENABLED);
 
     if (missing.length > 0) {
       this.logger.warn(
