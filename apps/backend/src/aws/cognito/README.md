@@ -48,6 +48,28 @@ Copy placeholders from the repo root `example.env` into `.env` (or your deployme
 > Disabling auth is a convenience for local development, **not** a safe production state. `example.env` ships with `AUTH_DISABLED=true` so that a fresh clone runs without any Cognito setup — remove it (or set it to `false`) as soon as you wire up a real user pool, and make sure it is never set in a deployed environment. If Cognito variables are present *and* `AUTH_DISABLED=true`, `CognitoModule` emits a second warning that the configuration is being ignored, which is the case worth grepping deploy logs for.
 > The frontend deliberately does **not** have a mirror of this flag as the security boundary is entirely server-side and it cannot enforce anything
 
+## `AUTH_DISABLED`
+
+The flag that gates the startup configuration check. 
+
+Auth is opt-**out** because its disabled state *is* the vulnerability: every route served unauthenticated. 
+
+ `CognitoModule.onModuleInit` **throws** `AuthConfigurationError` naming every missing variable, and the module lets it propagate so `main.ts` fails and the process exits.
+
+`CognitoJWTGuard` reads a `null` config as "let this request through", and `getCognitoConfig()` returns `null` if and only if `AUTH_DISABLED=true`.
+
+### Adding a required Cognito env var
+
+Add its name to `REQUIRED_ENV_VARS_WHEN_ENABLED` in `cognito.config.ts`:
+
+```ts
+export const REQUIRED_ENV_VARS_WHEN_ENABLED = [
+  'COGNITO_USER_POOL_ID',
+  'COGNITO_CLIENT_ID',
+  'COGNITO_MY_NEW_VAR',
+] as const;
+```
+
 ### Auth model
 
 - **Verification** — `CognitoJWTGuard` is the only component that validates JWTs (See [Token validation](#token-validation))

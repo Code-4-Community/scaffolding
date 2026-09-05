@@ -4,8 +4,16 @@ import { isNonEmptyEnv } from '../../utils/env';
 // Env var that must be set to "true" to intentionally run without authentication.
 const AUTH_DISABLED_ENV = 'AUTH_DISABLED';
 
-// Cognito env vars that must both be set whenever auth is not explicitly disabled.
-const REQUIRED_COGNITO_ENV = ['COGNITO_USER_POOL_ID', 'COGNITO_CLIENT_ID'];
+/**
+ * Cognito env vars that must all be set whenever auth is not explicitly disabled.
+ */
+export const REQUIRED_ENV_VARS_WHEN_ENABLED = [
+  'COGNITO_USER_POOL_ID',
+  'COGNITO_CLIENT_ID',
+] as const;
+
+// Optional, but a value here still means somebody configured Cognito.
+const OPTIONAL_ENV_VARS_WHEN_ENABLED = ['COGNITO_REGION'] as const;
 
 /**
  * Thrown when the authentication environment is in a state we refuse to guess at:
@@ -41,26 +49,43 @@ function parseAuthDisabled(): boolean {
   );
 }
 
-// Reports whether any Cognito env var is set. Used only to warn about a config
-// that sets up Cognito and then disables auth anyway.
-export function hasAnyCognitoEnv(): boolean {
-  return [...REQUIRED_COGNITO_ENV, 'COGNITO_REGION'].some((key) =>
-    isNonEmptyEnv(process.env[key]),
+/**
+ * Reports whether auth was explicitly disabled via `AUTH_DISABLED=true`.
+ *
+ * @throws {AuthConfigurationError} If the flag is set to an unrecognized value.
+ */
+export function isAuthDisabled(): boolean {
+  return parseAuthDisabled();
+}
+
+/**
+ * Reports which Cognito env variables are unset or blank.
+ * Whitespace-only values count as missing.
+ *
+ * @returns The names of the missing variables, in declaration order. Empty when the
+ *   configuration is complete.
+ */
+export function findMissingEnvVars(): string[] {
+  return REQUIRED_ENV_VARS_WHEN_ENABLED.filter(
+    (name) => !isNonEmptyEnv(process.env[name]),
   );
 }
 
-// Checks if the authentication is enabled
-export function isAuthEnabled(): boolean {
-  return getCognitoConfig() !== null;
+// Reports whether any Cognito env var is set. Used only to warn about a config
+// that sets up Cognito and then disables auth anyway.
+export function hasAnyCognitoEnv(): boolean {
+  return [
+    ...REQUIRED_ENV_VARS_WHEN_ENABLED,
+    ...OPTIONAL_ENV_VARS_WHEN_ENABLED,
+  ].some((key) => isNonEmptyEnv(process.env[key]));
 }
 
 /**
  * Resolves the Cognito configuration from the environment.
  *
- * Auth is only ever left off by explicit opt-in. Any other unusable
- * configuration is a misconfiguration (a mistyped or undelivered env var), and
- * silently serving every route unauthenticated is the worst possible response
- * to it, so we throw and let the application fail to start.
+ * Auth is only ever left off by explicit opt-in.
+ *
+ * Returns `null` if and only if `AUTH_DISABLED=true`
  *
  * @returns The resolved config, or `null` when auth is explicitly disabled via
  *   `AUTH_DISABLED=true`.
@@ -73,26 +98,27 @@ export function getCognitoConfig(): CognitoConfig | null {
     return null;
   }
 
-  let region = process.env.COGNITO_REGION;
-  const userPoolId = process.env.COGNITO_USER_POOL_ID;
-  const clientId = process.env.COGNITO_CLIENT_ID;
+  // Trimmed so that a padded value cannot reach `issuer` and produce a URL that no
+  // token will ever match.
+  const userPoolId = process.env.COGNITO_USER_POOL_ID?.trim() ?? '';
+  const clientId = process.env.COGNITO_CLIENT_ID?.trim() ?? '';
+  let region = process.env.COGNITO_REGION?.trim() ?? '';
 
   // Auth was not disabled, so every required variable has to be present.
-  if (!isNonEmptyEnv(userPoolId) || !isNonEmptyEnv(clientId)) {
-    const missing = REQUIRED_COGNITO_ENV.filter(
-      (key) => !isNonEmptyEnv(process.env[key]),
-    );
+  const missing = findMissingEnvVars();
+  if (missing.length > 0) {
     throw new AuthConfigurationError(
-      `Cognito auth is misconfigured: ${missing.join(' and ')} ` +
-        `${missing.length === 1 ? 'is' : 'are'} missing or empty. ` +
-        `Set ${missing.join(' and ')}, or set ${AUTH_DISABLED_ENV}=true to ` +
+      `Cognito auth is misconfigured: missing or empty env vars ` +
+        `(${missing.join(
+          ', ',
+        )}). Set them, or set ${AUTH_DISABLED_ENV}=true to ` +
         `intentionally run with all routes unauthenticated.`,
     );
   }
 
   // COGNITO_REGION is optional: when unset, derive it from the user pool ID
   // (format: <region>_<id>). Without an underscore there is nothing to derive.
-  if (!isNonEmptyEnv(region)) {
+  if (region === '') {
     if (!userPoolId.includes('_')) {
       throw new AuthConfigurationError(
         `Cognito auth is misconfigured: COGNITO_REGION is unset and cannot be ` +

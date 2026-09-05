@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { AccessTokenPayload } from './cognito.types';
-import { isAuthEnabled } from './cognito.config';
+import { isAuthDisabled } from './cognito.config';
 
 @Injectable()
 export class CognitoService {
@@ -20,8 +20,9 @@ export class CognitoService {
    *   if authentication is disabled or no valid token was attached to the request.
    */
   getUser(request: Request): AccessTokenPayload | null {
-    // If authentication was explicitly disabled, there is no user to return
-    if (!isAuthEnabled()) {
+    // If authentication was explicitly disabled, there is no user to return.
+    // Reads the flag rather than re-resolving the config: the guard already ran.
+    if (isAuthDisabled()) {
       this.logger.debug(
         'getUser returning null: authentication is disabled (AUTH_DISABLED=true)',
       );

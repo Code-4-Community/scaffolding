@@ -1,8 +1,6 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
-
-import { AuthConfigurationError } from './cognito.config';
 import { IS_PUBLIC_KEY } from './cognito.decorator';
 import { CognitoJWTGuard } from './cognito.guard';
 import { AccessTokenPayload } from './cognito.types';
@@ -332,7 +330,9 @@ describe('CognitoJWTGuard', () => {
     );
   });
 
-  // Without the explicit opt-out, an unusable Cognito config must never fall back to letting requests through unverified.
+  // Without the explicit opt-out, an unusable Cognito config must never fall back to
+  // letting requests through unverified. CognitoModule.onModuleInit normally fails
+  // startup before this is reachable, throws 401, not the 500 a raw AuthConfigurationError would produce.
   describe('when auth is misconfigured', () => {
     it.each(REQUIRED_ENV_KEYS)(
       'rejects requests when %s is missing and auth was not disabled',
@@ -343,7 +343,7 @@ describe('CognitoJWTGuard', () => {
         const { context, request } = createContext('Bearer token');
 
         await expect(guard.canActivate(context)).rejects.toThrow(
-          AuthConfigurationError,
+          UnauthorizedException,
         );
         expect(jwt.verify).not.toHaveBeenCalled();
         expect(request.user).toBeUndefined();
@@ -356,7 +356,7 @@ describe('CognitoJWTGuard', () => {
       const { context } = createContext('Bearer token');
 
       await expect(guard.canActivate(context)).rejects.toThrow(
-        AuthConfigurationError,
+        UnauthorizedException,
       );
     });
 
@@ -367,7 +367,7 @@ describe('CognitoJWTGuard', () => {
       const { context } = createContext('Bearer token');
 
       await expect(guard.canActivate(context)).rejects.toThrow(
-        AuthConfigurationError,
+        UnauthorizedException,
       );
     });
   });

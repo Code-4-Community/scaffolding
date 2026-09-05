@@ -99,6 +99,14 @@ describe('CognitoModule', () => {
     expect(() => module.onModuleInit()).toThrow(/COGNITO_CLIENT_ID/);
   });
 
+  // The point of the shared REQUIRED_ENV_VARS_WHEN_ENABLED list: one message naming
+  // every missing variable, rather than failing on whichever is checked first.
+  it('throws listing every missing Cognito variable at once', () => {
+    expect(() => module.onModuleInit()).toThrow(
+      /COGNITO_USER_POOL_ID, COGNITO_CLIENT_ID/,
+    );
+  });
+
   // Proves the throw actually aborts a real Nest bootstrap instead of being swallowed.
   it('aborts Nest initialization when the config is unusable', async () => {
     const moduleRef = await Test.createTestingModule({

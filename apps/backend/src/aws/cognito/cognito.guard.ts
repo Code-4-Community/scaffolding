@@ -69,10 +69,10 @@ export class CognitoJWTGuard implements CanActivate {
    *   configuration is missing, or the token fails signature/claim verification.
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Returns null only when auth was explicitly disabled via AUTH_DISABLED=true;
-    // an unusable Cognito config throws instead of silently opening every route.
-    const config: CognitoConfig = getCognitoConfig();
-    if (!config) {
+    const config: CognitoConfig | null = this.resolveConfig();
+
+    // Null iff auth was explicitly disabled via AUTH_DISABLED=true.
+    if (config === null) {
       return true;
     }
 
@@ -96,19 +96,32 @@ export class CognitoJWTGuard implements CanActivate {
     return true;
   }
 
+  /**
+   * Resolves the Cognito configuration for this request.
+   *
+   * Catches errors from changing env-variables after boot
+   *
+   * @returns The resolved config, or `null` when auth is explicitly disabled.
+   * @throws {UnauthorizedException} If the Cognito configuration is unusable.
+   */
+  private resolveConfig(): CognitoConfig | null {
+    try {
+      return getCognitoConfig();
+    } catch (error) {
+      this.logger.error(
+        `Rejecting all requests, Cognito auth is enabled but unusable: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+      throw new UnauthorizedException();
+    }
+  }
+
   // Verifies the token against user pool JWKS endpoint, and returns the JWT payload if the token is valid
   private verifyToken(
     token: string,
     config: CognitoConfig,
   ): Promise<AccessTokenPayload> {
-    // If the user pool ID or client ID is not set, config returns as null, throw an unauthorized exception by default
-    // (region is optional and derived from the user pool ID when unset).
-    // Should get caught beforehand from being called in canActivate() but if not, throw error and log
-    if (!config) {
-      this.logger.warn('Cognito configuration is not set');
-      throw new UnauthorizedException();
-    }
-
     // Set up JWKS client to get the public key for the token to verify the JWT token signature
     this.jwks ??= jwksClient({
       cache: true,

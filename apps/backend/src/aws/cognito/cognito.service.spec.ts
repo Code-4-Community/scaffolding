@@ -62,18 +62,28 @@ describe('CognitoService', () => {
       expect(service.getUser({ headers: {} } as TestRequest)).toBeNull();
     });
 
-    // Without the explicit opt-out an unusable config is a misconfiguration, and
-    // reporting "no user" for it would quietly hide the problem from callers.
+    // getUser reads the AUTH_DISABLED flag rather than re-resolving the config, so
+    // an unusable config is not its problem to report: CognitoModule already failed
+    // startup over it, and CognitoJWTGuard resolves the config ahead of its @Public()
+    // branch, so every request 401s before any handler can call getUser.
     it.each(REQUIRED_ENV_KEYS)(
-      'throws when %s is missing and auth was not disabled',
+      'returns null rather than throwing when %s is missing (the guard owns that rejection)',
       (missingKey) => {
         delete process.env[missingKey];
 
-        expect(() => service.getUser({ headers: {} } as TestRequest)).toThrow(
-          AuthConfigurationError,
-        );
+        expect(service.getUser({ headers: {} } as TestRequest)).toBeNull();
       },
     );
+
+    // The flag itself is still parsed strictly: a typo must never be read as
+    // "not disabled" and silently return a user.
+    it('throws when AUTH_DISABLED has an unrecognized value', () => {
+      process.env.AUTH_DISABLED = 'ture';
+
+      expect(() => service.getUser({ headers: {} } as TestRequest)).toThrow(
+        AuthConfigurationError,
+      );
+    });
 
     // COGNITO_REGION is optional (derived from the user pool ID), so auth stays
     // enabled without it and getUser still returns an attached payload.

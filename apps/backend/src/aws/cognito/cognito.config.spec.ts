@@ -2,7 +2,8 @@ import {
   AuthConfigurationError,
   getCognitoConfig,
   hasAnyCognitoEnv,
-  isAuthEnabled,
+  isAuthDisabled,
+  REQUIRED_ENV_VARS_WHEN_ENABLED,
 } from './cognito.config';
 
 const ENV_KEYS = [
@@ -45,6 +46,11 @@ describe('cognito.config', () => {
     clearEnv();
   });
 
+  // The module owns the list; this asserts the spec's copy still matches it.
+  it('declares exactly the required env vars this spec exercises', () => {
+    expect([...REQUIRED_ENV_VARS_WHEN_ENABLED]).toEqual([...REQUIRED_ENV_KEYS]);
+  });
+
   afterEach(() => {
     ENV_KEYS.forEach((key) => {
       const original = ORIGINAL_ENV[key];
@@ -67,7 +73,7 @@ describe('cognito.config', () => {
         issuer:
           'https://cognito-idp.us-east-2.amazonaws.com/us-east-2_TestPool',
       });
-      expect(isAuthEnabled()).toBe(true);
+      expect(isAuthDisabled()).toBe(false);
     });
 
     // COGNITO_REGION is optional and derived from the <region>_<id> pool ID.
@@ -76,7 +82,7 @@ describe('cognito.config', () => {
       delete process.env.COGNITO_REGION;
 
       expect(getCognitoConfig()).toMatchObject({ region: 'us-east-2' });
-      expect(isAuthEnabled()).toBe(true);
+      expect(isAuthDisabled()).toBe(false);
     });
 
     // AUTH_DISABLED=false is the same as leaving it unset.
@@ -86,7 +92,8 @@ describe('cognito.config', () => {
         setActiveEnv();
         process.env.AUTH_DISABLED = value;
 
-        expect(isAuthEnabled()).toBe(true);
+        expect(getCognitoConfig()).not.toBeNull();
+        expect(isAuthDisabled()).toBe(false);
       },
     );
   });
@@ -99,7 +106,7 @@ describe('cognito.config', () => {
         process.env.AUTH_DISABLED = value;
 
         expect(getCognitoConfig()).toBeNull();
-        expect(isAuthEnabled()).toBe(false);
+        expect(isAuthDisabled()).toBe(true);
       },
     );
 
@@ -132,9 +139,9 @@ describe('cognito.config', () => {
       expect(() => getCognitoConfig()).toThrow(AuthConfigurationError);
     });
 
-    it('throws naming both variables when neither is set', () => {
+    it('throws listing every missing variable in a single message', () => {
       expect(() => getCognitoConfig()).toThrow(
-        /COGNITO_USER_POOL_ID and COGNITO_CLIENT_ID are missing/,
+        /COGNITO_USER_POOL_ID, COGNITO_CLIENT_ID/,
       );
     });
 
@@ -171,6 +178,82 @@ describe('cognito.config', () => {
         process.env[key] = 'some-value';
 
         expect(hasAnyCognitoEnv()).toBe(true);
+      },
+    );
+  });
+
+  // CognitoJWTGuard serves a request unverified when the config is null or has typos
+  describe('the null-iff-AUTH_DISABLED invariant', () => {
+    const NOT_DISABLED_FLAGS = [undefined, 'false', 'FALSE', '  false  '];
+    const BROKEN_CONFIGS: Array<[string, () => void]> = [
+      ['nothing set', () => clearEnv()],
+      [
+        'only the user pool ID set',
+        () => {
+          clearEnv();
+          process.env.COGNITO_USER_POOL_ID = ACTIVE_ENV.COGNITO_USER_POOL_ID;
+        },
+      ],
+      [
+        'only the client ID set',
+        () => {
+          clearEnv();
+          process.env.COGNITO_CLIENT_ID = ACTIVE_ENV.COGNITO_CLIENT_ID;
+        },
+      ],
+      [
+        'required values blank',
+        () => {
+          setActiveEnv();
+          process.env.COGNITO_USER_POOL_ID = '   ';
+          process.env.COGNITO_CLIENT_ID = '   ';
+        },
+      ],
+      [
+        'region absent and not derivable',
+        () => {
+          setActiveEnv();
+          delete process.env.COGNITO_REGION;
+          process.env.COGNITO_USER_POOL_ID = 'no-underscore-here';
+        },
+      ],
+    ];
+
+    describe.each(NOT_DISABLED_FLAGS)('with AUTH_DISABLED=%p', (flag) => {
+      it.each(BROKEN_CONFIGS)(
+        'throws rather than returning null when %s',
+        (_label, applyEnv) => {
+          applyEnv();
+          if (flag === undefined) {
+            delete process.env.AUTH_DISABLED;
+          } else {
+            process.env.AUTH_DISABLED = flag;
+          }
+
+          expect(() => getCognitoConfig()).toThrow(AuthConfigurationError);
+          expect(isAuthDisabled()).toBe(false);
+        },
+      );
+    });
+
+    it.each(['ture', 'yes', '1', 'disabled'])(
+      'throws rather than returning null when AUTH_DISABLED is %p',
+      (flag) => {
+        clearEnv();
+        process.env.AUTH_DISABLED = flag;
+
+        expect(() => getCognitoConfig()).toThrow(AuthConfigurationError);
+      },
+    );
+
+    it.each(['true', 'TRUE', '  true  '])(
+      'returns null only for the explicit opt-out AUTH_DISABLED=%p',
+      (flag) => {
+        clearEnv();
+        process.env.AUTH_DISABLED = flag;
+
+        expect(getCognitoConfig()).toBeNull();
+        expect(isAuthDisabled()).toBe(true);
       },
     );
   });
