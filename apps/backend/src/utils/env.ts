@@ -12,3 +12,14 @@ export function isNonEmptyEnv(value: string | undefined): value is string {
   }
   return value.trim() !== '';
 }
+
+/**
+ * Finds which of the given environment variables are not usably set.
+ * Unset and empty/whitespace-only values both count as missing.
+ *
+ * @param names The environment variable names to check.
+ * @returns The names that are missing, in the order they were given.
+ */
+export function getMissingEnvVars(names: readonly string[]): string[] {
+  return names.filter((name) => !isNonEmptyEnv(process.env[name]));
+}

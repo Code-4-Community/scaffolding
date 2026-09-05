@@ -1,5 +1,5 @@
 import { CognitoConfig } from './cognito.types';
-import { isNonEmptyEnv } from '../../utils/env';
+import { getMissingEnvVars, isNonEmptyEnv } from '../../utils/env';
 
 // Env var that must be set to "true" to intentionally run without authentication.
 const AUTH_DISABLED_ENV = 'AUTH_DISABLED';
@@ -58,19 +58,6 @@ export function isAuthDisabled(): boolean {
   return parseAuthDisabled();
 }
 
-/**
- * Reports which Cognito env variables are unset or blank.
- * Whitespace-only values count as missing.
- *
- * @returns The names of the missing variables, in declaration order. Empty when the
- *   configuration is complete.
- */
-export function findMissingEnvVars(): string[] {
-  return REQUIRED_ENV_VARS_WHEN_ENABLED.filter(
-    (name) => !isNonEmptyEnv(process.env[name]),
-  );
-}
-
 // Reports whether any Cognito env var is set. Used only to warn about a config
 // that sets up Cognito and then disables auth anyway.
 export function hasAnyCognitoEnv(): boolean {
@@ -105,7 +92,7 @@ export function getCognitoConfig(): CognitoConfig | null {
   let region = process.env.COGNITO_REGION?.trim() ?? '';
 
   // Auth was not disabled, so every required variable has to be present.
-  const missing = findMissingEnvVars();
+  const missing = getMissingEnvVars(REQUIRED_ENV_VARS_WHEN_ENABLED);
   if (missing.length > 0) {
     throw new AuthConfigurationError(
       `Cognito auth is misconfigured: missing or empty env vars ` +
