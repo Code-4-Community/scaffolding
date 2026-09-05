@@ -11,12 +11,12 @@ export const AMAZON_SES_CLIENT = 'AMAZON_SES_CLIENT';
 export const AmazonSESClientFactory: Provider<SESv2Client> = {
   provide: AMAZON_SES_CLIENT,
   useFactory: () => {
-    // Create dummy client that is NOT used when email sending is unset or set to false. 
-    if (process.env.SEND_AUTOMATED_EMAILS?.toLowerCase() !== 'true') {
+    // Create dummy client that is NOT used when email sending is unset or set to false.
+    if (process.env.SES_ENABLED?.toLowerCase() !== 'true') {
       return new SESv2Client({});
     }
 
-    // If email sending is enabled, AWSSESModule.onModuleInit() warns when these env vars are missing. 
+    // If email sending is enabled, AWSSESModule.onModuleInit() warns when these env vars are missing.
     // The empty-string fallbacks keep the client constructible; sends against it fail at the SES call.
     return new SESv2Client({
       region: process.env.AWS_REGION ?? '',

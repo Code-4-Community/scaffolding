@@ -2,7 +2,7 @@ import { AWSSESModule } from './email.module';
 
 describe('AWSSESModule', () => {
   const ENV_VARS = [
-    'SEND_AUTOMATED_EMAILS',
+    'SES_ENABLED',
     'AWS_REGION',
     'AWS_ACCESS_KEY_ID',
     'AWS_SECRET_ACCESS_KEY',
@@ -27,7 +27,7 @@ describe('AWSSESModule', () => {
     }
 
     // Default to a fully-configured, enabled setup; individual tests override.
-    process.env.SEND_AUTOMATED_EMAILS = 'true';
+    process.env.SES_ENABLED = 'true';
     process.env.AWS_REGION = 'us-east-2';
     process.env.AWS_ACCESS_KEY_ID = 'test-access-key-id';
     process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-access-key';
@@ -64,7 +64,7 @@ describe('AWSSESModule', () => {
     });
 
     it('does not warn when disabled, even if required vars are missing', () => {
-      process.env.SEND_AUTOMATED_EMAILS = 'false';
+      process.env.SES_ENABLED = 'false';
       for (const name of REQUIRED_WHEN_ENABLED) {
         delete process.env[name];
       }
@@ -77,8 +77,8 @@ describe('AWSSESModule', () => {
       );
     });
 
-    it('does not warn when SEND_AUTOMATED_EMAILS is unset', () => {
-      delete process.env.SEND_AUTOMATED_EMAILS;
+    it('does not warn when SES_ENABLED is unset', () => {
+      delete process.env.SES_ENABLED;
       for (const name of REQUIRED_WHEN_ENABLED) {
         delete process.env[name];
       }

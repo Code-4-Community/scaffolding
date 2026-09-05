@@ -31,7 +31,7 @@ export class AmazonSESWrapper {
    */
   async sendEmail(dto: SendEmailDTO): Promise<SendEmailCommandOutput> {
     // Checked at module initialization (see AWSSESModule) when SES is enabled;
-    // sendEmail is only ever reached when SEND_AUTOMATED_EMAILS is 'true', so senderEmail is expected to be present here.
+    // sendEmail is only ever reached when SES_ENABLED is 'true', so senderEmail is expected to be present here.
     const senderEmail = process.env.AWS_SES_SENDER_EMAIL ?? '';
 
     const mailOptions: Mail.Options = {
