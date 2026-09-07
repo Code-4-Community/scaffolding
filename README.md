@@ -89,6 +89,14 @@ To run both the frontend and backend with one command:
 nx run-many -t serve -p frontend backend
 ```
 
+## Auth
+
+**Auth is opt-out.** Cognito auth is enforced by default. Every route is protected unless explicitly marked `@Public()`. The only supported way to run this app without it is to set `AUTH_DISABLED=true`.
+
+**Misconfiguration fails fast.** If auth isn't explicitly disabled but its required env vars (`COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`) are missing or invalid, the app refuses to start entirely rather than warning and booting with every route unauthenticated.
+
+Read [`apps/backend/src/aws/cognito/README.md`](apps/backend/src/aws/cognito/README.md) for the full auth flow, the env var reference, and how to protect/expose routes.
+
 ## Swagger
 
 The backend can expose [Swagger UI](https://github.com/swagger-api/swagger-ui) (built from an OpenAPI document via [`@nestjs/swagger`](https://docs.nestjs.com/openapi/introduction)) so you can browse and try HTTP routes without reading controller code first.
