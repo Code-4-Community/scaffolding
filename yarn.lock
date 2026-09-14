@@ -9483,13 +9483,13 @@ lint-staged@^17.4.1:
     yaml "^2.9.0"
 
 listr2@11, listr2@^9.0.5:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/listr2/-/listr2-11.0.0.tgz#e3e792ae2a6155122abdd9e7c150d7af2fc58458"
-  integrity sha512-8K88S0aSrcSXdJfiZtEy5BQMnR+TyjrCGLcgAvQs6ta0NEnIm0RJ72/Pv67Jvg07cfBhDbuN74V81lSSVYEFEw==
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/listr2/-/listr2-11.1.0.tgz#5e011e23ed01007ee08dcbc4b22772094cc8128f"
+  integrity sha512-xsuczF6mWkEo/E80QHaEokQzKmTy7m80KcLRnkUt9wrcePres2w7dbQi5zOsWtDUg8Dac4gPFyu4EJ/IvKwTOg==
   dependencies:
     cli-truncate "^6.1.1"
     log-update "^8.0.0"
-    wrap-ansi "^10.0.0"
+    wrap-ansi "^10.0.1"
 
 loader-runner@^4.3.1:
   version "4.3.2"
@@ -13652,14 +13652,13 @@ wrap-ansi@7.0.0, wrap-ansi@^7.0.0:
     string-width "^4.1.0"
     strip-ansi "^6.0.0"
 
-wrap-ansi@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-10.0.0.tgz#b83ddcc14dbc5596f1b07e153bf6f863c1acbb57"
-  integrity sha512-SGcvg80f0wUy2/fXES19feHMz8E0JoXv2uNgHOu4Dgi2OrCy1lqwFYEJz1BLbDI0exjPMe/ZdzZ/YpGECBG/aQ==
+wrap-ansi@^10.0.0, wrap-ansi@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-10.0.1.tgz#59b821b7987d36a87a367bc9517284ff974086ea"
+  integrity sha512-M0N4xzyzosiIok3svYlEo1sdLZts/8FPgYH/GPC3wvlmPoRvnoManGMrE54waYj3tISA8w6lsdesfVv67qSr8Q==
   dependencies:
     ansi-styles "^6.2.3"
     string-width "^8.2.0"
-    strip-ansi "^7.1.2"
 
 wrap-ansi@^6.2.0:
   version "6.2.0"
