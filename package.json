@@ -15,7 +15,8 @@
     "migration:run": "yarn typeorm migration:run -d apps/backend/src/data-source.ts",
     "migration:revert": "yarn typeorm migration:revert -d apps/backend/src/data-source.ts",
     "migration:create": "yarn typeorm migration:create apps/backend/src/migrations/$name",
-    "test": "jest"
+    "test": "jest",
+    "seed": "ts-node -r tsconfig-paths/register --project apps/backend/tsconfig.app.json apps/backend/src/seed.ts"
   },
   "private": true,
   "dependencies": {
