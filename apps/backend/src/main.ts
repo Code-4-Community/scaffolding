@@ -25,14 +25,25 @@ async function bootstrap() {
 
   if (swaggerEnabled) {
     const config = new DocumentBuilder()
-      .setTitle('[YOUR_APP_NAME] API Docs')
-      .setDescription('Documentation for [YOUR_APP_NAME] API routes')
+      .setTitle('BFFC API Docs')
+      .setDescription('Documentation for BFFC API routes')
       .addBearerAuth({
         type: 'http',
         description:
           '[TL] Replace: how clients obtain a Bearer token for this API.',
       })
-      .addTag('Users', 'Operations on users')
+      .addTag(
+        'Sites',
+        'Site details, addresses, plant inventory, and site media',
+      )
+      .addTag('Events', 'Admin (Luma-linked) and steward-published events')
+      .addTag('Users', 'Admin and steward user accounts')
+      .addTag('Announcements', 'Steward announcements posted to a site')
+      .addTag(
+        'Volunteer Opportunities',
+        'Volunteer opportunities tied to a site',
+      )
+      .addTag('Partner Orgs', 'Partner organizations associated with a site')
       .setVersion('1.0')
       .build();
     const document = SwaggerModule.createDocument(app, config); // Create the Swagger document
