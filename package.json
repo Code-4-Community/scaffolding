@@ -5,8 +5,8 @@
   "scripts": {
     "format:check": "prettier --no-error-on-unmatched-pattern --check apps/{frontend,backend}/src/**/*.{js,ts,tsx}",
     "format": "prettier --no-error-on-unmatched-pattern --write apps/{frontend,backend}/src/**/*.{js,ts,tsx}",
-    "lint:check": "eslint 'apps/frontend/src/**/*.{ts,tsx}' && eslint 'apps/backend/src/**/*.{ts,tsx}'",
-    "lint": "eslint 'apps/frontend/src/**/*.{ts,tsx}' --fix && eslint 'apps/backend/src/**/*.{ts,tsx}' --fix",
+    "lint:check": "eslint \"apps/frontend/src/**/*.{ts,tsx}\" && eslint \"apps/backend/src/**/*.{ts,tsx}\"",
+    "lint": "eslint \"apps/frontend/src/**/*.{ts,tsx}\" --fix && eslint \"apps/backend/src/**/*.{ts,tsx}\" --fix",
     "prepush": "yarn run format:check && yarn run lint:check",
     "prepush:fix": "yarn run format && yarn run lint",
     "prepare": "husky install",
@@ -15,14 +15,15 @@
     "migration:run": "yarn typeorm migration:run -d apps/backend/src/data-source.ts",
     "migration:revert": "yarn typeorm migration:revert -d apps/backend/src/data-source.ts",
     "migration:create": "yarn typeorm migration:create apps/backend/src/migrations/$name",
-    "test": "jest"
+    "test": "jest",
+    "seed": "ts-node -r tsconfig-paths/register --project apps/backend/tsconfig.app.json apps/backend/src/seed.ts"
   },
   "private": true,
   "dependencies": {
     "@aws-amplify/ui-react": "^6.15.4",
     "@aws-sdk/client-cognito-identity-provider": "^3.1058.0",
-    "@aws-sdk/client-sesv2": "^3.1063.0",
     "@aws-sdk/client-s3": "^3.1073.0",
+    "@aws-sdk/client-sesv2": "^3.1063.0",
     "@nestjs/cli": "^11.0.24",
     "@nestjs/common": "^10.0.2",
     "@nestjs/config": "^4.0.4",
@@ -69,6 +70,7 @@
     "@nx/vite": "22.7.5",
     "@nx/webpack": "23.0.0",
     "@testing-library/react": "^15.0.7",
+    "@types/geojson": "^7946.0.16",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.9.3",

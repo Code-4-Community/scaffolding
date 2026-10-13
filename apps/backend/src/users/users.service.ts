@@ -2,10 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User } from './user.entity';
-import { Status } from './types';
+import { User, UserType } from '../entities/user.entity';
 import { EmailsService } from '../aws/ses/email.service';
-// import { SendEmailDTO } from '../aws/ses/sendEmail.dto';
 
 @Injectable()
 export class UsersService {
@@ -14,52 +12,15 @@ export class UsersService {
     private emailsService: EmailsService,
   ) {}
 
-  // Example endpoint for email sending (DO NOT DEPLOY THIS)
-  /*
-  async sendTestEmail(recipient: string) {
-    const imageRes = await fetch('https://placehold.co/200x200/png');
-    const imageBuffer = Buffer.from(await imageRes.arrayBuffer());
-
-    const dto: SendEmailDTO = {
-      toEmail: recipient,
-      ccEmails: ['cc@example.com'],
-      bccEmails: ['bcc@example.com'],
-      subject: 'Test email',
-      bodyHtml: '<p>This is a test email sent from UsersService.</p>',
-      attachments: [
-        {
-          filename: 'sample.png',
-          content: imageBuffer,
-        },
-      ],
-    };
-    return this.emailsService.sendEmail(dto);
-  }
-  */
-
-  async create(
-    email: string,
-    firstName: string,
-    lastName: string,
-    status: Status = Status.STANDARD,
-  ) {
-    const userId = (await this.repo.count()) + 1;
-    const user = this.repo.create({
-      id: userId,
-      status,
-      firstName,
-      lastName,
-      email,
-    });
-
+  async create(name: string, email: string, type: UserType) {
+    const user = this.repo.create({ name, email, type });
     return this.repo.save(user);
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     if (!id) {
       return null;
     }
-
     return this.repo.findOneBy({ id });
   }
 
@@ -67,25 +28,20 @@ export class UsersService {
     return this.repo.find({ where: { email } });
   }
 
-  async update(id: number, attrs: Partial<User>) {
+  async update(id: string, attrs: Partial<User>) {
     const user = await this.findOne(id);
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     Object.assign(user, attrs);
-
     return this.repo.save(user);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const user = await this.findOne(id);
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     return this.repo.remove(user);
   }
 }

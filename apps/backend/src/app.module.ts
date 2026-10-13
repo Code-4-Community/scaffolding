@@ -6,15 +6,21 @@ import { AppService } from './app.service';
 import AppDataSource from './data-source';
 import { CognitoModule } from './aws/cognito/cognito.module';
 import { UsersModule } from './users/users.module';
+import { StewardEventsModule } from './steward-events/steward-events.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(AppDataSource.options),
+    TypeOrmModule.forRoot({
+      ...AppDataSource.options,
+      migrations: [],
+      migrationsRun: false,
+    }),
     CognitoModule,
     UsersModule,
+    StewardEventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
