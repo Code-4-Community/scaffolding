@@ -6,15 +6,29 @@ import { AppService } from './app.service';
 import AppDataSource from './data-source';
 import { CognitoModule } from './aws/cognito/cognito.module';
 import { UsersModule } from './users/users.module';
+import { SitesModule } from './sites/sites.module';
+import { EventsModule } from './events/events.module';
+import { MediaModule } from './media/media.module';
+import { AnnouncementsModule } from './announcements/announcements.module';
+import { PartnerOrgsModule } from './partner-orgs/partner-orgs.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(AppDataSource.options),
+    TypeOrmModule.forRoot({
+      ...AppDataSource.options,
+      migrations: [],
+      migrationsRun: false,
+    }),
     CognitoModule,
     UsersModule,
+    SitesModule,
+    EventsModule,
+    AnnouncementsModule,
+    PartnerOrgsModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
